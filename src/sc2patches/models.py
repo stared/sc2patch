@@ -118,9 +118,6 @@ class Change(BaseModel):
     patch_version: str = Field(..., min_length=1, description="Patch version")
     entity_id: str = Field(..., min_length=1, description="Entity identifier")
     raw_text: str = Field(..., min_length=1, description="Exact text from patch notes")
-    source_section: SourceSection = Field(
-        default=SourceSection.UNKNOWN, description="Section of patch notes"
-    )
 
     @field_validator("patch_version", "entity_id", "raw_text")
     @classmethod

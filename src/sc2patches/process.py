@@ -50,7 +50,6 @@ def process_single_patch(
                 "patch_version": metadata.version,
                 "entity_id": change.entity_id,
                 "raw_text": change.raw_text,
-                "source_section": change.section.value,
             }
             for idx, change in enumerate(changes)
         ],
