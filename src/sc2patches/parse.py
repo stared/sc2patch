@@ -17,8 +17,7 @@ class ParseError(Exception):
 class RawChange:
     """Unparsed change extracted from HTML."""
 
-    entity_name: str
-    race: Race
+    entity_id: str
     raw_text: str
     section: SourceSection
 
@@ -102,11 +101,11 @@ def detect_section_type(header_text: str) -> SourceSection:
     return SourceSection.UNKNOWN
 
 
-def load_units_database() -> dict[str, set[str]]:
+def load_units_database() -> dict[str, dict[str, str]]:
     """Load units database and build lookup dictionary.
 
     Returns:
-        Dict mapping race to set of all entity names
+        Dict mapping race to dict of {name: entity_id}
     """
     units_path = Path("data/units.json")
     if not units_path.exists():
@@ -115,20 +114,21 @@ def load_units_database() -> dict[str, set[str]]:
     with units_path.open() as f:
         units_list = json.load(f)
 
-    # Build lookup by race
-    race_entities = {"terran": set(), "protoss": set(), "zerg": set()}
+    # Build lookup by race: {race: {name: id}}
+    race_entities = {"terran": {}, "protoss": {}, "zerg": {}}
 
     for entity in units_list:
         race = entity["race"]
         name = entity["name"]
+        entity_id = entity["id"]
         if race in race_entities:
-            race_entities[race].add(name)
+            race_entities[race][name] = entity_id
 
     return race_entities
 
 
-def detect_entity_from_text(text: str, race: Race, units_db: dict[str, set[str]]) -> str:
-    """Detect entity name from change text.
+def detect_entity_from_text(text: str, race: Race, units_db: dict[str, dict[str, str]]) -> str:
+    """Detect entity ID from change text.
 
     Args:
         text: Change text (e.g., "Spire cost reduced from 200/200 to 150/150.")
@@ -136,19 +136,19 @@ def detect_entity_from_text(text: str, race: Race, units_db: dict[str, set[str]]
         units_db: Units database from load_units_database()
 
     Returns:
-        Entity name if detected, otherwise "unknown"
+        Entity ID if detected (e.g., "zerg-spire"), otherwise "{race}-unknown"
     """
     race_key = race.value
-    known_entities = units_db.get(race_key, set())
+    known_entities = units_db.get(race_key, {})
 
     # Check each known entity - longest match first (e.g., "Widow Mine" before "Mine")
-    sorted_entities = sorted(known_entities, key=len, reverse=True)
+    sorted_names = sorted(known_entities.keys(), key=len, reverse=True)
 
-    for entity in sorted_entities:
-        if entity.lower() in text.lower():
-            return entity
+    for entity_name in sorted_names:
+        if entity_name.lower() in text.lower():
+            return known_entities[entity_name]
 
-    return "unknown"
+    return f"{race_key}-unknown"
 
 
 def normalize_entity_name(name: str) -> str:
@@ -163,7 +163,7 @@ def normalize_entity_name(name: str) -> str:
     return name.strip().lower().replace(" ", "_").replace("-", "_")
 
 
-def extract_changes_from_list(ul_element, race: Race, section: SourceSection) -> list[RawChange]:
+def extract_changes_from_list(ul_element, race: Race, section: SourceSection, units_db: dict[str, dict[str, str]]) -> list[RawChange]:
     """Extract changes from a <ul> list element.
 
     This handles flat lists where each <li> is a single change.
@@ -172,6 +172,7 @@ def extract_changes_from_list(ul_element, race: Race, section: SourceSection) ->
         ul_element: BeautifulSoup <ul> element
         race: Current race context
         section: Current section type
+        units_db: Units database for entity detection
 
     Returns:
         List of RawChange objects
@@ -181,14 +182,12 @@ def extract_changes_from_list(ul_element, race: Race, section: SourceSection) ->
     for li in ul_element.find_all("li", recursive=False):
         text = li.get_text(strip=True)
         if text:
-            # Try to detect entity name from strong tag
-            strong = li.find("strong")
-            entity_name = strong.get_text(strip=True) if strong else "unknown"
+            # Detect entity ID from text
+            entity_id = detect_entity_from_text(text, race, units_db)
 
             changes.append(
                 RawChange(
-                    entity_name=entity_name,
-                    race=race,
+                    entity_id=entity_id,
                     raw_text=text,
                     section=section,
                 )
@@ -257,13 +256,12 @@ def parse_patch_html(html_path: Path, md_path: Path) -> tuple[PatchMetadata, lis
             for li in element.find_all("li", recursive=False):
                 text = li.get_text(strip=True)
                 if text:
-                    # Detect entity from text
-                    entity_name = detect_entity_from_text(text, current_race, units_db)
+                    # Detect entity ID from text
+                    entity_id = detect_entity_from_text(text, current_race, units_db)
 
                     changes.append(
                         RawChange(
-                            entity_name=entity_name,
-                            race=current_race,
+                            entity_id=entity_id,
                             raw_text=text,
                             section=current_section,
                         )

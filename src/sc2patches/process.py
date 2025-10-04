@@ -46,11 +46,13 @@ def process_single_patch(
         },
         "changes": [
             {
-                "entity_name": change.entity_name,
-                "race": change.race.value,
+                "id": f"{metadata.version}-{idx}",
+                "patch_version": metadata.version,
+                "entity_id": change.entity_id,
                 "raw_text": change.raw_text,
+                "source_section": change.section.value,
             }
-            for change in changes
+            for idx, change in enumerate(changes)
         ],
     }
 
