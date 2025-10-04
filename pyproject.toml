@@ -1,0 +1,40 @@
+[project]
+name = "sc2patches"
+version = "0.1.0"
+description = "StarCraft 2 balance patch data scraper and processor"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.0",
+    "httpx>=0.27.0",
+    "beautifulsoup4>=4.12.0",
+    "rich>=13.0.0",
+    "markdownify>=0.13.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.7.0",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP", "B", "A", "C4", "DTZ", "RET", "SIM", "ARG", "PTH", "PL"]
+ignore = ["DTZ007"]  # Naive datetime is fine for date-only parsing
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.13.3",
+    "ty>=0.0.1a21",
+]
