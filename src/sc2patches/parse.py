@@ -199,8 +199,7 @@ def extract_changes_from_list(ul_element, race: Race, section: SourceSection, un
 def parse_patch_html(html_path: Path, md_path: Path) -> tuple[PatchMetadata, list[RawChange]]:
     """Parse patch HTML file to extract balance changes.
 
-    This is a simplified first version that handles the most common pattern.
-    Will be expanded to handle all patterns in subsequent iterations.
+    Uses modular parsers to handle different HTML patterns.
 
     Args:
         html_path: Path to HTML file
@@ -215,9 +214,6 @@ def parse_patch_html(html_path: Path, md_path: Path) -> tuple[PatchMetadata, lis
     # Extract metadata from Markdown
     metadata = extract_markdown_metadata(md_path)
 
-    # Load units database for entity detection
-    units_db = load_units_database()
-
     # Parse HTML
     if not html_path.exists():
         raise ParseError(f"HTML file not found: {html_path}")
@@ -229,42 +225,23 @@ def parse_patch_html(html_path: Path, md_path: Path) -> tuple[PatchMetadata, lis
     if not blog_section:
         raise ParseError("No <section class='blog'> found in HTML")
 
-    changes = []
-    current_race = None
-    current_section = SourceSection.UNKNOWN
+    # Import parsers here to avoid circular imports
+    from .parsers import DirectH2Parser, FallbackParser, H3RaceParser, NestedStrongParser, PEntityParser
 
-    # Pattern 1: Direct H2 headers with race names (5.0.15 style)
-    race_names = {"Zerg": Race.ZERG, "Protoss": Race.PROTOSS, "Terran": Race.TERRAN}
+    # Try parsers in order of specificity
+    parsers = [
+        DirectH2Parser(),
+        H3RaceParser(),
+        PEntityParser(),
+        NestedStrongParser(),
+        FallbackParser(),  # Always succeeds, returns empty list
+    ]
 
-    for element in blog_section.children:
-        if not element.name:
-            continue
+    for parser in parsers:
+        if parser.can_parse(soup):
+            changes = parser.parse(soup, metadata)
+            return metadata, changes
 
-        # Check for H2 headers (section type or race)
-        if element.name == "h2":
-            text = element.get_text(strip=True)
-            # Is it a race header?
-            if text in race_names:
-                current_race = race_names[text]
-                current_section = SourceSection.VERSUS_BALANCE
-            else:
-                # Is it a section header?
-                current_section = detect_section_type(text)
+    # This should never be reached since FallbackParser always succeeds
+    raise ParseError(f"No parser could handle HTML structure for {metadata.version}")
 
-        # Extract changes from lists
-        elif element.name == "ul" and current_race:
-            for li in element.find_all("li", recursive=False):
-                text = li.get_text(strip=True)
-                if text:
-                    # Detect entity ID from text
-                    entity_id = detect_entity_from_text(text, current_race, units_db)
-
-                    changes.append(
-                        RawChange(
-                            entity_id=entity_id,
-                            raw_text=text,
-                            section=current_section,
-                        )
-                    )
-
-    return metadata, changes
