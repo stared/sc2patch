@@ -47,6 +47,7 @@ class H3RaceParser(PatternParser):
         changes = []
         current_race = None
         current_section = SourceSection.UNKNOWN
+        current_entity_id = None
 
         race_names = {"Zerg": Race.ZERG, "Protoss": Race.PROTOSS, "Terran": Race.TERRAN}
 
@@ -58,6 +59,9 @@ class H3RaceParser(PatternParser):
             if element.name == "h2":
                 text = element.get_text(strip=True)
                 current_section = detect_section_type(text)
+                # Reset race when entering new section
+                if current_section != SourceSection.VERSUS_BALANCE:
+                    current_race = None
 
             # Check for H3 race headers
             elif element.name == "h3":
@@ -67,14 +71,32 @@ class H3RaceParser(PatternParser):
                     # Default to balance if not set
                     if current_section == SourceSection.UNKNOWN:
                         current_section = SourceSection.VERSUS_BALANCE
+                    current_entity_id = None  # Reset entity
+
+            # Check for P entity headers: <p><b>Entity</b></p>
+            elif element.name == "p" and current_race:
+                # Look for <b> tag inside <p>
+                b_tag = element.find("b")
+                if b_tag:
+                    entity_name = b_tag.get_text(strip=True)
+                    # Try to detect entity from name
+                    entity_id = detect_entity_from_text(entity_name, current_race, self.units_db)
+                    current_entity_id = entity_id
 
             # Extract changes from lists
             elif element.name == "ul" and current_race:
+                # Only include if in balance/versus section
+                if current_section not in [SourceSection.VERSUS_BALANCE, SourceSection.UNKNOWN]:
+                    continue
+
                 for li in element.find_all("li", recursive=False):
                     text = li.get_text(strip=True)
                     if text:
-                        # Detect entity ID from text
-                        entity_id = detect_entity_from_text(text, current_race, self.units_db)
+                        # Use current_entity_id if set, otherwise detect from text
+                        if current_entity_id:
+                            entity_id = current_entity_id
+                        else:
+                            entity_id = detect_entity_from_text(text, current_race, self.units_db)
 
                         changes.append(
                             RawChange(
