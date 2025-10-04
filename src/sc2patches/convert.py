@@ -280,8 +280,8 @@ def convert_all_patches(html_dir: Path, output_dir: Path) -> dict[str, Path]:
 
 def main() -> None:
     """Main entry point for converting patches."""
-    html_dir = Path("raw_html")
-    output_dir = Path("raw_patches")
+    html_dir = Path("data/raw_html")
+    output_dir = Path("data/raw_patches")
 
     try:
         convert_all_patches(html_dir, output_dir)

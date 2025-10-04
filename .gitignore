@@ -10,5 +10,5 @@ wheels/
 .venv
 
 # Downloaded data
-raw_html/
-raw_patches/
+data/raw_html/
+data/raw_patches/

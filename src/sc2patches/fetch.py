@@ -143,7 +143,7 @@ def fetch_all_patches(urls_path: Path, output_dir: Path, delay: float = 1.0) -> 
 def main() -> None:
     """Main entry point for fetching patches."""
     urls_path = Path("data/patch_urls.json")
-    output_dir = Path("raw_html")
+    output_dir = Path("data/raw_html")
 
     try:
         fetch_all_patches(urls_path, output_dir, delay=1.0)

@@ -230,8 +230,8 @@ def run_all_validations(urls_path: Path, html_dir: Path, markdown_dir: Path) -> 
 def main() -> None:
     """Main entry point for validation."""
     urls_path = Path("data/patch_urls.json")
-    html_dir = Path("raw_html")
-    markdown_dir = Path("raw_patches")
+    html_dir = Path("data/raw_html")
+    markdown_dir = Path("data/raw_patches")
 
     try:
         run_all_validations(urls_path, html_dir, markdown_dir)

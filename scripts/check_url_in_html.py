@@ -19,7 +19,7 @@ def check_file(html_path: Path) -> tuple[bool, str]:
 
 
 if __name__ == "__main__":
-    html_dir = Path("raw_html")
+    html_dir = Path("data/raw_html")
     files = sorted(html_dir.glob("*.html"))
 
     print(f"Checking {len(files)} HTML files...\n")

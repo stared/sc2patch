@@ -54,7 +54,7 @@ def inspect_html(html_path: Path) -> None:
 
 
 if __name__ == "__main__":
-    html_dir = Path("raw_html")
+    html_dir = Path("data/raw_html")
 
     # Inspect a few different patches
     test_files = [
