@@ -6,6 +6,7 @@ from .fallback import FallbackParser
 from .h3_race import H3RaceParser
 from .nested_strong import NestedStrongParser
 from .p_entity import PEntityParser
+from .unified import UnifiedParser
 
 __all__ = [
     "PatternParser",
@@ -15,4 +16,5 @@ __all__ = [
     "NestedStrongParser",
     "PEntityParser",
     "FallbackParser",
+    "UnifiedParser",
 ]

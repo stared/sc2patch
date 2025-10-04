@@ -3,22 +3,34 @@
 from bs4 import BeautifulSoup
 
 from ..models import Race, SourceSection
-from ..parse import PatchMetadata, RawChange, detect_entity_from_text, detect_section_type, load_units_database
+from ..parse import (
+    PatchMetadata,
+    RawChange,
+    detect_entity_from_text,
+    detect_section_type,
+    load_units_database,
+)
 from .base import PatternParser
 
 
 class H3RaceParser(PatternParser):
     """Parser for patches with H3 race headers.
 
-    Pattern:
+    Pattern 1 (with P/B entity headers):
         <h2>Balance Update</h2>
         <h3>Zerg</h3>
+        <p><b>Zergling</b></p>
         <ul>
           <li>Change 1</li>
           <li>Change 2</li>
         </ul>
+
+    Pattern 2 (with H4 entity headers):
         <h3>Protoss</h3>
-        ...
+        <h4>Stalker</h4>
+        <ul>
+          <li>Change 1</li>
+        </ul>
     """
 
     def __init__(self):
@@ -35,7 +47,9 @@ class H3RaceParser(PatternParser):
             return False
 
         h3_headers = blog.find_all("h3")
-        h3_race_headers = [h3 for h3 in h3_headers if h3.get_text(strip=True) in ["Terran", "Protoss", "Zerg"]]
+        h3_race_headers = [
+            h3 for h3 in h3_headers if h3.get_text(strip=True) in ["Terran", "Protoss", "Zerg"]
+        ]
         return len(h3_race_headers) > 0
 
     def parse(self, soup: BeautifulSoup, metadata: PatchMetadata) -> list[RawChange]:
@@ -73,6 +87,13 @@ class H3RaceParser(PatternParser):
                         current_section = SourceSection.VERSUS_BALANCE
                     current_entity_id = None  # Reset entity
 
+            # Check for H4 entity headers: <h4>Entity</h4>
+            elif element.name == "h4" and current_race:
+                entity_name = element.get_text(strip=True)
+                # Try to detect entity from name
+                entity_id = detect_entity_from_text(entity_name, current_race, self.units_db)
+                current_entity_id = entity_id
+
             # Check for P entity headers: <p><b>Entity</b></p>
             elif element.name == "p" and current_race:
                 # Look for <b> tag inside <p>
@@ -97,6 +118,10 @@ class H3RaceParser(PatternParser):
                             entity_id = current_entity_id
                         else:
                             entity_id = detect_entity_from_text(text, current_race, self.units_db)
+
+                        # Skip neutral entities (co-op commanders, etc.)
+                        if entity_id.startswith("neutral-"):
+                            continue
 
                         changes.append(
                             RawChange(

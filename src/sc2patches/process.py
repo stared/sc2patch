@@ -15,9 +15,7 @@ class ProcessError(Exception):
     """Raised when processing fails."""
 
 
-def process_single_patch(
-    html_path: Path, md_path: Path, output_dir: Path
-) -> tuple[Path, dict]:
+def process_single_patch(html_path: Path, md_path: Path, output_dir: Path) -> tuple[Path, dict]:
     """Process a single patch and save to JSON.
 
     Args:
@@ -74,9 +72,7 @@ def process_single_patch(
     return output_path, stats
 
 
-def process_all_patches(
-    html_dir: Path, md_dir: Path, output_dir: Path
-) -> dict[str, Path]:
+def process_all_patches(html_dir: Path, md_dir: Path, output_dir: Path) -> dict[str, Path]:
     """Process all patches and generate individual JSON files.
 
     Args:

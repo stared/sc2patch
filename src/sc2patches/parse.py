@@ -148,6 +148,26 @@ def detect_entity_from_text(text: str, race: Race, units_db: dict[str, dict[str,
         if entity_name.lower() in text.lower():
             return known_entities[entity_name]
 
+    # Check for ability keywords that map to specific units
+    text_lower = text.lower()
+    ability_keywords = {
+        "salvage": "Bunker",
+        "surveillance mode": "Observer",
+        "surveillance": "Observer",
+        "purification": "Disruptor",
+        "stasis ward": "Oracle",
+    }
+
+    for keyword, unit_name in ability_keywords.items():
+        if keyword in text_lower:
+            # Try to find this unit in the current race (case-sensitive match from DB)
+            if unit_name in known_entities:
+                return known_entities[unit_name]
+            # Try in all races if not found in current race
+            for race_str, entities in units_db.items():
+                if unit_name in entities:
+                    return entities[unit_name]
+
     return f"{race_key}-unknown"
 
 
@@ -163,7 +183,9 @@ def normalize_entity_name(name: str) -> str:
     return name.strip().lower().replace(" ", "_").replace("-", "_")
 
 
-def extract_changes_from_list(ul_element, race: Race, section: SourceSection, units_db: dict[str, dict[str, str]]) -> list[RawChange]:
+def extract_changes_from_list(
+    ul_element, race: Race, section: SourceSection, units_db: dict[str, dict[str, str]]
+) -> list[RawChange]:
     """Extract changes from a <ul> list element.
 
     This handles flat lists where each <li> is a single change.
@@ -225,23 +247,11 @@ def parse_patch_html(html_path: Path, md_path: Path) -> tuple[PatchMetadata, lis
     if not blog_section:
         raise ParseError("No <section class='blog'> found in HTML")
 
-    # Import parsers here to avoid circular imports
-    from .parsers import DirectH2Parser, FallbackParser, H3RaceParser, NestedStrongParser, PEntityParser
+    # Import unified parser
+    from .parsers import UnifiedParser
 
-    # Try parsers in order of specificity
-    parsers = [
-        DirectH2Parser(),
-        H3RaceParser(),
-        PEntityParser(),
-        NestedStrongParser(),
-        FallbackParser(),  # Always succeeds, returns empty list
-    ]
+    # Use unified parser for all patches
+    parser = UnifiedParser()
+    changes = parser.parse(soup, metadata)
 
-    for parser in parsers:
-        if parser.can_parse(soup):
-            changes = parser.parse(soup, metadata)
-            return metadata, changes
-
-    # This should never be reached since FallbackParser always succeeds
-    raise ParseError(f"No parser could handle HTML structure for {metadata.version}")
-
+    return metadata, changes
