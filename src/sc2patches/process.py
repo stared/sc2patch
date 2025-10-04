@@ -17,7 +17,7 @@ class ProcessError(Exception):
 
 def process_single_patch(
     html_path: Path, md_path: Path, output_dir: Path
-) -> Path:
+) -> tuple[Path, dict]:
     """Process a single patch and save to JSON.
 
     Args:
@@ -26,7 +26,7 @@ def process_single_patch(
         output_dir: Directory to save JSON output
 
     Returns:
-        Path to generated JSON file
+        Tuple of (Path to generated JSON file, stats dict)
 
     Raises:
         ProcessError: If processing fails
@@ -35,6 +35,16 @@ def process_single_patch(
         metadata, changes = parse_patch_html(html_path, md_path)
     except Exception as e:
         raise ProcessError(f"Failed to parse {html_path.name}: {e}") from e
+
+    # Check for issues
+    unknown_count = sum(1 for c in changes if "-unknown" in c.entity_id)
+    neutral_count = sum(1 for c in changes if c.entity_id.startswith("neutral-"))
+
+    stats = {
+        "total": len(changes),
+        "unknown": unknown_count,
+        "neutral": neutral_count,
+    }
 
     # Convert to JSON-serializable format
     output = {
@@ -61,7 +71,7 @@ def process_single_patch(
 
     output_path.write_text(json.dumps(output, indent=2), encoding="utf-8")
 
-    return output_path
+    return output_path, stats
 
 
 def process_all_patches(
@@ -124,9 +134,22 @@ def process_all_patches(
             html_path = html_candidates[0]
 
             try:
-                output_path = process_single_patch(html_path, md_path, output_dir)
+                output_path, stats = process_single_patch(html_path, md_path, output_dir)
                 results[version] = output_path
-                console.print(f"[green]✓[/green] {version} → {output_path.name}")
+
+                # Display status with warnings
+                status_parts = [f"[green]✓[/green] {version} → {output_path.name}"]
+                if stats["total"] == 0:
+                    status_parts.append("[dim](no changes)[/dim]")
+                else:
+                    status_parts.append(f"[dim]({stats['total']} changes)[/dim]")
+
+                    if stats["unknown"] > 0:
+                        status_parts.append(f"[yellow]⚠ {stats['unknown']} unknown[/yellow]")
+                    if stats["neutral"] > 0:
+                        status_parts.append(f"[yellow]⚠ {stats['neutral']} non-balance[/yellow]")
+
+                console.print(" ".join(status_parts))
 
             except ProcessError as e:
                 console.print(f"[red]✗[/red] {version}: {e}")
