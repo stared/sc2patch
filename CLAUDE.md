@@ -15,6 +15,15 @@
 - Provide clear error messages with context
 - Exit with code 1 on failures
 
+## NO DEFENSIVE PROGRAMMING
+
+- **CRITICAL RULE**: Do NOT add fallbacks or "if this fails, try that" patterns
+- Pick ONE extraction method based on actual data inspection
+- If it fails, analyze WHY and fix THAT specific issue
+- ONLY add conditionals if you've VERIFIED different files have different formats
+- Check actual files, don't guess or assume
+- Avoid multiple fallback patterns - they hide real problems
+
 ## Module Design
 
 - **Modular functions** - each function does one thing

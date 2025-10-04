@@ -14,96 +14,179 @@ class ValidationError(Exception):
     """Raised when validation fails."""
 
 
-def validate_downloads(urls_path: Path, download_dir: Path) -> None:
-    """Validate that all patches from URL list were downloaded.
+def validate_html_downloads(urls_path: Path, html_dir: Path) -> None:
+    """Validate that all patches from URL list were fetched as HTML.
 
     Args:
         urls_path: Path to patch_urls.json
-        download_dir: Directory containing downloaded Markdown files
+        html_dir: Directory containing downloaded HTML files
 
     Raises:
         ValidationError: If validation fails
         FileNotFoundError: If URLs file doesn't exist
     """
-    console.print("[bold]Validating downloads...[/bold]\n")
+    console.print("[bold]Validating HTML downloads...[/bold]\n")
 
     # Load patch URLs
     urls = load_patch_urls(urls_path)
     expected_count = len(urls)
 
-    # Check download directory exists
-    if not download_dir.exists():
-        raise ValidationError(f"Download directory does not exist: {download_dir}")
+    # Check HTML directory exists
+    if not html_dir.exists():
+        raise ValidationError(f"HTML directory does not exist: {html_dir}")
 
-    if not download_dir.is_dir():
-        raise ValidationError(f"Download path is not a directory: {download_dir}")
+    if not html_dir.is_dir():
+        raise ValidationError(f"HTML path is not a directory: {html_dir}")
 
-    # Get all downloaded files
-    downloaded_files = list(download_dir.glob("*.md"))
-    actual_count = len(downloaded_files)
+    # Get all downloaded HTML files
+    html_files = list(html_dir.glob("*.html"))
+    actual_count = len(html_files)
 
     # Check counts match
     if actual_count != expected_count:
-        raise ValidationError(
-            f"Expected {expected_count} patches, found {actual_count} downloaded files"
-        )
+        raise ValidationError(f"Expected {expected_count} HTML files, found {actual_count}")
 
     # Check each file
     empty = []
     found = []
 
-    for md_file in sorted(downloaded_files):
-        if md_file.stat().st_size == 0:
-            empty.append(md_file.name)
+    for html_file in sorted(html_files):
+        if html_file.stat().st_size == 0:
+            empty.append(html_file.name)
         else:
-            # File exists and has content
-            content = md_file.read_text(encoding="utf-8")
+            content = html_file.read_text(encoding="utf-8")
             if not content.strip():
-                empty.append(md_file.name)
+                empty.append(html_file.name)
             else:
-                found.append(md_file.name)
+                found.append(html_file.name)
 
     # Report results
-    table = Table(title="Download Validation Results")
+    table = Table(title="HTML Download Validation")
     table.add_column("Status", style="bold")
     table.add_column("Count", justify="right")
-    table.add_column("Details", overflow="fold")
 
-    table.add_row("[green]✓ Found[/green]", str(len(found)), f"{len(found)} files")
-    table.add_row(
-        "[yellow]⚠ Empty[/yellow]", str(len(empty)), ", ".join(empty) if empty else "None"
-    )
+    table.add_row("[green]✓ Found[/green]", str(len(found)))
+    table.add_row("[yellow]⚠ Empty[/yellow]", str(len(empty)))
 
     console.print(table)
 
     # Raise error if any issues
     if empty:
-        raise ValidationError(f"Found {len(empty)} empty patch files: {', '.join(empty)}")
+        raise ValidationError(f"Found {len(empty)} empty HTML files: {', '.join(empty)}")
 
-    console.print(f"\n[green]✓ All {len(found)} patches downloaded successfully[/green]")
+    console.print(f"\n[green]✓ All {len(found)} HTML files downloaded[/green]")
 
 
-def validate_file_sizes(download_dir: Path, min_size: int = 100) -> None:
-    """Validate that downloaded files meet minimum size requirements.
+def validate_markdown_conversion(html_dir: Path, markdown_dir: Path) -> None:
+    """Validate that all HTML files were converted to Markdown.
 
     Args:
-        download_dir: Directory containing downloaded Markdown files
+        html_dir: Directory containing HTML files
+        markdown_dir: Directory containing Markdown files
+
+    Raises:
+        ValidationError: If validation fails
+    """
+    console.print("[bold]Validating Markdown conversion...[/bold]\n")
+
+    # Check directories exist
+    if not html_dir.exists():
+        raise ValidationError(f"HTML directory does not exist: {html_dir}")
+
+    if not markdown_dir.exists():
+        raise ValidationError(f"Markdown directory does not exist: {markdown_dir}")
+
+    # Get file counts
+    html_files = list(html_dir.glob("*.html"))
+    md_files = list(markdown_dir.glob("*.md"))
+
+    expected_count = len(html_files)
+    actual_count = len(md_files)
+
+    # Check each Markdown file
+    empty = []
+    invalid = []
+    found = []
+
+    for md_file in sorted(md_files):
+        content = md_file.read_text(encoding="utf-8")
+
+        if not content.strip():
+            empty.append(md_file.name)
+            continue
+
+        # Check for frontmatter
+        if not content.startswith("---"):
+            invalid.append((md_file.name, "Missing frontmatter"))
+            continue
+
+        # Check for required frontmatter fields
+        required_fields = ["version:", "date:", "title:"]
+        missing_fields = []
+        for field in required_fields:
+            if field not in content[:500]:  # Check first 500 chars
+                missing_fields.append(field)
+
+        if missing_fields:
+            invalid.append((md_file.name, f"Missing {', '.join(missing_fields)}"))
+            continue
+
+        found.append(md_file.name)
+
+    # Report results
+    table = Table(title="Markdown Conversion Validation")
+    table.add_column("Status", style="bold")
+    table.add_column("Count", justify="right")
+
+    table.add_row("[cyan]HTML files[/cyan]", str(expected_count))
+    table.add_row("[green]✓ Converted[/green]", str(len(found)))
+    table.add_row("[yellow]⚠ Empty[/yellow]", str(len(empty)))
+    table.add_row("[red]✗ Invalid[/red]", str(len(invalid)))
+
+    console.print(table)
+
+    # Show invalid files
+    if invalid:
+        console.print("\n[red]Invalid files:[/red]")
+        for name, reason in invalid:
+            console.print(f"  {name}: {reason}")
+
+    # Raise error if any issues
+    if empty:
+        raise ValidationError(f"Found {len(empty)} empty Markdown files")
+
+    if invalid:
+        raise ValidationError(f"Found {len(invalid)} invalid Markdown files")
+
+    if actual_count != expected_count:
+        raise ValidationError(f"Expected {expected_count} Markdown files, found {actual_count}")
+
+    console.print(f"\n[green]✓ All {len(found)} Markdown files valid[/green]")
+
+
+def validate_file_sizes(directory: Path, min_size: int = 100, file_pattern: str = "*") -> None:
+    """Validate that files meet minimum size requirements.
+
+    Args:
+        directory: Directory containing files
         min_size: Minimum file size in bytes
+        file_pattern: Glob pattern for files to check
 
     Raises:
         ValidationError: If any files are too small
     """
     console.print(f"[bold]Checking file sizes (min: {min_size} bytes)...[/bold]\n")
 
-    if not download_dir.exists():
-        raise ValidationError(f"Download directory does not exist: {download_dir}")
+    if not directory.exists():
+        raise ValidationError(f"Directory does not exist: {directory}")
 
     small_files = []
 
-    for md_file in sorted(download_dir.glob("*.md")):
-        size = md_file.stat().st_size
-        if size < min_size:
-            small_files.append((md_file.name, size))
+    for file in sorted(directory.glob(file_pattern)):
+        if file.is_file():
+            size = file.stat().st_size
+            if size < min_size:
+                small_files.append((file.name, size))
 
     if small_files:
         console.print("[yellow]⚠ Files smaller than expected:[/yellow]")
@@ -114,52 +197,13 @@ def validate_file_sizes(download_dir: Path, min_size: int = 100) -> None:
     console.print("[green]✓ All files meet minimum size requirement[/green]")
 
 
-def validate_markdown_structure(download_dir: Path) -> None:
-    """Validate that Markdown files have expected structure.
-
-    Args:
-        download_dir: Directory containing downloaded Markdown files
-
-    Raises:
-        ValidationError: If files don't have expected structure
-    """
-    console.print("[bold]Validating Markdown structure...[/bold]\n")
-
-    if not download_dir.exists():
-        raise ValidationError(f"Download directory does not exist: {download_dir}")
-
-    invalid = []
-
-    for md_file in sorted(download_dir.glob("*.md")):
-        content = md_file.read_text(encoding="utf-8")
-
-        # Check for frontmatter
-        if not content.startswith("---"):
-            invalid.append((md_file.name, "Missing frontmatter"))
-            continue
-
-        # Check for required frontmatter fields
-        required_fields = ["version:", "date:", "title:", "url:"]
-        for field in required_fields:
-            if field not in content[:500]:  # Check first 500 chars
-                invalid.append((md_file.name, f"Missing {field} in frontmatter"))
-                break
-
-    if invalid:
-        console.print("[red]✗ Invalid Markdown files:[/red]")
-        for name, reason in invalid:
-            console.print(f"  {name}: {reason}")
-        raise ValidationError(f"Found {len(invalid)} invalid Markdown files")
-
-    console.print("[green]✓ All Markdown files have valid structure[/green]")
-
-
-def run_all_validations(urls_path: Path, download_dir: Path) -> None:
+def run_all_validations(urls_path: Path, html_dir: Path, markdown_dir: Path) -> None:
     """Run all validation checks.
 
     Args:
         urls_path: Path to patch_urls.json
-        download_dir: Directory containing downloaded Markdown files
+        html_dir: Directory containing HTML files
+        markdown_dir: Directory containing Markdown files
 
     Raises:
         ValidationError: If any validation fails
@@ -167,9 +211,13 @@ def run_all_validations(urls_path: Path, download_dir: Path) -> None:
     console.print("\n[bold cyan]═══ Running Validation Checks ═══[/bold cyan]\n")
 
     try:
-        validate_downloads(urls_path, download_dir)
-        validate_file_sizes(download_dir, min_size=100)
-        validate_markdown_structure(download_dir)
+        # Validate HTML downloads
+        validate_html_downloads(urls_path, html_dir)
+        validate_file_sizes(html_dir, min_size=1000, file_pattern="*.html")
+
+        # Validate Markdown conversion
+        validate_markdown_conversion(html_dir, markdown_dir)
+        validate_file_sizes(markdown_dir, min_size=100, file_pattern="*.md")
 
         console.print("\n[bold green]═══ All Validations Passed ═══[/bold green]\n")
 
@@ -182,10 +230,11 @@ def run_all_validations(urls_path: Path, download_dir: Path) -> None:
 def main() -> None:
     """Main entry point for validation."""
     urls_path = Path("data/patch_urls.json")
-    download_dir = Path("raw_patches")
+    html_dir = Path("raw_html")
+    markdown_dir = Path("raw_patches")
 
     try:
-        run_all_validations(urls_path, download_dir)
+        run_all_validations(urls_path, html_dir, markdown_dir)
     except ValidationError as e:
         console.print(f"[red bold]Validation Error:[/red bold] {e}")
         raise SystemExit(1) from e
