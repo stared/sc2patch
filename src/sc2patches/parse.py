@@ -1,5 +1,6 @@
 """Parse balance changes from StarCraft 2 patch HTML files."""
 
+import json
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -101,6 +102,55 @@ def detect_section_type(header_text: str) -> SourceSection:
     return SourceSection.UNKNOWN
 
 
+def load_units_database() -> dict[str, set[str]]:
+    """Load units database and build lookup dictionary.
+
+    Returns:
+        Dict mapping race to set of all entity names
+    """
+    units_path = Path("data/units.json")
+    if not units_path.exists():
+        raise ParseError(f"Units database not found: {units_path}")
+
+    with units_path.open() as f:
+        units_list = json.load(f)
+
+    # Build lookup by race
+    race_entities = {"terran": set(), "protoss": set(), "zerg": set()}
+
+    for entity in units_list:
+        race = entity["race"]
+        name = entity["name"]
+        if race in race_entities:
+            race_entities[race].add(name)
+
+    return race_entities
+
+
+def detect_entity_from_text(text: str, race: Race, units_db: dict[str, set[str]]) -> str:
+    """Detect entity name from change text.
+
+    Args:
+        text: Change text (e.g., "Spire cost reduced from 200/200 to 150/150.")
+        race: Current race context
+        units_db: Units database from load_units_database()
+
+    Returns:
+        Entity name if detected, otherwise "unknown"
+    """
+    race_key = race.value
+    known_entities = units_db.get(race_key, set())
+
+    # Check each known entity - longest match first (e.g., "Widow Mine" before "Mine")
+    sorted_entities = sorted(known_entities, key=len, reverse=True)
+
+    for entity in sorted_entities:
+        if entity.lower() in text.lower():
+            return entity
+
+    return "unknown"
+
+
 def normalize_entity_name(name: str) -> str:
     """Normalize entity name to snake_case ID format.
 
@@ -166,6 +216,9 @@ def parse_patch_html(html_path: Path, md_path: Path) -> tuple[PatchMetadata, lis
     # Extract metadata from Markdown
     metadata = extract_markdown_metadata(md_path)
 
+    # Load units database for entity detection
+    units_db = load_units_database()
+
     # Parse HTML
     if not html_path.exists():
         raise ParseError(f"HTML file not found: {html_path}")
@@ -204,9 +257,12 @@ def parse_patch_html(html_path: Path, md_path: Path) -> tuple[PatchMetadata, lis
             for li in element.find_all("li", recursive=False):
                 text = li.get_text(strip=True)
                 if text:
+                    # Detect entity from text
+                    entity_name = detect_entity_from_text(text, current_race, units_db)
+
                     changes.append(
                         RawChange(
-                            entity_name="unknown",  # Will be improved later
+                            entity_name=entity_name,
                             race=current_race,
                             raw_text=text,
                             section=current_section,

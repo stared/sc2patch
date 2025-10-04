@@ -49,7 +49,6 @@ def process_single_patch(
                 "entity_name": change.entity_name,
                 "race": change.race.value,
                 "raw_text": change.raw_text,
-                "section": change.section.value,
             }
             for change in changes
         ],
