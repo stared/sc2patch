@@ -1,8 +1,7 @@
 """Pydantic models for StarCraft 2 patch data."""
 
-from datetime import date
+from datetime import date as Date
 from enum import Enum
-from typing import Literal
 
 from pydantic import BaseModel, Field, HttpUrl, field_validator
 
@@ -15,21 +14,13 @@ class Expansion(str, Enum):
     LEGACY_OF_THE_VOID = "legacy_of_the_void"
 
 
-class Source(str, Enum):
-    """Data source."""
-
-    BLIZZARD = "blizzard"
-    LIQUIPEDIA = "liquipedia"
-
-
 class Patch(BaseModel):
     """Patch metadata."""
 
     version: str = Field(..., min_length=1, description="Patch version (e.g., '5.0.12')")
-    date: date = Field(..., description="Release date")
+    date: Date = Field(..., description="Release date")
     expansion: Expansion = Field(..., description="Game expansion")
     url: HttpUrl = Field(..., description="Source URL")
-    source: Source = Field(..., description="Data source")
 
     @field_validator("version")
     @classmethod
@@ -72,12 +63,30 @@ class Entity(BaseModel):
     @field_validator("id")
     @classmethod
     def validate_id(cls, v: str) -> str:
-        """Validate entity ID is lowercase snake_case."""
+        """Validate entity ID is {race}-{snake_case_name} format."""
         if not v.strip():
             raise ValueError("Entity ID cannot be empty")
-        normalized = v.strip().lower().replace(" ", "_").replace("-", "_")
-        if not normalized.replace("_", "").isalnum():
-            raise ValueError(f"Invalid entity ID: {v}")
+
+        # Must contain at least one hyphen (race-name format)
+        if "-" not in v:
+            raise ValueError(f"Entity ID must be in format 'race-name': {v}")
+
+        # Split into race and name parts
+        parts = v.split("-", 1)
+        race_part = parts[0]
+
+        # Verify race prefix is valid
+        valid_races = {"terran", "protoss", "zerg", "neutral"}
+        if race_part.lower() not in valid_races:
+            raise ValueError(f"Invalid race prefix in entity ID: {v}")
+
+        # Normalize: lowercase, underscores only
+        normalized = v.strip().lower().replace(" ", "_")
+        if not normalized.replace("_", "").replace("-", "").isalnum():
+            raise ValueError(
+                f"Invalid entity ID (must be alphanumeric with hyphens/underscores): {v}"
+            )
+
         return normalized
 
     @field_validator("name")
@@ -109,7 +118,6 @@ class Change(BaseModel):
     patch_version: str = Field(..., min_length=1, description="Patch version")
     entity_id: str = Field(..., min_length=1, description="Entity identifier")
     raw_text: str = Field(..., min_length=1, description="Exact text from patch notes")
-    race: Race = Field(..., description="Race")
     source_section: SourceSection = Field(
         default=SourceSection.UNKNOWN, description="Section of patch notes"
     )
@@ -124,10 +132,3 @@ class Change(BaseModel):
 
     class Config:
         frozen = True
-
-
-class DataRecord(BaseModel):
-    """JSONL record wrapper with type discrimination."""
-
-    type: Literal["patch", "entity", "change"]
-    data: Patch | Entity | Change

@@ -66,3 +66,4 @@ sc2patches/
 - Rich console for all user-facing output
 - JSONL for structured data output
 - Frontmatter in Markdown files for metadata
+- Do not commit without an explicit confirmation. Ask for it.

@@ -12,3 +12,9 @@ wheels/
 # Downloaded data
 data/raw_html/
 data/raw_patches/
+
+# Processed data
+data/processed/
+
+# Analysis output
+scripts/entity_candidates.json
