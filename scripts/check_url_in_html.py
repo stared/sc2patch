@@ -1,6 +1,5 @@
 """Check if all HTML files have og:url meta tag."""
 
-import re
 from pathlib import Path
 
 from bs4 import BeautifulSoup

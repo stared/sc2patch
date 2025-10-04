@@ -23,7 +23,7 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "UP", "B", "A", "C4", "DTZ", "RET", "SIM", "ARG", "PTH", "PL"]
-ignore = ["PLR0912", "UP017"]  # Validation functions can be complex; ty doesn't recognize datetime.UTC yet
+ignore = ["UP017"]  # ty doesn't recognize datetime.UTC yet
 
 [tool.ruff.format]
 quote-style = "double"

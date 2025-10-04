@@ -1,7 +1,6 @@
 """Inspect HTML structure to understand metadata location."""
 
 import json
-import re
 from pathlib import Path
 
 from bs4 import BeautifulSoup

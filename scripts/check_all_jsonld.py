@@ -13,8 +13,7 @@ def check_file(html_path: Path) -> tuple[bool, str]:
 
     if match:
         return (True, match.group(1))
-    else:
-        return (False, "NOT FOUND")
+    return (False, "NOT FOUND")
 
 
 if __name__ == "__main__":
