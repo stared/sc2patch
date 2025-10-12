@@ -17,45 +17,27 @@ export async function loadUnits(): Promise<Map<string, Unit>> {
 export async function loadPatches(): Promise<PatchData[]> {
   const patches: PatchData[] = [];
 
-  // First, get the list of available patch files
-  // We'll use a known patch to get the directory listing
   try {
-    // Try to fetch patch URLs to get the list of available patches
-    const urlsResponse = await fetch('/data/patch_urls.json');
-    const urlsData = await urlsResponse.json();
+    // Load the patch manifest generated from processed patches
+    const manifestResponse = await fetch('/data/patches_manifest.json');
+    const manifest = await manifestResponse.json();
 
-    // Extract versions from URLs
-    const versions = new Set<string>();
-    Object.values(urlsData).forEach((url: any) => {
-      // Extract version from URL like "5.0.12" from the URL
-      const match = url.match(/(\d+\.\d+(?:\.\d+)?)/);
-      if (match) {
-        versions.add(match[1]);
-      }
-    });
+    console.log(`Loading ${manifest.total} patches from manifest`);
 
-    // Also try to load patches directly by checking known patterns
-    const knownPatches = [
-      '2.0.8', '2.1.9', '3.10', '3.13.0', '3.14.0', '3.4.0', '3.8.0', '4.0',
-      '4.1.4', '4.10.4', '4.11.0', '4.12.0', '4.2.2', '4.2.4', '4.3.2', '4.4.0',
-      '4.5.0', '4.6.1', '4.7.0', '4.7.1', '4.8.2', '4.8.4', '5.0.12', '5.0.13',
-      '5.0.14', '5.0.15'
-    ];
-
-    // Try to load each known patch
-    for (const version of knownPatches) {
+    // Load each patch from the manifest
+    for (const patchInfo of manifest.patches) {
       try {
-        const response = await fetch(`/data/processed/patches/${version}.json`);
+        const response = await fetch(`/data/processed/patches/${patchInfo.file}`);
         if (response.ok) {
           const data = await response.json();
           patches.push(data);
         }
       } catch (error) {
-        console.error(`Failed to load patch ${version}:`, error);
+        console.error(`Failed to load patch ${patchInfo.version}:`, error);
       }
     }
   } catch (error) {
-    console.error('Failed to get patch list:', error);
+    console.error('Failed to load patch manifest:', error);
   }
 
   return patches.sort((a, b) => {
