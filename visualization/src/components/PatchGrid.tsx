@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { ProcessedPatchData, ViewMode, Unit } from '../types';
-import { groupUnitsByRace } from '../utils/dataLoader';
 
 interface PatchGridProps {
   patches: ProcessedPatchData[];
@@ -25,79 +24,80 @@ export function PatchGrid({ patches, units, viewMode }: PatchGridProps) {
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
 
-    // Get all units that have changes
-    const allChangedUnits = new Set<string>();
-    patches.forEach(patch => {
-      patch.entities.forEach((_, entityId) => {
-        allChangedUnits.add(entityId);
-      });
-    });
-
-    const unitsByRace = groupUnitsByRace(allChangedUnits, units);
-    const allUnits = [...unitsByRace.terran, ...unitsByRace.zerg, ...unitsByRace.protoss];  // Fixed order
-
     const margin = { top: 80, right: 20, bottom: 20, left: 120 };
     const cellSize = 54;
     const cellPadding = 3;
 
-    // For compact view, calculate actual positions based on changes per patch
-    let maxUnitsInPatch = 0;
-    if (viewMode === 'by-patch') {
-      // Calculate max units in any patch for width
-      patches.forEach(patch => {
-        let unitCount = 0;
-        patch.entities.forEach(entity => {
-          if (entity.type === 'unit') unitCount++;
-        });
-        maxUnitsInPatch = Math.max(maxUnitsInPatch, unitCount);
+    // Calculate max entities per race across all patches for column widths
+    const maxEntitiesPerRace = { terran: 0, zerg: 0, protoss: 0, neutral: 0 };
+
+    patches.forEach(patch => {
+      const countsPerRace = { terran: 0, zerg: 0, protoss: 0, neutral: 0 };
+      patch.entities.forEach((entity) => {
+        const race = (entity.race || 'neutral') as keyof typeof countsPerRace;
+        countsPerRace[race]++;
       });
 
-      // Width includes unit section + space + upgrade columns (4 races * 150px each)
-      const width = margin.left + margin.right + Math.max(maxUnitsInPatch, 10) * cellSize + 50 + (4 * 150);
-      const height = margin.top + margin.bottom + patches.length * cellSize;
+      Object.keys(maxEntitiesPerRace).forEach(race => {
+        const r = race as keyof typeof maxEntitiesPerRace;
+        maxEntitiesPerRace[r] = Math.max(
+          maxEntitiesPerRace[r],
+          countsPerRace[r]
+        );
+      });
+    });
 
-      svg.attr('width', width).attr('height', height);
-    } else {
-      const width = margin.left + margin.right + allUnits.length * cellSize;
-      const height = margin.top + margin.bottom + patches.length * cellSize;
+    // Define fixed column widths (minimum 3 cells per column)
+    const columnWidths = {
+      terran: Math.max(maxEntitiesPerRace.terran, 3) * cellSize,
+      zerg: Math.max(maxEntitiesPerRace.zerg, 3) * cellSize,
+      protoss: Math.max(maxEntitiesPerRace.protoss, 3) * cellSize,
+      neutral: Math.max(maxEntitiesPerRace.neutral, 3) * cellSize
+    };
 
-      svg.attr('width', width).attr('height', height);
-    }
+    // Calculate column x positions
+    const columnPositions = {
+      terran: 0,
+      zerg: columnWidths.terran,
+      protoss: columnWidths.terran + columnWidths.zerg,
+      neutral: columnWidths.terran + columnWidths.zerg + columnWidths.protoss
+    };
+
+    const totalWidth = columnWidths.terran + columnWidths.zerg + columnWidths.protoss + columnWidths.neutral;
+    const width = margin.left + margin.right + totalWidth;
+    const height = margin.top + margin.bottom + patches.length * cellSize;
+
+    svg.attr('width', width).attr('height', height);
 
     const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
-    // Create scales
-    const xScale = d3.scaleBand()
-      .domain(allUnits)
-      .range([0, allUnits.length * cellSize])
-      .padding(0);
-
+    // Create y scale for patches
     const yScale = d3.scaleBand()
       .domain(patches.map(p => p.version))
       .range([0, patches.length * cellSize])
       .padding(0);
 
-    // Add race headers (corrected order)
+    // Add race headers at fixed column positions
     const raceHeaders = [
-      { race: 'terran', units: unitsByRace.terran, color: '#4a9eff' },
-      { race: 'zerg', units: unitsByRace.zerg, color: '#c874e9' },      // Zerg second
-      { race: 'protoss', units: unitsByRace.protoss, color: '#ffd700' }  // Protoss third
+      { race: 'terran', color: '#4a9eff' },
+      { race: 'zerg', color: '#c874e9' },
+      { race: 'protoss', color: '#ffd700' },
+      { race: 'neutral', color: '#888' }
     ];
 
-    let xOffset = 0;
-    raceHeaders.forEach(({ race, units: raceUnits, color }) => {
-      if (raceUnits.length > 0) {
-        g.append('text')
-          .attr('x', xOffset + (raceUnits.length * cellSize) / 2)
-          .attr('y', -40)
-          .attr('text-anchor', 'middle')
-          .attr('fill', color)
-          .attr('font-size', 16)
-          .attr('font-weight', 'bold')
-          .text(race.charAt(0).toUpperCase() + race.slice(1));
+    raceHeaders.forEach(({ race, color }) => {
+      const raceKey = race as keyof typeof columnPositions;
+      const xPos = columnPositions[raceKey];
+      const width = columnWidths[raceKey];
 
-        xOffset += raceUnits.length * cellSize;
-      }
+      g.append('text')
+        .attr('x', xPos + width / 2)
+        .attr('y', -40)
+        .attr('text-anchor', 'middle')
+        .attr('fill', color)
+        .attr('font-size', 16)
+        .attr('font-weight', 'bold')
+        .text(race.charAt(0).toUpperCase() + race.slice(1));
     });
 
     // Add clickable patch version labels
@@ -141,57 +141,38 @@ export function PatchGrid({ patches, units, viewMode }: PatchGridProps) {
       .attr('dominant-baseline', 'middle')
       .text(d => d.date.split('-').slice(0, 2).join('-'));
 
-    // Collect all cells (units, upgrades, buildings) organized by race
+    // Collect all cells positioned in fixed race columns
     const allCells: any[] = [];
 
-    if (viewMode === 'by-patch') {
-      // Compact view: show all changes grouped by race
-      patches.forEach(patch => {
-        const cellsByRace = { terran: [], zerg: [], protoss: [], neutral: [] } as any;
+    patches.forEach(patch => {
+      const cellsByRace = { terran: [], zerg: [], protoss: [], neutral: [] } as any;
 
-        // Group all entities by race
-        patch.entities.forEach((entity, entityId) => {
-          const race = entity.race as keyof typeof cellsByRace || 'neutral';
-          cellsByRace[race].push({
-            patch: patch.version,
-            patchDate: patch.date,
-            entityId,
-            entity,
-            race
-          });
-        });
-
-        // Calculate positions for each race, left to right
-        let xOffset = 0;
-        ['terran', 'zerg', 'protoss'].forEach(race => {
-          const raceCells = cellsByRace[race as keyof typeof cellsByRace];
-          raceCells.forEach((cell: any, index: number) => {
-            allCells.push({
-              ...cell,
-              x: xOffset + index * cellSize,
-              y: yScale(patch.version)!
-            });
-          });
-          xOffset += raceCells.length * cellSize;
+      // Group all entities by race
+      patch.entities.forEach((entity, entityId) => {
+        const race = (entity.race || 'neutral') as keyof typeof cellsByRace;
+        cellsByRace[race].push({
+          patch: patch.version,
+          patchDate: patch.date,
+          entityId,
+          entity,
+          race
         });
       });
-    } else {
-      // Full grid view: show all positions for units in their race columns
-      patches.forEach(patch => {
-        patch.entities.forEach((entity, entityId) => {
-          if (xScale(entityId) !== undefined) {
-            allCells.push({
-              patch: patch.version,
-              patchDate: patch.date,
-              entityId,
-              entity,
-              x: xScale(entityId)!,
-              y: yScale(patch.version)!
-            });
-          }
+
+      // Position entities in their fixed race columns
+      (['terran', 'zerg', 'protoss', 'neutral'] as const).forEach(race => {
+        const raceCells = cellsByRace[race];
+        const columnXStart = columnPositions[race];
+
+        raceCells.forEach((cell: any, index: number) => {
+          allCells.push({
+            ...cell,
+            x: columnXStart + index * cellSize,
+            y: yScale(patch.version)!
+          });
         });
       });
-    }
+    });
 
     // Render all cells (units, upgrades, buildings)
     const cells = g.append('g')
@@ -266,28 +247,7 @@ export function PatchGrid({ patches, units, viewMode }: PatchGridProps) {
         });
     });
 
-    // Add transitions for view mode changes
-    if (viewMode === 'by-unit') {
-      // Group by unit instead of patch
-      const unitGroups = new Map<string, { patches: string[], changes: string[][] }>();
-
-      patches.forEach(patch => {
-        patch.entities.forEach((entity, entityId) => {
-          if (!unitGroups.has(entityId)) {
-            unitGroups.set(entityId, { patches: [], changes: [] });
-          }
-          const group = unitGroups.get(entityId)!;
-          group.patches.push(patch.version);
-          group.changes.push(entity.changes);
-        });
-      });
-
-      // Reorganize the visualization
-      // This is a placeholder for the by-unit view transformation
-      // You would implement the actual regrouping logic here
-    }
-
-  }, [patches, units, viewMode]);
+  }, [patches, units]);
 
   return (
     <>
