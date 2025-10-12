@@ -49,7 +49,7 @@ def extract_jsonld(html: str) -> dict:
     # Fix common JSON syntax error in Blizzard's JSON-LD
     # Missing comma between author and publisher arrays
     json_str = script.string
-    json_str = re.sub(r'(\])\s*("publisher")', r'\1,\2', json_str)
+    json_str = re.sub(r'(\])\s*("publisher")', r"\1,\2", json_str)
 
     try:
         data = json.loads(json_str)

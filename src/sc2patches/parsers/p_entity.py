@@ -82,6 +82,10 @@ class PEntityParser(PatternParser):
                 for li in element.find_all("li", recursive=False):
                     text = li.get_text(strip=True)
                     if text:
+                        # Skip neutral entities (co-op commanders, etc.)
+                        if current_entity_id.startswith("neutral-"):
+                            continue
+
                         changes.append(
                             RawChange(
                                 entity_id=current_entity_id,

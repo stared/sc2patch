@@ -36,7 +36,7 @@ if __name__ == "__main__":
         if not has_blog:
             missing.append(html_path.name)
 
-    print(f"\n{'='*80}")
+    print(f"\n{'=' * 80}")
     if missing:
         print(f"Missing section.blog: {len(missing)} files")
         for name in missing:

@@ -32,7 +32,7 @@ if __name__ == "__main__":
         if not has_url:
             missing.append(html_path.name)
 
-    print(f"\n{'='*80}")
+    print(f"\n{'=' * 80}")
     if missing:
         print(f"Missing og:url: {len(missing)} files")
     else:

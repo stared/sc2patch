@@ -9,7 +9,7 @@ def inspect_patch(html_path: Path, version: str) -> None:
     """Inspect a single patch HTML structure."""
     print(f"\n{'=' * 60}")
     print(f"Version: {version}")
-    print('=' * 60)
+    print("=" * 60)
 
     html = html_path.read_text(encoding="utf-8")
     soup = BeautifulSoup(html, "html.parser")

@@ -40,9 +40,7 @@ def analyze_patch(html_path: Path) -> dict:
     has_race_h2 = any(race in h2_texts for race in race_names)
 
     # Check for VERSUS/BALANCE in H2
-    has_versus_h2 = any(
-        "VERSUS" in text.upper() or "BALANCE" in text.upper() for text in h2_texts
-    )
+    has_versus_h2 = any("VERSUS" in text.upper() or "BALANCE" in text.upper() for text in h2_texts)
 
     # Check for strong tags with race names
     strong_texts = [s.get_text(strip=True) for s in strong_tags]

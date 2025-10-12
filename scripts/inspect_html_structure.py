@@ -8,9 +8,9 @@ from bs4 import BeautifulSoup
 
 def inspect_html(html_path: Path) -> None:
     """Inspect HTML file structure."""
-    print(f"\n{'='*80}")
+    print(f"\n{'=' * 80}")
     print(f"Inspecting: {html_path.name}")
-    print(f"{'='*80}\n")
+    print(f"{'=' * 80}\n")
 
     html = html_path.read_text(encoding="utf-8")
     soup = BeautifulSoup(html, "html.parser")
@@ -19,7 +19,7 @@ def inspect_html(html_path: Path) -> None:
     print("=== JSON-LD Scripts ===")
     scripts = soup.find_all("script", type="application/ld+json")
     for i, script in enumerate(scripts):
-        print(f"\nScript {i+1}:")
+        print(f"\nScript {i + 1}:")
         try:
             data = json.loads(script.string)
             print(json.dumps(data, indent=2))

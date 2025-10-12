@@ -3,7 +3,13 @@
 from bs4 import BeautifulSoup
 
 from ..models import Race, SourceSection
-from ..parse import PatchMetadata, RawChange, detect_entity_from_text, detect_section_type, load_units_database
+from ..parse import (
+    PatchMetadata,
+    RawChange,
+    detect_entity_from_text,
+    detect_section_type,
+    load_units_database,
+)
 from .base import PatternParser
 
 
@@ -34,7 +40,9 @@ class DirectH2Parser(PatternParser):
             return False
 
         h2_headers = blog.find_all("h2")
-        h2_race_headers = [h2 for h2 in h2_headers if h2.get_text(strip=True) in ["Terran", "Protoss", "Zerg"]]
+        h2_race_headers = [
+            h2 for h2 in h2_headers if h2.get_text(strip=True) in ["Terran", "Protoss", "Zerg"]
+        ]
         return len(h2_race_headers) > 0
 
     def parse(self, soup: BeautifulSoup, metadata: PatchMetadata) -> list[RawChange]:
@@ -66,11 +74,19 @@ class DirectH2Parser(PatternParser):
 
             # Extract changes from lists
             elif element.name == "ul" and current_race:
+                # Skip non-balance sections
+                if current_section not in [SourceSection.VERSUS_BALANCE, SourceSection.UNKNOWN]:
+                    continue
+
                 for li in element.find_all("li", recursive=False):
                     text = li.get_text(strip=True)
                     if text:
                         # Detect entity ID from text
                         entity_id = detect_entity_from_text(text, current_race, self.units_db)
+
+                        # Skip neutral entities (co-op commanders, etc.)
+                        if entity_id.startswith("neutral-"):
+                            continue
 
                         changes.append(
                             RawChange(

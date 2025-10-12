@@ -58,13 +58,17 @@ def detect_pattern(html_path: Path) -> str:
 
     # Check for direct H2 race headers (5.0.15)
     h2_headers = blog.find_all("h2")
-    h2_race_headers = [h2 for h2 in h2_headers if h2.get_text(strip=True) in ["Terran", "Protoss", "Zerg"]]
+    h2_race_headers = [
+        h2 for h2 in h2_headers if h2.get_text(strip=True) in ["Terran", "Protoss", "Zerg"]
+    ]
     if h2_race_headers:
         return "direct_h2"
 
     # Check for H3 race headers (5.0.12-14)
     h3_headers = blog.find_all("h3")
-    h3_race_headers = [h3 for h3 in h3_headers if h3.get_text(strip=True) in ["Terran", "Protoss", "Zerg"]]
+    h3_race_headers = [
+        h3 for h3 in h3_headers if h3.get_text(strip=True) in ["Terran", "Protoss", "Zerg"]
+    ]
     if h3_race_headers:
         return "h3_race"
 

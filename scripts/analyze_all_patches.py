@@ -70,45 +70,51 @@ def main():
     ok_count = sum(1 for r in results if r["status"] == "✓ OK")
     issue_count = len(results) - ok_count
 
-    md_lines.extend([
-        f"- ✓ OK: {ok_count} patches",
-        f"- ⚠️ Issues: {issue_count} patches",
-        "",
-        "## Detailed Status",
-        "",
-        "| Version | Changes | Status | Issues |",
-        "|---------|---------|--------|--------|",
-    ])
+    md_lines.extend(
+        [
+            f"- ✓ OK: {ok_count} patches",
+            f"- ⚠️ Issues: {issue_count} patches",
+            "",
+            "## Detailed Status",
+            "",
+            "| Version | Changes | Status | Issues |",
+            "|---------|---------|--------|--------|",
+        ]
+    )
 
     for r in results:
         issues_str = ", ".join(r["issues"]) if r["issues"] else "-"
-        md_lines.append(
-            f"| {r['version']} | {r['change_count']} | {r['status']} | {issues_str} |"
-        )
+        md_lines.append(f"| {r['version']} | {r['change_count']} | {r['status']} | {issues_str} |")
 
-    md_lines.extend([
-        "",
-        "## Patches by Issue Type",
-        "",
-    ])
+    md_lines.extend(
+        [
+            "",
+            "## Patches by Issue Type",
+            "",
+        ]
+    )
 
     # Group by issue type
     unknown_patches = [r for r in results if r["unknown_count"] > 0]
     if unknown_patches:
-        md_lines.extend([
-            f"### Unknown Entities ({len(unknown_patches)} patches)",
-            "",
-        ])
+        md_lines.extend(
+            [
+                f"### Unknown Entities ({len(unknown_patches)} patches)",
+                "",
+            ]
+        )
         for r in unknown_patches:
             md_lines.append(f"- **{r['version']}**: {r['unknown_count']} unknown entities")
         md_lines.append("")
 
     neutral_patches = [r for r in results if r["neutral_count"] > 0]
     if neutral_patches:
-        md_lines.extend([
-            f"### Neutral/Non-Balance ({len(neutral_patches)} patches)",
-            "",
-        ])
+        md_lines.extend(
+            [
+                f"### Neutral/Non-Balance ({len(neutral_patches)} patches)",
+                "",
+            ]
+        )
         for r in neutral_patches:
             md_lines.append(f"- **{r['version']}**: {r['neutral_count']} neutral entities")
         md_lines.append("")

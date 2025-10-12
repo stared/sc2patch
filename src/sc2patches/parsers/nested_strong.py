@@ -3,7 +3,13 @@
 from bs4 import BeautifulSoup
 
 from ..models import Race, SourceSection
-from ..parse import PatchMetadata, RawChange, detect_entity_from_text, detect_section_type, load_units_database
+from ..parse import (
+    PatchMetadata,
+    RawChange,
+    detect_entity_from_text,
+    detect_section_type,
+    load_units_database,
+)
 from .base import PatternParser
 
 
@@ -64,8 +70,14 @@ class NestedStrongParser(PatternParser):
         current_race = None
         current_section = SourceSection.UNKNOWN
 
-        race_names = {"Zerg": Race.ZERG, "Protoss": Race.PROTOSS, "Terran": Race.TERRAN,
-                      "ZERG": Race.ZERG, "PROTOSS": Race.PROTOSS, "TERRAN": Race.TERRAN}
+        race_names = {
+            "Zerg": Race.ZERG,
+            "Protoss": Race.PROTOSS,
+            "Terran": Race.TERRAN,
+            "ZERG": Race.ZERG,
+            "PROTOSS": Race.PROTOSS,
+            "TERRAN": Race.TERRAN,
+        }
 
         for element in blog.children:
             if not element.name:
@@ -114,7 +126,7 @@ class NestedStrongParser(PatternParser):
                                     if change_text.startswith(race_name):
                                         detected_race = race_enum
                                         # Remove race prefix from text
-                                        clean_text = change_text[len(race_name):]
+                                        clean_text = change_text[len(race_name) :]
                                         break
 
                             # If still no race, try to detect from entity name in strong tag
@@ -130,13 +142,28 @@ class NestedStrongParser(PatternParser):
                                 detected_race = Race.NEUTRAL
 
                             # Detect entity from text
-                            entity_id = detect_entity_from_text(clean_text, detected_race, self.units_db)
+                            entity_id = detect_entity_from_text(
+                                clean_text, detected_race, self.units_db
+                            )
 
                             # If entity detection failed, try using strong_text
                             if entity_id.endswith("-unknown") and detected_race != Race.NEUTRAL:
-                                entity_from_strong = detect_entity_from_text(strong_text, detected_race, self.units_db)
+                                entity_from_strong = detect_entity_from_text(
+                                    strong_text, detected_race, self.units_db
+                                )
                                 if not entity_from_strong.endswith("-unknown"):
                                     entity_id = entity_from_strong
+
+                            # Skip neutral entities (co-op commanders, etc.)
+                            if entity_id.startswith("neutral-"):
+                                continue
+
+                            # Skip non-balance sections
+                            if current_section not in [
+                                SourceSection.VERSUS_BALANCE,
+                                SourceSection.UNKNOWN,
+                            ]:
+                                continue
 
                             changes.append(
                                 RawChange(

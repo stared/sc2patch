@@ -32,11 +32,15 @@ def detect_pattern(html_path: Path) -> dict:
     # Check for different patterns
     h2_headers = blog.find_all("h2")
     h3_headers = blog.find_all("h3")
-    race_images = blog.find_all("img", alt=lambda x: x and any(race in x.lower() for race in ["terran", "protoss", "zerg"]))
+    race_images = blog.find_all(
+        "img", alt=lambda x: x and any(race in x.lower() for race in ["terran", "protoss", "zerg"])
+    )
     strong_tags = blog.find_all("strong")
 
     # Check if H2 headers contain race names
-    h2_race_headers = [h2 for h2 in h2_headers if h2.get_text(strip=True) in ["Terran", "Protoss", "Zerg"]]
+    h2_race_headers = [
+        h2 for h2 in h2_headers if h2.get_text(strip=True) in ["Terran", "Protoss", "Zerg"]
+    ]
 
     # Determine pattern
     pattern = "unknown"
@@ -44,7 +48,9 @@ def detect_pattern(html_path: Path) -> dict:
         pattern = "direct_h2"
     elif race_images:
         pattern = "image_markers"
-    elif h3_headers and any(h3.get_text(strip=True) in ["Terran", "Protoss", "Zerg"] for h3 in h3_headers):
+    elif h3_headers and any(
+        h3.get_text(strip=True) in ["Terran", "Protoss", "Zerg"] for h3 in h3_headers
+    ):
         pattern = "h3_race_headers"
     elif strong_tags:
         # Check if strong tags are used for entity names

@@ -10,7 +10,7 @@ def inspect_patch(html_path: Path, version: str) -> None:
     print(f"\n{'=' * 60}")
     print(f"Version: {version}")
     print(f"File: {html_path.name}")
-    print('=' * 60)
+    print("=" * 60)
 
     html = html_path.read_text(encoding="utf-8")
     soup = BeautifulSoup(html, "html.parser")

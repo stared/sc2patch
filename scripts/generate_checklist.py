@@ -79,24 +79,28 @@ def main():
     ok = [r for r in results if r["status"] == "✓"]
     issues = [r for r in results if r["status"] == "⚠️"]
 
-    md_lines.extend([
-        "## Summary",
-        "",
-        f"- ✅ Complete: {len(ok)} patches",
-        f"- ⚠️ Needs work: {len(issues)} patches",
-        "",
-        "---",
-        "",
-        "## Patches",
-        "",
-    ])
+    md_lines.extend(
+        [
+            "## Summary",
+            "",
+            f"- ✅ Complete: {len(ok)} patches",
+            f"- ⚠️ Needs work: {len(issues)} patches",
+            "",
+            "---",
+            "",
+            "## Patches",
+            "",
+        ]
+    )
 
     # Group by status
     for r in results:
         checkbox = "x" if r["status"] == "✓" else " "
 
         # Header
-        md_lines.append(f"- [{checkbox}] **{r['version']}** ({r['date']}) - {r['change_count']} changes")
+        md_lines.append(
+            f"- [{checkbox}] **{r['version']}** ({r['date']}) - {r['change_count']} changes"
+        )
 
         # URL
         md_lines.append(f"  - URL: {r['url']}")
