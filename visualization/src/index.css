@@ -77,3 +77,116 @@ body {
 .controls button.active {
   background: #3b82f6;
 }
+
+/* Patch Grid Layout */
+.patch-grid {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.race-headers {
+  display: grid;
+  grid-template-columns: 120px repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 10px;
+  padding: 0 10px;
+  position: sticky;
+  top: 0;
+  background: #0a0a0a;
+  z-index: 10;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #333;
+}
+
+.patch-label-space {
+  grid-column: 1;
+}
+
+.race-header {
+  text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 8px;
+}
+
+.patch-row {
+  display: grid;
+  grid-template-columns: 120px repeat(4, 1fr);
+  gap: 10px;
+  padding: 10px;
+  border-bottom: 1px solid #222;
+  min-height: 60px;
+}
+
+.patch-row:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.patch-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+.patch-version {
+  color: #4a9eff;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.patch-version:hover {
+  color: #6ab7ff;
+  text-decoration: underline;
+}
+
+.patch-date {
+  color: #666;
+  font-size: 11px;
+}
+
+.race-column {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-content: flex-start;
+}
+
+.entity-cell {
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  background: #1a1a1a;
+}
+
+.entity-cell:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+  z-index: 5;
+}
+
+.entity-cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.upgrade-cell {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid;
+  border-radius: 4px;
+}
+
+.upgrade-cell span {
+  font-size: 24px;
+  font-weight: bold;
+}
