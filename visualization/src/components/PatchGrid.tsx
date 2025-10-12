@@ -141,53 +141,46 @@ export function PatchGrid({ patches, units, viewMode }: PatchGridProps) {
       .attr('dominant-baseline', 'middle')
       .text(d => d.date.split('-').slice(0, 2).join('-'));
 
-    // Separate units from other changes (upgrades, buildings, etc.)
-    const unitCells: any[] = [];
-    const upgradeCells: any[] = [];
+    // Collect all cells (units, upgrades, buildings) organized by race
+    const allCells: any[] = [];
 
     if (viewMode === 'by-patch') {
-      // Compact view: only show units that have changes, pack them left to right
+      // Compact view: show all changes grouped by race
       patches.forEach(patch => {
-        let unitIndex = 0;
-        const upgradesByRace = { terran: [], zerg: [], protoss: [], neutral: [] } as any;
+        const cellsByRace = { terran: [], zerg: [], protoss: [], neutral: [] } as any;
 
+        // Group all entities by race
         patch.entities.forEach((entity, entityId) => {
-          if (entity.type === 'unit') {
-            unitCells.push({
-              patch: patch.version,
-              patchDate: patch.date,
-              entityId,
-              entity,
-              x: unitIndex * cellSize,
-              y: yScale(patch.version)!
-            });
-            unitIndex++;
-          } else {
-            // Collect upgrades/buildings/abilities by race
-            const race = entity.race as keyof typeof upgradesByRace || 'neutral';
-            upgradesByRace[race].push({
-              patch: patch.version,
-              patchDate: patch.date,
-              entityId,
-              entity,
-              race
-            });
-          }
+          const race = entity.race as keyof typeof cellsByRace || 'neutral';
+          cellsByRace[race].push({
+            patch: patch.version,
+            patchDate: patch.date,
+            entityId,
+            entity,
+            race
+          });
         });
 
-        // Add upgrade cells grouped by race
-        Object.entries(upgradesByRace).forEach(([race, items]: [string, any[]]) => {
-          items.forEach(item => {
-            upgradeCells.push(item);
+        // Calculate positions for each race, left to right
+        let xOffset = 0;
+        ['terran', 'zerg', 'protoss'].forEach(race => {
+          const raceCells = cellsByRace[race as keyof typeof cellsByRace];
+          raceCells.forEach((cell: any, index: number) => {
+            allCells.push({
+              ...cell,
+              x: xOffset + index * cellSize,
+              y: yScale(patch.version)!
+            });
           });
+          xOffset += raceCells.length * cellSize;
         });
       });
     } else {
-      // Full grid view: show all positions for units only
+      // Full grid view: show all positions for units in their race columns
       patches.forEach(patch => {
         patch.entities.forEach((entity, entityId) => {
-          if (entity.type === 'unit' && xScale(entityId) !== undefined) {
-            unitCells.push({
+          if (xScale(entityId) !== undefined) {
+            allCells.push({
               patch: patch.version,
               patchDate: patch.date,
               entityId,
@@ -200,130 +193,78 @@ export function PatchGrid({ patches, units, viewMode }: PatchGridProps) {
       });
     }
 
-    // Render unit cells with images
+    // Render all cells (units, upgrades, buildings)
     const cells = g.append('g')
       .selectAll('g')
-      .data(unitCells)
+      .data(allCells)
       .enter()
       .append('g')
       .attr('transform', d => `translate(${d.x},${d.y})`);
 
-    // Add unit images
-    cells.append('image')
-      .attr('x', cellPadding)
-      .attr('y', cellPadding)
-      .attr('width', cellSize - cellPadding * 2)
-      .attr('height', cellSize - cellPadding * 2)
-      .attr('href', d => `/assets/units/${d.entityId}.png`)
-      .attr('preserveAspectRatio', 'xMidYMid meet')
-      .style('cursor', 'pointer')
-      .on('error', function() {
-        // Fallback to placeholder
-        d3.select(this).attr('href', '/assets/units/placeholder.svg');
-      })
-      .on('mouseenter', function(event, d) {
-        const [x, y] = d3.pointer(event, document.body);
-        setTooltip({
-          x,
-          y,
-          unit: units.get(d.entityId)?.name || d.entityId,
-          changes: d.entity.changes,
-          visible: true
-        });
-      })
-      .on('mouseleave', () => {
-        setTooltip(prev => ({ ...prev, visible: false }));
-      });
+    // Add images for units, or colored boxes for upgrades/buildings
+    cells.each(function(d) {
+      const cell = d3.select(this);
 
-    // Add upgrade/building/ability display section
-    if (upgradeCells.length > 0) {
-      const upgradeSection = svg.append('g')
-        .attr('transform', `translate(${margin.left + (maxUnitsInPatch || 10) * cellSize + 50}, ${margin.top})`);
-
-      // Add headers for race columns
-      const raceOrder = ['terran', 'zerg', 'protoss', 'neutral'];
-      const columnWidth = 150;
-
-      raceOrder.forEach((race, index) => {
-        upgradeSection.append('text')
-          .attr('x', index * columnWidth + columnWidth / 2)
-          .attr('y', -20)
-          .attr('text-anchor', 'middle')
-          .attr('fill', race === 'terran' ? '#4a9eff' : race === 'zerg' ? '#c874e9' : race === 'protoss' ? '#ffd700' : '#888')
-          .attr('font-size', 14)
-          .attr('font-weight', 'bold')
-          .text(race.charAt(0).toUpperCase() + race.slice(1));
-      });
-
-      // Group upgrades by patch and race
-      const upgradesByPatchAndRace = new Map<string, Map<string, any[]>>();
-
-      upgradeCells.forEach(cell => {
-        if (!upgradesByPatchAndRace.has(cell.patch)) {
-          upgradesByPatchAndRace.set(cell.patch, new Map());
-        }
-        const patchMap = upgradesByPatchAndRace.get(cell.patch)!;
-
-        if (!patchMap.has(cell.race)) {
-          patchMap.set(cell.race, []);
-        }
-        patchMap.get(cell.race)!.push(cell);
-      });
-
-      // Render upgrade text in columns
-      patches.forEach(patch => {
-        const patchUpgrades = upgradesByPatchAndRace.get(patch.version);
-        if (patchUpgrades) {
-          const y = yScale(patch.version)!;
-
-          raceOrder.forEach((race, raceIndex) => {
-            const raceUpgrades = patchUpgrades.get(race) || [];
-
-            raceUpgrades.forEach((upgrade, upgradeIndex) => {
-              const textGroup = upgradeSection.append('g')
-                .attr('transform', `translate(${raceIndex * columnWidth}, ${y + upgradeIndex * 20})`);
-
-              // Add wrapped text for upgrade name and changes
-              const text = textGroup.append('text')
-                .attr('font-size', 11)
-                .attr('fill', '#ccc');
-
-              // Wrap text to fit in column
-              const words = (upgrade.entity.name + ': ' + upgrade.entity.changes[0]).split(' ');
-              let line = '';
-              let lineNumber = 0;
-              const lineHeight = 12;
-              const maxWidth = columnWidth - 10;
-
-              words.forEach(word => {
-                const testLine = line + word + ' ';
-                const testWidth = testLine.length * 6; // Approximate width
-
-                if (testWidth > maxWidth && line !== '') {
-                  text.append('tspan')
-                    .attr('x', 0)
-                    .attr('y', lineNumber * lineHeight)
-                    .text(line.trim());
-                  line = word + ' ';
-                  lineNumber++;
-
-                  if (lineNumber >= 2) return; // Max 2 lines
-                } else {
-                  line = testLine;
-                }
-              });
-
-              if (line !== '' && lineNumber < 2) {
-                text.append('tspan')
-                  .attr('x', 0)
-                  .attr('y', lineNumber * lineHeight)
-                  .text(line.trim());
-              }
-            });
+      if (d.entity.type === 'unit') {
+        // Render unit with image
+        cell.append('image')
+          .attr('x', cellPadding)
+          .attr('y', cellPadding)
+          .attr('width', cellSize - cellPadding * 2)
+          .attr('height', cellSize - cellPadding * 2)
+          .attr('href', `/assets/units/${d.entityId}.png`)
+          .attr('preserveAspectRatio', 'xMidYMid meet')
+          .style('cursor', 'pointer')
+          .on('error', function() {
+            d3.select(this).attr('href', '/assets/units/placeholder.svg');
           });
-        }
-      });
-    }
+      } else {
+        // Render upgrade/building as colored box with icon/text
+        const raceColor = d.race === 'terran' ? '#4a9eff' :
+                         d.race === 'zerg' ? '#c874e9' :
+                         d.race === 'protoss' ? '#ffd700' : '#888';
+
+        cell.append('rect')
+          .attr('x', cellPadding)
+          .attr('y', cellPadding)
+          .attr('width', cellSize - cellPadding * 2)
+          .attr('height', cellSize - cellPadding * 2)
+          .attr('fill', raceColor)
+          .attr('fill-opacity', 0.3)
+          .attr('stroke', raceColor)
+          .attr('stroke-width', 2)
+          .attr('rx', 4)
+          .style('cursor', 'pointer');
+
+        // Add first letter of entity name as icon
+        const entityName = d.entity.name || d.entityId.split('-').pop() || '?';
+        cell.append('text')
+          .attr('x', cellSize / 2)
+          .attr('y', cellSize / 2)
+          .attr('text-anchor', 'middle')
+          .attr('dominant-baseline', 'central')
+          .attr('fill', raceColor)
+          .attr('font-size', 20)
+          .attr('font-weight', 'bold')
+          .text(entityName.charAt(0).toUpperCase());
+      }
+
+      // Add hover behavior for all cells
+      cell.style('cursor', 'pointer')
+        .on('mouseenter', function(event) {
+          const [x, y] = d3.pointer(event, document.body);
+          setTooltip({
+            x,
+            y,
+            unit: units.get(d.entityId)?.name || d.entity.name || d.entityId,
+            changes: d.entity.changes,
+            visible: true
+          });
+        })
+        .on('mouseleave', () => {
+          setTooltip(prev => ({ ...prev, visible: false }));
+        });
+    });
 
     // Add transitions for view mode changes
     if (viewMode === 'by-unit') {
