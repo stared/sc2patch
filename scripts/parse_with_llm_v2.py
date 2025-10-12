@@ -132,21 +132,72 @@ def extract_changes_with_llm(markdown_content: str, metadata: dict) -> PatchChan
 CRITICAL RULES:
 1. Extract ONLY gameplay balance changes (unit stats, ability changes, upgrades, etc)
 2. DO NOT include bug fixes, UI changes, campaign content, or co-op content
-3. Assign upgrades/abilities to the UNIT they affect, not as separate entities
-   - Examples:
-     * "Nitro Packs" → terran-reaper (not neutral-nitro_packs)
-     * "250mm Strike Cannons" → terran-thor (not neutral-250mm_strike_cannons)
-     * "Infernal Pre-igniter" → terran-hellion (not neutral-infernal_pre_igniter)
-     * "Stimpack" → terran-marine (affects Marines and Marauders, list under both)
-     * "Charge" → protoss-zealot
-4. Only use "neutral" race for truly neutral entities: minerals, vespene, rocks, xel'naga towers
-5. Classify EACH change as:
-   - "buff": Positive for the player using the unit (increased damage, reduced cost, etc.)
-   - "nerf": Negative for the player using the unit (decreased damage, increased cost, etc.)
+3. Assign upgrades/abilities to the UNIT they affect, NOT as separate entities
+
+UPGRADE-TO-UNIT MAPPINGS (COMPREHENSIVE LIST):
+
+TERRAN UPGRADES:
+- Nitro Packs → terran-reaper
+- Combat Shield → terran-marine
+- Stimpack → terran-marine AND terran-marauder (list change under BOTH units)
+- Concussive Shells → terran-marauder
+- 250mm Strike Cannons → terran-thor
+- Infernal Pre-igniter → terran-hellion
+- Drilling Claws → terran-widow_mine
+- Mag-Field Launchers → terran-cyclone
+- Rapid Fire Launchers → terran-cyclone
+- Smart Servos → terran-siege_tank
+- Cloaking Field → terran-banshee
+- Corvid Reactor → terran-raven
+- Durable Materials → terran-raven
+- Hi-Sec Auto Tracking → terran-missile_turret
+- Building Armor → terran-command_center, terran-supply_depot, terran-barracks, etc.
+
+PROTOSS UPGRADES:
+- Charge → protoss-zealot
+- Blink → protoss-stalker
+- Resonating Glaives → protoss-adept
+- Extended Thermal Lance → protoss-colossus
+- Psionic Storm → protoss-high_templar
+- Graviton Catapult → protoss-carrier
+- Anion Pulse-Crystals → protoss-phoenix
+- Flux Vanes → protoss-void_ray
+- Tectonic Destabilizers → protoss-tempest
+
+ZERG UPGRADES:
+- Grooved Spines → zerg-hydralisk
+- Muscular Augments → zerg-hydralisk
+- Metabolic Boost → zerg-zergling
+- Adrenal Glands → zerg-zergling
+- Glial Reconstitution → zerg-roach
+- Tunneling Claws → zerg-roach
+- Centrifugal Hooks → zerg-baneling
+- Pneumatized Carapace → zerg-overlord
+- Ventral Sacs → zerg-overlord
+- Burrow → zerg-drone, zerg-roach, zerg-hydralisk, etc (all units that can burrow)
+- Pathogen Glands → zerg-swarm_host
+- Adaptive Talons → zerg-ravager
+
+4. ONLY use "neutral" race for truly neutral map elements:
+   - Minerals, Vespene Gas, Rocks, Xel'Naga Towers, Watch Towers
+   - Destructible debris
+   - Map-specific neutral objects
+
+5. Classify EACH change as (from the perspective of the player using the unit):
+   - "buff": Positive for the player (increased damage, reduced cost, faster build time, etc.)
+   - "nerf": Negative for the player (decreased damage, increased cost, slower build time, etc.)
    - "mixed": Has both positive and negative aspects in the same change
 
+   IMPORTANT CLASSIFICATION EXAMPLES:
+   - Rocks armor INCREASED → "nerf" (harder for player to destroy rocks)
+   - Rocks armor DECREASED → "buff" (easier for player to destroy rocks)
+   - Unit cost INCREASED → "nerf"
+   - Unit damage INCREASED → "buff"
+
 Format entity IDs as: race-unit_name (lowercase, spaces replaced with underscores)
-Group ALL changes for each entity together."""
+Group ALL changes for each entity together.
+
+YOU MUST classify every single change with a change_type. NO EXCEPTIONS.
 
     user_prompt = f"""Extract all balance changes from this section:
 
@@ -169,7 +220,11 @@ Return a JSON object:
     ]
 }}
 
-Remember: Assign upgrades to the units they affect. Classify each change."""
+CRITICAL REMINDERS:
+- Use the upgrade-to-unit mappings above (e.g., Grooved Spines → zerg-hydralisk)
+- Every single change MUST have a change_type (buff/nerf/mixed)
+- NO neutral upgrades - assign to the unit that uses them
+- Classify from the player's perspective (rocks armor increased = nerf for player)"""
 
     try:
         response = httpx.post(
@@ -275,6 +330,24 @@ def process_patch(md_path: Path) -> Dict[str, Any]:
 
     for change in patch_changes.balance_changes:
         for individual_change in change.changes:
+            # VALIDATE: Every change MUST have change_type
+            if not individual_change.change_type:
+                raise ValueError(
+                    f"CRITICAL ERROR in {md_path.name}: Change missing change_type!\n"
+                    f"Entity: {change.entity_id}\n"
+                    f"Text: {individual_change.text}\n"
+                    "Parser MUST classify every change. Fix the prompt or GPT-5 response."
+                )
+
+            # VALIDATE: change_type must be one of the allowed values
+            if individual_change.change_type not in ["buff", "nerf", "mixed"]:
+                raise ValueError(
+                    f"CRITICAL ERROR in {md_path.name}: Invalid change_type '{individual_change.change_type}'\n"
+                    f"Entity: {change.entity_id}\n"
+                    f"Text: {individual_change.text}\n"
+                    f"Must be one of: buff, nerf, mixed"
+                )
+
             result["changes"].append({
                 "id": f"{change.entity_id}_{len(result['changes'])}",
                 "patch_version": patch_changes.version,
