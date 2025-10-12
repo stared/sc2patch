@@ -155,6 +155,13 @@
       "changes_count": 6
     },
     {
+      "version": "3.13.0",
+      "date": "2017-05-01",
+      "url": "https://news.blizzard.com/en-gb/article/20721907/starcraft-ii-legacy-of-the-void-3-13-0-patch-notes",
+      "file": "3.13.0.json",
+      "changes_count": 1
+    },
+    {
       "version": "3.14.0",
       "date": "2017-05-22",
       "url": "https://news.blizzard.com/en-us/article/20799759/starcraft-ii-legacy-of-the-void-3-14-0-patch-notes",
@@ -225,6 +232,13 @@
       "changes_count": 70
     },
     {
+      "version": "5.0.13",
+      "date": "2024-03-26",
+      "url": "https://news.blizzard.com/en-us/article/24078322/starcraft-ii-5-0-13-patch-notes",
+      "file": "5.0.13.json",
+      "changes_count": 32
+    },
+    {
       "version": "5.0.14",
       "date": "2024-11-25",
       "url": "https://news.blizzard.com/en-us/article/24162754/starcraft-ii-5-0-14-patch-notes",
@@ -246,5 +260,5 @@
       "changes_count": 32
     }
   ],
-  "total": 35
+  "total": 37
 }

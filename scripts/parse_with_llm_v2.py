@@ -277,10 +277,12 @@ def main():
     output_dir = Path("data/processed/patches")
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # Get patches to re-parse (failed ones)
+    # Get patches to re-parse (failed ones from FAILED_PATCHES.md)
     failed_patches = [
-        "3.8.0.md", "4.0.md", "4.11.0.md", "4.7.1.md",
-        "5.0.12.md", "5.0.13.md", "5.0.14.md", "5.0.15.md"
+        "2.0.8.md", "2.1.9.md", "3.4.0.md", "3.13.0.md",
+        "4.1.4.md", "4.2.4.md", "4.3.2.md", "4.4.0.md",
+        "4.5.0.md", "4.6.1.md", "4.7.0.md", "4.8.4.md",
+        "5.0.13.md"
     ]
 
     md_files = [input_dir / p for p in failed_patches if (input_dir / p).exists()]
