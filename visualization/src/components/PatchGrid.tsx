@@ -26,12 +26,22 @@ function EntityCell({ entityId, entity, units, onHover, onLeave }: EntityCellPro
   const race = (entity.race || 'neutral') as keyof typeof RACE_COLORS;
   const color = RACE_COLORS[race];
 
+  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const entityWithPosition = {
+      ...entity,
+      name: units.get(entityId)?.name || entity.name || entityId,
+      x: rect.left + rect.width / 2,
+      y: rect.top
+    };
+    onHover(entityWithPosition);
+  };
+
   return (
     <div
       className="entity-cell"
-      onMouseEnter={() => onHover(entity)}
+      onMouseEnter={handleMouseEnter}
       onMouseLeave={onLeave}
-      title={units.get(entityId)?.name || entity.name || entityId}
     >
       {entity.type === 'unit' ? (
         <img
@@ -121,7 +131,15 @@ export function PatchGrid({ patches, units, viewMode }: PatchGridProps) {
 
       {/* Tooltip */}
       {tooltip.visible && tooltip.entity && (
-        <div className="tooltip">
+        <div
+          className="tooltip"
+          style={{
+            left: `${tooltip.entity.x}px`,
+            top: `${tooltip.entity.y}px`,
+            transform: 'translate(-50%, -100%)',
+            marginTop: '-10px'
+          }}
+        >
           <h4>{tooltip.entity.name || tooltip.entity.id}</h4>
           <ul>
             {tooltip.entity.changes.map((change: string, i: number) => (

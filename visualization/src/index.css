@@ -17,7 +17,7 @@ body {
 }
 
 .tooltip {
-  position: absolute;
+  position: fixed;
   background: rgba(20, 20, 20, 0.95);
   border: 1px solid #444;
   border-radius: 4px;
