@@ -10,6 +10,7 @@ dependencies = [
     "beautifulsoup4>=4.12.0",
     "rich>=13.0.0",
     "markdownify>=0.13.0",
+    "python-dotenv>=1.1.1",
 ]
 
 [project.optional-dependencies]
