@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ProcessedPatchData, ViewMode, Unit } from '../types';
+import { ProcessedPatchData, ProcessedEntity, ProcessedChange, ViewMode, Unit } from '../types';
 
 interface PatchGridProps {
   patches: ProcessedPatchData[];
@@ -14,11 +14,14 @@ const RACE_COLORS = {
   neutral: '#888'
 } as const;
 
+// Entity with position for tooltip display
+type EntityWithPosition = ProcessedEntity & { x: number; y: number };
+
 interface EntityCellProps {
   entityId: string;
-  entity: any;
+  entity: ProcessedEntity;
   units: Map<string, Unit>;
-  onHover: (entity: any) => void;
+  onHover: (entity: EntityWithPosition) => void;
   onLeave: () => void;
 }
 
@@ -78,13 +81,13 @@ function EntityCell({ entityId, entity, units, onHover, onLeave }: EntityCellPro
   );
 }
 
-export function PatchGrid({ patches, units, viewMode }: PatchGridProps) {
+export function PatchGrid({ patches, units, _viewMode }: PatchGridProps) {
   const [tooltip, setTooltip] = useState<{
-    entity: any;
+    entity: EntityWithPosition | null;
     visible: boolean;
   }>({ entity: null, visible: false });
 
-  const handleEntityHover = (entity: any) => {
+  const handleEntityHover = (entity: EntityWithPosition) => {
     setTooltip({ entity, visible: true });
   };
 
@@ -94,7 +97,7 @@ export function PatchGrid({ patches, units, viewMode }: PatchGridProps) {
 
   // Group entities by race for each patch
   const patchesWithGroupedEntities = patches.map(patch => {
-    const byRace = { terran: [], zerg: [], protoss: [], neutral: [] } as Record<string, Array<[string, any]>>;
+    const byRace = { terran: [], zerg: [], protoss: [], neutral: [] } as Record<string, Array<[string, ProcessedEntity]>>;
 
     patch.entities.forEach((entity, entityId) => {
       const race = (entity.race || 'neutral') as keyof typeof byRace;
@@ -160,7 +163,7 @@ export function PatchGrid({ patches, units, viewMode }: PatchGridProps) {
         >
           <h4>{tooltip.entity.name || tooltip.entity.id}</h4>
           <ul>
-            {tooltip.entity.changes.map((change: any, i: number) => {
+            {tooltip.entity.changes.map((change: ProcessedChange, i: number) => {
               const isChange = typeof change === 'object' && change.text;
               const changeText = isChange ? change.text : change;
               const changeType = isChange ? change.change_type : null;
