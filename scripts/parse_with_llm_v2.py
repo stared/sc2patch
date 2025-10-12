@@ -55,9 +55,10 @@ def extract_balance_section(markdown_content: str) -> str:
     ]
 
     # Markers that indicate end of balance section
+    # NOTE: 'general' removed - "### General" is a common balance section header
     end_markers = [
         'bug fix', 'co-op', 'campaign', 'arcade',
-        'collection', 'editor', 'general'
+        'collection', 'editor'
     ]
 
     for i, line in enumerate(lines):
