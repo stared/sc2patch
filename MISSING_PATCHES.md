@@ -25,35 +25,38 @@ These patches were thought to have balance changes but actually do NOT:
 
 ---
 
-## ⚠️ BALANCE UPDATES WITH DEAD URLs (4)
+## ✅ BALANCE UPDATES RECOVERED VIA LIQUIPEDIA SCRAPING (2)
 
-These Balance Updates have confirmed multiplayer balance changes (verified on Liquipedia), but official patch notes URLs are no longer accessible:
+Built Liquipedia scraper and successfully recovered:
 
-1. **5.0.2 BU** (2020-08-20)
+1. **5.0.2 BU** (2020-08-20) - ✅ RECOVERED
    - Official URL: https://starcraft2.com/news/23495670 (404)
    - Liquipedia: https://liquipedia.net/starcraft2/Patch_5.0.2
-   - Changes: Baneling, Oracle, Void Ray, Tempest (Tectonic Destabilizers upgrade)
-   - Status: ⚠️ Would need Liquipedia scraping
+   - Scraped: 7 changes (Baneling, Oracle, Void Ray, Carrier, Tempest)
+   - Status: ✅ Added to visualization
 
-2. **4.10.1 BU** (2019-08-21)
+2. **4.10.1 BU** (2019-08-21) - ✅ RECOVERED
    - Official URL: https://starcraft2.com/news/23093843 (404)
    - Liquipedia: https://liquipedia.net/starcraft2/Patch_4.10.1
-   - Changes: Stimpack, Ghost EMP, Overlord, Warp Prism, Carrier, Nexus
-   - Status: ⚠️ Would need Liquipedia scraping
+   - Scraped: 9 changes (Stimpack, Ghost, Overlord, Infested Terran, Warp Prism, Carrier, Nexus)
+   - Status: ✅ Added to visualization
+
+## ⚠️ BALANCE UPDATES WITH COMPLEX HTML (2)
+
+These have balance changes but use complex nested HTML structures that the scraper doesn't handle:
 
 3. **3.3.2 BU** (2016-07-06)
    - Official URL: https://starcraft2.com/en-us/news/20142728 (404)
    - Liquipedia: https://liquipedia.net/starcraft2/Patch_3.3.2
-   - Changes: Queen anti-air range (7→8), Spore Crawler root time (6→4)
-   - Status: ⚠️ Would need Liquipedia scraping
+   - Changes: Queen anti-air range (7→8), Spore Crawler root time (6→4) [2 changes]
+   - HTML: Uses `<dl><dd>` nested structure (definition lists)
+   - Status: ⚠️ Would require additional scraper logic
 
 4. **3.3.0 BU** (2016-05-23)
    - Official URL: http://eu.battle.net/sc2/en/blog/20118421/ (redirects to homepage)
    - Liquipedia: https://liquipedia.net/starcraft2/Patch_3.3.0
-   - Changes: Thor, Cyclone, Liberator, Colossus, Immortal, Swarm Host
-   - Status: ⚠️ Would need Liquipedia scraping
-
-**Note:** These patches have confirmed balance changes but would require building a Liquipedia scraper to extract the changes.
+   - Changes: Thor, Cyclone, Liberator, Colossus, Immortal, Swarm Host [~6 changes]
+   - Status: ⚠️ Section not found by scraper
 
 ---
 
@@ -73,16 +76,22 @@ These patches from the original list need verification:
 
 ## Summary
 
-**Current Status: 37 patches in visualization**
+**Current Status: 40 patches in visualization** (was 37, +2 from Liquipedia, +1 empty file)
 
 **Investigation Results:**
 - ✅ **3 patches verified NO balance changes** (5.0.10, 4.8.3, 3.9.1)
-- ⚠️ **4 Balance Updates confirmed but URLs dead** (need Liquipedia scraping)
+- ✅ **2 Balance Updates recovered via Liquipedia scraping** (5.0.2 BU, 4.10.1 BU) - 16 changes total
+- ⚠️ **2 Balance Updates with complex HTML** (3.3.2 BU, 3.3.0 BU) - ~8 changes total, would need enhanced scraper
 - ⚠️ **2 patches not yet verified** (4.11.4 BU, 3.1.1 BU)
 
-**Next Steps (Optional):**
-1. Build Liquipedia scraper to extract the 4 Balance Updates with dead URLs
-2. Verify 4.11.4 BU and 3.1.1 BU
-3. Continue using Blizzard news as primary source (most complete)
+**Liquipedia Scraper:**
+- ✅ Created `scripts/scrape_liquipedia_patches.py`
+- ✅ Handles 2 HTML formats: nested `<ul><li><b>` and direct `<li><a>`
+- ⚠️ Does not handle `<dl><dd>` definition list format (3.3.2 BU uses this)
 
-**Recommendation:** Current 37 patches provide good coverage of major balance changes. The 4 missing Balance Updates are minor hotfixes with small tweaks (1-4 changes each). Focus on finding web archive sources for the 3 redirected patches in FAILED_PATCHES.md first, as those are likely more substantial.
+**Next Steps (Optional):**
+1. Enhance scraper to handle `<dl><dd>` format for 3.3.2 BU (~2 changes)
+2. Investigate why 3.3.0 BU section wasn't found (~6 changes)
+3. Verify 4.11.4 BU and 3.1.1 BU
+
+**Recommendation:** Current 39 patches with changes (40 total - 1 empty) provide excellent coverage. The 2 remaining Balance Updates (3.3.2 BU, 3.3.0 BU) are minor hotfixes with ~8 total changes. Cost/benefit of enhancing scraper is low. Focus on other priorities.

@@ -113,6 +113,13 @@
       "changes_count": 19
     },
     {
+      "version": "3.3.2 BU",
+      "date": "2016-07-06",
+      "url": "https://starcraft2.com/en-us/news/20142728",
+      "file": "3.3.2_BU.json",
+      "changes_count": 0
+    },
+    {
       "version": "3.12.0 BU",
       "date": "2016-07-18",
       "url": "https://news.blizzard.com/en-gb/starcraft2/20720843/legacy-of-the-void-balance-update-april-2017",
@@ -211,6 +218,13 @@
       "changes_count": 23
     },
     {
+      "version": "4.10.1 BU",
+      "date": "2019-08-21",
+      "url": "https://starcraft2.com/news/23093843",
+      "file": "4.10.1_BU.json",
+      "changes_count": 9
+    },
+    {
       "version": "4.11.0",
       "date": "2019-11-26",
       "url": "https://news.blizzard.com/en-us/article/23227811/starcraft-ii-4-11-0-patch-notes",
@@ -225,6 +239,13 @@
       "changes_count": 14
     },
     {
+      "version": "5.0.2 BU",
+      "date": "2020-08-20",
+      "url": "https://starcraft2.com/news/23495670",
+      "file": "5.0.2_BU.json",
+      "changes_count": 7
+    },
+    {
       "version": "5.0.12",
       "date": "2023-09-28",
       "url": "https://news.blizzard.com/en-us/article/24009150/starcraft-ii-5-0-12-patch-notes",
@@ -236,7 +257,7 @@
       "date": "2024-03-26",
       "url": "https://news.blizzard.com/en-us/article/24078322/starcraft-ii-5-0-13-patch-notes",
       "file": "5.0.13.json",
-      "changes_count": 32
+      "changes_count": 40
     },
     {
       "version": "5.0.14",
@@ -260,5 +281,5 @@
       "changes_count": 32
     }
   ],
-  "total": 37
+  "total": 40
 }
