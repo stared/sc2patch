@@ -47,14 +47,21 @@ function EntityCell({ entityId, entity, units, onHover, onLeave }: EntityCellPro
     onHover(entityWithPosition);
   };
 
+  // Check if entity is a unit or building (has image)
+  const hasImage = entity.type === 'unit' || entity.type === 'building';
+
   return (
     <div
       className="entity-cell"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={onLeave}
-      style={{ borderColor: outlineColor, borderWidth: '2px', borderStyle: 'solid' }}
+      style={{
+        borderColor: outlineColor,
+        borderWidth: '2px',
+        borderStyle: 'solid'
+      }}
     >
-      {entity.type === 'unit' ? (
+      {hasImage ? (
         <img
           src={`/assets/units/${entityId}.png`}
           alt={entityId}
@@ -63,7 +70,7 @@ function EntityCell({ entityId, entity, units, onHover, onLeave }: EntityCellPro
           }}
         />
       ) : (
-        <div className="upgrade-cell" style={{ borderColor: color, backgroundColor: `${color}20` }}>
+        <div className="upgrade-cell" style={{ backgroundColor: `${color}20` }}>
           <span style={{ color }}>{(entity.name || entityId.split('-').pop() || '?').charAt(0).toUpperCase()}</span>
         </div>
       )}
