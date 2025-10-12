@@ -12,6 +12,7 @@ export interface PatchChange {
   patch_version: string;
   entity_id: string;
   raw_text: string;
+  change_type: 'buff' | 'nerf' | 'mixed';
 }
 
 export interface PatchMetadata {
@@ -33,13 +34,18 @@ export interface ProcessedPatchData {
   entities: Map<string, ProcessedEntity>;
 }
 
+export interface ProcessedChange {
+  text: string;
+  change_type: 'buff' | 'nerf' | 'mixed';
+}
+
 export interface ProcessedEntity {
   id: string;
   name: string;
   race: string;
   type?: string;  // 'unit' | 'building' | 'upgrade' | 'ability' | 'unknown'
-  changes: string[];
-  status: 'buff' | 'nerf' | 'redesign' | null;
+  changes: ProcessedChange[];
+  status: 'buff' | 'nerf' | 'mixed' | null;
 }
 
 export type ViewMode = 'by-patch' | 'by-unit';

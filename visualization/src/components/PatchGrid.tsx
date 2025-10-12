@@ -26,6 +26,16 @@ function EntityCell({ entityId, entity, units, onHover, onLeave }: EntityCellPro
   const race = (entity.race || 'neutral') as keyof typeof RACE_COLORS;
   const color = RACE_COLORS[race];
 
+  // Determine outline color based on status
+  const getOutlineColor = () => {
+    if (entity.status === 'buff') return '#4a9eff'; // Blue for buffs
+    if (entity.status === 'nerf') return '#ff4444'; // Red for nerfs
+    if (entity.status === 'mixed') return '#888'; // Grey for mixed
+    return color; // Race color by default
+  };
+
+  const outlineColor = getOutlineColor();
+
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const entityWithPosition = {
@@ -42,6 +52,7 @@ function EntityCell({ entityId, entity, units, onHover, onLeave }: EntityCellPro
       className="entity-cell"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={onLeave}
+      style={{ borderColor: outlineColor, borderWidth: '2px', borderStyle: 'solid' }}
     >
       {entity.type === 'unit' ? (
         <img
@@ -142,9 +153,29 @@ export function PatchGrid({ patches, units, viewMode }: PatchGridProps) {
         >
           <h4>{tooltip.entity.name || tooltip.entity.id}</h4>
           <ul>
-            {tooltip.entity.changes.map((change: string, i: number) => (
-              <li key={i}>{change}</li>
-            ))}
+            {tooltip.entity.changes.map((change: any, i: number) => {
+              const isChange = typeof change === 'object' && change.text;
+              const changeText = isChange ? change.text : change;
+              const changeType = isChange ? change.change_type : null;
+
+              // Get indicator based on change type
+              const indicator = changeType === 'buff' ? '+ '
+                             : changeType === 'nerf' ? '− '
+                             : changeType === 'mixed' ? '± '
+                             : '';
+
+              const indicatorColor = changeType === 'buff' ? '#4a9eff'
+                                   : changeType === 'nerf' ? '#ff4444'
+                                   : changeType === 'mixed' ? '#888'
+                                   : '#ccc';
+
+              return (
+                <li key={i}>
+                  <span style={{ color: indicatorColor, fontWeight: 'bold' }}>{indicator}</span>
+                  {changeText}
+                </li>
+              );
+            })}
           </ul>
         </div>
       )}

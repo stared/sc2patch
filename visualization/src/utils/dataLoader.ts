@@ -1,4 +1,4 @@
-import { Unit, PatchData, ProcessedPatchData, ProcessedEntity } from '../types';
+import { Unit, PatchData, ProcessedPatchData, ProcessedEntity, ProcessedChange, PatchChange } from '../types';
 
 // Load units data
 export async function loadUnits(): Promise<Map<string, Unit>> {
@@ -46,24 +46,46 @@ export async function loadPatches(): Promise<PatchData[]> {
   });
 }
 
+// Calculate entity status based on changes
+function calculateStatus(changes: ProcessedChange[]): 'buff' | 'nerf' | 'mixed' | null {
+  const types = changes.map(c => c.change_type);
+
+  const hasBuffs = types.some(t => t === 'buff');
+  const hasNerfs = types.some(t => t === 'nerf');
+  const hasMixed = types.some(t => t === 'mixed');
+
+  if (hasMixed || (hasBuffs && hasNerfs)) {
+    return 'mixed';
+  } else if (hasBuffs) {
+    return 'buff';
+  } else if (hasNerfs) {
+    return 'nerf';
+  }
+  return null;
+}
+
 // Process patch data for visualization
 export function processPatches(patches: PatchData[], units: Map<string, Unit>): ProcessedPatchData[] {
   return patches.map(patch => {
     const entities = new Map<string, ProcessedEntity>();
 
-    // Group changes by entity
-    const changesByEntity = new Map<string, string[]>();
+    // Group changes by entity (now preserving change_type)
+    const changesByEntity = new Map<string, ProcessedChange[]>();
 
-    patch.changes.forEach(change => {
+    patch.changes.forEach((change: PatchChange) => {
       if (!changesByEntity.has(change.entity_id)) {
         changesByEntity.set(change.entity_id, []);
       }
-      changesByEntity.get(change.entity_id)!.push(change.raw_text);
+      changesByEntity.get(change.entity_id)!.push({
+        text: change.raw_text,
+        change_type: change.change_type
+      });
     });
 
     // Create processed entities - now including ALL types (units, buildings, upgrades, etc.)
     changesByEntity.forEach((changes, entityId) => {
       const unit = units.get(entityId);
+      const status = calculateStatus(changes);
 
       if (unit) {
         entities.set(entityId, {
@@ -72,7 +94,7 @@ export function processPatches(patches: PatchData[], units: Map<string, Unit>): 
           race: unit.race,
           type: unit.type,  // Keep the type information
           changes: changes,
-          status: null  // For now, all status is null as requested
+          status: status
         });
       } else {
         // Handle unknown entities (assign them to neutral)
@@ -82,7 +104,7 @@ export function processPatches(patches: PatchData[], units: Map<string, Unit>): 
           race: 'neutral',
           type: 'unknown',
           changes: changes,
-          status: null
+          status: status
         });
       }
     });

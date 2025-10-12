@@ -22,12 +22,18 @@ if not OPENROUTER_API_KEY:
 MODEL = "openai/gpt-5"
 
 
+class Change(BaseModel):
+    """A single balance change with classification."""
+    text: str = Field(description="Description of the change")
+    change_type: str = Field(description="Type: buff, nerf, or mixed")
+
+
 class BalanceChange(BaseModel):
     """Structured representation of a balance change."""
     entity_id: str = Field(description="Entity ID in format: race-unit_name")
     entity_name: str = Field(description="Display name of the entity")
     race: str = Field(description="Race: terran, protoss, zerg, or neutral")
-    changes: List[str] = Field(description="List of specific changes")
+    changes: List[Change] = Field(description="List of specific changes with classification")
 
 
 class PatchChanges(BaseModel):
@@ -122,12 +128,24 @@ def extract_changes_with_llm(markdown_content: str, metadata: dict) -> PatchChan
     balance_content = extract_balance_section(markdown_content)
 
     system_prompt = """You are an expert at extracting StarCraft 2 balance changes from patch notes.
-Extract ONLY gameplay balance changes (unit stats, ability changes, upgrades, etc).
-Do NOT include bug fixes, UI changes, campaign content, or co-op content.
 
-Format entity IDs as: race-entity_name (lowercase, spaces replaced with underscores)
-Examples: terran-marine, zerg-hydralisk, protoss-high_templar
+CRITICAL RULES:
+1. Extract ONLY gameplay balance changes (unit stats, ability changes, upgrades, etc)
+2. DO NOT include bug fixes, UI changes, campaign content, or co-op content
+3. Assign upgrades/abilities to the UNIT they affect, not as separate entities
+   - Examples:
+     * "Nitro Packs" → terran-reaper (not neutral-nitro_packs)
+     * "250mm Strike Cannons" → terran-thor (not neutral-250mm_strike_cannons)
+     * "Infernal Pre-igniter" → terran-hellion (not neutral-infernal_pre_igniter)
+     * "Stimpack" → terran-marine (affects Marines and Marauders, list under both)
+     * "Charge" → protoss-zealot
+4. Only use "neutral" race for truly neutral entities: minerals, vespene, rocks, xel'naga towers
+5. Classify EACH change as:
+   - "buff": Positive for the player using the unit (increased damage, reduced cost, etc.)
+   - "nerf": Negative for the player using the unit (decreased damage, increased cost, etc.)
+   - "mixed": Has both positive and negative aspects in the same change
 
+Format entity IDs as: race-unit_name (lowercase, spaces replaced with underscores)
 Group ALL changes for each entity together."""
 
     user_prompt = f"""Extract all balance changes from this section:
@@ -141,12 +159,17 @@ Return a JSON object:
             "entity_id": "race-unit_name",
             "entity_name": "Unit Name",
             "race": "terran|protoss|zerg|neutral",
-            "changes": ["change 1", "change 2"]
+            "changes": [
+                {{
+                    "text": "Description of the change",
+                    "change_type": "buff|nerf|mixed"
+                }}
+            ]
         }}
     ]
 }}
 
-Only include actual balance/gameplay changes."""
+Remember: Assign upgrades to the units they affect. Classify each change."""
 
     try:
         response = httpx.post(
@@ -251,12 +274,13 @@ def process_patch(md_path: Path) -> Dict[str, Any]:
     }
 
     for change in patch_changes.balance_changes:
-        for change_text in change.changes:
+        for individual_change in change.changes:
             result["changes"].append({
                 "id": f"{change.entity_id}_{len(result['changes'])}",
                 "patch_version": patch_changes.version,
                 "entity_id": change.entity_id,
-                "raw_text": change_text
+                "raw_text": individual_change.text,
+                "change_type": individual_change.change_type
             })
 
     # FAIL LOUDLY if no changes found - don't create empty files
@@ -277,16 +301,16 @@ def main():
     output_dir = Path("data/processed/patches")
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # Get patches to re-parse (failed ones from FAILED_PATCHES.md)
-    failed_patches = [
-        "2.0.8.md", "2.1.9.md", "3.4.0.md", "3.13.0.md",
-        "4.1.4.md", "4.2.4.md", "4.3.2.md", "4.4.0.md",
-        "4.5.0.md", "4.6.1.md", "4.7.0.md", "4.8.4.md",
-        "5.0.13.md"
-    ]
-
-    md_files = [input_dir / p for p in failed_patches if (input_dir / p).exists()]
-    console.print(f"\n[bold]Re-parsing {len(md_files)} failed patches with improved approach...[/bold]\n")
+    # Get all markdown files (or specific ones for testing)
+    import sys
+    if len(sys.argv) > 1:
+        # Parse specific patch if provided as argument
+        md_files = [input_dir / f"{sys.argv[1]}.md"]
+        console.print(f"\n[bold]Parsing {sys.argv[1]}...[/bold]\n")
+    else:
+        # Parse all patches
+        md_files = sorted(input_dir.glob("*.md"))
+        console.print(f"\n[bold]Parsing {len(md_files)} patches with improved approach...[/bold]\n")
 
     successful = 0
     failed = []
