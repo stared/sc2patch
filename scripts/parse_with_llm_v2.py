@@ -258,6 +258,14 @@ def process_patch(md_path: Path) -> Dict[str, Any]:
                 "raw_text": change_text
             })
 
+    # FAIL LOUDLY if no changes found - don't create empty files
+    if len(result['changes']) == 0:
+        raise ValueError(
+            f"No balance changes extracted from {md_path.name}\n"
+            f"URL: {patch_changes.url}\n"
+            "This patch may have no balance changes, or the parser failed to extract them."
+        )
+
     console.print(f"[green]✓[/green] Found {len(patch_changes.balance_changes)} entities with {len(result['changes'])} total changes")
     return result
 
@@ -290,15 +298,25 @@ def main():
 
             successful += 1
 
+        except ValueError as e:
+            # Expected failures (no changes found)
+            console.print(f"[red]✗ Failed to process {md_path.name}:[/red]")
+            console.print(f"    {str(e)}")
+            failed.append((md_path.name, str(e)))
         except Exception as e:
-            console.print(f"[red]✗ Failed to process {md_path.name}: {e}[/red]")
-            failed.append(md_path.name)
+            # Unexpected errors - fail loudly
+            console.print(f"[red bold]✗ UNEXPECTED ERROR processing {md_path.name}:[/red bold]")
+            console.print(f"    {type(e).__name__}: {e}")
+            failed.append((md_path.name, f"{type(e).__name__}: {e}"))
 
     console.print(f"\n[bold]Summary:[/bold]")
     console.print(f"[green]Successfully processed: {successful}/{len(md_files)}[/green]")
 
     if failed:
-        console.print(f"[red]Failed patches: {', '.join(failed)}[/red]")
+        console.print(f"\n[red bold]Failed patches ({len(failed)}):[/red bold]")
+        for filename, error in failed:
+            console.print(f"  [red]✗[/red] {filename}")
+            console.print(f"    {error[:100]}...")  # First 100 chars of error
 
 
 if __name__ == "__main__":

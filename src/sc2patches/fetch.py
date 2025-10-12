@@ -58,6 +58,54 @@ def url_to_filename(url: str) -> str:
     return filename.replace("-patch-notes", "").replace("_patch_notes", "")
 
 
+def validate_patch_html(html: str, url: str) -> None:
+    """Validate that HTML contains patch notes, not homepage.
+
+    Args:
+        html: HTML content
+        url: Source URL (for error message)
+
+    Raises:
+        FetchError: If HTML is invalid or is homepage instead of patch notes
+    """
+    if not html.strip():
+        raise FetchError(f"Empty HTML from {url}")
+
+    # Check for homepage indicators
+    homepage_indicators = [
+        "The ultimate real-time strategy game",
+        "REAL-TIME STRATEGY • FREE TO PLAY",
+        "The Galaxy is Yours to Conquer",
+        "<title>StarCraft II</title>",
+    ]
+
+    # Check for patch notes indicators
+    patch_indicators = [
+        "Patch Notes",
+        "Balance Update",
+        "patch notes",
+        "balance changes",
+        "Balance Changes",
+    ]
+
+    has_homepage_text = any(ind in html for ind in homepage_indicators)
+    has_patch_text = any(ind in html for ind in patch_indicators)
+
+    # If it has homepage text but no patch text, it's a homepage
+    if has_homepage_text and not has_patch_text:
+        raise FetchError(
+            f"URL returned homepage instead of patch notes: {url}\n"
+            "This URL is likely dead or redirected."
+        )
+
+    # If it has neither, it's probably an error page
+    if not has_patch_text:
+        raise FetchError(
+            f"HTML from {url} doesn't appear to contain patch notes\n"
+            "Expected to find: 'Patch Notes', 'Balance Update', etc."
+        )
+
+
 def fetch_url_to_html(url: str, output_dir: Path) -> Path:
     """Fetch URL and save as HTML file.
 
@@ -69,14 +117,13 @@ def fetch_url_to_html(url: str, output_dir: Path) -> Path:
         Path to saved HTML file
 
     Raises:
-        FetchError: If fetch fails
+        FetchError: If fetch fails or content is invalid
     """
     # Fetch HTML
     html = fetch_html(url)
 
-    # Validate content
-    if not html.strip():
-        raise FetchError(f"Fetched empty HTML from {url}")
+    # Validate content is patch notes, not homepage
+    validate_patch_html(html, url)
 
     # Generate filename from URL
     filename = url_to_filename(url)
