@@ -183,21 +183,23 @@ ZERG UPGRADES:
    - Destructible debris
    - Map-specific neutral objects
 
-5. Classify EACH change as (from the perspective of the player using the unit):
-   - "buff": Positive for the player (increased damage, reduced cost, faster build time, etc.)
-   - "nerf": Negative for the player (decreased damage, increased cost, slower build time, etc.)
+5. Classify EACH change as (from the perspective of the ENTITY itself - stronger or weaker):
+   - "buff": Entity becomes stronger (increased damage/health/armor, reduced cost, faster build time, etc.)
+   - "nerf": Entity becomes weaker (decreased damage/health/armor, increased cost, slower build time, etc.)
    - "mixed": Has both positive and negative aspects in the same change
 
    IMPORTANT CLASSIFICATION EXAMPLES:
-   - Rocks armor INCREASED → "nerf" (harder for player to destroy rocks)
-   - Rocks armor DECREASED → "buff" (easier for player to destroy rocks)
-   - Unit cost INCREASED → "nerf"
-   - Unit damage INCREASED → "buff"
+   - Rocks armor INCREASED → "buff" (rocks are stronger)
+   - Rocks armor DECREASED → "nerf" (rocks are weaker)
+   - Unit cost INCREASED → "nerf" (harder to build)
+   - Unit cost DECREASED → "buff" (easier to build)
+   - Unit damage INCREASED → "buff" (unit is stronger)
+   - Unit damage DECREASED → "nerf" (unit is weaker)
 
 Format entity IDs as: race-unit_name (lowercase, spaces replaced with underscores)
 Group ALL changes for each entity together.
 
-YOU MUST classify every single change with a change_type. NO EXCEPTIONS.
+YOU MUST classify every single change with a change_type. NO EXCEPTIONS."""
 
     user_prompt = f"""Extract all balance changes from this section:
 
@@ -221,10 +223,10 @@ Return a JSON object:
 }}
 
 CRITICAL REMINDERS:
-- Use the upgrade-to-unit mappings above (e.g., Grooved Spines → zerg-hydralisk)
+- Use the upgrade-to-unit mappings above (e.g., Grooved Spines to zerg-hydralisk)
 - Every single change MUST have a change_type (buff/nerf/mixed)
 - NO neutral upgrades - assign to the unit that uses them
-- Classify from the player's perspective (rocks armor increased = nerf for player)"""
+- Classify from the ENTITY's perspective (rocks armor increased = buff, rocks stronger)"""
 
     try:
         response = httpx.post(
