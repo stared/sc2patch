@@ -34,16 +34,35 @@ export function PatchGrid({ patches, units, viewMode }: PatchGridProps) {
     });
 
     const unitsByRace = groupUnitsByRace(allChangedUnits, units);
-    const allUnits = [...unitsByRace.terran, ...unitsByRace.protoss, ...unitsByRace.zerg];
+    const allUnits = [...unitsByRace.terran, ...unitsByRace.zerg, ...unitsByRace.protoss];  // Fixed order
 
     const margin = { top: 80, right: 20, bottom: 20, left: 120 };
     const cellSize = 54;
     const cellPadding = 3;
 
-    const width = margin.left + margin.right + allUnits.length * cellSize;
-    const height = margin.top + margin.bottom + patches.length * cellSize;
+    // For compact view, calculate actual positions based on changes per patch
+    let maxUnitsInPatch = 0;
+    if (viewMode === 'by-patch') {
+      // Calculate max units in any patch for width
+      patches.forEach(patch => {
+        let unitCount = 0;
+        patch.entities.forEach(entity => {
+          if (entity.type === 'unit') unitCount++;
+        });
+        maxUnitsInPatch = Math.max(maxUnitsInPatch, unitCount);
+      });
 
-    svg.attr('width', width).attr('height', height);
+      // Width includes unit section + space + upgrade columns (4 races * 150px each)
+      const width = margin.left + margin.right + Math.max(maxUnitsInPatch, 10) * cellSize + 50 + (4 * 150);
+      const height = margin.top + margin.bottom + patches.length * cellSize;
+
+      svg.attr('width', width).attr('height', height);
+    } else {
+      const width = margin.left + margin.right + allUnits.length * cellSize;
+      const height = margin.top + margin.bottom + patches.length * cellSize;
+
+      svg.attr('width', width).attr('height', height);
+    }
 
     const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
@@ -58,11 +77,11 @@ export function PatchGrid({ patches, units, viewMode }: PatchGridProps) {
       .range([0, patches.length * cellSize])
       .padding(0);
 
-    // Add race headers
+    // Add race headers (corrected order)
     const raceHeaders = [
       { race: 'terran', units: unitsByRace.terran, color: '#4a9eff' },
-      { race: 'protoss', units: unitsByRace.protoss, color: '#ffd700' },
-      { race: 'zerg', units: unitsByRace.zerg, color: '#c874e9' }
+      { race: 'zerg', units: unitsByRace.zerg, color: '#c874e9' },      // Zerg second
+      { race: 'protoss', units: unitsByRace.protoss, color: '#ffd700' }  // Protoss third
     ];
 
     let xOffset = 0;
@@ -81,19 +100,32 @@ export function PatchGrid({ patches, units, viewMode }: PatchGridProps) {
       }
     });
 
-    // Add patch version labels
-    g.append('g')
-      .selectAll('text')
+    // Add clickable patch version labels
+    const patchLinks = g.append('g')
+      .selectAll('a')
       .data(patches)
       .enter()
-      .append('text')
+      .append('a')
+      .attr('href', d => d.url)
+      .attr('target', '_blank')
+      .attr('rel', 'noopener noreferrer');
+
+    patchLinks.append('text')
       .attr('x', -10)
       .attr('y', (d) => yScale(d.version)! + cellSize / 2)
       .attr('text-anchor', 'end')
-      .attr('fill', '#aaa')
+      .attr('fill', '#4a9eff')
       .attr('font-size', 12)
       .attr('dominant-baseline', 'middle')
-      .text(d => d.version);
+      .style('cursor', 'pointer')
+      .style('text-decoration', 'underline')
+      .text(d => d.version)
+      .on('mouseenter', function() {
+        d3.select(this).attr('fill', '#6ab7ff');
+      })
+      .on('mouseleave', function() {
+        d3.select(this).attr('fill', '#4a9eff');
+      });
 
     // Add patch dates
     g.append('g')
@@ -109,18 +141,69 @@ export function PatchGrid({ patches, units, viewMode }: PatchGridProps) {
       .attr('dominant-baseline', 'middle')
       .text(d => d.date.split('-').slice(0, 2).join('-'));
 
-    // Create cells for units with changes
+    // Separate units from other changes (upgrades, buildings, etc.)
+    const unitCells: any[] = [];
+    const upgradeCells: any[] = [];
+
+    if (viewMode === 'by-patch') {
+      // Compact view: only show units that have changes, pack them left to right
+      patches.forEach(patch => {
+        let unitIndex = 0;
+        const upgradesByRace = { terran: [], zerg: [], protoss: [], neutral: [] } as any;
+
+        patch.entities.forEach((entity, entityId) => {
+          if (entity.type === 'unit') {
+            unitCells.push({
+              patch: patch.version,
+              patchDate: patch.date,
+              entityId,
+              entity,
+              x: unitIndex * cellSize,
+              y: yScale(patch.version)!
+            });
+            unitIndex++;
+          } else {
+            // Collect upgrades/buildings/abilities by race
+            const race = entity.race as keyof typeof upgradesByRace || 'neutral';
+            upgradesByRace[race].push({
+              patch: patch.version,
+              patchDate: patch.date,
+              entityId,
+              entity,
+              race
+            });
+          }
+        });
+
+        // Add upgrade cells grouped by race
+        Object.entries(upgradesByRace).forEach(([race, items]: [string, any[]]) => {
+          items.forEach(item => {
+            upgradeCells.push(item);
+          });
+        });
+      });
+    } else {
+      // Full grid view: show all positions for units only
+      patches.forEach(patch => {
+        patch.entities.forEach((entity, entityId) => {
+          if (entity.type === 'unit' && xScale(entityId) !== undefined) {
+            unitCells.push({
+              patch: patch.version,
+              patchDate: patch.date,
+              entityId,
+              entity,
+              x: xScale(entityId)!,
+              y: yScale(patch.version)!
+            });
+          }
+        });
+      });
+    }
+
+    // Render unit cells with images
     const cells = g.append('g')
       .selectAll('g')
-      .data(patches.flatMap(patch =>
-        Array.from(patch.entities.entries()).map(([entityId, entity]) => ({
-          patch: patch.version,
-          entityId,
-          entity,
-          x: xScale(entityId)!,
-          y: yScale(patch.version)!
-        }))
-      ))
+      .data(unitCells)
       .enter()
       .append('g')
       .attr('transform', d => `translate(${d.x},${d.y})`);
@@ -131,7 +214,7 @@ export function PatchGrid({ patches, units, viewMode }: PatchGridProps) {
       .attr('y', cellPadding)
       .attr('width', cellSize - cellPadding * 2)
       .attr('height', cellSize - cellPadding * 2)
-      .attr('href', d => `/assets/units/${d.entityId}.jpg`)
+      .attr('href', d => `/assets/units/${d.entityId}.png`)
       .attr('preserveAspectRatio', 'xMidYMid meet')
       .style('cursor', 'pointer')
       .on('error', function() {
@@ -151,6 +234,96 @@ export function PatchGrid({ patches, units, viewMode }: PatchGridProps) {
       .on('mouseleave', () => {
         setTooltip(prev => ({ ...prev, visible: false }));
       });
+
+    // Add upgrade/building/ability display section
+    if (upgradeCells.length > 0) {
+      const upgradeSection = svg.append('g')
+        .attr('transform', `translate(${margin.left + (maxUnitsInPatch || 10) * cellSize + 50}, ${margin.top})`);
+
+      // Add headers for race columns
+      const raceOrder = ['terran', 'zerg', 'protoss', 'neutral'];
+      const columnWidth = 150;
+
+      raceOrder.forEach((race, index) => {
+        upgradeSection.append('text')
+          .attr('x', index * columnWidth + columnWidth / 2)
+          .attr('y', -20)
+          .attr('text-anchor', 'middle')
+          .attr('fill', race === 'terran' ? '#4a9eff' : race === 'zerg' ? '#c874e9' : race === 'protoss' ? '#ffd700' : '#888')
+          .attr('font-size', 14)
+          .attr('font-weight', 'bold')
+          .text(race.charAt(0).toUpperCase() + race.slice(1));
+      });
+
+      // Group upgrades by patch and race
+      const upgradesByPatchAndRace = new Map<string, Map<string, any[]>>();
+
+      upgradeCells.forEach(cell => {
+        if (!upgradesByPatchAndRace.has(cell.patch)) {
+          upgradesByPatchAndRace.set(cell.patch, new Map());
+        }
+        const patchMap = upgradesByPatchAndRace.get(cell.patch)!;
+
+        if (!patchMap.has(cell.race)) {
+          patchMap.set(cell.race, []);
+        }
+        patchMap.get(cell.race)!.push(cell);
+      });
+
+      // Render upgrade text in columns
+      patches.forEach(patch => {
+        const patchUpgrades = upgradesByPatchAndRace.get(patch.version);
+        if (patchUpgrades) {
+          const y = yScale(patch.version)!;
+
+          raceOrder.forEach((race, raceIndex) => {
+            const raceUpgrades = patchUpgrades.get(race) || [];
+
+            raceUpgrades.forEach((upgrade, upgradeIndex) => {
+              const textGroup = upgradeSection.append('g')
+                .attr('transform', `translate(${raceIndex * columnWidth}, ${y + upgradeIndex * 20})`);
+
+              // Add wrapped text for upgrade name and changes
+              const text = textGroup.append('text')
+                .attr('font-size', 11)
+                .attr('fill', '#ccc');
+
+              // Wrap text to fit in column
+              const words = (upgrade.entity.name + ': ' + upgrade.entity.changes[0]).split(' ');
+              let line = '';
+              let lineNumber = 0;
+              const lineHeight = 12;
+              const maxWidth = columnWidth - 10;
+
+              words.forEach(word => {
+                const testLine = line + word + ' ';
+                const testWidth = testLine.length * 6; // Approximate width
+
+                if (testWidth > maxWidth && line !== '') {
+                  text.append('tspan')
+                    .attr('x', 0)
+                    .attr('y', lineNumber * lineHeight)
+                    .text(line.trim());
+                  line = word + ' ';
+                  lineNumber++;
+
+                  if (lineNumber >= 2) return; // Max 2 lines
+                } else {
+                  line = testLine;
+                }
+              });
+
+              if (line !== '' && lineNumber < 2) {
+                text.append('tspan')
+                  .attr('x', 0)
+                  .attr('y', lineNumber * lineHeight)
+                  .text(line.trim());
+              }
+            });
+          });
+        }
+      });
+    }
 
     // Add transitions for view mode changes
     if (viewMode === 'by-unit') {

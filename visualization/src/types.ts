@@ -29,6 +29,7 @@ export interface PatchData {
 export interface ProcessedPatchData {
   version: string;
   date: string;
+  url: string;
   entities: Map<string, ProcessedEntity>;
 }
 
@@ -36,6 +37,7 @@ export interface ProcessedEntity {
   id: string;
   name: string;
   race: string;
+  type?: string;  // 'unit' | 'building' | 'upgrade' | 'ability' | 'unknown'
   changes: string[];
   status: 'buff' | 'nerf' | 'redesign' | null;
 }
