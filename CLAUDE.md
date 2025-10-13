@@ -41,11 +41,12 @@
 
 **See PIPELINE.md for complete documentation**
 
-The pipeline has 3 stages:
+The pipeline has 4 stages:
 
 1. **Download** (`scripts/1_download.py`) - Fetch HTML from Blizzard News
 2. **Parse** (`scripts/2_parse.py`) - Extract structured data with GPT-5
 3. **Validate** (`scripts/3_validate.py`) - Check completeness
+4. **Export** (`scripts/4_export_for_viz.py`) - Copy data to visualization
 
 Each stage:
 - Takes input from previous stage
@@ -60,6 +61,7 @@ uv run python scripts/1_download.py
 export OPENROUTER_API_KEY="your-key"
 uv run python scripts/2_parse.py
 uv run python scripts/3_validate.py
+uv run python scripts/4_export_for_viz.py
 ```
 
 ## Testing
@@ -95,15 +97,15 @@ sc2patches/
 ├── src/sc2patches/          # Python library
 │   ├── logger.py            # Markdown log generation
 │   ├── download.py          # Download & convert logic
-│   ├── parse.py             # GPT-5 parsing logic
-│   └── models.py            # Pydantic models
+│   └── parse.py             # GPT-5 parsing logic
 ├── scripts/                 # Pipeline scripts
 │   ├── 1_download.py        # Stage 1: Download
 │   ├── 2_parse.py           # Stage 2: Parse with GPT-5
-│   └── 3_validate.py        # Stage 3: Validate
+│   ├── 3_validate.py        # Stage 3: Validate
+│   └── 4_export_for_viz.py  # Stage 4: Export
 ├── visualization/           # React + Vite visualization
 │   ├── src/                 # React components
-│   └── public/data/         # Symlinked to ../data
+│   └── public/data/         # Exported data (copies from data/)
 └── pyproject.toml           # Python dependencies (uv)
 ```
 
