@@ -138,3 +138,4 @@ All patches use this JSON structure:
 - Run Python with `uv`, TypeScript with `pnpm`
 - Hard validation: fail fast with clear errors, never silent failures
 - Do not commit without an explicit confirmation. Ask for it.
+- When needed, manually check Blizzard websites or Liqudidpedia, e.g. https://liquipedia.net/starcraft2/Units_(Legacy_of_the_Void) and its pages, e.g. https://liquipedia.net/starcraft2/Factory_(Legacy_of_the_Void), https://liquipedia.net/starcraft2/Stalker_(Legacy_of_the_Void) or https://liquipedia.net/starcraft2/Chitinous_Plating (to show you patters for buildings, units, upgrades). Useful websites: https://liquipedia.net/starcraft2/Upgrades and for patches - https://liquipedia.net/starcraft2/Patches.
