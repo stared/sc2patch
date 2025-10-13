@@ -14,11 +14,15 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
+from dotenv import load_dotenv
 from rich.console import Console
 from rich.progress import BarColumn, Progress, SpinnerColumn, TaskProgressColumn, TextColumn
 
 from sc2patches.logger import PipelineLogger
 from sc2patches.parse import ParseError, parse_patch
+
+# Load environment variables from .env file
+load_dotenv()
 
 console = Console()
 
@@ -32,7 +36,7 @@ def load_patch_urls_mapping(urls_path: Path) -> dict[str, str]:
     if not urls_path.exists():
         return {}
 
-    with open(urls_path) as f:
+    with urls_path.open() as f:
         data = json.load(f)
 
     # Extract URLs
@@ -89,6 +93,15 @@ def main() -> None:
     console.print(f"HTML files to parse: {len(html_files)}")
     console.print(f"Skip existing: {skip_existing}\n")
 
+    # Filter out files that already have output (if skip_existing)
+    if skip_existing:
+        files_to_parse = []
+        for html_path in html_files:
+            # We need to parse to know version, so we can't perfectly skip
+            # Instead, we'll check after parsing
+            files_to_parse.append(html_path)
+        html_files = files_to_parse
+
     # Parse patches with progress bar
     with Progress(
         SpinnerColumn(),
@@ -114,17 +127,18 @@ def main() -> None:
                 elif version in url_mapping:
                     result["metadata"]["url"] = url_mapping[version]
 
-                # Check if already exists
+                # Save output
                 output_path = output_dir / f"{version}.json"
-                if skip_existing and output_path.exists():
+                if output_path.exists() and skip_existing:
+                    # Already exists (shouldn't happen after check above, but be safe)
                     logger.log_skip(version, "already exists")
                     console.print(f"[dim]  ⊘ {version}: already exists[/dim]")
                 else:
                     # Save to JSON
-                    with open(output_path, "w") as f:
+                    with output_path.open("w") as f:
                         json.dump(result, f, indent=2)
 
-                    entities = len(set(c["entity_id"] for c in result["changes"]))
+                    entities = len({c["entity_id"] for c in result["changes"]})
                     changes = len(result["changes"])
 
                     logger.log_success(
@@ -167,12 +181,10 @@ def main() -> None:
     console.print(f"  ⊘ Skipped: {len(logger.skipped)}")
     console.print(f"\n[dim]Log saved to: {log_path}[/dim]")
 
-    # Note: Don't exit with error for failed parses - they might be co-op only patches
+    # Exit with error if any failures
     if logger.failed:
-        console.print(
-            f"\n[yellow]Note: {len(logger.failed)} patches failed to parse "
-            f"(may be co-op only or have no balance changes)[/yellow]"
-        )
+        console.print(f"\n[red]Parse failed for {len(logger.failed)} patches[/red]")
+        sys.exit(1)
 
     console.print("\n[green]✓ Parse stage complete[/green]")
 
