@@ -14,6 +14,20 @@ const RACE_COLORS = {
   neutral: '#888'
 } as const;
 
+const EXPANSION_COLORS = {
+  wol: '#4a9eff',
+  hots: '#c874e9',
+  lotv: '#ffd700'
+} as const;
+
+// Determine expansion based on version
+function getExpansion(version: string): 'wol' | 'hots' | 'lotv' {
+  const majorVersion = parseInt(version.split('.')[0]);
+  if (majorVersion === 1) return 'wol';
+  if (majorVersion === 2) return 'hots';
+  return 'lotv'; // 3.x, 4.x, 5.x
+}
+
 // Entity with position for tooltip display
 type EntityWithPosition = ProcessedEntity & { x: number; y: number };
 
@@ -23,9 +37,11 @@ interface EntityCellProps {
   units: Map<string, Unit>;
   onHover: (entity: EntityWithPosition) => void;
   onLeave: () => void;
+  onClick: () => void;
+  isSelected: boolean;
 }
 
-function EntityCell({ entityId, entity, units, onHover, onLeave }: EntityCellProps) {
+function EntityCell({ entityId, entity, units, onHover, onLeave, onClick, isSelected }: EntityCellProps) {
   const race = (entity.race || 'neutral') as keyof typeof RACE_COLORS;
   const color = RACE_COLORS[race];
 
@@ -55,13 +71,16 @@ function EntityCell({ entityId, entity, units, onHover, onLeave }: EntityCellPro
 
   return (
     <div
-      className="entity-cell"
+      className={`entity-cell ${isSelected ? 'selected' : ''}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={onLeave}
+      onClick={onClick}
       style={{
         borderColor: outlineColor,
-        borderWidth: '2px',
-        borderStyle: 'solid'
+        borderWidth: isSelected ? '3px' : '2px',
+        borderStyle: 'solid',
+        cursor: 'pointer',
+        opacity: isSelected ? 1 : 0.9
       }}
     >
       {hasImage ? (
@@ -87,16 +106,34 @@ export function PatchGrid({ patches, units, _viewMode }: PatchGridProps) {
     visible: boolean;
   }>({ entity: null, visible: false });
 
+  const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
+
   const handleEntityHover = (entity: EntityWithPosition) => {
-    setTooltip({ entity, visible: true });
+    if (!selectedEntityId) {
+      setTooltip({ entity, visible: true });
+    }
   };
 
   const handleEntityLeave = () => {
     setTooltip({ entity: null, visible: false });
   };
 
+  const handleEntityClick = (entityId: string) => {
+    setSelectedEntityId(selectedEntityId === entityId ? null : entityId);
+    setTooltip({ entity: null, visible: false });
+  };
+
+  // Filter patches if an entity is selected
+  const filteredPatches = selectedEntityId
+    ? patches.filter(patch => patch.entities.has(selectedEntityId))
+    : patches;
+
+  // Get selected entity details
+  const selectedEntity = selectedEntityId ? filteredPatches[0]?.entities.get(selectedEntityId) : null;
+  const selectedUnit = selectedEntityId ? units.get(selectedEntityId) : null;
+
   // Group entities by race for each patch
-  const patchesWithGroupedEntities = patches.map(patch => {
+  const patchesWithGroupedEntities = filteredPatches.map(patch => {
     const byRace = { terran: [], zerg: [], protoss: [], neutral: [] } as Record<string, Array<[string, ProcessedEntity]>>;
 
     patch.entities.forEach((entity, entityId) => {
@@ -106,89 +143,178 @@ export function PatchGrid({ patches, units, _viewMode }: PatchGridProps) {
 
     return {
       ...patch,
-      byRace
+      byRace,
+      expansion: getExpansion(patch.version)
     };
   });
 
   return (
-    <div className="patch-grid">
-      {/* Race headers */}
-      <div className="race-headers">
-        <div className="patch-label-space"></div>
-        {(['terran', 'zerg', 'protoss', 'neutral'] as const).map(race => (
-          <div key={race} className="race-header" style={{ color: RACE_COLORS[race] }}>
-            {race.charAt(0).toUpperCase() + race.slice(1)}
-          </div>
-        ))}
-      </div>
-
-      {/* Patch rows */}
-      {patchesWithGroupedEntities.map(patch => (
-        <div key={patch.version} className="patch-row">
-          <div className="patch-info">
-            <a href={patch.url} target="_blank" rel="noopener noreferrer" className="patch-version">
-              {patch.version}
-            </a>
-            <div className="patch-date">{patch.date.split('-').slice(0, 2).join('-')}</div>
-          </div>
-
-          {/* Race columns */}
-          {(['terran', 'zerg', 'protoss', 'neutral'] as const).map(race => (
-            <div key={race} className="race-column">
-              {patch.byRace[race].map(([entityId, entity]) => (
-                <EntityCell
-                  key={entityId}
-                  entityId={entityId}
-                  entity={entity}
-                  units={units}
-                  onHover={handleEntityHover}
-                  onLeave={handleEntityLeave}
+    <div className="patch-grid-container">
+      {/* Entity Detail Panel */}
+      {selectedEntityId && selectedEntity && (
+        <div className="entity-detail-panel">
+          <div className="entity-detail-header">
+            <div className="entity-detail-image">
+              {(selectedEntity.type === 'unit' || selectedEntity.type === 'building') ? (
+                <img
+                  src={`/assets/units/${selectedEntityId}.png`}
+                  alt={selectedEntityId}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/assets/units/placeholder.svg';
+                  }}
                 />
-              ))}
+              ) : (
+                <div className="upgrade-icon" style={{
+                  backgroundColor: `${RACE_COLORS[selectedEntity.race as keyof typeof RACE_COLORS]}40`,
+                  color: RACE_COLORS[selectedEntity.race as keyof typeof RACE_COLORS]
+                }}>
+                  {(selectedUnit?.name || selectedEntityId.split('-').pop() || '?').charAt(0).toUpperCase()}
+                </div>
+              )}
+            </div>
+            <div className="entity-detail-title">
+              <h2>{selectedUnit?.name || selectedEntityId}</h2>
+              <button onClick={() => handleEntityClick(selectedEntityId)} className="close-detail">
+                ✕ Back to all entities
+              </button>
+            </div>
+          </div>
+          <div className="entity-detail-changes">
+            <h3>All Changes ({filteredPatches.length} patches)</h3>
+            {filteredPatches.map(patch => {
+              const entity = patch.entities.get(selectedEntityId);
+              return entity ? (
+                <div key={patch.version} className="patch-changes">
+                  <div className="patch-changes-header">
+                    <a href={patch.url} target="_blank" rel="noopener noreferrer">
+                      {patch.version}
+                    </a>
+                    <span className="patch-date">{patch.date}</span>
+                  </div>
+                  <ul>
+                    {entity.changes.map((change: ProcessedChange, i: number) => {
+                      const isChange = typeof change === 'object' && change.text;
+                      const changeText = isChange ? change.text : change;
+                      const changeType = isChange ? change.change_type : null;
+
+                      const indicator = changeType === 'buff' ? '+ '
+                                     : changeType === 'nerf' ? '− '
+                                     : changeType === 'mixed' ? '± '
+                                     : '';
+
+                      const indicatorColor = changeType === 'buff' ? '#4a9eff'
+                                           : changeType === 'nerf' ? '#ff4444'
+                                           : changeType === 'mixed' ? '#ff9933'
+                                           : '#ccc';
+
+                      return (
+                        <li key={i}>
+                          <span style={{ color: indicatorColor, fontWeight: 'bold' }}>{indicator}</span>
+                          {changeText}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              ) : null;
+            })}
+          </div>
+        </div>
+      )}
+
+      <div className="patch-grid">
+        {/* Race headers */}
+        <div className="race-headers">
+          <div className="patch-label-space"></div>
+          {(['terran', 'zerg', 'protoss', 'neutral'] as const).map(race => (
+            <div key={race} className="race-header" style={{ color: RACE_COLORS[race] }}>
+              {race.charAt(0).toUpperCase() + race.slice(1)}
             </div>
           ))}
         </div>
-      ))}
 
-      {/* Tooltip */}
-      {tooltip.visible && tooltip.entity && (
-        <div
-          className="tooltip"
-          style={{
-            left: `${tooltip.entity.x}px`,
-            top: `${tooltip.entity.y}px`,
-            transform: 'translate(-50%, -100%)',
-            marginTop: '-10px'
-          }}
-        >
-          <h4>{tooltip.entity.name || tooltip.entity.id}</h4>
-          <ul>
-            {tooltip.entity.changes.map((change: ProcessedChange, i: number) => {
-              const isChange = typeof change === 'object' && change.text;
-              const changeText = isChange ? change.text : change;
-              const changeType = isChange ? change.change_type : null;
+        {/* Patch rows with expansion separators */}
+        {patchesWithGroupedEntities.map((patch, index) => {
+          const prevExpansion = index > 0 ? patchesWithGroupedEntities[index - 1].expansion : null;
+          const showExpansionBar = patch.expansion !== prevExpansion;
 
-              // Get indicator based on change type
-              const indicator = changeType === 'buff' ? '+ '
-                             : changeType === 'nerf' ? '− '
-                             : changeType === 'mixed' ? '± '
-                             : '';
+          return (
+            <React.Fragment key={patch.version}>
+              {showExpansionBar && (
+                <div className="expansion-separator" style={{ backgroundColor: EXPANSION_COLORS[patch.expansion] }}>
+                  <span>{patch.expansion.toUpperCase()}</span>
+                </div>
+              )}
+              <div className="patch-row">
+                <div className="patch-info">
+                  <a href={patch.url} target="_blank" rel="noopener noreferrer" className="patch-version">
+                    {patch.version}
+                  </a>
+                  <div className="patch-date">{patch.date.split('-').slice(0, 2).join('-')}</div>
+                </div>
 
-              const indicatorColor = changeType === 'buff' ? '#4a9eff'
-                                   : changeType === 'nerf' ? '#ff4444'
-                                   : changeType === 'mixed' ? '#ff9933'
-                                   : '#ccc';
+                {/* Race columns */}
+                {(['terran', 'zerg', 'protoss', 'neutral'] as const).map(race => (
+                  <div key={race} className="race-column">
+                    {patch.byRace[race].map(([entityId, entity]) => (
+                      <EntityCell
+                        key={entityId}
+                        entityId={entityId}
+                        entity={entity}
+                        units={units}
+                        onHover={handleEntityHover}
+                        onLeave={handleEntityLeave}
+                        onClick={() => handleEntityClick(entityId)}
+                        isSelected={entityId === selectedEntityId}
+                      />
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </React.Fragment>
+          );
+        })}
 
-              return (
-                <li key={i}>
-                  <span style={{ color: indicatorColor, fontWeight: 'bold' }}>{indicator}</span>
-                  {changeText}
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      )}
+        {/* Tooltip (only show when no entity selected) */}
+        {!selectedEntityId && tooltip.visible && tooltip.entity && (
+          <div
+            className="tooltip"
+            style={{
+              left: `${tooltip.entity.x}px`,
+              top: `${tooltip.entity.y}px`,
+              transform: 'translate(-50%, -100%)',
+              marginTop: '-10px'
+            }}
+          >
+            <h4>{tooltip.entity.name || tooltip.entity.id}</h4>
+            <ul>
+              {tooltip.entity.changes.map((change: ProcessedChange, i: number) => {
+                const isChange = typeof change === 'object' && change.text;
+                const changeText = isChange ? change.text : change;
+                const changeType = isChange ? change.change_type : null;
+
+                // Get indicator based on change type
+                const indicator = changeType === 'buff' ? '+ '
+                               : changeType === 'nerf' ? '− '
+                               : changeType === 'mixed' ? '± '
+                               : '';
+
+                const indicatorColor = changeType === 'buff' ? '#4a9eff'
+                                     : changeType === 'nerf' ? '#ff4444'
+                                     : changeType === 'mixed' ? '#ff9933'
+                                     : '#ccc';
+
+                return (
+                  <li key={i}>
+                    <span style={{ color: indicatorColor, fontWeight: 'bold' }}>{indicator}</span>
+                    {changeText}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
