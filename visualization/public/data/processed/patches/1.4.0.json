@@ -1,0 +1,122 @@
+{
+  "metadata": {
+    "version": "1.4.0",
+    "date": "2011-09-20",
+    "title": "StarCraft II Patch 1.4.0",
+    "url": "https://news.blizzard.com/en-us/article/3549513/patch-1-4-0-now-live"
+  },
+  "changes": [
+    {
+      "id": "terran-all_units_0",
+      "patch_version": "1.4.0",
+      "entity_id": "terran-all_units",
+      "raw_text": "Vision up ramps reduced by 1.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-all_units_1",
+      "patch_version": "1.4.0",
+      "entity_id": "protoss-all_units",
+      "raw_text": "Vision up ramps reduced by 1.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-all_units_2",
+      "patch_version": "1.4.0",
+      "entity_id": "zerg-all_units",
+      "raw_text": "Vision up ramps reduced by 1.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-immortal_3",
+      "patch_version": "1.4.0",
+      "entity_id": "protoss-immortal",
+      "raw_text": "Attack range increased from 5 to 6.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-mothership_4",
+      "patch_version": "1.4.0",
+      "entity_id": "protoss-mothership",
+      "raw_text": "Acceleration increased from 0.3 to 1.375.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-mothership_5",
+      "patch_version": "1.4.0",
+      "entity_id": "protoss-mothership",
+      "raw_text": "Cloaking Field now adds units to the cloak field over time (maximum of 25 per second) instead of cloaking all units instantaneously.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-stalker_6",
+      "patch_version": "1.4.0",
+      "entity_id": "protoss-stalker",
+      "raw_text": "Blink research time increased from 110 to 140.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-warp_prism_7",
+      "patch_version": "1.4.0",
+      "entity_id": "protoss-warp_prism",
+      "raw_text": "Shields increased from 40 to 100.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-barracks_8",
+      "patch_version": "1.4.0",
+      "entity_id": "terran-barracks",
+      "raw_text": "Build time increased from 60 to 65.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-hellion_9",
+      "patch_version": "1.4.0",
+      "entity_id": "terran-hellion",
+      "raw_text": "Infernal Pre-Igniter damage bonus decreased from +10 to +5.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-raven_10",
+      "patch_version": "1.4.0",
+      "entity_id": "terran-raven",
+      "raw_text": "Seeker Missile projectile movement speed increased from 2.5 to 2.953.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-infestor_11",
+      "patch_version": "1.4.0",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Fungal Growth damage changed from 36 (+30% vs Armored) to 30 (40 vs Armored).",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-infestor_12",
+      "patch_version": "1.4.0",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Neural Parasite range decreased from 9 to 7.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-overseer_13",
+      "patch_version": "1.4.0",
+      "entity_id": "zerg-overseer",
+      "raw_text": "Morph cost decreased from 50/100 to 50/50.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-overseer_14",
+      "patch_version": "1.4.0",
+      "entity_id": "zerg-overseer",
+      "raw_text": "Contaminate energy cost increased from 75 to 125.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-ultralisk_15",
+      "patch_version": "1.4.0",
+      "entity_id": "zerg-ultralisk",
+      "raw_text": "Build time decreased from 70 to 55.",
+      "change_type": "buff"
+    }
+  ]
+}

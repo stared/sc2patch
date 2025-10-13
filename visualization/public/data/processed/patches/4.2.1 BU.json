@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "version": "4.2.1 BU",
+    "date": "2018-04-10",
+    "title": "StarCraft II Patch 4.2.1 BU",
+    "url": "https://news.blizzard.com/en-us/starcraft2/21637913"
+  },
+  "changes": [
+    {
+      "id": "zerg-mutate_ventral_sacs_0",
+      "patch_version": "4.2.1 BU",
+      "entity_id": "zerg-overlord",
+      "raw_text": "[Mutate Ventral Sacs] Tech requirement changed from Evolution Chamber to Lair",
+      "change_type": "nerf"
+    }
+  ]
+}

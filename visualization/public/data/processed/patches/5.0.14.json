@@ -1,0 +1,262 @@
+{
+  "metadata": {
+    "version": "5.0.14",
+    "date": "2024-11-25",
+    "title": "StarCraft II Patch 5.0.14",
+    "url": "https://news.blizzard.com/en-us/article/24162754/starcraft-ii-5-0-14-patch-notes"
+  },
+  "changes": [
+    {
+      "id": "protoss-nexus_0",
+      "patch_version": "5.0.14",
+      "entity_id": "protoss-nexus",
+      "raw_text": "Maximum range for Shield Battery starting with full energy increased from 10 to 12.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-nexus_1",
+      "patch_version": "5.0.14",
+      "entity_id": "protoss-nexus",
+      "raw_text": "Battery Overcharge removed.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-nexus_2",
+      "patch_version": "5.0.14",
+      "entity_id": "protoss-nexus",
+      "raw_text": "New ability: Energy Recharge (50 Energy / 60 second cooldown) \u2013 Recharges 100 Energy to any unit or structure within 12 range of a Nexus.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-shield_battery_3",
+      "patch_version": "5.0.14",
+      "entity_id": "protoss-shield_battery",
+      "raw_text": "Shields/HP increased from 150/150 to 200/200.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-stalker_4",
+      "patch_version": "5.0.14",
+      "entity_id": "protoss-stalker",
+      "raw_text": "Train time from Gateway reduced from 30 to 27 seconds.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-colossus_5",
+      "patch_version": "5.0.14",
+      "entity_id": "protoss-colossus",
+      "raw_text": "Shields/HP changed from 150/200 to 100/250.",
+      "change_type": "mixed"
+    },
+    {
+      "id": "protoss-tempest_6",
+      "patch_version": "5.0.14",
+      "entity_id": "protoss-tempest",
+      "raw_text": "Supply cost reduced from 5 to 4.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-tempest_7",
+      "patch_version": "5.0.14",
+      "entity_id": "protoss-tempest",
+      "raw_text": "vs Air attack range reduced from 14 to 13.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-immortal_8",
+      "patch_version": "5.0.14",
+      "entity_id": "protoss-immortal",
+      "raw_text": "Cost reduced from 275/100 to 250/100.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-immortal_9",
+      "patch_version": "5.0.14",
+      "entity_id": "protoss-immortal",
+      "raw_text": "Weapon cooldown increased from 1.04 to 1.14.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-disruptor_10",
+      "patch_version": "5.0.14",
+      "entity_id": "protoss-disruptor",
+      "raw_text": "Purification Nova radius increased from 1.375 to 1.5.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-disruptor_11",
+      "patch_version": "5.0.14",
+      "entity_id": "protoss-disruptor",
+      "raw_text": "Purification Nova damage reduced from 145 (200 vs shields) to 100 (200 vs shields).",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-mothership_12",
+      "patch_version": "5.0.14",
+      "entity_id": "protoss-mothership",
+      "raw_text": "Cost increased from 300/300 to 400/400.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-mothership_13",
+      "patch_version": "5.0.14",
+      "entity_id": "protoss-mothership",
+      "raw_text": "Supply cost increased from 6 to 8.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-mothership_14",
+      "patch_version": "5.0.14",
+      "entity_id": "protoss-mothership",
+      "raw_text": "Mothership can no longer be targeted by Abduct.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-mothership_15",
+      "patch_version": "5.0.14",
+      "entity_id": "protoss-mothership",
+      "raw_text": "Damage increased from 6x6 to 6x4x4 (36 damage vs 1 target to 24 damage vs 4 targets each).",
+      "change_type": "mixed"
+    },
+    {
+      "id": "protoss-mothership_16",
+      "patch_version": "5.0.14",
+      "entity_id": "protoss-mothership",
+      "raw_text": "The model size reverted (increased) to Patch 5.0.11 values.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-cyclone_17",
+      "patch_version": "5.0.14",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Reverted to patch 5.0.11 Cyclone.",
+      "change_type": "mixed"
+    },
+    {
+      "id": "terran-bunker_18",
+      "patch_version": "5.0.14",
+      "entity_id": "terran-bunker",
+      "raw_text": "Damage now cancels the Salvage process.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-bunker_19",
+      "patch_version": "5.0.14",
+      "entity_id": "terran-bunker",
+      "raw_text": "Salvage timer is now visible to enemies.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-planetary_fortress_20",
+      "patch_version": "5.0.14",
+      "entity_id": "terran-planetary_fortress",
+      "raw_text": "Armor reduced from 3 to 2.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-sensor_tower_21",
+      "patch_version": "5.0.14",
+      "entity_id": "terran-sensor_tower",
+      "raw_text": "Cost reduced from 125/100 to 100/50.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-sensor_tower_22",
+      "patch_version": "5.0.14",
+      "entity_id": "terran-sensor_tower",
+      "raw_text": "Radar range reduced from 27 to 22.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-sensor_tower_23",
+      "patch_version": "5.0.14",
+      "entity_id": "terran-sensor_tower",
+      "raw_text": "Can now be salvaged.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-orbital_command_24",
+      "patch_version": "5.0.14",
+      "entity_id": "terran-orbital_command",
+      "raw_text": "Calldown: Extra Supplies increases the target Supply Depot's current/max health to 500.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-ghost_25",
+      "patch_version": "5.0.14",
+      "entity_id": "terran-ghost",
+      "raw_text": "Supply cost increased from 2 to 3.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-queen_26",
+      "patch_version": "5.0.14",
+      "entity_id": "zerg-queen",
+      "raw_text": "Cost increased from 150/0 to 175/0.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-hatchery_27",
+      "patch_version": "5.0.14",
+      "entity_id": "zerg-hatchery",
+      "raw_text": "Cost reduced from 300/0 to 275/0.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-spore_crawler_28",
+      "patch_version": "5.0.14",
+      "entity_id": "zerg-spore_crawler",
+      "raw_text": "Damage increased from 15 to 20.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-spore_crawler_29",
+      "patch_version": "5.0.14",
+      "entity_id": "zerg-spore_crawler",
+      "raw_text": "Health reduced from 400 to 300.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-hydralisk_30",
+      "patch_version": "5.0.14",
+      "entity_id": "zerg-hydralisk",
+      "raw_text": "Muscular Augments creep speed bonus reduced from 1.03 to 0.74.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-hydralisk_31",
+      "patch_version": "5.0.14",
+      "entity_id": "zerg-hydralisk",
+      "raw_text": "New research: Nanomuscular Swell (researches new Lunge ability) \u2013 Cost: 100/100, 64 seconds, requires Hive. Lunge increases move speed by 100% for 0.71 seconds.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-infestor_32",
+      "patch_version": "5.0.14",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Microbial Shroud now lasts for 3.6 seconds on units leaving the Shroud.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-ultralisk_33",
+      "patch_version": "5.0.14",
+      "entity_id": "zerg-ultralisk",
+      "raw_text": "Increased allied push priority from 0 to 1 (now pushes allied units out of the way when moving).",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-ultralisk_34",
+      "patch_version": "5.0.14",
+      "entity_id": "zerg-ultralisk",
+      "raw_text": "Anabolic Synthesis move speed bonus reduced from 0.82 to 0.57.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-ultralisk_35",
+      "patch_version": "5.0.14",
+      "entity_id": "zerg-ultralisk",
+      "raw_text": "The model size reverted (increased) to Patch 5.0.10 values.",
+      "change_type": "nerf"
+    }
+  ]
+}

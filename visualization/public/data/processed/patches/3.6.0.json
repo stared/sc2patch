@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "version": "3.6.0",
+    "date": "2016-09-12",
+    "title": "StarCraft II Patch 3.6.0",
+    "url": "https://news.blizzard.com/en-us/article/20273794/starcraft-ii-legacy-of-the-void-3-6-0-patch-notes"
+  },
+  "changes": [
+    {
+      "id": "zerg-queen_0",
+      "patch_version": "3.6.0",
+      "entity_id": "zerg-queen",
+      "raw_text": "Queens now start attacking from the maximum attack range.",
+      "change_type": "buff"
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "metadata": {
+    "version": "4.0.2 BU",
+    "date": "2017-12-19",
+    "title": "StarCraft II Patch 4.0.2 BU",
+    "url": "https://news.blizzard.com/en-us/starcraft2/21272911/starcraft-ii-balance-update-november-28-2017"
+  },
+  "changes": [
+    {
+      "id": "zerg-infestor_0",
+      "patch_version": "4.0.2 BU",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Can no longer cast Fungal Growth while burrowed.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-infestor_1",
+      "patch_version": "4.0.2 BU",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Fungal Growth radius reduced from 2.5 to 2.25.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-infestor_2",
+      "patch_version": "4.0.2 BU",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Infested Terran cast range reduced from 9 to 7.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-oracle_3",
+      "patch_version": "4.0.2 BU",
+      "entity_id": "protoss-oracle",
+      "raw_text": "Pulsar Beam damage reduced from 15 (+10 Light) to 15 (+7 Light).",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-oracle_4",
+      "patch_version": "4.0.2 BU",
+      "entity_id": "protoss-oracle",
+      "raw_text": "Pulsar Beam damage type changed from normal to spell damage.",
+      "change_type": "mixed"
+    },
+    {
+      "id": "protoss-oracle_5",
+      "patch_version": "4.0.2 BU",
+      "entity_id": "protoss-oracle",
+      "raw_text": "Build time increased from 37 to 43 seconds.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-shield_battery_6",
+      "patch_version": "4.0.2 BU",
+      "entity_id": "protoss-shield_battery",
+      "raw_text": "Cost increased from 75 Minerals to 100 Minerals.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-ghost_7",
+      "patch_version": "4.0.2 BU",
+      "entity_id": "terran-ghost",
+      "raw_text": "Steady Targeting will return 100% energy when interrupted.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-ghost_8",
+      "patch_version": "4.0.2 BU",
+      "entity_id": "terran-ghost",
+      "raw_text": "Cost changed from 200 Minerals / 100 Vespene Gas to 150 Minerals / 125 Vespene Gas.",
+      "change_type": "mixed"
+    },
+    {
+      "id": "terran-smart_servos_9",
+      "patch_version": "4.0.2 BU",
+      "entity_id": "terran-thor",
+      "raw_text": "[Smart Servos] Cost reduced from 150 Minerals / 150 Vespene Gas to 100/100.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-rapid_fire_launchers_10",
+      "patch_version": "4.0.2 BU",
+      "entity_id": "terran-cyclone",
+      "raw_text": "[Rapid Fire Launchers] Cost reduced from 150/150 to 75/75.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-drilling_claws_11",
+      "patch_version": "4.0.2 BU",
+      "entity_id": "terran-widow_mine",
+      "raw_text": "[Drilling Claws] Cost reduced from 150/150 to 75/75.",
+      "change_type": "buff"
+    }
+  ]
+}

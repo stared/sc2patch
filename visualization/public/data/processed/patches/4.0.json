@@ -1,0 +1,409 @@
+{
+  "metadata": {
+    "version": "4.0",
+    "date": "2017-11-15",
+    "title": "StarCraft II Patch 4.0",
+    "url": "https://news.blizzard.com/en-us/article/21183638/starcraft-ii-4-0-patch-notes"
+  },
+  "changes": [
+    {
+      "id": "neutral-minerals_0",
+      "patch_version": "4.0",
+      "entity_id": "neutral-minerals",
+      "raw_text": "Large mineral node value increased from 1500 to 1800 (small nodes remain 900).",
+      "change_type": "buff"
+    },
+    {
+      "id": "neutral-vespene_gas_1",
+      "patch_version": "4.0",
+      "entity_id": "neutral-vespene_gas",
+      "raw_text": "Vespene Geyser value increased from 2000 to 2250.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-raven_2",
+      "patch_version": "4.0",
+      "entity_id": "terran-raven",
+      "raw_text": "Removed Auto-Turret, Point Defense Drone, and Seeker Missile abilities.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-raven_3",
+      "patch_version": "4.0",
+      "entity_id": "terran-raven",
+      "raw_text": "Added Interference Matrix: Disables a Mechanical or Psionic unit, preventing attacks and abilities for 6 seconds.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-raven_4",
+      "patch_version": "4.0",
+      "entity_id": "terran-raven",
+      "raw_text": "Added Repair Drone: Deploys a drone for 90 seconds that automatically repairs nearby friendly Mechanical units at 12.6 life per second (1 energy per 3 life).",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-raven_5",
+      "patch_version": "4.0",
+      "entity_id": "terran-raven",
+      "raw_text": "Added Anti-Armor Missile: After a 2-second arming period, pursues targets, dealing 30 splash damage and reducing affected units' armor by 3 for 21 seconds.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-raven_6",
+      "patch_version": "4.0",
+      "entity_id": "terran-raven",
+      "raw_text": "New upgrade Enhanced Munitions (Starport Tech Lab, 150/150, 79s): Increases Anti-Armor Missile explosion radius by 20% and tracking range by 50%.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-liberator_7",
+      "patch_version": "4.0",
+      "entity_id": "terran-liberator",
+      "raw_text": "Defender Mode no longer grants a sight range bonus, but the unit now gains vision of the targeted location while in Defender Mode.",
+      "change_type": "mixed"
+    },
+    {
+      "id": "terran-cyclone_8",
+      "patch_version": "4.0",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Lock On: The first four shots now fire quickly.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-cyclone_9",
+      "patch_version": "4.0",
+      "entity_id": "terran-cyclone",
+      "raw_text": "New upgrade Rapid Fire Launchers (Factory Tech Lab, 150/150, 79s): Increases the attack speed of the first 12 Lock On shots.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-ghost_10",
+      "patch_version": "4.0",
+      "entity_id": "terran-ghost",
+      "raw_text": "Starts with the Cloak ability.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-ghost_11",
+      "patch_version": "4.0",
+      "entity_id": "terran-ghost",
+      "raw_text": "Starting energy reduced from 75 to 50.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-ghost_12",
+      "patch_version": "4.0",
+      "entity_id": "terran-ghost",
+      "raw_text": "New upgrade Moebius Reactor (Ghost Academy, 100/100, 57s): Increases starting energy by 25.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-hellion_13",
+      "patch_version": "4.0",
+      "entity_id": "terran-hellion",
+      "raw_text": "New upgrade Smart Servos (Factory Tech Lab, 150/150, 79s): Allows faster transformation between Hellion and Hellbat.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-hellbat_14",
+      "patch_version": "4.0",
+      "entity_id": "terran-hellbat",
+      "raw_text": "New upgrade Smart Servos (Factory Tech Lab, 150/150, 79s): Allows faster transformation between Hellbat and Hellion.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-viking_15",
+      "patch_version": "4.0",
+      "entity_id": "terran-viking",
+      "raw_text": "New upgrade Smart Servos (Factory Tech Lab, 150/150, 79s): Allows faster transformation between Fighter and Assault modes.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-thor_16",
+      "patch_version": "4.0",
+      "entity_id": "terran-thor",
+      "raw_text": "New upgrade Smart Servos (Factory Tech Lab, 150/150, 79s): Allows faster switching between weapon modes.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-widow_mine_17",
+      "patch_version": "4.0",
+      "entity_id": "terran-widow_mine",
+      "raw_text": "Now revealed while Sentinel Missile is on cooldown.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-mothership_core_18",
+      "patch_version": "4.0",
+      "entity_id": "protoss-mothership_core",
+      "raw_text": "Unit removed from the game.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-nexus_19",
+      "patch_version": "4.0",
+      "entity_id": "protoss-nexus",
+      "raw_text": "Now has energy (200 max, starts at 50).",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-nexus_20",
+      "patch_version": "4.0",
+      "entity_id": "protoss-nexus",
+      "raw_text": "Chrono Boost reworked: Costs 50 energy and causes the target structure to operate 100% faster for 10 seconds.",
+      "change_type": "mixed"
+    },
+    {
+      "id": "protoss-nexus_21",
+      "patch_version": "4.0",
+      "entity_id": "protoss-nexus",
+      "raw_text": "Added Mass Recall: Recalls units in the target area to the Nexus (50 energy; 3.6s warp-out pause; 0.4s warp-in).",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-mothership_22",
+      "patch_version": "4.0",
+      "entity_id": "protoss-mothership",
+      "raw_text": "Photon Overcharge removed.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-mothership_23",
+      "patch_version": "4.0",
+      "entity_id": "protoss-mothership",
+      "raw_text": "Mass Recall changed to Strategic Recall: Recalls all player units in the target area to the Mothership; has no cooldown and does not share a global cooldown with Nexus Mass Recall.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-disruptor_24",
+      "patch_version": "4.0",
+      "entity_id": "protoss-disruptor",
+      "raw_text": "Purification Nova now detonates on contact with enemy units (detonation radius 0.25).",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-disruptor_25",
+      "patch_version": "4.0",
+      "entity_id": "protoss-disruptor",
+      "raw_text": "Purification Nova cooldown reduced from 21.4 to 14.3 seconds.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-disruptor_26",
+      "patch_version": "4.0",
+      "entity_id": "protoss-disruptor",
+      "raw_text": "Purification Nova will not trigger on enemy structures or changelings.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-observer_27",
+      "patch_version": "4.0",
+      "entity_id": "protoss-observer",
+      "raw_text": "New ability Surveillance Mode: Increases vision by 25% and immobilizes the Observer.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-high_templar_28",
+      "patch_version": "4.0",
+      "entity_id": "protoss-high_templar",
+      "raw_text": "Gains a basic attack (Psi Blast): 4 damage, 1.25 weapon speed, range 6, targets ground units.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-colossus_29",
+      "patch_version": "4.0",
+      "entity_id": "protoss-colossus",
+      "raw_text": "Thermal Lance base range increased from 6 to 7.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-colossus_30",
+      "patch_version": "4.0",
+      "entity_id": "protoss-colossus",
+      "raw_text": "Thermal Lance damage changed from 12 to 10 (+5 vs Light).",
+      "change_type": "mixed"
+    },
+    {
+      "id": "protoss-colossus_31",
+      "patch_version": "4.0",
+      "entity_id": "protoss-colossus",
+      "raw_text": "Protoss Ground Weapons upgrades now add +1 to base damage and +1 vs Light for Thermal Lance.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-colossus_32",
+      "patch_version": "4.0",
+      "entity_id": "protoss-colossus",
+      "raw_text": "Extended Thermal Lance upgrade cost reduced from 200/200 to 150/150.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-colossus_33",
+      "patch_version": "4.0",
+      "entity_id": "protoss-colossus",
+      "raw_text": "Extended Thermal Lance range bonus reduced from +3 to +2.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-carrier_34",
+      "patch_version": "4.0",
+      "entity_id": "protoss-carrier",
+      "raw_text": "Interceptor cost increased from 10 to 15 minerals.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-stalker_35",
+      "patch_version": "4.0",
+      "entity_id": "protoss-stalker",
+      "raw_text": "Particle Disruptors damage changed from 10 (+4 vs Armored) to 15 (+6 vs Armored).",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-stalker_36",
+      "patch_version": "4.0",
+      "entity_id": "protoss-stalker",
+      "raw_text": "Weapon speed changed from 1.0 to 1.54 (slower).",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-stalker_37",
+      "patch_version": "4.0",
+      "entity_id": "protoss-stalker",
+      "raw_text": "Now receives +2 base damage per level of Protoss Ground Weapons upgrades.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-oracle_38",
+      "patch_version": "4.0",
+      "entity_id": "protoss-oracle",
+      "raw_text": "Revelation duration reduced from 43 to 30 seconds.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-oracle_39",
+      "patch_version": "4.0",
+      "entity_id": "protoss-oracle",
+      "raw_text": "Stasis Ward no longer affects Zerg larva or eggs.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-oracle_40",
+      "patch_version": "4.0",
+      "entity_id": "protoss-oracle",
+      "raw_text": "Stasis Ward now has a 170-second timed life.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-oracle_41",
+      "patch_version": "4.0",
+      "entity_id": "protoss-oracle",
+      "raw_text": "Pulsar Beam changed from Spell to Normal damage; armor now reduces Pulsar Beam damage.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-adept_42",
+      "patch_version": "4.0",
+      "entity_id": "protoss-adept",
+      "raw_text": "Shade vision increased from 2 to 4.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-infestor_43",
+      "patch_version": "4.0",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Fungal Growth now slows targets by 75% (behavioral change from previous root).",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-infestor_44",
+      "patch_version": "4.0",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Fungal Growth radius increased from 2.0 to 2.5.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-infestor_45",
+      "patch_version": "4.0",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Infested Terran: Infested Gauss Rifle damage reduced from 8 to 6.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-infestor_46",
+      "patch_version": "4.0",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Infested Terran: Infested Gauss Rifle no longer targets air units.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-infestor_47",
+      "patch_version": "4.0",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Infested Terran: New anti-air weapon Infested Rockets (14 damage, 0.95 period, range 6) and is prioritized over the ground weapon.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-infestor_48",
+      "patch_version": "4.0",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Infested Terran: Now affected by Zerg missile attack and ground carapace upgrades.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-overseer_49",
+      "patch_version": "4.0",
+      "entity_id": "zerg-overseer",
+      "raw_text": "New ability Oversight: Increases vision by 25% and immobilizes the Overseer.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-viper_50",
+      "patch_version": "4.0",
+      "entity_id": "zerg-viper",
+      "raw_text": "Parasitic Bomb damage increased from 60 to 120 over 7 seconds.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-viper_51",
+      "patch_version": "4.0",
+      "entity_id": "zerg-viper",
+      "raw_text": "Parasitic Bomb damage no longer stacks.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-viper_52",
+      "patch_version": "4.0",
+      "entity_id": "zerg-viper",
+      "raw_text": "Parasitic Bomb now has a 0.7-second delay before effects begin.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-swarm_host_53",
+      "patch_version": "4.0",
+      "entity_id": "zerg-swarm_host",
+      "raw_text": "Movement speed reduced from 4.13 to 3.15.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-lurker_den_54",
+      "patch_version": "4.0",
+      "entity_id": "zerg-lurker_den",
+      "raw_text": "Now morphed from a Drone instead of from the Hydralisk Den.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-lurker_55",
+      "patch_version": "4.0",
+      "entity_id": "zerg-lurker",
+      "raw_text": "New upgrade Adaptive Talons (Hive; 150/150; 54s): Reduces burrow time from 2.0 to 0.7 seconds and increases movement speed by 10%.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-overlord_56",
+      "patch_version": "4.0",
+      "entity_id": "zerg-overlord",
+      "raw_text": "Movement speed increased from 0.82 to 0.902; Pneumatized Carapace still increases speed to 2.63.",
+      "change_type": "buff"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "metadata": {
+    "version": "1.4.3",
+    "date": "2012-02-22",
+    "title": "StarCraft II Patch 1.4.3",
+    "url": "https://news.blizzard.com/en-gb/article/9995857/patch-1-4-3-now-live"
+  },
+  "changes": [
+    {
+      "id": "protoss-phoenix_0",
+      "patch_version": "1.4.3",
+      "entity_id": "protoss-phoenix",
+      "raw_text": "Added Anion Pulse-Crystals upgrade at the Fleet Beacon; increases Phoenix weapon range by +2.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-ghost_1",
+      "patch_version": "1.4.3",
+      "entity_id": "terran-ghost",
+      "raw_text": "Snipe damage changed from 45 to 25 (+25 vs Psionic).",
+      "change_type": "mixed"
+    },
+    {
+      "id": "terran-orbital_command_center_2",
+      "patch_version": "1.4.3",
+      "entity_id": "terran-orbital_command",
+      "raw_text": "[Orbital Command Center] MULE now always returns 30 minerals per trip, regardless of mineral type.",
+      "change_type": "nerf"
+    }
+  ]
+}

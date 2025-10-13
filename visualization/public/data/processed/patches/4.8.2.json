@@ -1,0 +1,171 @@
+{
+  "metadata": {
+    "version": "4.8.2",
+    "date": "2019-01-22",
+    "title": "StarCraft II Patch 4.8.2",
+    "url": "https://news.blizzard.com/en-us/article/22871519/starcraft-ii-4-8-2-patch-notes"
+  },
+  "changes": [
+    {
+      "id": "terran-cyclone_0",
+      "patch_version": "4.8.2",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Mag-field Accelerator research time increased from 79 seconds to 100 seconds.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-thor_1",
+      "patch_version": "4.8.2",
+      "entity_id": "terran-thor",
+      "raw_text": "High Impact Payload weapon range increased from 10 to 11.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-battlecruiser_2",
+      "patch_version": "4.8.2",
+      "entity_id": "terran-battlecruiser",
+      "raw_text": "Weapon Refit research time increased from 43 seconds to 100 seconds.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-ultralisk_3",
+      "patch_version": "4.8.2",
+      "entity_id": "zerg-ultralisk",
+      "raw_text": "Anabolic Synthesis upgrade now increases Ultralisk movement speed off creep by 0.82, up from 0.41.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-nydus_worm_4",
+      "patch_version": "4.8.2",
+      "entity_id": "zerg-nydus_network",
+      "raw_text": "[Nydus Worm] Nydus Worm health increased from 200 to 300.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-nydus_worm_5",
+      "patch_version": "4.8.2",
+      "entity_id": "zerg-nydus_network",
+      "raw_text": "[Nydus Worm] Nydus Worm armor while emerging decreased from 6 to 5.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-nydus_worm_6",
+      "patch_version": "4.8.2",
+      "entity_id": "zerg-nydus_network",
+      "raw_text": "[Nydus Worm] Nydus Network and Nydus Worm initial unload delay decreased from 0.36 to 0.18.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-nydus_worm_7",
+      "patch_version": "4.8.2",
+      "entity_id": "zerg-nydus_network",
+      "raw_text": "[Nydus Worm] Nydus Network and Nydus Worm unload period changed from 0.36 to 0.18.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-nydus_worm_8",
+      "patch_version": "4.8.2",
+      "entity_id": "zerg-nydus_network",
+      "raw_text": "[Nydus Worm] Nydus Network and Nydus Worm load period changed from 0.18 to 0.09.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-nydus_network_9",
+      "patch_version": "4.8.2",
+      "entity_id": "zerg-nydus_network",
+      "raw_text": "Nydus Network and Nydus Worm initial unload delay decreased from 0.36 to 0.18.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-nydus_network_10",
+      "patch_version": "4.8.2",
+      "entity_id": "zerg-nydus_network",
+      "raw_text": "Nydus Network and Nydus Worm unload period changed from 0.36 to 0.18.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-nydus_network_11",
+      "patch_version": "4.8.2",
+      "entity_id": "zerg-nydus_network",
+      "raw_text": "Nydus Network and Nydus Worm load period changed from 0.18 to 0.09.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-adept_12",
+      "patch_version": "4.8.2",
+      "entity_id": "protoss-adept",
+      "raw_text": "Gateway build time increased from 27 seconds to 30 seconds. Warp Gate cooldown remains unchanged.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-gateway_13",
+      "patch_version": "4.8.2",
+      "entity_id": "protoss-gateway",
+      "raw_text": "Warp Gate research time decreased from 114 seconds to 100 seconds.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-stalker_14",
+      "patch_version": "4.8.2",
+      "entity_id": "protoss-stalker",
+      "raw_text": "Blink research cost reduced from 150/150 to 100/100.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-robotics_facility_15",
+      "patch_version": "4.8.2",
+      "entity_id": "protoss-robotics_facility",
+      "raw_text": "Cost decreased from 200/100 to 150/100.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-immortal_16",
+      "patch_version": "4.8.2",
+      "entity_id": "protoss-immortal",
+      "raw_text": "Cost increased from 250/100 to 275/100.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-observer_17",
+      "patch_version": "4.8.2",
+      "entity_id": "protoss-observer",
+      "raw_text": "Movement speed increased from 2.63 to 3.01.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-observer_18",
+      "patch_version": "4.8.2",
+      "entity_id": "protoss-observer",
+      "raw_text": "Gravitic Boosters upgrade now increases movement speed by 1.51, up from 1.31.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-oracle_19",
+      "patch_version": "4.8.2",
+      "entity_id": "protoss-oracle",
+      "raw_text": "Removed the Light attribute.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-oracle_20",
+      "patch_version": "4.8.2",
+      "entity_id": "protoss-oracle",
+      "raw_text": "Added the Armored attribute.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-tempest_21",
+      "patch_version": "4.8.2",
+      "entity_id": "protoss-tempest",
+      "raw_text": "Movement speed decreased from 3.5 to 3.15.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-tempest_22",
+      "patch_version": "4.8.2",
+      "entity_id": "protoss-tempest",
+      "raw_text": "Acceleration decreased from 2.8 to 2.1.",
+      "change_type": "nerf"
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "metadata": {
+    "version": "1.1.2",
+    "date": "2010-10-15",
+    "title": "StarCraft II Patch 1.1.2",
+    "url": "https://news.blizzard.com/en-gb/article/9990145/patch-1-1-2-now-live"
+  },
+  "changes": [
+    {
+      "id": "protoss-nexus_0",
+      "patch_version": "1.1.2",
+      "entity_id": "protoss-nexus",
+      "raw_text": "Life and shields increased from 750/750 to 1000/1000.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-void_ray_1",
+      "patch_version": "1.1.2",
+      "entity_id": "protoss-void_ray",
+      "raw_text": "Damage level 1 increased from 5 to 6 (+4 armored).",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-void_ray_2",
+      "patch_version": "1.1.2",
+      "entity_id": "protoss-void_ray",
+      "raw_text": "Damage level 2 decreased from 10 (+15 armored) to 8 (+8 armored).",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-void_ray_3",
+      "patch_version": "1.1.2",
+      "entity_id": "protoss-void_ray",
+      "raw_text": "Flux Vanes speed upgrade bonus decreased from 1.125 to 0.703.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-barracks_4",
+      "patch_version": "1.1.2",
+      "entity_id": "terran-barracks",
+      "raw_text": "Build requirement changed from Command Center to Supply Depot.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-supply_depot_5",
+      "patch_version": "1.1.2",
+      "entity_id": "terran-supply_depot",
+      "raw_text": "Life increased from 350 to 400.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-medivac_6",
+      "patch_version": "1.1.2",
+      "entity_id": "terran-medivac",
+      "raw_text": "Acceleration reduced from 2.315 to 2.25.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-medivac_7",
+      "patch_version": "1.1.2",
+      "entity_id": "terran-medivac",
+      "raw_text": "Speed reduced from 2.75 to 2.5.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-reaper_8",
+      "patch_version": "1.1.2",
+      "entity_id": "terran-reaper",
+      "raw_text": "Nitro Packs speed upgrade now has a Factory requirement.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-thor_9",
+      "patch_version": "1.1.2",
+      "entity_id": "terran-thor",
+      "raw_text": "Energy bar removed.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-thor_10",
+      "patch_version": "1.1.2",
+      "entity_id": "terran-thor",
+      "raw_text": "250mm Strike Cannons is now cooldown-based on a 50-second cooldown; ability starts with cooldown available (usable immediately after upgrade is researched).",
+      "change_type": "mixed"
+    },
+    {
+      "id": "zerg-hatchery_11",
+      "patch_version": "1.1.2",
+      "entity_id": "zerg-hatchery",
+      "raw_text": "Life increased from 1250 to 1500.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-lair_12",
+      "patch_version": "1.1.2",
+      "entity_id": "zerg-lair",
+      "raw_text": "Life increased from 1800 to 2000.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-spawning_pool_13",
+      "patch_version": "1.1.2",
+      "entity_id": "zerg-spawning_pool",
+      "raw_text": "Life increased from 750 to 1000.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-spire_14",
+      "patch_version": "1.1.2",
+      "entity_id": "zerg-spire",
+      "raw_text": "Life increased from 600 to 850.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-ultralisk_cavern_15",
+      "patch_version": "1.1.2",
+      "entity_id": "zerg-ultralisk_cavern",
+      "raw_text": "Life increased from 600 to 850.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-corruptor_16",
+      "patch_version": "1.1.2",
+      "entity_id": "zerg-corruptor",
+      "raw_text": "Energy bar removed.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-corruptor_17",
+      "patch_version": "1.1.2",
+      "entity_id": "zerg-corruptor",
+      "raw_text": "Corruption is now cooldown-based on a 45-second cooldown and starts with cooldown expired (must wait 45 seconds before usable).",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-infestor_18",
+      "patch_version": "1.1.2",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Fungal Growth now prevents Blink.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-roach_19",
+      "patch_version": "1.1.2",
+      "entity_id": "zerg-roach",
+      "raw_text": "Range increased from 3 to 4.",
+      "change_type": "buff"
+    }
+  ]
+}

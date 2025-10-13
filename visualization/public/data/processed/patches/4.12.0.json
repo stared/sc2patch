@@ -1,0 +1,94 @@
+{
+  "metadata": {
+    "version": "4.12.0",
+    "date": "2020-06-09",
+    "title": "StarCraft II Patch 4.12.0",
+    "url": "https://news.blizzard.com/en-us/article/23442717/starcraft-ii-4-12-0-patch-notes"
+  },
+  "changes": [
+    {
+      "id": "terran-widow_mine_0",
+      "patch_version": "4.12.0",
+      "entity_id": "terran-widow_mine",
+      "raw_text": "Drilling Claws no longer grants burrowed Widow Mines invisibility while reloading; instead, having an Armory grants invisibility while reloading.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-widow_mine_1",
+      "patch_version": "4.12.0",
+      "entity_id": "terran-widow_mine",
+      "raw_text": "Red laser indicator now reflects Armory existence (instead of Drilling Claws completion) for burrowed Widow Mines reloading.",
+      "change_type": "mixed"
+    },
+    {
+      "id": "zerg-queen_2",
+      "patch_version": "4.12.0",
+      "entity_id": "zerg-queen",
+      "raw_text": "Anti-air weapon range decreased from 8 to 7.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-baneling_3",
+      "patch_version": "4.12.0",
+      "entity_id": "zerg-baneling",
+      "raw_text": "Weapon damage changed from 20 (+15 vs light) to 18 (+17 vs light).",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-infestor_4",
+      "patch_version": "4.12.0",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Microbial Shroud no longer requires an upgrade.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-creep_tumor_5",
+      "patch_version": "4.12.0",
+      "entity_id": "zerg-creep_tumor",
+      "raw_text": "\u201cArmored\u201d attribute removed.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-creep_tumor_6",
+      "patch_version": "4.12.0",
+      "entity_id": "zerg-creep_tumor",
+      "raw_text": "\u201cLight\u201d attribute added.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-nexus_7",
+      "patch_version": "4.12.0",
+      "entity_id": "protoss-nexus",
+      "raw_text": "New ability: Battery Overcharge \u2014 Overcharges a target Shield Battery near a Nexus, increasing its shield restoration rate by 100% and allowing it to restore shields without consuming energy for 14 seconds; costs 50 energy; 60-second shared cooldown across all Nexuses; unlimited cast range (target Battery must be within range 8 of any friendly Nexus).",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-oracle_8",
+      "patch_version": "4.12.0",
+      "entity_id": "protoss-oracle",
+      "raw_text": "Revelation energy cost decreased from 50 to 25.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-oracle_9",
+      "patch_version": "4.12.0",
+      "entity_id": "protoss-oracle",
+      "raw_text": "Revelation cooldown increased from 2 seconds to 10 seconds.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-oracle_10",
+      "patch_version": "4.12.0",
+      "entity_id": "protoss-oracle",
+      "raw_text": "Revelation duration decreased from 30 seconds to 15 seconds.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-high_templar_11",
+      "patch_version": "4.12.0",
+      "entity_id": "protoss-high_templar",
+      "raw_text": "Feedback range increased from 9 to 10.",
+      "change_type": "buff"
+    }
+  ]
+}

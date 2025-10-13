@@ -1,0 +1,66 @@
+{
+  "metadata": {
+    "version": "5.0.9",
+    "date": "2022-03-08",
+    "title": "StarCraft II Patch 5.0.9",
+    "url": "https://news.blizzard.com/en-us/article/23774006/starcraft-ii-5-0-9-ptr-patch-notes"
+  },
+  "changes": [
+    {
+      "id": "protoss-shield_battery_0",
+      "patch_version": "5.0.9",
+      "entity_id": "protoss-shield_battery",
+      "raw_text": "Starting Energy reduced from 100 to 50 outside of the next field",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-dark_templar_1",
+      "patch_version": "5.0.9",
+      "entity_id": "protoss-dark_templar",
+      "raw_text": "Now have a 0.75s attack delay after blink",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-void_ray_2",
+      "patch_version": "5.0.9",
+      "entity_id": "protoss-void_ray",
+      "raw_text": "Increased build time from 37 to 43",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-void_ray_3",
+      "patch_version": "5.0.9",
+      "entity_id": "protoss-void_ray",
+      "raw_text": "Increased mineral cost from 200 to 250",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-queen_4",
+      "patch_version": "5.0.9",
+      "entity_id": "zerg-queen",
+      "raw_text": "Can no longer transfuse off creep",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-widow_mine_5",
+      "patch_version": "5.0.9",
+      "entity_id": "terran-widow_mine",
+      "raw_text": "Reduced the effectiveness of Drilling Claws from 0.71 seconds to 1.07 seconds",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-lurker_6",
+      "patch_version": "5.0.9",
+      "entity_id": "zerg-lurker",
+      "raw_text": "Reduced the effectiveness of Adaptive Talon from 0.71 seconds to 1.07 seconds",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-nydus_worm_7",
+      "patch_version": "5.0.9",
+      "entity_id": "zerg-nydus_network",
+      "raw_text": "[Nydus Worm] Increased starting creep by 1 unit in each direction around the worm once it spawns",
+      "change_type": "buff"
+    }
+  ]
+}

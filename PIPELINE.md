@@ -2,11 +2,12 @@
 
 ## Overview
 
-The SC2Patches pipeline processes StarCraft II balance patch notes through three clear stages:
+The SC2Patches pipeline processes StarCraft II balance patch notes through four clear stages:
 
 1. **Download** - Fetch HTML from Blizzard News and convert to Markdown
 2. **Parse** - Extract structured data using GPT-5 via OpenRouter
 3. **Validate** - Check completeness and correctness
+4. **Export** - Copy processed data to visualization directory
 
 Each stage generates a timestamped markdown log in `data/logs/` for debugging and tracking.
 
@@ -26,7 +27,11 @@ data/patch_urls.json (MANUAL)
          ↓
     [3_validate.py]
          ↓
-    ✓ Validated patches ready for visualization
+    [4_export_for_viz.py]
+         ↓
+    visualization/public/data/
+         ↓
+    ✓ Ready for visualization
 ```
 
 ## Data Sources
@@ -189,6 +194,38 @@ uv run python scripts/3_validate.py
 - **Invalid JSON:** Corrupted file → delete and re-parse
 - **Empty fields:** Parser bug → report issue
 
+## Stage 4: Export
+
+**Script:** `scripts/4_export_for_viz.py`
+
+**Purpose:** Copy processed data to visualization directory
+
+**Usage:**
+```bash
+uv run python scripts/4_export_for_viz.py
+```
+
+**Outputs:**
+- `visualization/public/data/processed/patches/*.json` - Copied patch files
+- `visualization/public/data/units.json` - Copied units reference
+- `data/logs/YYYY-MM-DD-HH-MM-export.md` - Execution log
+
+**What it does:**
+1. Copies all files from `data/processed/patches/` to `visualization/public/data/processed/patches/`
+2. Copies `data/units.json` to `visualization/public/data/units.json`
+3. Generates timestamped log
+
+**Why not symlink?**
+- Explicit copies are clearer and easier to debug
+- Works on all platforms (Windows, Docker, etc.)
+- No hidden dependencies
+- Can transform/optimize data for viz if needed
+
+**When to run:**
+- After stage 3 (validate) passes
+- Before building/running visualization
+- After any changes to processed patches
+
 ## Logs
 
 All pipeline stages generate timestamped markdown logs in `data/logs/`:
@@ -251,6 +288,9 @@ uv run python scripts/2_parse.py
 # 3. Validate
 uv run python scripts/3_validate.py
 
+# 4. Export for visualization
+uv run python scripts/4_export_for_viz.py
+
 # Check logs
 ls -lt data/logs/
 ```
@@ -293,6 +333,7 @@ The React visualization reads directly from `data/processed/patches/*.json`.
    uv run python scripts/1_download.py
    uv run python scripts/2_parse.py {version}
    uv run python scripts/3_validate.py
+   uv run python scripts/4_export_for_viz.py
    ```
 4. Check logs for any issues
 5. Commit changes (patches + patch_urls.json)
@@ -332,7 +373,8 @@ sc2patches/
 └── scripts/
     ├── 1_download.py            # Stage 1 pipeline
     ├── 2_parse.py               # Stage 2 pipeline
-    └── 3_validate.py            # Stage 3 pipeline
+    ├── 3_validate.py            # Stage 3 pipeline
+    └── 4_export_for_viz.py      # Stage 4 pipeline
 ```
 
 ## Help & Issues

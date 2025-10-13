@@ -1,0 +1,24 @@
+{
+  "metadata": {
+    "version": "3.10",
+    "date": "2017-01-24",
+    "title": "StarCraft II Patch 3.10",
+    "url": "https://news.blizzard.com/en-us/article/20481178/starcraft-ii-legacy-of-the-void-3-10-patch-notes"
+  },
+  "changes": [
+    {
+      "id": "terran-battlecruiser_0",
+      "patch_version": "3.10",
+      "entity_id": "terran-battlecruiser",
+      "raw_text": "Yamato Cannon is no longer interrupted by Infestor's Neural Parasite once it is cast.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-infestor_1",
+      "patch_version": "3.10",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Neural Parasite can no longer interrupt an already-cast Yamato Cannon.",
+      "change_type": "nerf"
+    }
+  ]
+}

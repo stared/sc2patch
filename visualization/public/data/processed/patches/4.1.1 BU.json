@@ -1,0 +1,80 @@
+{
+  "metadata": {
+    "version": "4.1.1 BU",
+    "date": "2018-01-29",
+    "title": "StarCraft II Patch 4.1.1 BU",
+    "url": "https://news.blizzard.com/en-us/starcraft2/21349570"
+  },
+  "changes": [
+    {
+      "id": "protoss-nexus_0",
+      "patch_version": "4.1.1 BU",
+      "entity_id": "protoss-nexus",
+      "raw_text": "Chrono Boost strength reduced from 100% to 50%",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-nexus_1",
+      "patch_version": "4.1.1 BU",
+      "entity_id": "protoss-nexus",
+      "raw_text": "Chrono Boost duration per cast increased from 10 to 20 seconds",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-oracle_2",
+      "patch_version": "4.1.1 BU",
+      "entity_id": "protoss-oracle",
+      "raw_text": "Build time reduced from 43 to 37 seconds",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-disruptor_3",
+      "patch_version": "4.1.1 BU",
+      "entity_id": "protoss-disruptor",
+      "raw_text": "Purification Nova now has a 1 second charge-up time before launch",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-widow_mine_4",
+      "patch_version": "4.1.1 BU",
+      "entity_id": "terran-widow_mine",
+      "raw_text": "Build time reduced from 28.6 to 21.4 seconds",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-raven_5",
+      "patch_version": "4.1.1 BU",
+      "entity_id": "terran-raven",
+      "raw_text": "Anti-Armor Missile lock time reduced from 2.14 to 1.43 seconds",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-raven_6",
+      "patch_version": "4.1.1 BU",
+      "entity_id": "terran-raven",
+      "raw_text": "Anti-Armor Missile energy cost reduced from 125 to 100",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-raven_7",
+      "patch_version": "4.1.1 BU",
+      "entity_id": "terran-raven",
+      "raw_text": "Interference Matrix range increased from 8 to 9",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-raven_8",
+      "patch_version": "4.1.1 BU",
+      "entity_id": "terran-raven",
+      "raw_text": "Interference Matrix missile mover speed increased by 50%",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-viking_9",
+      "patch_version": "4.1.1 BU",
+      "entity_id": "terran-viking",
+      "raw_text": "Now switches to Assault Mode immediately when activated instead of after coming to a complete stop",
+      "change_type": "buff"
+    }
+  ]
+}
