@@ -213,7 +213,8 @@ uv run python scripts/4_export_for_viz.py
 **What it does:**
 1. Copies all files from `data/processed/patches/` to `visualization/public/data/processed/patches/`
 2. Copies `data/units.json` to `visualization/public/data/units.json`
-3. Generates timestamped log
+3. Generates `patches_manifest.json` index file (version, date, URL, changes count for each patch)
+4. Generates timestamped log
 
 **Why not symlink?**
 - Explicit copies are clearer and easier to debug

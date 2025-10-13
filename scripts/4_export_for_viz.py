@@ -7,6 +7,7 @@ Usage:
     uv run python scripts/4_export_for_viz.py
 """
 
+import json
 import shutil
 import sys
 from pathlib import Path
@@ -54,7 +55,9 @@ def main() -> None:
     for patch_file in patch_files:
         dest_file = dest_patches_dir / patch_file.name
         shutil.copy2(patch_file, dest_file)
-        logger.log_success(patch_file.stem, f"{patch_file.name} → {dest_file.relative_to(dest_dir)}")
+        logger.log_success(
+            patch_file.stem, f"{patch_file.name} → {dest_file.relative_to(dest_dir)}"
+        )
 
     console.print(f"[green]  ✓ Copied {len(patch_files)} patches[/green]")
 
@@ -64,10 +67,48 @@ def main() -> None:
         logger.log_success("units.json", f"units.json → {dest_units_file.relative_to(dest_dir)}")
         console.print("[green]  ✓ Copied units.json[/green]")
 
+    # Generate patches manifest
+    console.print("\nGenerating patches manifest...")
+    manifest_data = {"patches": [], "total": len(patch_files)}
+
+    for patch_file in patch_files:
+        try:
+            with patch_file.open() as f:
+                patch_data = json.load(f)
+                manifest_data["patches"].append(
+                    {
+                        "version": patch_data["metadata"]["version"],
+                        "date": patch_data["metadata"]["date"],
+                        "url": patch_data["metadata"]["url"],
+                        "file": patch_file.name,
+                        "changes_count": len(patch_data["changes"]),
+                    }
+                )
+        except (json.JSONDecodeError, KeyError) as e:
+            console.print(f"[yellow]  ⚠ Could not read {patch_file.name}: {e}[/yellow]")
+
+    # Sort manifest by date
+    manifest_data["patches"].sort(key=lambda p: p["date"])
+
+    # Write manifest
+    dest_manifest_file = dest_dir / "patches_manifest.json"
+    with dest_manifest_file.open("w") as f:
+        json.dump(manifest_data, f, indent=2)
+
+    manifest_rel_path = dest_manifest_file.relative_to(dest_dir)
+    logger.log_success(
+        "manifest",
+        f"Generated manifest with {len(manifest_data['patches'])} patches → {manifest_rel_path}",
+    )
+    console.print(
+        f"[green]  ✓ Generated manifest ({len(manifest_data['patches'])} patches)[/green]"
+    )
+
     # Write log
     log_path = logger.write(
         additional_summary={
             "Patch files": len(patch_files),
+            "Manifest patches": len(manifest_data["patches"]),
             "Destination": str(dest_dir),
         }
     )
