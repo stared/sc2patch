@@ -141,6 +141,13 @@
       "changes_count": 2
     },
     {
+      "version": "3.11.0 BU",
+      "date": "2017-03-07",
+      "url": "https://news.blizzard.com/en-us/article/20562669/legacy-of-the-void-balance-update-march-7-2017",
+      "file": "3.11.0 BU.json",
+      "changes_count": 6
+    },
+    {
       "version": "3.13.0",
       "date": "2017-05-01",
       "url": "https://news.blizzard.com/en-gb/article/20721907/starcraft-ii-legacy-of-the-void-3-13-0-patch-notes",
@@ -286,13 +293,6 @@
       "url": "https://news.blizzard.com/en-us/article/24225313/starcraft-ii-5-0-15-patch-notes",
       "file": "5.0.15.json",
       "changes_count": 25
-    },
-    {
-      "version": "3.11.0 BU",
-      "date": "unknown",
-      "url": "https://news.blizzard.com/en-us/article/20562669/legacy-of-the-void-balance-update-march-7-2017",
-      "file": "3.11.0 BU.json",
-      "changes_count": 6
     }
   ],
   "total": 42

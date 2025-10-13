@@ -33,7 +33,7 @@ function EntityCell({ entityId, entity, units, onHover, onLeave }: EntityCellPro
   const getOutlineColor = () => {
     if (entity.status === 'buff') return '#4a9eff'; // Blue for buffs
     if (entity.status === 'nerf') return '#ff4444'; // Red for nerfs
-    if (entity.status === 'mixed') return '#888'; // Grey for mixed
+    if (entity.status === 'mixed') return '#ff9933'; // Orange for mixed (distinct from neutral grey)
     return color; // Race color by default
   };
 
@@ -176,7 +176,7 @@ export function PatchGrid({ patches, units, _viewMode }: PatchGridProps) {
 
               const indicatorColor = changeType === 'buff' ? '#4a9eff'
                                    : changeType === 'nerf' ? '#ff4444'
-                                   : changeType === 'mixed' ? '#888'
+                                   : changeType === 'mixed' ? '#ff9933'
                                    : '#ccc';
 
               return (
