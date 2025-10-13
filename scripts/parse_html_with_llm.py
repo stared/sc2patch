@@ -85,13 +85,20 @@ for version, url in PATCH_URLS.items():
     URL_TO_VERSION[path] = version
 
 
+class Change(BaseModel):
+    """A single balance change with classification."""
+
+    text: str = Field(description="Description of the change")
+    change_type: str = Field(description="Type: buff, nerf, or mixed")
+
+
 class BalanceChange(BaseModel):
     """A single balance change for an entity."""
 
     entity_id: str = Field(description="Entity ID in format: race-unit_name (e.g., 'terran-marine', 'protoss-stalker')")
     entity_name: str = Field(description="Display name of the entity (e.g., 'Marine', 'Stalker')")
     race: str = Field(description="Race: 'terran', 'protoss', 'zerg', or 'neutral'")
-    changes: List[str] = Field(description="List of specific changes to this entity")
+    changes: List[Change] = Field(description="List of specific changes with classification")
 
 
 class PatchChanges(BaseModel):
@@ -155,6 +162,16 @@ For each changed entity (unit, building, upgrade, ability):
 3. Extract all specific changes as separate list items
 4. Focus ONLY on balance changes (damage, cost, build time, etc.)
 5. Ignore bug fixes, UI changes, and editor changes
+6. Classify EACH change as (from the perspective of the ENTITY itself - stronger or weaker):
+   - "buff": Entity becomes stronger (increased damage/health/armor, reduced cost, faster build time, etc.)
+   - "nerf": Entity becomes weaker (decreased damage/health/armor, increased cost, slower build time, etc.)
+   - "mixed": Has both positive and negative aspects
+
+   IMPORTANT CLASSIFICATION EXAMPLES:
+   - Rocks armor INCREASED → "buff" (rocks are stronger)
+   - Rocks armor DECREASED → "nerf" (rocks are weaker)
+   - Unit cost INCREASED → "nerf" (harder to build)
+   - Unit cost DECREASED → "buff" (easier to build)
 
 Return JSON in this EXACT format:
 {
@@ -166,8 +183,8 @@ Return JSON in this EXACT format:
       "entity_name": "Marine",
       "race": "terran",
       "changes": [
-        "Health increased from 45 to 55",
-        "Attack damage reduced from 6 to 5"
+        {"text": "Health increased from 45 to 55", "change_type": "buff"},
+        {"text": "Attack damage reduced from 6 to 5", "change_type": "nerf"}
       ]
     },
     {
@@ -175,13 +192,13 @@ Return JSON in this EXACT format:
       "entity_name": "Stalker",
       "race": "protoss",
       "changes": [
-        "Cost changed from 125/50 to 100/50"
+        {"text": "Cost changed from 125/50 to 100/50", "change_type": "buff"}
       ]
     }
   ]
 }
 
-CRITICAL: ALL fields (entity_id, entity_name, race, changes) are REQUIRED for each entity."""
+CRITICAL: ALL fields (entity_id, entity_name, race, changes with text and change_type) are REQUIRED."""
 
     user_prompt = f"""Extract all balance changes from this StarCraft II patch:
 
@@ -275,13 +292,14 @@ def main():
 
             # Flatten changes
             for entity in patch_data.changes:
-                for i, change_text in enumerate(entity.changes):
+                for change in entity.changes:
                     change_id = f"{entity.entity_id}_{len(output_data['changes'])}"
                     output_data["changes"].append({
                         "id": change_id,
                         "patch_version": patch_data.version,
                         "entity_id": entity.entity_id,
-                        "raw_text": change_text,
+                        "raw_text": change.text,
+                        "change_type": change.change_type,
                     })
 
             # Save

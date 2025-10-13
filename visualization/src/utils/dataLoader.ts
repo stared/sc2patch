@@ -73,6 +73,18 @@ export function processPatches(patches: PatchData[], units: Map<string, Unit>): 
     const changesByEntity = new Map<string, ProcessedChange[]>();
 
     patch.changes.forEach((change: PatchChange) => {
+      // HARD VALIDATION: Fail if change_type is missing
+      if (!change.change_type) {
+        throw new Error(
+          `CRITICAL ERROR: Change missing change_type!\n` +
+          `Patch: ${patch.metadata.version}\n` +
+          `Entity: ${change.entity_id}\n` +
+          `Text: ${change.raw_text}\n\n` +
+          `ALL changes MUST have change_type (buff/nerf/mixed).\n` +
+          `Run parse_with_llm_v2.py to re-parse this patch.`
+        );
+      }
+
       if (!changesByEntity.has(change.entity_id)) {
         changesByEntity.set(change.entity_id, []);
       }
