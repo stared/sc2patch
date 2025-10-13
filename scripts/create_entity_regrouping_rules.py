@@ -27,12 +27,19 @@ REGROUPING_RULES = {
     "protoss-ground_armor_level_2": "protoss-forge",
     "protoss-ground_armor_level_3": "protoss-forge",
 
+    # Orbital Command (naming inconsistency fix)
+    "terran-orbital_command_center": "terran-orbital_command",
+
     # Hellbat and its upgrade
     "terran-infernal_pre_igniter": "terran-hellbat",
 
     # Ghost and its upgrades
     "terran-moebius_reactor": "terran-ghost",
     "terran-cloaking_field": "terran-ghost",  # Ghost cloak upgrade
+    "terran-personal_cloaking": "terran-ghost",  # Personal Cloaking upgrade
+
+    # Engineering Bay upgrades
+    "terran-hi_sec_auto_tracking": "terran-engineering_bay",
 
     # Nydus (merge worm into network)
     "zerg-nydus_worm": "zerg-nydus_network",
@@ -44,8 +51,14 @@ REGROUPING_RULES = {
     "terran-mag_field_launchers": "terran-cyclone",  # Another Cyclone upgrade
     "terran-enhanced_munitions": "terran-liberator",  # Liberator upgrade
 
-    # Zerg upgrades
+    # Protoss Nexus abilities
+    "protoss-mass_recall": "protoss-nexus",
+    "protoss-strategic_recall": "protoss-nexus",
+
+    # Zerg Hydralisk upgrades
     "zerg-evolve_grooved_spines": "zerg-hydralisk",
+    "zerg-muscular_augments": "zerg-hydralisk",
+    "zerg-grooved_spines": "zerg-hydralisk",
     "zerg-mutate_ventral_sacs": "zerg-overlord",
 }
 
