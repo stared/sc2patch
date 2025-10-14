@@ -4,6 +4,9 @@ import { ProcessedPatchData, ProcessedEntity, ProcessedChange, Unit } from '../t
 interface PatchGridProps {
   patches: ProcessedPatchData[];
   units: Map<string, Unit>;
+  totalPatches: number;
+  selectedEntityId: string | null;
+  onEntitySelect: (entityId: string | null) => void;
 }
 
 const RACE_COLORS = {
@@ -98,13 +101,11 @@ function EntityCell({ entityId, entity, units, onHover, onLeave, onClick }: Enti
   );
 }
 
-export function PatchGrid({ patches, units }: PatchGridProps) {
+export function PatchGrid({ patches, units, totalPatches, selectedEntityId, onEntitySelect }: PatchGridProps) {
   const [tooltip, setTooltip] = useState<{
     entity: EntityWithPosition | null;
     visible: boolean;
   }>({ entity: null, visible: false });
-
-  const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
 
   const handleEntityHover = (entity: EntityWithPosition) => {
     if (!selectedEntityId) {
@@ -117,7 +118,7 @@ export function PatchGrid({ patches, units }: PatchGridProps) {
   };
 
   const handleEntityClick = (entityId: string) => {
-    setSelectedEntityId(selectedEntityId === entityId ? null : entityId);
+    onEntitySelect(selectedEntityId === entityId ? null : entityId);
     setTooltip({ entity: null, visible: false });
   };
 

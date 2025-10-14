@@ -8,6 +8,7 @@ function App() {
   const [patches, setPatches] = useState<ProcessedPatchData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadData() {
@@ -58,18 +59,51 @@ function App() {
     );
   }
 
-  return (
-    <div>
-      <div style={{ padding: '20px' }}>
-        <h1 style={{ color: '#fff', marginBottom: '20px' }}>StarCraft II Balance Changes</h1>
-        <p style={{ color: '#999', marginBottom: '30px' }}>
-          Visualizing unit changes across {patches.length} patches
-        </p>
+  // Filter patches if an entity is selected
+  const filteredPatches = selectedEntityId
+    ? patches.filter(patch => patch.entities.has(selectedEntityId))
+    : patches;
 
-        <div style={{ overflow: 'auto', background: '#111', borderRadius: '8px', padding: '20px' }}>
-          <PatchGrid patches={patches} units={units} />
+  return (
+    <div className="app-container">
+      {/* Header */}
+      <header className="app-header">
+        <div className="header-content">
+          <h1 className="header-title">StarCraft II Balance Changes</h1>
+          <div className="header-subtitle">
+            {selectedEntityId ? (
+              <>
+                <span className="filter-label">
+                  Showing {filteredPatches.length} of {patches.length} patches affecting
+                </span>
+                <span className="selected-unit">
+                  <span className="selected-unit-name">{units.get(selectedEntityId)?.name || selectedEntityId}</span>
+                  <button
+                    className="clear-filter-btn"
+                    onClick={() => setSelectedEntityId(null)}
+                    title="Clear filter"
+                  >
+                    ✕
+                  </button>
+                </span>
+              </>
+            ) : (
+              <span className="filter-label">Tracking {patches.length} balance patches across all units</span>
+            )}
+          </div>
         </div>
-      </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="app-main">
+        <PatchGrid
+          patches={patches}
+          units={units}
+          totalPatches={patches.length}
+          selectedEntityId={selectedEntityId}
+          onEntitySelect={setSelectedEntityId}
+        />
+      </main>
     </div>
   );
 }

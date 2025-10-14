@@ -16,6 +16,117 @@ body {
   min-height: 100vh;
 }
 
+/* App Container Layout */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Modern Header Design */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: linear-gradient(180deg, rgba(15, 15, 15, 0.98) 0%, rgba(10, 10, 10, 0.95) 100%);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 24px 0;
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.header-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #ffffff 0%, #b8b8b8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: fadeInDown 0.6s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header-subtitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-label {
+  color: #8b8b8b;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+.selected-unit {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 4px 6px 4px 10px;
+  gap: 8px;
+  transition: background 0.2s ease;
+}
+
+.selected-unit:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.selected-unit-name {
+  color: #b8b8b8;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.clear-filter-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: #666;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 400;
+  transition: color 0.2s ease;
+  line-height: 1;
+}
+
+.clear-filter-btn:hover {
+  color: #999;
+}
+
+/* Main Content Area */
+.app-main {
+  flex: 1;
+  padding: 24px;
+  background: #0a0a0a;
+}
+
 .tooltip {
   position: fixed;
   background: rgba(20, 20, 20, 0.95);
@@ -79,24 +190,25 @@ body {
 }
 
 /* Patch Grid Layout */
+.patch-grid-container {
+  width: 100%;
+}
+
 .patch-grid {
-  padding: 20px;
   max-width: 1400px;
   margin: 0 auto;
+  padding: 0 24px;
 }
 
 .race-headers {
   display: grid;
   grid-template-columns: 120px repeat(4, 1fr);
   gap: 10px;
-  margin-bottom: 10px;
-  padding: 0 10px;
-  position: sticky;
-  top: 0;
-  background: #0a0a0a;
-  z-index: 10;
-  padding-bottom: 10px;
-  border-bottom: 2px solid #333;
+  margin-bottom: 16px;
+  padding: 16px 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .patch-label-space {
@@ -194,33 +306,30 @@ body {
 /* Expansion Separators */
 .expansion-separator {
   grid-column: 1 / -1;
-  height: 4px;
-  margin: 20px 0 10px 0;
+  height: 3px;
+  margin: 24px 0 16px 0;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  opacity: 0.8;
+  border-radius: 2px;
 }
 
 .expansion-separator span {
-  background: #0a0a0a;
-  padding: 0 16px;
+  background: linear-gradient(180deg, rgba(10, 10, 10, 1) 0%, rgba(10, 10, 10, 0.95) 100%);
+  padding: 2px 16px;
   color: #fff;
-  font-weight: bold;
-  font-size: 13px;
-  letter-spacing: 2px;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
   position: relative;
   z-index: 1;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Patch Grid Container (when detail panel is shown) */
-.patch-grid-container {
-  display: flex;
-  gap: 20px;
-  padding: 20px;
-  max-width: 1800px;
-  margin: 0 auto;
-}
 
 /* Entity Detail Panel */
 .entity-detail-panel {
@@ -358,19 +467,17 @@ body {
 }
 
 
+
 /* Filtered view layouts */
 .race-headers-filtered {
   display: grid;
   grid-template-columns: 120px 80px 1fr;
   gap: 10px;
-  margin-bottom: 10px;
-  padding: 0 10px;
-  position: sticky;
-  top: 0;
-  background: #0a0a0a;
-  z-index: 10;
-  padding-bottom: 10px;
-  border-bottom: 2px solid #333;
+  margin-bottom: 16px;
+  padding: 16px 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .patch-row-filtered {
