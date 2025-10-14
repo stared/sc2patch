@@ -84,10 +84,10 @@ function EntityCell({ entityId, entity, units, onHover, onLeave, onClick, isSele
     >
       {hasImage ? (
         <img
-          src={`/assets/units/${entityId}.png`}
+          src={`${import.meta.env.BASE_URL}assets/units/${entityId}.png`}
           alt={entityId}
           onError={(e) => {
-            (e.target as HTMLImageElement).src = '/assets/units/placeholder.svg';
+            (e.target as HTMLImageElement).src = `${import.meta.env.BASE_URL}assets/units/placeholder.svg`;
           }}
         />
       ) : (
@@ -156,10 +156,10 @@ export function PatchGrid({ patches, units }: PatchGridProps) {
             <div className="entity-detail-image">
               {(selectedEntity.type === 'unit' || selectedEntity.type === 'building') ? (
                 <img
-                  src={`/assets/units/${selectedEntityId}.png`}
+                  src={`${import.meta.env.BASE_URL}assets/units/${selectedEntityId}.png`}
                   alt={selectedEntityId}
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = '/assets/units/placeholder.svg';
+                    (e.target as HTMLImageElement).src = `${import.meta.env.BASE_URL}assets/units/placeholder.svg`;
                   }}
                 />
               ) : (

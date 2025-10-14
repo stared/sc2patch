@@ -2,7 +2,7 @@ import { Unit, PatchData, ProcessedPatchData, ProcessedEntity, ProcessedChange, 
 
 // Load units data
 export async function loadUnits(): Promise<Map<string, Unit>> {
-  const response = await fetch('/data/units.json');
+  const response = await fetch(`${import.meta.env.BASE_URL}data/units.json`);
   const units: Unit[] = await response.json();
 
   const unitsMap = new Map<string, Unit>();
@@ -19,7 +19,7 @@ export async function loadPatches(): Promise<PatchData[]> {
 
   try {
     // Load the patch manifest generated from processed patches
-    const manifestResponse = await fetch('/data/patches_manifest.json');
+    const manifestResponse = await fetch(`${import.meta.env.BASE_URL}data/patches_manifest.json`);
     const manifest = await manifestResponse.json();
 
     console.log(`Loading ${manifest.total} patches from manifest`);
@@ -27,7 +27,7 @@ export async function loadPatches(): Promise<PatchData[]> {
     // Load each patch from the manifest
     for (const patchInfo of manifest.patches) {
       try {
-        const response = await fetch(`/data/processed/patches/${patchInfo.file}`);
+        const response = await fetch(`${import.meta.env.BASE_URL}data/processed/patches/${patchInfo.file}`);
         if (response.ok) {
           const data = await response.json();
           patches.push(data);
