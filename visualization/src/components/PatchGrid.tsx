@@ -88,16 +88,15 @@ function EntityCell({ entityId, entity, units, patchVersion, isVisible, onHover,
     <motion.div
       className="entity-cell"
       layoutId={`entity-${entityId}-${patchVersion}`}
-      initial={{ opacity: 0, scale: 0, y: 30, rotateX: -15 }}
+      initial={{ opacity: 0, scale: 0, y: 20 }}
       animate={{
         opacity: 1,
         scale: 1,
         y: 0,
-        rotateX: 0,
         transition: {
           delay: staggerDelay + waveDelay,
           duration: 0.5,
-          ease: [0.16, 1, 0.3, 1], // More aggressive easeOutExpo curve
+          ease: [0.16, 1, 0.3, 1],
           opacity: { duration: 0.3, delay: staggerDelay + waveDelay },
           scale: {
             type: "spring",
@@ -109,17 +108,15 @@ function EntityCell({ entityId, entity, units, patchVersion, isVisible, onHover,
       }}
       exit={{
         opacity: 0,
-        scale: 0.6,
-        y: -20,
-        rotateX: 10,
+        scale: 0.7,
+        y: -15,
         transition: {
-          duration: 0.25,
-          ease: [0.7, 0, 0.84, 0] // easeInQuart for smooth exit
+          duration: 0.2,
+          ease: [0.7, 0, 0.84, 0]
         }
       }}
       whileHover={{
-        scale: 1.15,
-        rotateZ: 1,
+        scale: 1.12,
         transition: {
           type: "spring",
           stiffness: 300,
@@ -127,7 +124,7 @@ function EntityCell({ entityId, entity, units, patchVersion, isVisible, onHover,
           mass: 0.5
         }
       }}
-      whileTap={{ scale: 0.92, rotateZ: -1 }}
+      whileTap={{ scale: 0.95 }}
       transition={{
         layout: {
           type: "spring",
@@ -232,13 +229,13 @@ export function PatchGrid({ patches, units, totalPatches, selectedEntityId, onEn
               ease: [0.16, 1, 0.3, 1]
             }}
           />
-          <AnimatePresence mode="popLayout" initial={false}>
+          <AnimatePresence initial={false}>
             {selectedEntityId ? (
               // Show only the selected unit's race with smooth transition
               <motion.div
                 key="filtered-race"
                 className="race-header"
-                initial={{ opacity: 0, y: -20, scale: 0.9 }}
+                initial={{ opacity: 0, y: -15, scale: 0.9 }}
                 animate={{
                   opacity: 1,
                   y: 0,
@@ -255,7 +252,7 @@ export function PatchGrid({ patches, units, totalPatches, selectedEntityId, onEn
                 }}
                 exit={{
                   opacity: 0,
-                  y: 20,
+                  y: 15,
                   scale: 0.9,
                   transition: {
                     duration: 0.2,
@@ -272,48 +269,41 @@ export function PatchGrid({ patches, units, totalPatches, selectedEntityId, onEn
                 <motion.div
                   key={race}
                   className="race-header"
-                  initial={{ opacity: 0, y: -15, scale: 0.8, rotateX: -30 }}
+                  initial={{ opacity: 0, y: -12, scale: 0.9 }}
                   animate={{
                     opacity: 1,
                     y: 0,
                     scale: 1,
-                    rotateX: 0,
                     transition: {
-                      delay: index * 0.08,
+                      delay: index * 0.06,
                       y: {
                         type: "spring",
                         stiffness: 300,
                         damping: 22,
-                        delay: index * 0.08
+                        delay: index * 0.06
                       },
                       opacity: {
-                        duration: 0.4,
-                        delay: index * 0.08
+                        duration: 0.3,
+                        delay: index * 0.06
                       },
                       scale: {
-                        duration: 0.5,
-                        delay: index * 0.08,
-                        ease: [0.16, 1, 0.3, 1]
-                      },
-                      rotateX: {
-                        duration: 0.6,
-                        delay: index * 0.08,
+                        duration: 0.4,
+                        delay: index * 0.06,
                         ease: [0.16, 1, 0.3, 1]
                       }
                     }
                   }}
                   exit={{
                     opacity: 0,
-                    y: 15,
-                    scale: 0.8,
-                    rotateX: 30,
+                    y: 12,
+                    scale: 0.9,
                     transition: {
-                      duration: 0.25,
-                      delay: (3 - index) * 0.03, // Reverse stagger for exit
+                      duration: 0.2,
+                      delay: (3 - index) * 0.02,
                       ease: [0.7, 0, 0.84, 0]
                     }
                   }}
-                  style={{ color: RACE_COLORS[race], transformStyle: 'preserve-3d' }}
+                  style={{ color: RACE_COLORS[race] }}
                 >
                   {race.charAt(0).toUpperCase() + race.slice(1)}
                 </motion.div>
@@ -333,7 +323,7 @@ export function PatchGrid({ patches, units, totalPatches, selectedEntityId, onEn
           </motion.div>
 
           {/* Patch rows with expansion separators */}
-          <AnimatePresence mode="wait" initial={false}>
+          <AnimatePresence initial={false}>
             {patchesWithGroupedEntities.map((patch, patchIndex) => {
               const prevExpansion = patchIndex > 0 ? patchesWithGroupedEntities[patchIndex - 1].expansion : null;
               const showExpansionBar = patch.expansion !== prevExpansion;
@@ -390,8 +380,7 @@ export function PatchGrid({ patches, units, totalPatches, selectedEntityId, onEn
                       }}
                       style={{
                         backgroundColor: EXPANSION_COLORS[patch.expansion],
-                        transformOrigin: 'center',
-                        filter: `brightness(${1 + Math.sin(patchIndex * 0.5) * 0.1})`
+                        transformOrigin: 'center'
                       }}
                     >
                       <motion.span
@@ -418,14 +407,12 @@ export function PatchGrid({ patches, units, totalPatches, selectedEntityId, onEn
                     initial={{
                       opacity: 0,
                       x: -50,
-                      scale: 0.95,
-                      filter: "blur(4px)"
+                      scale: 0.95
                     }}
                     animate={{
                       opacity: 1,
                       x: 0,
-                      scale: depthScale,
-                      filter: "blur(0px)",
+                      scale: 1,
                       transition: {
                         delay: rowDelay,
                         x: {
@@ -442,10 +429,6 @@ export function PatchGrid({ patches, units, totalPatches, selectedEntityId, onEn
                           duration: 0.6,
                           delay: rowDelay,
                           ease: [0.16, 1, 0.3, 1]
-                        },
-                        filter: {
-                          duration: 0.5,
-                          delay: rowDelay + 0.1
                         }
                       }
                     }}
@@ -453,7 +436,6 @@ export function PatchGrid({ patches, units, totalPatches, selectedEntityId, onEn
                       opacity: 0,
                       x: 40,
                       scale: 0.9,
-                      filter: "blur(4px)",
                       transition: {
                         duration: 0.25,
                         ease: [0.7, 0, 0.84, 0]
