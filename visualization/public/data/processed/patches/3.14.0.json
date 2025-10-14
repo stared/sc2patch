@@ -1,0 +1,59 @@
+{
+  "metadata": {
+    "version": "3.14.0",
+    "date": "2017-05-22",
+    "title": "StarCraft II Patch 3.14.0",
+    "url": "https://news.blizzard.com/en-us/article/20799759/starcraft-ii-legacy-of-the-void-3-14-0-patch-notes"
+  },
+  "changes": [
+    {
+      "id": "terran-thor_0",
+      "patch_version": "3.14.0",
+      "entity_id": "terran-thor",
+      "raw_text": "Armor increased from 1 to 2.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-thor_1",
+      "patch_version": "3.14.0",
+      "entity_id": "terran-thor",
+      "raw_text": "Morph times reduced from 2.5 to 1.79.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-raven_2",
+      "patch_version": "3.14.0",
+      "entity_id": "terran-raven",
+      "raw_text": "Auto-Turret damage reduced from 24 to 18.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-raven_3",
+      "patch_version": "3.14.0",
+      "entity_id": "terran-raven",
+      "raw_text": "Auto-Turret duration increased from 7.14 to 10.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-tempest_4",
+      "patch_version": "3.14.0",
+      "entity_id": "protoss-tempest",
+      "raw_text": "Kinetic Overload damage increased from 30 (+14 massive) to 30 (+22 massive).",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-void_ray_5",
+      "patch_version": "3.14.0",
+      "entity_id": "protoss-void_ray",
+      "raw_text": "Prismatic Alignment slows the Void Ray by 40% while active.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-zealot_6",
+      "patch_version": "3.14.0",
+      "entity_id": "protoss-zealot",
+      "raw_text": "Charge upgrade cost lowered from 200/200 to 100/100.",
+      "change_type": "buff"
+    }
+  ]
+}

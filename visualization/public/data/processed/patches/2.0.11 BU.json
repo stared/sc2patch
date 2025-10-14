@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "version": "2.0.11 BU",
+    "date": "2013-07-09",
+    "title": "StarCraft II Patch 2.0.11 BU",
+    "url": "https://news.blizzard.com/en-us/starcraft2/10782713"
+  },
+  "changes": [
+    {
+      "id": "zerg-overseer_0",
+      "patch_version": "2.0.11 BU",
+      "entity_id": "zerg-overseer",
+      "raw_text": "Pneumatized Carapace now increases Overseer movement speed from 1.88 to 3.375 (was 1.88 to 2.75)",
+      "change_type": "buff"
+    }
+  ]
+}

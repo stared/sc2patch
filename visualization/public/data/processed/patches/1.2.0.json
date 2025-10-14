@@ -1,0 +1,59 @@
+{
+  "metadata": {
+    "version": "1.2.0",
+    "date": "2011-01-12",
+    "title": "StarCraft II Patch 1.2.0",
+    "url": "https://news.blizzard.com/en-gb/article/9995561/patch-1-2-0-now-live"
+  },
+  "changes": [
+    {
+      "id": "protoss-sentry_0",
+      "patch_version": "1.2.0",
+      "entity_id": "protoss-sentry",
+      "raw_text": "Hallucination research time decreased from 110 to 80.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-observer_1",
+      "patch_version": "1.2.0",
+      "entity_id": "protoss-observer",
+      "raw_text": "Cost decreased from 50/100 to 25/75.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-phoenix_2",
+      "patch_version": "1.2.0",
+      "entity_id": "protoss-phoenix",
+      "raw_text": "Build time decreased from 45 to 35.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-void_ray_3",
+      "patch_version": "1.2.0",
+      "entity_id": "protoss-void_ray",
+      "raw_text": "Now deals 20% more damage to massive targets.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-void_ray_4",
+      "patch_version": "1.2.0",
+      "entity_id": "protoss-void_ray",
+      "raw_text": "Flux Vanes speed upgrade removed.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-scv_5",
+      "patch_version": "1.2.0",
+      "entity_id": "terran-scv",
+      "raw_text": "Repairing SCVs now assume the same threat priority as the unit they\u2019re repairing.",
+      "change_type": "mixed"
+    },
+    {
+      "id": "terran-scv_6",
+      "patch_version": "1.2.0",
+      "entity_id": "terran-scv",
+      "raw_text": "SCV construction movement has been made more consistent.",
+      "change_type": "mixed"
+    }
+  ]
+}

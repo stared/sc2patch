@@ -1,0 +1,577 @@
+{
+  "metadata": {
+    "version": "4.7.1",
+    "date": "2018-11-20",
+    "title": "StarCraft II Patch 4.7.1",
+    "url": "https://news.blizzard.com/en-us/article/22771167/starcraft-ii-4-7-1-patch-notes"
+  },
+  "changes": [
+    {
+      "id": "terran-widow_mine_0",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-widow_mine",
+      "raw_text": "Drilling Claws now permanently cloaks Widow Mines while burrowed.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-cyclone_1",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Now requires a Tech Lab on the Factory to build.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-cyclone_2",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Health decreased from 180 to 120.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-cyclone_3",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Movement speed increased from 4.13 to 4.73.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-cyclone_4",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Weapon reworked: Tornado Blaster replaced by Typhoon Missile Pod.",
+      "change_type": "mixed"
+    },
+    {
+      "id": "terran-cyclone_5",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Typhoon Missile Pod damage changed from 3 (+2 vs Armored) to 18.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-cyclone_6",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Typhoon Missile Pod can now target both air and ground units.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-cyclone_7",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Typhoon Missile Pod attack period increased from 0.1 to 0.71.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-cyclone_8",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Typhoon Missile Pod range decreased from 6 to 5.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-cyclone_9",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Weapon upgrade bonus changed from +1 to +2 (per upgrade level).",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-cyclone_10",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Lock On can now be autocast.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-cyclone_11",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Lock On can now target ground, air, and structures.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-cyclone_12",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Lock On damage increased from 160 to 400 over 14 seconds.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-cyclone_13",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Rapid Fire Launchers upgrade removed.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-cyclone_14",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-cyclone",
+      "raw_text": "New upgrade added (Mag-Field Accelerator): Lock On deals 400 (+400 vs Armored) over 14 seconds after research.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-thor_15",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-thor",
+      "raw_text": "Base armor reduced from 2 to 1.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-thor_16",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-thor",
+      "raw_text": "Explosive Payload splash radius reduced from 0.6 to 0.5.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-thor_17",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-thor",
+      "raw_text": "250mm Punisher Cannons damage changed from 35 (+15 vs Armored) to 40 (+15 vs Massive).",
+      "change_type": "mixed"
+    },
+    {
+      "id": "terran-thor_18",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-thor",
+      "raw_text": "Vehicle Weapons upgrade bonuses for 250mm Punisher Cannons changed from +3 (+2 vs Armored) to +4 (+2 vs Massive).",
+      "change_type": "mixed"
+    },
+    {
+      "id": "terran-thor_19",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-thor",
+      "raw_text": "250mm Punisher Cannons attack period reduced from 2.14 to 1.71 (fires faster).",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-medivac_20",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-medivac",
+      "raw_text": "Rapid Reignition System reworked: no longer increases Ignite Afterburners duration; now reduces its cooldown from 8.57s to 6.43s.",
+      "change_type": "mixed"
+    },
+    {
+      "id": "terran-medivac_21",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-medivac",
+      "raw_text": "Can now heal units affected by Phoenix Graviton Beam.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-banshee_22",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-banshee",
+      "raw_text": "Hyperflight Rotors upgrade cost decreased from 200/200 to 150/150.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-raven_23",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-raven",
+      "raw_text": "Anti-Armor Missile splash damage reduced from 15 to 0.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-raven_24",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-raven",
+      "raw_text": "Anti-Armor Missile now also reduces Protoss shield armor by 3.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-battlecruiser_25",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-battlecruiser",
+      "raw_text": "Removed random delay between shots.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-battlecruiser_26",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-battlecruiser",
+      "raw_text": "ATA Laser Battery damage decreased from 6 to 5.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-battlecruiser_27",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-battlecruiser",
+      "raw_text": "Can now move while shooting.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-battlecruiser_28",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-battlecruiser",
+      "raw_text": "Yamato Cannon damage decreased from 300 to 240.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-engineering_bay_29",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-engineering_bay",
+      "raw_text": "Neosteel Frame and Structure Armor merged into Neosteel Armor (combined functionality), costing 150/150 and 100s research time.",
+      "change_type": "mixed"
+    },
+    {
+      "id": "terran-barracks_30",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-barracks",
+      "raw_text": "Cannot lift off if an attached Tech Lab is researching an upgrade.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-factory_31",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-factory",
+      "raw_text": "Cannot lift off if an attached Tech Lab is researching an upgrade.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-starport_32",
+      "patch_version": "4.7.1",
+      "entity_id": "terran-starport",
+      "raw_text": "Cannot lift off if an attached Tech Lab is researching an upgrade.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-queen_33",
+      "patch_version": "4.7.1",
+      "entity_id": "zerg-queen",
+      "raw_text": "Transfusion changed from 125 instant heal to 75 instant plus 50 over 7.14 seconds.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-creep_tumor_34",
+      "patch_version": "4.7.1",
+      "entity_id": "zerg-creep_tumor",
+      "raw_text": "Time between creep growth increased from 0.3 to 0.45.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-nydus_worm_35",
+      "patch_version": "4.7.1",
+      "entity_id": "zerg-nydus_network",
+      "raw_text": "[Nydus Worm] Time between creep growth increased from 0.3 to 0.45.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-nydus_worm_36",
+      "patch_version": "4.7.1",
+      "entity_id": "zerg-nydus_network",
+      "raw_text": "[Nydus Worm] Cost decreased from 100/100 to 50/50.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-nydus_worm_37",
+      "patch_version": "4.7.1",
+      "entity_id": "zerg-nydus_network",
+      "raw_text": "[Nydus Worm] No longer invincible while emerging.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-nydus_worm_38",
+      "patch_version": "4.7.1",
+      "entity_id": "zerg-nydus_network",
+      "raw_text": "[Nydus Worm] Now has 6 armor while emerging.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-overlord_39",
+      "patch_version": "4.7.1",
+      "entity_id": "zerg-overlord",
+      "raw_text": "Time between Generate Creep growth periods increased from 0.36 to 0.45.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-zergling_40",
+      "patch_version": "4.7.1",
+      "entity_id": "zerg-zergling",
+      "raw_text": "Unburrow time decreased from 0.71 to 0.36.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-zergling_41",
+      "patch_version": "4.7.1",
+      "entity_id": "zerg-zergling",
+      "raw_text": "Unburrow random delay decreased from 0.36 to 0.08.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-roach_42",
+      "patch_version": "4.7.1",
+      "entity_id": "zerg-roach",
+      "raw_text": "Tunneling Claws upgrade cost decreased from 150/150 to 100/100.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-roach_43",
+      "patch_version": "4.7.1",
+      "entity_id": "zerg-roach",
+      "raw_text": "Tunneling Claws no longer increases Roach regeneration rate from 7 to 14 HP/s.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-hydralisk_44",
+      "patch_version": "4.7.1",
+      "entity_id": "zerg-hydralisk",
+      "raw_text": "Unburrow time decreased from 0.71 to 0.36.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-hydralisk_45",
+      "patch_version": "4.7.1",
+      "entity_id": "zerg-hydralisk",
+      "raw_text": "Unburrow random delay decreased from 0.36 to 0.08.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-hydralisk_46",
+      "patch_version": "4.7.1",
+      "entity_id": "zerg-hydralisk",
+      "raw_text": "Needle Spines attack period increased from 0.54 to 0.59 (slower attack rate).",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-infestor_47",
+      "patch_version": "4.7.1",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Unit radius decreased from 0.75 to 0.625.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-infestor_48",
+      "patch_version": "4.7.1",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Burrowed unit radius now matches the new (smaller) unburrowed radius.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-infestor_49",
+      "patch_version": "4.7.1",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Can now move through units while burrowed.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-infestor_50",
+      "patch_version": "4.7.1",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Fungal Growth now prevents affected units from Blinking, using Tactical Jump, or loading into transports/buildings.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-infestor_51",
+      "patch_version": "4.7.1",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Infested Terran cast range increased from 7 to 8.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-ultralisk_52",
+      "patch_version": "4.7.1",
+      "entity_id": "zerg-ultralisk",
+      "raw_text": "New upgrade added: Evolve Anabolic Synthesis (150/150, 42.85s), increasing off-creep speed from 4.13 to 4.55 (on-creep speed unchanged).",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-nydus_network_53",
+      "patch_version": "4.7.1",
+      "entity_id": "zerg-nydus_network",
+      "raw_text": "Cost decreased from 150/200 to 150/150.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-nexus_54",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-nexus",
+      "raw_text": "Strategic Recall radius decreased from 6.5 to 2.5.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-nexus_55",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-nexus",
+      "raw_text": "Strategic Recall cooldown decreased from 130 to 85 seconds.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-sentry_56",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-sentry",
+      "raw_text": "Hallucination energy cost decreased from 100 to 75.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-sentry_57",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-sentry",
+      "raw_text": "Guardian Shield radius increased from 4 to 4.5.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-high_templar_58",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-high_templar",
+      "raw_text": "Feedback damage reduced to 0.5 per point of energy drained (down from 1).",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-dark_templar_59",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-dark_templar",
+      "raw_text": "Shadow Stride research time decreased from 121 to 100 seconds.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-dark_templar_60",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-dark_templar",
+      "raw_text": "Shadow Stride cooldown decreased from 21 to 14 seconds.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-robotics_bay_61",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-robotics_bay",
+      "raw_text": "Cost decreased from 200/200 to 150/150.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-colossus_62",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-colossus",
+      "raw_text": "Weapons now have turret tracking.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-disruptor_63",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-disruptor",
+      "raw_text": "Purification Nova reverted to detonate after 2 seconds, dealing 155 damage plus 55 additional shield damage to all ground units in its radius.",
+      "change_type": "mixed"
+    },
+    {
+      "id": "protoss-disruptor_64",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-disruptor",
+      "raw_text": "Purification Nova no longer detonates on contact with enemy units.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-disruptor_65",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-disruptor",
+      "raw_text": "Purification Nova now sends a threat signal on detonation instead of on launch.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-void_ray_66",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-void_ray",
+      "raw_text": "Prismatic Alignment speed reduction decreased from 40% to 25%.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-tempest_67",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-tempest",
+      "raw_text": "Cost decreased from 300/200 to 250/175.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-tempest_68",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-tempest",
+      "raw_text": "Supply cost decreased from 6 to 5.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-tempest_69",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-tempest",
+      "raw_text": "HP/Shields decreased from 300/150 to 150/125.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-tempest_70",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-tempest",
+      "raw_text": "Movement speed increased from 2.63 to 3.5.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-tempest_71",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-tempest",
+      "raw_text": "Acceleration increased from 1.49 to 2.8.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-carrier_72",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-carrier",
+      "raw_text": "Build time decreased from 86 to 64 seconds.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-carrier_73",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-carrier",
+      "raw_text": "HP/Shields increased from 250/150 to 300/150.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-carrier_74",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-carrier",
+      "raw_text": "Interceptor build time increased from 6 to 11 seconds.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-carrier_75",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-carrier",
+      "raw_text": "Graviton Catapult upgrade removed.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-carrier_76",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-carrier",
+      "raw_text": "Interceptor release period decreased from 0.36 to 0.27.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-mothership_77",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-mothership",
+      "raw_text": "Time Warp now also reduces unit and structure attack speed by 50% (in addition to slowing movement by 50%).",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-assimilator_78",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-assimilator",
+      "raw_text": "HP/Shields decreased from 450/450 to 300/300.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-shield_battery_79",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-shield_battery",
+      "raw_text": "HP/Shields decreased from 200/200 to 150/150.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-shield_battery_80",
+      "patch_version": "4.7.1",
+      "entity_id": "protoss-shield_battery",
+      "raw_text": "Can now regenerate shields of units affected by Phoenix Graviton Beam.",
+      "change_type": "buff"
+    }
+  ]
+}

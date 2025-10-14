@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "version": "3.12.0 BU",
+    "date": "2017-08-10",
+    "title": "StarCraft II Patch 3.12.0 BU",
+    "url": "https://news.blizzard.com/en-gb/starcraft2/20720843/legacy-of-the-void-balance-update-april-2017"
+  },
+  "changes": [
+    {
+      "id": "protoss-adept_0",
+      "patch_version": "3.12.0 BU",
+      "entity_id": "protoss-adept",
+      "raw_text": "Maximum Health reduced from 80 to 70",
+      "change_type": "nerf"
+    }
+  ]
+}

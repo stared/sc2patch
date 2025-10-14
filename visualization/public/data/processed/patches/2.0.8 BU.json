@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "version": "2.0.8 BU",
+    "date": "2013-05-23",
+    "title": "StarCraft II Patch 2.0.8 BU",
+    "url": "https://news.blizzard.com/en-us/starcraft2/9693907"
+  },
+  "changes": [
+    {
+      "id": "zerg-spore_crawler_0",
+      "patch_version": "2.0.8 BU",
+      "entity_id": "zerg-spore_crawler",
+      "raw_text": "Damage increased from 15 + 15 vs. biological to 15 + 30 vs. biological",
+      "change_type": "buff"
+    }
+  ]
+}

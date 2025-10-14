@@ -16,6 +16,9 @@ data/raw_patches/
 # Processed data
 data/processed/
 
+# Pipeline logs (generated)
+data/logs/
+
 # Analysis output
 scripts/entity_candidates.json
 

@@ -1,19 +1,15 @@
-# StarCraft 2 Balance Patch Scraper
+# StarCraft II Balance Patch Analyzer
 
-Download and archive StarCraft 2 balance patch notes from official Blizzard sources.
-
-## Design Philosophy
-
-**The website is the source of truth** - All metadata (version, date, title) is extracted FROM the HTML pages, not passed as parameters. This ensures data consistency by design.
+Extract, parse, and visualize StarCraft II balance patch changes using a clean 4-stage pipeline.
 
 ## Features
 
-- Download SC2 patch notes from news.blizzard.com as raw HTML
-- Extract metadata (version, date, title) directly from HTML
-- Convert to clean Markdown with frontmatter
-- Strict validation at each stage
-- Type-safe with Pydantic models
-- Beautiful CLI with Rich
+- 🚀 **4-stage pipeline**: Download → Parse → Validate → Export
+- 🤖 **GPT-5 powered parsing**: Accurate extraction of balance changes
+- ✅ **Hard validation**: Fail fast with clear errors
+- 📊 **Interactive visualization**: React-based patch history browser
+- 📝 **Timestamped logs**: Debug-friendly markdown logs for every run
+- 🎯 **Single source of truth**: Only `data/patch_urls.json` is manually edited
 
 ## Installation
 
@@ -21,117 +17,220 @@ Download and archive StarCraft 2 balance patch notes from official Blizzard sour
 uv sync
 ```
 
-## Usage
-
-### Step 1: Fetch Raw HTML
+## Quick Start
 
 ```bash
-uv run python -m sc2patches.fetch
+# 1. Download patches
+uv run python scripts/1_download.py
+
+# 2. Parse with GPT-5 (requires OPENROUTER_API_KEY)
+export OPENROUTER_API_KEY="your-key-here"
+uv run python scripts/2_parse.py
+
+# 3. Validate
+uv run python scripts/3_validate.py
+
+# 4. Export for visualization
+uv run python scripts/4_export_for_viz.py
+
+# 5. Run visualization
+cd visualization
+pnpm install
+pnpm dev  # Visit http://localhost:5173
 ```
 
-Downloads all patch pages as HTML to `raw_html/`.
+## Pipeline Stages
 
-### Step 2: Convert to Markdown
+### Stage 1: Download
+**Script:** `scripts/1_download.py`
+
+Downloads HTML from Blizzard News and converts to Markdown for review.
 
 ```bash
-uv run python -m sc2patches.convert
+uv run python scripts/1_download.py              # Download all
+uv run python scripts/1_download.py --skip-existing  # Skip existing
 ```
 
-Converts HTML files to Markdown in `raw_patches/`. Extracts version, date, and title FROM each page.
+**Outputs:**
+- `data/raw_html/{version}.html` - Raw HTML for parsing
+- `data/raw_patches/{version}.md` - Human-readable Markdown
+- `data/logs/YYYY-MM-DD-HH-MM-download.md` - Execution log
 
-### Step 3: Validate
+### Stage 2: Parse
+**Script:** `scripts/2_parse.py`
+
+Extracts structured balance changes using GPT-5 via OpenRouter.
 
 ```bash
-uv run python -m sc2patches.validate
+uv run python scripts/2_parse.py              # Parse all
+uv run python scripts/2_parse.py --skip-existing  # Skip existing
+uv run python scripts/2_parse.py 5.0.15       # Parse specific version
 ```
 
-Validates that all patches were fetched and converted correctly.
+**Requires:** `OPENROUTER_API_KEY` environment variable
+
+**Outputs:**
+- `data/processed/patches/{version}.json` - Structured patch data
+- `data/logs/YYYY-MM-DD-HH-MM-parse.md` - Execution log
+
+### Stage 3: Validate
+**Script:** `scripts/3_validate.py`
+
+Validates all processed patches for completeness and correctness.
+
+```bash
+uv run python scripts/3_validate.py
+```
+
+**Outputs:**
+- `data/logs/YYYY-MM-DD-HH-MM-validate.md` - Validation report
+- Exit code 0 if valid, 1 if failures
+
+### Stage 4: Export
+**Script:** `scripts/4_export_for_viz.py`
+
+Copies processed data to visualization directory.
+
+```bash
+uv run python scripts/4_export_for_viz.py
+```
+
+**Outputs:**
+- `visualization/public/data/processed/patches/*.json` - Patch files
+- `visualization/public/data/units.json` - Units reference
+- `visualization/public/data/patches_manifest.json` - Patch index
+- `data/logs/YYYY-MM-DD-HH-MM-export.md` - Execution log
+
+## Data Format
+
+Each patch is stored as a JSON file with this structure:
+
+```json
+{
+  "metadata": {
+    "version": "5.0.9",
+    "date": "2022-03-08",
+    "title": "StarCraft II Patch 5.0.9",
+    "url": "https://news.blizzard.com/..."
+  },
+  "changes": [
+    {
+      "id": "protoss-void_ray_0",
+      "patch_version": "5.0.9",
+      "entity_id": "protoss-void_ray",
+      "raw_text": "Cost increased from 200 to 250",
+      "change_type": "nerf"
+    }
+  ]
+}
+```
+
+**Change Types:**
+- `buff` - Entity becomes STRONGER (cost reduced, damage increased, etc.)
+- `nerf` - Entity becomes WEAKER (cost increased, damage reduced, etc.)
+- `mixed` - Has both positive and negative aspects
 
 ## Project Structure
 
 ```
 sc2patches/
+├── scripts/
+│   ├── 1_download.py         # Stage 1: Download patches
+│   ├── 2_parse.py            # Stage 2: Parse with GPT-5
+│   ├── 3_validate.py         # Stage 3: Validate data
+│   └── 4_export_for_viz.py   # Stage 4: Export for visualization
 ├── src/sc2patches/
-│   ├── models.py      # Pydantic data models
-│   ├── discover.py    # Load patch URLs from JSON
-│   ├── fetch.py       # Download raw HTML files
-│   ├── convert.py     # Convert HTML to Markdown
-│   └── validate.py    # Validation checks
+│   ├── logger.py             # Timestamped markdown logging
+│   ├── download.py           # Download & convert logic
+│   └── parse.py              # GPT-5 parsing logic
 ├── data/
-│   └── patch_urls.json   # List of patch URLs
-├── raw_html/          # Downloaded HTML files
-├── raw_patches/       # Converted Markdown files
-└── CLAUDE.md          # Project guidelines
+│   ├── patch_urls.json       # ← ONLY manually edited file
+│   ├── logs/                 # Timestamped execution logs
+│   ├── raw_html/             # Downloaded HTML
+│   ├── raw_patches/          # Human-readable Markdown
+│   └── processed/patches/    # Final JSON data
+└── visualization/            # React + Vite visualization
+    ├── src/
+    └── public/data/          # Exported data (copies from data/)
 ```
 
-## How It Works
+## Adding New Patches
 
-1. **URL List** (`data/patch_urls.json`) - Simple JSON array of 27 patch URLs
-2. **Fetch** - Download raw HTML files for inspection
-3. **Extract Metadata** - Version, date, title extracted FROM HTML (not parameters)
-4. **Convert** - Transform HTML to Markdown with frontmatter
-5. **Validate** - Check completeness at each stage
-
-## Markdown Output Format
-
-```markdown
----
-version: 5.0.15
-date: 2025-09-30
-title: StarCraft II 5.0.15 Patch Notes
----
-
-# StarCraft II 5.0.15 Patch Notes
-
-[Converted article content...]
-```
+1. Find patch URL on Blizzard News or Liquipedia
+2. Add URL to `data/patch_urls.json`
+3. Run pipeline:
+   ```bash
+   uv run python scripts/1_download.py
+   uv run python scripts/2_parse.py {version}
+   uv run python scripts/3_validate.py
+   uv run python scripts/4_export_for_viz.py
+   ```
+4. Check logs for any issues: `ls -lt data/logs/`
+5. Commit changes
 
 ## Development
 
-### Run Tests
+### Format and Check Code
 
 ```bash
+# Python
 uv run ruff format .
 uv run ruff check .
 uv run ty check src/
+
+# TypeScript (in visualization/)
+cd visualization
+pnpm lint
+pnpm type-check
 ```
 
-### Add Dependencies
+### Run Visualization
 
 ```bash
-uv add <package>
-uv add --dev <package>
+cd visualization
+pnpm install
+pnpm dev          # Development server
+pnpm build        # Production build
 ```
 
-## Patch Coverage
+## Design Philosophy
 
-Currently tracking 27 patches:
-- Legacy of the Void II (5.x): 4 patches
-- Legacy of the Void (3.x-4.x): 21 patches
-- Heart of the Swarm (2.x): 2 patches
+- **Fail fast, fail loud** - No silent failures or defensive programming
+- **Single source of truth** - Only `data/patch_urls.json` is manually defined
+- **Timestamped logs** - Every run generates a markdown log for debugging
+- **Hard validation** - Missing data causes immediate failures
+- **Type safety** - Pydantic models for Python, TypeScript for visualization
 
-## Key Functions
+## Current Coverage
 
-### `fetch_url_to_html(url, output_dir)`
-- Downloads URL to HTML file
-- Filename derived from URL
+42 patches spanning:
+- **Wings of Liberty** (1.x): 8 patches
+- **Heart of the Swarm** (2.x): 7 patches
+- **Legacy of the Void** (3.x-4.x): 19 patches
+- **Legacy of the Void II** (5.x): 8 patches
 
-### `convert_html_to_markdown(html_path, output_dir)`
-- Reads HTML file
-- Extracts version, date, title FROM the HTML
-- Saves to `{version}.md` based on extracted version
+## Documentation
 
-### `extract_metadata(html, filename)`
-- Extracts all metadata from HTML
-- Returns `PatchMetadata(version, date, title)`
-- Fails loudly if metadata cannot be found
+- **[PIPELINE.md](PIPELINE.md)** - Detailed pipeline documentation
+- **[CLAUDE.md](CLAUDE.md)** - Project guidelines and conventions
 
-## Error Handling
+## Troubleshooting
 
-- **Fail fast, fail loud** - No silent failures
-- Custom exceptions for different error types
-- Clear error messages with context
-- Exit code 1 on failures
+**Download fails with 404:**
+- URL may be dead → check Liquipedia or Web Archive
+
+**Parse returns empty:**
+- Check `OPENROUTER_API_KEY` is set
+- Check OpenRouter API status
+- Retry the specific patch
+
+**Validation fails:**
+- Check the error in logs: `ls -lt data/logs/`
+- Re-parse that patch: `uv run python scripts/2_parse.py {version}`
+
+**Visualization doesn't load:**
+- Run stage 4: `uv run python scripts/4_export_for_viz.py`
+- Check `visualization/public/data/` has patch files
 
 ## License
 

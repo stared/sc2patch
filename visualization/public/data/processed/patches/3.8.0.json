@@ -1,0 +1,409 @@
+{
+  "metadata": {
+    "version": "3.8.0",
+    "date": "2016-11-21",
+    "title": "StarCraft II Patch 3.8.0",
+    "url": "https://news.blizzard.com/en-us/article/20372512/starcraft-ii-legacy-of-the-void-3-8-0-patch-notes"
+  },
+  "changes": [
+    {
+      "id": "terran-banshee_0",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-banshee",
+      "raw_text": "Removed the Fusion Core requirement for the Hyperflight Rotors upgrade.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-banshee_1",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-banshee",
+      "raw_text": "Hyperflight Rotors research time increased from 93 to 121 seconds.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-battlecruiser_2",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-battlecruiser",
+      "raw_text": "Energy bar removed.",
+      "change_type": "mixed"
+    },
+    {
+      "id": "terran-battlecruiser_3",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-battlecruiser",
+      "raw_text": "Yamato Cannon and Tactical Jump no longer require energy; each ability now has a 71-second cooldown.",
+      "change_type": "mixed"
+    },
+    {
+      "id": "terran-battlecruiser_4",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-battlecruiser",
+      "raw_text": "Removed the Behemoth Reactor upgrade (energy upgrade).",
+      "change_type": "mixed"
+    },
+    {
+      "id": "terran-battlecruiser_5",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-battlecruiser",
+      "raw_text": "Yamato Cannon no longer gets interrupted by Neural Parasite.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-cyclone_6",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Anti-ground weapon damage changed from 18 to 3 (+2 vs armored).",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-cyclone_7",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Anti-ground weapon range decreased from 5 to 4.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-cyclone_8",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Mag-Field Launchers upgrade now grants +2 weapon range.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-cyclone_9",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Attack period changed from 0.7 to 0.1 seconds and random delays removed.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-cyclone_10",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Weapon upgrade scaling changed from +2 to +1 damage per upgrade level.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-cyclone_11",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-cyclone",
+      "raw_text": "No longer has an anti-air weapon.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-cyclone_12",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Movement speed decreased from 4.72 to 4.13.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-cyclone_13",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Lock On retargeted to air units and air structures only; now deals 160 damage over 14 seconds.",
+      "change_type": "mixed"
+    },
+    {
+      "id": "terran-cyclone_14",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Removed auto-cast for Lock On.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-cyclone_15",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Supply cost decreased from 4 to 3.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-cyclone_16",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Health increased from 120 to 180.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-cyclone_17",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-cyclone",
+      "raw_text": "No longer requires a Tech Lab; can now be built with a Reactor.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-cyclone_18",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Removed the Cyclone Lock On Damage upgrade from the Factory Tech Lab.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-liberator_19",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-liberator",
+      "raw_text": "Removed the +light bonus damage from the anti-air attack.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-raven_20",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-raven",
+      "raw_text": "Auto Turret damage increased from 16 to 24.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-raven_21",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-raven",
+      "raw_text": "Explosive Shrapnel Shells upgrade replaced with Recalibrated Explosives.",
+      "change_type": "mixed"
+    },
+    {
+      "id": "terran-raven_22",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-raven",
+      "raw_text": "Recalibrated Explosives: Increases Seeker Missile tracking range by 50% (13 to 19.5).",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-raven_23",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-raven",
+      "raw_text": "Recalibrated Explosives: Increases Seeker Missile damage by 30%.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-siege_tank_24",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-siege_tank",
+      "raw_text": "Health increased from 160 to 175.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-siege_tank_25",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-siege_tank",
+      "raw_text": "Siege Mode damage increased from 35 (+15 vs armored) to 40 (+30 vs armored).",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-siege_tank_26",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-siege_tank",
+      "raw_text": "Can no longer be picked up by Medivacs while in Siege Mode.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-siege_tank_27",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-siege_tank",
+      "raw_text": "Crucio Shock Cannon attack period increased from 2 to 2.14 seconds.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-thor_28",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-thor",
+      "raw_text": "Javelin Missile Launchers (anti-air) splash radius increased from 0.5 to 0.6.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-thor_29",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-thor",
+      "raw_text": "High Impact Payload Mode: 250mm Punisher Cannons (anti-air) are now prioritized over the anti-ground weapon.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-viking_30",
+      "patch_version": "3.8.0",
+      "entity_id": "terran-viking",
+      "raw_text": "Assault mode weapon now deals +8 bonus damage vs mechanical.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-adept_31",
+      "patch_version": "3.8.0",
+      "entity_id": "protoss-adept",
+      "raw_text": "Shade vision reduced from 9 to 2.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-carrier_32",
+      "patch_version": "3.8.0",
+      "entity_id": "protoss-carrier",
+      "raw_text": "Removed the Release Interceptor ability.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-carrier_33",
+      "patch_version": "3.8.0",
+      "entity_id": "protoss-carrier",
+      "raw_text": "Interceptor cost reduced from 25 to 5 minerals and auto-build enabled by default.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-dark_templar_34",
+      "patch_version": "3.8.0",
+      "entity_id": "protoss-dark_templar",
+      "raw_text": "New ability: Shadow Stride (short-range teleport with visible smoke on cast); researched at the Dark Shrine (100/100, 121 seconds, 21-second cooldown).",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-tempest_35",
+      "patch_version": "3.8.0",
+      "entity_id": "protoss-tempest",
+      "raw_text": "Supply cost increased from 4 to 6.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-tempest_36",
+      "patch_version": "3.8.0",
+      "entity_id": "protoss-tempest",
+      "raw_text": "Anti-ground damage increased from 30 to 35.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-tempest_37",
+      "patch_version": "3.8.0",
+      "entity_id": "protoss-tempest",
+      "raw_text": "Anti-ground weapon range reduced from 15 to 8.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-tempest_38",
+      "patch_version": "3.8.0",
+      "entity_id": "protoss-tempest",
+      "raw_text": "New ability: Disruption Blast (4-second charge, then stuns enemy ground units and ground structures in a 1.95 radius for 7 seconds; 10 cast range; 43-second cooldown; no friendly fire).",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-void_ray_39",
+      "patch_version": "3.8.0",
+      "entity_id": "protoss-void_ray",
+      "raw_text": "Movement speed increased from 3.15 to 3.5.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-warp_prism_40",
+      "patch_version": "3.8.0",
+      "entity_id": "protoss-warp_prism",
+      "raw_text": "Health reduced from 100 to 80.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-zealot_41",
+      "patch_version": "3.8.0",
+      "entity_id": "protoss-zealot",
+      "raw_text": "Charge upgrade now increases Zealot movement speed from 3.15 to 4.13.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-baneling_42",
+      "patch_version": "3.8.0",
+      "entity_id": "zerg-baneling",
+      "raw_text": "Centrifugal Hooks now also grants +10 life (in addition to the movement speed increase).",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-brood_lord_43",
+      "patch_version": "3.8.0",
+      "entity_id": "zerg-brood_lord",
+      "raw_text": "Range reduced from 11 to 10.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-hydralisk_44",
+      "patch_version": "3.8.0",
+      "entity_id": "zerg-hydralisk",
+      "raw_text": "Muscular Augments is now split into two separate upgrades (Muscular Augments for speed and Grooved Spines for range).",
+      "change_type": "mixed"
+    },
+    {
+      "id": "zerg-hydralisk_45",
+      "patch_version": "3.8.0",
+      "entity_id": "zerg-hydralisk",
+      "raw_text": "Evolve Muscular Augments: Increases base movement speed by 25% (150/150, 71 seconds).",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-hydralisk_46",
+      "patch_version": "3.8.0",
+      "entity_id": "zerg-hydralisk",
+      "raw_text": "Evolve Grooved Spines: Increases attack range by +2 (100/100, 71 seconds).",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-hydralisk_47",
+      "patch_version": "3.8.0",
+      "entity_id": "zerg-hydralisk",
+      "raw_text": "Hydralisk movement speed while on Creep is now affected the same as other units.",
+      "change_type": "mixed"
+    },
+    {
+      "id": "zerg-hydralisk_48",
+      "patch_version": "3.8.0",
+      "entity_id": "zerg-hydralisk",
+      "raw_text": "Muscular Augments now gives a 25% speed boost both on and off Creep.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-infestor_49",
+      "patch_version": "3.8.0",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Now has a collision radius while burrowed (smaller than normal).",
+      "change_type": "mixed"
+    },
+    {
+      "id": "zerg-infestor_50",
+      "patch_version": "3.8.0",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Can cast all abilities while burrowed.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-swarm_host_51",
+      "patch_version": "3.8.0",
+      "entity_id": "zerg-swarm_host",
+      "raw_text": "Cost reduced from 150/100 to 100/75.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-swarm_host_52",
+      "patch_version": "3.8.0",
+      "entity_id": "zerg-swarm_host",
+      "raw_text": "Locust Swoop range increased from 4 to 6.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-swarm_host_53",
+      "patch_version": "3.8.0",
+      "entity_id": "zerg-swarm_host",
+      "raw_text": "Locust Acid Spit damage decreased from 12 to 10.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-ultralisk_54",
+      "patch_version": "3.8.0",
+      "entity_id": "zerg-ultralisk",
+      "raw_text": "Base armor increased from 1 to 2.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-ultralisk_55",
+      "patch_version": "3.8.0",
+      "entity_id": "zerg-ultralisk",
+      "raw_text": "Chitinous Plating armor bonus reduced from +4 to +2.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "neutral-rocks_56",
+      "patch_version": "3.8.0",
+      "entity_id": "neutral-rocks",
+      "raw_text": "Armor reduced from 3 to 0.",
+      "change_type": "nerf"
+    }
+  ]
+}

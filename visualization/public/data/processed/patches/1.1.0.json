@@ -1,0 +1,73 @@
+{
+  "metadata": {
+    "version": "1.1.0",
+    "date": "2010-09-22",
+    "title": "StarCraft II Patch 1.1.0",
+    "url": "https://news.blizzard.com/en-gb/article/9993888/patch-1-1-0-now-live"
+  },
+  "changes": [
+    {
+      "id": "protoss-zealot_0",
+      "patch_version": "1.1.0",
+      "entity_id": "protoss-zealot",
+      "raw_text": "Build time increased from 33 to 38.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-zealot_1",
+      "patch_version": "1.1.0",
+      "entity_id": "protoss-zealot",
+      "raw_text": "Warp Gate cooldown increased from 23 to 28.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-battlecruiser_2",
+      "patch_version": "1.1.0",
+      "entity_id": "terran-battlecruiser",
+      "raw_text": "Ground damage decreased from 10 to 8.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-bunker_3",
+      "patch_version": "1.1.0",
+      "entity_id": "terran-bunker",
+      "raw_text": "Build time increased from 30 to 35.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-reaper_4",
+      "patch_version": "1.1.0",
+      "entity_id": "terran-reaper",
+      "raw_text": "Build time increased from 40 to 45.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-siege_tank_5",
+      "patch_version": "1.1.0",
+      "entity_id": "terran-siege_tank",
+      "raw_text": "Siege mode damage changed from 50 to 35 (+15 armored).",
+      "change_type": "mixed"
+    },
+    {
+      "id": "terran-siege_tank_6",
+      "patch_version": "1.1.0",
+      "entity_id": "terran-siege_tank",
+      "raw_text": "Siege mode upgrade damage changed from +5 to +3 (+2 armored).",
+      "change_type": "mixed"
+    },
+    {
+      "id": "zerg-ultralisk_7",
+      "patch_version": "1.1.0",
+      "entity_id": "zerg-ultralisk",
+      "raw_text": "Ram ability removed. Ultralisk will now use normal attack against buildings.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-ultralisk_8",
+      "patch_version": "1.1.0",
+      "entity_id": "zerg-ultralisk",
+      "raw_text": "Damage decreased from 15 (+25 armored) to 15 (+20 armored).",
+      "change_type": "nerf"
+    }
+  ]
+}

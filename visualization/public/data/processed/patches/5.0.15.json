@@ -1,0 +1,185 @@
+{
+  "metadata": {
+    "version": "5.0.15",
+    "date": "2025-09-30",
+    "title": "StarCraft II Patch 5.0.15",
+    "url": "https://news.blizzard.com/en-us/article/24225313/starcraft-ii-5-0-15-patch-notes"
+  },
+  "changes": [
+    {
+      "id": "zerg-spire_0",
+      "patch_version": "5.0.15",
+      "entity_id": "zerg-spire",
+      "raw_text": "Cost reduced from 200/200 to 150/150.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-spire_1",
+      "patch_version": "5.0.15",
+      "entity_id": "zerg-spire",
+      "raw_text": "Build time reduced from 71 seconds to 66 seconds.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-baneling_2",
+      "patch_version": "5.0.15",
+      "entity_id": "zerg-baneling",
+      "raw_text": "Centrifugal Hooks now grants +5 HP to Banelings again.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-infestor_3",
+      "patch_version": "5.0.15",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Microbial Shroud now reduces damage from ranged attacks by 50%.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-infestor_4",
+      "patch_version": "5.0.15",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Microbial Shroud effect no longer persists after leaving the shroud.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-infestor_5",
+      "patch_version": "5.0.15",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Microbial Shroud energy cost increased from 75 to 100.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-infestor_6",
+      "patch_version": "5.0.15",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Microbial Shroud now requires a research upgrade (150/150).",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-mothership_7",
+      "patch_version": "5.0.15",
+      "entity_id": "protoss-mothership",
+      "raw_text": "Energy Recharge energy granted reduced from 100 to 50.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-mothership_8",
+      "patch_version": "5.0.15",
+      "entity_id": "protoss-mothership",
+      "raw_text": "Energy Recharge cooldown reduced from 60 to 45 seconds.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-mothership_9",
+      "patch_version": "5.0.15",
+      "entity_id": "protoss-mothership",
+      "raw_text": "Movement speed reduced from 2.83 to 2.25.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-high_templar_10",
+      "patch_version": "5.0.15",
+      "entity_id": "protoss-high_templar",
+      "raw_text": "Psionic Storm changed from 80 damage over 3 seconds to 140 damage over 6 seconds (DPS 26.7 -> 23.3).",
+      "change_type": "mixed"
+    },
+    {
+      "id": "protoss-high_templar_11",
+      "patch_version": "5.0.15",
+      "entity_id": "protoss-high_templar",
+      "raw_text": "Psionic Storm radius increased from 1.5 to 2.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-high_templar_12",
+      "patch_version": "5.0.15",
+      "entity_id": "protoss-high_templar",
+      "raw_text": "Psionic Storm range reduced from 9 to 8.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-dark_templar_13",
+      "patch_version": "5.0.15",
+      "entity_id": "protoss-dark_templar",
+      "raw_text": "Blink (Shadow Stride) post-blink attack delay reduced from 0.75 to 0.25 seconds.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-observer_14",
+      "patch_version": "5.0.15",
+      "entity_id": "protoss-observer",
+      "raw_text": "Surveillance Mode now reveals the Observer (no longer cloaked while in this mode).",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-observer_15",
+      "patch_version": "5.0.15",
+      "entity_id": "protoss-observer",
+      "raw_text": "Surveillance Mode vision increased from 13.75 to 15.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-disruptor_16",
+      "patch_version": "5.0.15",
+      "entity_id": "protoss-disruptor",
+      "raw_text": "Purification Nova cooldown reduced from 21.4 seconds to 17 seconds.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-oracle_17",
+      "patch_version": "5.0.15",
+      "entity_id": "protoss-oracle",
+      "raw_text": "Stasis Ward duration reduced from 170 seconds to 90 seconds.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-siege_tank_18",
+      "patch_version": "5.0.15",
+      "entity_id": "terran-siege_tank",
+      "raw_text": "Can no longer be Abducted while in Siege Mode.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-viking_19",
+      "patch_version": "5.0.15",
+      "entity_id": "terran-viking",
+      "raw_text": "Cost reduced from 150/75 to 125/75.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-widow_mine_20",
+      "patch_version": "5.0.15",
+      "entity_id": "terran-widow_mine",
+      "raw_text": "Drilling Claws improves burrow time from 1.07 to 0.71 seconds (faster).",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-banshee_21",
+      "patch_version": "5.0.15",
+      "entity_id": "terran-banshee",
+      "raw_text": "Hyperflight Rotors research time reduced from 100 to 79 seconds.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-liberator_22",
+      "patch_version": "5.0.15",
+      "entity_id": "terran-liberator",
+      "raw_text": "Sight range reduced from 10 to 9.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-ghost_23",
+      "patch_version": "5.0.15",
+      "entity_id": "terran-ghost",
+      "raw_text": "Supply reduced from 3 to 2.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-ghost_24",
+      "patch_version": "5.0.15",
+      "entity_id": "terran-ghost",
+      "raw_text": "Now has the Light attribute.",
+      "change_type": "mixed"
+    }
+  ]
+}

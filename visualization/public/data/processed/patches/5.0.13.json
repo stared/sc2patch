@@ -1,0 +1,276 @@
+{
+  "metadata": {
+    "version": "5.0.13",
+    "date": "2024-03-26",
+    "title": "StarCraft II Patch 5.0.13",
+    "url": "https://news.blizzard.com/en-us/article/24078322/starcraft-ii-5-0-13-patch-notes"
+  },
+  "changes": [
+    {
+      "id": "terran-scv_0",
+      "patch_version": "5.0.13",
+      "entity_id": "terran-scv",
+      "raw_text": "Attack range increased from 0.1 to 0.2.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-scv_1",
+      "patch_version": "5.0.13",
+      "entity_id": "terran-scv",
+      "raw_text": "Inner radius (collision) reduced from 0.375 to 0.3125.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-probe_2",
+      "patch_version": "5.0.13",
+      "entity_id": "protoss-probe",
+      "raw_text": "Attack range increased from 0.1 to 0.2.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-probe_3",
+      "patch_version": "5.0.13",
+      "entity_id": "protoss-probe",
+      "raw_text": "Inner radius (collision) reduced from 0.375 to 0.3125.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-drone_4",
+      "patch_version": "5.0.13",
+      "entity_id": "zerg-drone",
+      "raw_text": "Attack range increased from 0.1 to 0.2.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-drone_5",
+      "patch_version": "5.0.13",
+      "entity_id": "zerg-drone",
+      "raw_text": "Inner radius (collision) reduced from 0.375 to 0.3125.",
+      "change_type": "buff"
+    },
+    {
+      "id": "neutral-vespene_geyser_6",
+      "patch_version": "5.0.13",
+      "entity_id": "neutral-vespene_geyser",
+      "raw_text": "Adjusted footprint size of Vespene Geysers (to maintain previous interactions with Workers and Geysers).",
+      "change_type": "mixed"
+    },
+    {
+      "id": "neutral-zerg_rocks_7",
+      "patch_version": "5.0.13",
+      "entity_id": "neutral-zerg_rocks",
+      "raw_text": "Now lose HP when off creep.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "neutral-mineral_field_8",
+      "patch_version": "5.0.13",
+      "entity_id": "neutral-mineral_field",
+      "raw_text": "Can now be destroyed by collapsible rock towers.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "neutral-collapsible_rock_tower_9",
+      "patch_version": "5.0.13",
+      "entity_id": "neutral-collapsible_rock_tower",
+      "raw_text": "Now destroys Mineral Fields when triggered.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-liberator_10",
+      "patch_version": "5.0.13",
+      "entity_id": "terran-liberator",
+      "raw_text": "Advanced Ballistics range bonus reduced from +3 to +2.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-widow_mine_11",
+      "patch_version": "5.0.13",
+      "entity_id": "terran-widow_mine",
+      "raw_text": "Invisibility while reloading now requires the Drilling Claws upgrade instead of a constructed Armory.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-widow_mine_12",
+      "patch_version": "5.0.13",
+      "entity_id": "terran-widow_mine",
+      "raw_text": "Splash damage radius reduced from 1.75 to 1.5.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-widow_mine_13",
+      "patch_version": "5.0.13",
+      "entity_id": "terran-widow_mine",
+      "raw_text": "Now gives an attack alert to the enemy when burrowing in range of enemy units.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-widow_mine_14",
+      "patch_version": "5.0.13",
+      "entity_id": "terran-widow_mine",
+      "raw_text": "Alert is not given for already burrowed Widow Mines when enemies enter range.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-widow_mine_15",
+      "patch_version": "5.0.13",
+      "entity_id": "terran-widow_mine",
+      "raw_text": "Increased visibility of the targeting line and targeted unit.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-armory_16",
+      "patch_version": "5.0.13",
+      "entity_id": "terran-armory",
+      "raw_text": "Cost reduced from 150/100 to 150/50.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-engineering_bay_17",
+      "patch_version": "5.0.13",
+      "entity_id": "terran-engineering_bay",
+      "raw_text": "Infantry weapons/armor upgrades cost reduced from 100/175/250 to 100/150/200.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-cyclone_18",
+      "patch_version": "5.0.13",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Weapon cooldown increased from 0.48 to 0.58.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-cyclone_19",
+      "patch_version": "5.0.13",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Lock On cooldown increased from 0 to 2.86.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "terran-cyclone_20",
+      "patch_version": "5.0.13",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Weapon now has turret tracking and damage point reduced from 0.119 to 0.036 (improves firing responsiveness).",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-cyclone_21",
+      "patch_version": "5.0.13",
+      "entity_id": "terran-cyclone",
+      "raw_text": "Health increased from 110 to 130.",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-raven_22",
+      "patch_version": "5.0.13",
+      "entity_id": "terran-raven",
+      "raw_text": "Interference Matrix can no longer target units already targeted or affected by Interference Matrix.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-hatchery_23",
+      "patch_version": "5.0.13",
+      "entity_id": "zerg-hatchery",
+      "raw_text": "Creep spread radius increased from 12 to 13.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-lair_24",
+      "patch_version": "5.0.13",
+      "entity_id": "zerg-lair",
+      "raw_text": "Creep spread radius increased from 12 to 13.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-hive_25",
+      "patch_version": "5.0.13",
+      "entity_id": "zerg-hive",
+      "raw_text": "Creep spread radius increased from 12 to 13.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-infestor_26",
+      "patch_version": "5.0.13",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Fungal Growth range increased from 9 to 10.",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-infestor_27",
+      "patch_version": "5.0.13",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Vision range while burrowed reduced from 10 to 8.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-infestor_28",
+      "patch_version": "5.0.13",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Unburrow time increased from 0.357\u20130.714 seconds to 0.625\u20130.714 seconds.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-infestor_29",
+      "patch_version": "5.0.13",
+      "entity_id": "zerg-infestor",
+      "raw_text": "Increased size of moving burrowed Infestor visual effects.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-overlord_30",
+      "patch_version": "5.0.13",
+      "entity_id": "zerg-overlord",
+      "raw_text": "Transport Overlord morph time increased from 12.14 to 15 seconds.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-overlord_31",
+      "patch_version": "5.0.13",
+      "entity_id": "zerg-overlord",
+      "raw_text": "Transport Overlord move speed increased from 1.10 to 1.28 (from 2.83 to 3.00 with Pneumatized Carapace).",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-observer_32",
+      "patch_version": "5.0.13",
+      "entity_id": "protoss-observer",
+      "raw_text": "Build time reduced from 21.4 to 17.9 seconds.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-observer_33",
+      "patch_version": "5.0.13",
+      "entity_id": "protoss-observer",
+      "raw_text": "Shields increased from 20 to 30 (health remains 40).",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-observer_34",
+      "patch_version": "5.0.13",
+      "entity_id": "protoss-observer",
+      "raw_text": "Model size increased by 10%.",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-sentry_35",
+      "patch_version": "5.0.13",
+      "entity_id": "protoss-sentry",
+      "raw_text": "Damage changed from 6 to 6 (+4 vs Shields).",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-sentry_36",
+      "patch_version": "5.0.13",
+      "entity_id": "protoss-sentry",
+      "raw_text": "Light attribute tag removed.",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-pylon_37",
+      "patch_version": "5.0.13",
+      "entity_id": "protoss-pylon",
+      "raw_text": "Sight range increased from 9 to 10.",
+      "change_type": "buff"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "metadata": {
+    "version": "2.1.3 BU",
+    "date": "2014-04-22",
+    "title": "StarCraft II Patch 2.1.3 BU",
+    "url": "https://news.blizzard.com/en-us/starcraft2/14933073"
+  },
+  "changes": [
+    {
+      "id": "terran-widow_mine_0",
+      "patch_version": "2.1.3 BU",
+      "entity_id": "terran-widow_mine",
+      "raw_text": "Splash radius is now 1.75; removed 50% and 25% damage zones",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-widow_mine_1",
+      "patch_version": "2.1.3 BU",
+      "entity_id": "terran-widow_mine",
+      "raw_text": "Splash damage is now 40 (+40 vs. Shields) uniformly across the full 1.75 radius",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-thor_2",
+      "patch_version": "2.1.3 BU",
+      "entity_id": "terran-thor",
+      "raw_text": "Now prioritizes anti-air (AA) weapon over anti-ground (AG) weapon",
+      "change_type": "buff"
+    },
+    {
+      "id": "protoss-mothership_core_3",
+      "patch_version": "2.1.3 BU",
+      "entity_id": "protoss-mothership_core",
+      "raw_text": "Time Warp duration decreased from 30 to 10 seconds",
+      "change_type": "nerf"
+    }
+  ]
+}

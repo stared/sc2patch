@@ -37,27 +37,32 @@
   Run Python with `uv` - never bare `python3` or `python`.
 - DO NOT edit files with `cat`
 
-## Data Pipeline Stages
+## Data Pipeline
 
-1. **Download** - Fetch patch notes from Blizzard News and Liquipedia
-   - `scripts/download_all_balance_patches.py` - Download from Blizzard News
-   - `scripts/download_html_from_liquipedia.py` - Download BU patches from Liquipedia
+**See PIPELINE.md for complete documentation**
 
-2. **Parse** - Extract structured data using GPT-5 via OpenRouter
-   - `scripts/parse_with_llm_v2.py` - Parse Markdown patches with change_type classification
-   - `scripts/parse_html_with_llm.py` - Parse Liquipedia HTML patches
-   - **CRITICAL**: Every change MUST have `change_type` (buff/nerf/mixed)
-   - Classification is from entity's perspective (stronger/weaker)
+The pipeline has 4 stages:
 
-3. **Validate** - Verify data completeness
-   - `scripts/reparse_missing_change_types.py` - Check all patches have change_type
-   - Hard validation in visualization fails if data is incomplete
+1. **Download** (`scripts/1_download.py`) - Fetch HTML from Blizzard News
+2. **Parse** (`scripts/2_parse.py`) - Extract structured data with GPT-5
+3. **Validate** (`scripts/3_validate.py`) - Check completeness
+4. **Export** (`scripts/4_export_for_viz.py`) - Copy data to visualization
 
-4. **Generate** - Create manifests and indices
-   - `scripts/generate_patch_manifest.py` - Build manifest with all patches
-   - `scripts/download_building_images_from_wiki.py` - Fetch unit/building images
+Each stage:
+- Takes input from previous stage
+- Generates timestamped markdown log in `data/logs/`
+- Fails loudly on errors (exit code 1)
 
-Each stage must validate its inputs and outputs.
+**Single source of truth:** `data/patch_urls.json` (only manually edited file)
+
+**Quick start:**
+```bash
+uv run python scripts/1_download.py
+export OPENROUTER_API_KEY="your-key"
+uv run python scripts/2_parse.py
+uv run python scripts/3_validate.py
+uv run python scripts/4_export_for_viz.py
+```
 
 ## Testing
 
@@ -82,23 +87,25 @@ pnpm build          # Production build
 
 ```
 sc2patches/
-├── src/sc2patches/          # Python parsing library
-│   ├── parsers/             # Modular HTML parsers
-│   └── convert.py           # HTML to structured data conversion
+├── PIPELINE.md              # Complete pipeline documentation
+├── data/
+│   ├── patch_urls.json      # ← ONLY manually edited file
+│   ├── logs/                # Timestamped execution logs
+│   ├── raw_html/            # Downloaded HTML
+│   ├── raw_patches/         # Human-readable Markdown
+│   └── processed/patches/   # Final JSON data (one per patch)
+├── src/sc2patches/          # Python library
+│   ├── logger.py            # Markdown log generation
+│   ├── download.py          # Download & convert logic
+│   └── parse.py             # GPT-5 parsing logic
 ├── scripts/                 # Pipeline scripts
-│   ├── parse_with_llm_v2.py      # Main LLM parser
-│   ├── parse_html_with_llm.py    # HTML parser for BU patches
-│   └── reparse_missing_*.py      # Validation utilities
-├── data/                    # Parsed data and assets
-│   ├── processed/patches/   # Final JSON files (one per patch)
-│   ├── patches_manifest.json # Index of all patches
-│   └── raw_html/            # Downloaded HTML source
+│   ├── 1_download.py        # Stage 1: Download
+│   ├── 2_parse.py           # Stage 2: Parse with GPT-5
+│   ├── 3_validate.py        # Stage 3: Validate
+│   └── 4_export_for_viz.py  # Stage 4: Export
 ├── visualization/           # React + Vite visualization
-│   ├── src/
-│   │   ├── components/      # PatchGrid, PatchSelector
-│   │   └── utils/           # dataLoader.ts (with hard validation)
-│   ├── public/data/         # Symlinked to ../data
-│   └── package.json         # pnpm dependencies
+│   ├── src/                 # React components
+│   └── public/data/         # Exported data (copies from data/)
 └── pyproject.toml           # Python dependencies (uv)
 ```
 
@@ -138,3 +145,4 @@ All patches use this JSON structure:
 - Run Python with `uv`, TypeScript with `pnpm`
 - Hard validation: fail fast with clear errors, never silent failures
 - Do not commit without an explicit confirmation. Ask for it.
+- When needed, manually check Blizzard websites or Liqudidpedia, e.g. https://liquipedia.net/starcraft2/Units_(Legacy_of_the_Void) and its pages, e.g. https://liquipedia.net/starcraft2/Factory_(Legacy_of_the_Void), https://liquipedia.net/starcraft2/Stalker_(Legacy_of_the_Void) or https://liquipedia.net/starcraft2/Chitinous_Plating (to show you patters for buildings, units, upgrades). Useful websites: https://liquipedia.net/starcraft2/Upgrades and for patches - https://liquipedia.net/starcraft2/Patches.

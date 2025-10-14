@@ -1,0 +1,136 @@
+{
+  "metadata": {
+    "version": "2.1.9 BU",
+    "date": "2015-01-27",
+    "title": "StarCraft II Patch 2.1.9 BU",
+    "url": "https://news.blizzard.com/en-us/starcraft2/18598811"
+  },
+  "changes": [
+    {
+      "id": "zerg-swarm_host_0",
+      "patch_version": "2.1.9 BU",
+      "entity_id": "zerg-swarm_host",
+      "raw_text": "Cost modified from 200 Minerals / 100 Vespene to 100 Minerals / 200 Vespene",
+      "change_type": "mixed"
+    },
+    {
+      "id": "zerg-swarm_host_1",
+      "patch_version": "2.1.9 BU",
+      "entity_id": "zerg-swarm_host",
+      "raw_text": "Supply cost increased from 3 to 4",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-swarm_host_2",
+      "patch_version": "2.1.9 BU",
+      "entity_id": "zerg-swarm_host",
+      "raw_text": "Movement speed increased from 2.25 to 2.95",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-swarm_host_3",
+      "patch_version": "2.1.9 BU",
+      "entity_id": "zerg-swarm_host",
+      "raw_text": "Now requires the Burrow research in order to burrow",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-swarm_host_4",
+      "patch_version": "2.1.9 BU",
+      "entity_id": "zerg-swarm_host",
+      "raw_text": "No longer collide with Locusts",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-spawn_locusts_5",
+      "patch_version": "2.1.9 BU",
+      "entity_id": "zerg-swarm_host",
+      "raw_text": "[Spawn Locusts] Auto-cast removed; Spawn Locusts must now be manually cast",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-spawn_locusts_6",
+      "patch_version": "2.1.9 BU",
+      "entity_id": "zerg-swarm_host",
+      "raw_text": "[Spawn Locusts] Cooldown increased from 25 seconds to 60 seconds",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-spawn_locusts_7",
+      "patch_version": "2.1.9 BU",
+      "entity_id": "zerg-swarm_host",
+      "raw_text": "[Spawn Locusts] Casting no longer requires the Swarm Host to be burrowed",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-locust_8",
+      "patch_version": "2.1.9 BU",
+      "entity_id": "zerg-swarm_host",
+      "raw_text": "[Locust] Weapon speed increased from 0.8 to 0.6",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-locust_9",
+      "patch_version": "2.1.9 BU",
+      "entity_id": "zerg-swarm_host",
+      "raw_text": "[Locust] Duration increased from 15 seconds (+10 seconds with Enduring Locusts) to 25 seconds",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-enduring_locusts_10",
+      "patch_version": "2.1.9 BU",
+      "entity_id": "zerg-swarm_host",
+      "raw_text": "[Enduring Locusts] Upgrade removed",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-flying_locusts_11",
+      "patch_version": "2.1.9 BU",
+      "entity_id": "zerg-swarm_host",
+      "raw_text": "[Flying Locusts] New upgrade added: Flying Locusts",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-flying_locusts_12",
+      "patch_version": "2.1.9 BU",
+      "entity_id": "zerg-swarm_host",
+      "raw_text": "[Flying Locusts] Requires Lair",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-flying_locusts_13",
+      "patch_version": "2.1.9 BU",
+      "entity_id": "zerg-swarm_host",
+      "raw_text": "[Flying Locusts] Cost set to 200 Minerals / 200 Vespene; research time 160 seconds",
+      "change_type": "nerf"
+    },
+    {
+      "id": "zerg-flying_locusts_14",
+      "patch_version": "2.1.9 BU",
+      "entity_id": "zerg-swarm_host",
+      "raw_text": "[Flying Locusts] Allows Locusts spawned by Swarm Hosts to fly and use Swoop to land and attack",
+      "change_type": "buff"
+    },
+    {
+      "id": "zerg-viper_15",
+      "patch_version": "2.1.9 BU",
+      "entity_id": "zerg-viper",
+      "raw_text": "Blinding Cloud range increased from 10 to 11",
+      "change_type": "buff"
+    },
+    {
+      "id": "terran-raven_16",
+      "patch_version": "2.1.9 BU",
+      "entity_id": "terran-raven",
+      "raw_text": "Point Defense Drone duration decreased from 180 seconds to 20 seconds",
+      "change_type": "nerf"
+    },
+    {
+      "id": "protoss-tempest_17",
+      "patch_version": "2.1.9 BU",
+      "entity_id": "protoss-tempest",
+      "raw_text": "Bonus damage versus massive air units decreased from +50 to +14",
+      "change_type": "nerf"
+    }
+  ]
+}
