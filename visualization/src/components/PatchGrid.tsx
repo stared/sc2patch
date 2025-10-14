@@ -37,10 +37,9 @@ interface EntityCellProps {
   onHover: (entity: EntityWithPosition) => void;
   onLeave: () => void;
   onClick: () => void;
-  isSelected: boolean;
 }
 
-function EntityCell({ entityId, entity, units, onHover, onLeave, onClick, isSelected }: EntityCellProps) {
+function EntityCell({ entityId, entity, units, onHover, onLeave, onClick }: EntityCellProps) {
   const race = (entity.race || 'neutral') as keyof typeof RACE_COLORS;
   const color = RACE_COLORS[race];
 
@@ -70,16 +69,16 @@ function EntityCell({ entityId, entity, units, onHover, onLeave, onClick, isSele
 
   return (
     <div
-      className={`entity-cell ${isSelected ? 'selected' : ''}`}
+      className="entity-cell"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={onLeave}
       onClick={onClick}
       style={{
         borderColor: outlineColor,
-        borderWidth: isSelected ? '3px' : '2px',
+        borderWidth: '2px',
         borderStyle: 'solid',
         cursor: 'pointer',
-        opacity: isSelected ? 1 : 0.9
+        opacity: 0.9
       }}
     >
       {hasImage ? (
@@ -129,7 +128,6 @@ export function PatchGrid({ patches, units }: PatchGridProps) {
 
   // Get selected entity details
   const selectedEntity = selectedEntityId ? filteredPatches[0]?.entities.get(selectedEntityId) : null;
-  const selectedUnit = selectedEntityId ? units.get(selectedEntityId) : null;
 
   // Group entities by race for each patch
   const patchesWithGroupedEntities = filteredPatches.map(patch => {
@@ -149,86 +147,24 @@ export function PatchGrid({ patches, units }: PatchGridProps) {
 
   return (
     <div className="patch-grid-container">
-      {/* Entity Detail Panel */}
-      {selectedEntityId && selectedEntity && (
-        <div className="entity-detail-panel">
-          <div className="entity-detail-header">
-            <div className="entity-detail-image">
-              {(selectedEntity.type === 'unit' || selectedEntity.type === 'building') ? (
-                <img
-                  src={`${import.meta.env.BASE_URL}assets/units/${selectedEntityId}.png`}
-                  alt={selectedEntityId}
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = `${import.meta.env.BASE_URL}assets/units/placeholder.svg`;
-                  }}
-                />
-              ) : (
-                <div className="upgrade-icon" style={{
-                  backgroundColor: `${RACE_COLORS[selectedEntity.race as keyof typeof RACE_COLORS]}40`,
-                  color: RACE_COLORS[selectedEntity.race as keyof typeof RACE_COLORS]
-                }}>
-                  {(selectedUnit?.name || selectedEntityId.split('-').pop() || '?').charAt(0).toUpperCase()}
-                </div>
-              )}
-            </div>
-            <div className="entity-detail-title">
-              <h2>{selectedUnit?.name || selectedEntityId}</h2>
-              <button onClick={() => handleEntityClick(selectedEntityId)} className="close-detail">
-                ✕ Back to all entities
-              </button>
-            </div>
-          </div>
-          <div className="entity-detail-changes">
-            <h3>All Changes ({filteredPatches.length} patches)</h3>
-            {filteredPatches.map(patch => {
-              const entity = patch.entities.get(selectedEntityId);
-              return entity ? (
-                <div key={patch.version} className="patch-changes">
-                  <div className="patch-changes-header">
-                    <a href={patch.url} target="_blank" rel="noopener noreferrer">
-                      {patch.version}
-                    </a>
-                    <span className="patch-date">{patch.date}</span>
-                  </div>
-                  <ul>
-                    {entity.changes.map((change: ProcessedChange, i: number) => {
-                      const changeText = change.text;
-                      const changeType = change.change_type;
-
-                      const indicator = changeType === 'buff' ? '+ '
-                                     : changeType === 'nerf' ? '− '
-                                     : changeType === 'mixed' ? '± '
-                                     : '';
-
-                      const indicatorColor = changeType === 'buff' ? '#4a9eff'
-                                           : changeType === 'nerf' ? '#ff4444'
-                                           : changeType === 'mixed' ? '#ff9933'
-                                           : '#ccc';
-
-                      return (
-                        <li key={i}>
-                          <span style={{ color: indicatorColor, fontWeight: 'bold' }}>{indicator}</span>
-                          {changeText}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              ) : null;
-            })}
-          </div>
-        </div>
-      )}
-
       <div className="patch-grid">
         {/* Race headers */}
-        <div className="race-headers">
+        <div className={selectedEntityId ? "race-headers-filtered" : "race-headers"}>
           <div className="patch-label-space"></div>
-          {(['terran', 'zerg', 'protoss', 'neutral'] as const).map(race => (
-            <div key={race} className="race-header" style={{ color: RACE_COLORS[race] }}>
-              {race.charAt(0).toUpperCase() + race.slice(1)}
+          {selectedEntityId ? (
+            // Show only the selected unit's race
+            <div className="race-header" style={{ color: RACE_COLORS[selectedEntity?.race as keyof typeof RACE_COLORS || 'neutral'] }}>
+              {(selectedEntity?.race || 'neutral').charAt(0).toUpperCase() + (selectedEntity?.race || 'neutral').slice(1)}
             </div>
-          ))}
+          ) : (
+            // Show all races
+            (['terran', 'zerg', 'protoss', 'neutral'] as const).map(race => (
+              <div key={race} className="race-header" style={{ color: RACE_COLORS[race] }}>
+                {race.charAt(0).toUpperCase() + race.slice(1)}
+              </div>
+            ))
+          )}
+          {selectedEntityId && <div className="changes-header">Changes</div>}
         </div>
 
         {/* Patch rows with expansion separators */}
@@ -243,7 +179,7 @@ export function PatchGrid({ patches, units }: PatchGridProps) {
                   <span>{patch.expansion.toUpperCase()}</span>
                 </div>
               )}
-              <div className="patch-row">
+              <div className={selectedEntityId ? "patch-row-filtered" : "patch-row"}>
                 <div className="patch-info">
                   <a href={patch.url} target="_blank" rel="noopener noreferrer" className="patch-version">
                     {patch.version}
@@ -251,23 +187,60 @@ export function PatchGrid({ patches, units }: PatchGridProps) {
                   <div className="patch-date">{patch.date.split('-').slice(0, 2).join('-')}</div>
                 </div>
 
-                {/* Race columns */}
-                {(['terran', 'zerg', 'protoss', 'neutral'] as const).map(race => (
-                  <div key={race} className="race-column">
-                    {patch.byRace[race].map(([entityId, entity]) => (
+                {selectedEntityId ? (
+                  // Filtered view: show only selected unit + changes
+                  <>
+                    <div className="unit-icon-cell">
                       <EntityCell
-                        key={entityId}
-                        entityId={entityId}
-                        entity={entity}
+                        entityId={selectedEntityId}
+                        entity={patch.entities.get(selectedEntityId)!}
                         units={units}
                         onHover={handleEntityHover}
                         onLeave={handleEntityLeave}
-                        onClick={() => handleEntityClick(entityId)}
-                        isSelected={entityId === selectedEntityId}
+                        onClick={() => handleEntityClick(selectedEntityId)}
                       />
-                    ))}
-                  </div>
-                ))}
+                    </div>
+                    <div className="changes-list">
+                      <ul>
+                        {patch.entities.get(selectedEntityId)?.changes.map((change: ProcessedChange, i: number) => {
+                          const indicator = change.change_type === 'buff' ? '+ '
+                                         : change.change_type === 'nerf' ? '− '
+                                         : change.change_type === 'mixed' ? '± '
+                                         : '';
+
+                          const indicatorColor = change.change_type === 'buff' ? '#4a9eff'
+                                               : change.change_type === 'nerf' ? '#ff4444'
+                                               : change.change_type === 'mixed' ? '#ff9933'
+                                               : '#ccc';
+
+                          return (
+                            <li key={i}>
+                              <span style={{ color: indicatorColor, fontWeight: 'bold' }}>{indicator}</span>
+                              {change.text}
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  </>
+                ) : (
+                  // Normal view: show all races
+                  (['terran', 'zerg', 'protoss', 'neutral'] as const).map(race => (
+                    <div key={race} className="race-column">
+                      {patch.byRace[race].map(([entityId, entity]) => (
+                        <EntityCell
+                          key={entityId}
+                          entityId={entityId}
+                          entity={entity}
+                          units={units}
+                          onHover={handleEntityHover}
+                          onLeave={handleEntityLeave}
+                          onClick={() => handleEntityClick(entityId)}
+                        />
+                      ))}
+                    </div>
+                  ))
+                )}
               </div>
             </React.Fragment>
           );

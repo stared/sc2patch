@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react';
 import { PatchGrid } from './components/PatchGrid';
-import { UnitView } from './components/UnitView';
 import { loadUnits, loadPatches, processPatches } from './utils/dataLoader';
-import { ProcessedPatchData, Unit, ViewMode } from './types';
+import { ProcessedPatchData, Unit } from './types';
 
 function App() {
   const [units, setUnits] = useState<Map<string, Unit>>(new Map());
   const [patches, setPatches] = useState<ProcessedPatchData[]>([]);
-  const [viewMode, setViewMode] = useState<ViewMode>('by-patch');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -62,33 +60,14 @@ function App() {
 
   return (
     <div>
-      <div className="controls">
-        <button
-          className={viewMode === 'by-patch' ? 'active' : ''}
-          onClick={() => setViewMode('by-patch')}
-        >
-          By Patch
-        </button>
-        <button
-          className={viewMode === 'by-unit' ? 'active' : ''}
-          onClick={() => setViewMode('by-unit')}
-        >
-          By Unit
-        </button>
-      </div>
-
-      <div style={{ padding: '20px', paddingTop: '80px' }}>
+      <div style={{ padding: '20px' }}>
         <h1 style={{ color: '#fff', marginBottom: '20px' }}>StarCraft II Balance Changes</h1>
         <p style={{ color: '#999', marginBottom: '30px' }}>
           Visualizing unit changes across {patches.length} patches
         </p>
 
         <div style={{ overflow: 'auto', background: '#111', borderRadius: '8px', padding: '20px' }}>
-          {viewMode === 'by-patch' ? (
-            <PatchGrid patches={patches} units={units} />
-          ) : (
-            <UnitView patches={patches} units={units} />
-          )}
+          <PatchGrid patches={patches} units={units} />
         </div>
       </div>
     </div>
