@@ -192,12 +192,14 @@ body {
 /* Patch Grid Layout */
 .patch-grid-container {
   width: 100%;
+  transition: all 0.3s ease;
 }
 
 .patch-grid {
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 24px;
+  transition: all 0.3s ease;
 }
 
 .race-headers {
@@ -209,6 +211,7 @@ body {
   background: rgba(255, 255, 255, 0.02);
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: grid-template-columns 0.3s ease;
 }
 
 .patch-label-space {
@@ -272,12 +275,10 @@ body {
   border-radius: 4px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s;
   background: #1a1a1a;
 }
 
 .entity-cell:hover {
-  transform: scale(1.1);
   box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
   z-index: 5;
 }
@@ -478,6 +479,7 @@ body {
   background: rgba(255, 255, 255, 0.02);
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: grid-template-columns 0.3s ease;
 }
 
 .patch-row-filtered {
