@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
+import React, { useState, useMemo } from 'react';
+import { motion, AnimatePresence, LayoutGroup, useAnimation } from 'framer-motion';
 import { ProcessedPatchData, ProcessedEntity, ProcessedChange, Unit } from '../types';
 
 interface PatchGridProps {
@@ -43,9 +43,11 @@ interface EntityCellProps {
   onHover: (entity: EntityWithPosition) => void;
   onLeave: () => void;
   onClick: () => void;
+  index?: number;
+  isFiltered?: boolean;
 }
 
-function EntityCell({ entityId, entity, units, patchVersion, isVisible, onHover, onLeave, onClick }: EntityCellProps) {
+function EntityCell({ entityId, entity, units, patchVersion, isVisible, onHover, onLeave, onClick, index = 0, isFiltered = false }: EntityCellProps) {
   const race = (entity.race || 'neutral') as keyof typeof RACE_COLORS;
   const color = RACE_COLORS[race];
 
@@ -77,21 +79,62 @@ function EntityCell({ entityId, entity, units, patchVersion, isVisible, onHover,
     return null;
   }
 
+  // Calculate staggered delay based on index - more sophisticated choreography
+  const staggerDelay = isFiltered ? 0 : Math.min(index * 0.015, 0.3);
+  const rowPosition = Math.floor(index / 4); // Assuming ~4 entities per row
+  const waveDelay = rowPosition * 0.02; // Wave effect across rows
+
   return (
     <motion.div
       className="entity-cell"
       layoutId={`entity-${entityId}-${patchVersion}`}
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.8 }}
-      whileHover={{ scale: 1.1 }}
+      initial={{ opacity: 0, scale: 0, y: 30, rotateX: -15 }}
+      animate={{
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        rotateX: 0,
+        transition: {
+          delay: staggerDelay + waveDelay,
+          duration: 0.5,
+          ease: [0.16, 1, 0.3, 1], // More aggressive easeOutExpo curve
+          opacity: { duration: 0.3, delay: staggerDelay + waveDelay },
+          scale: {
+            type: "spring",
+            stiffness: 200,
+            damping: 20,
+            delay: staggerDelay + waveDelay
+          }
+        }
+      }}
+      exit={{
+        opacity: 0,
+        scale: 0.6,
+        y: -20,
+        rotateX: 10,
+        transition: {
+          duration: 0.25,
+          ease: [0.7, 0, 0.84, 0] // easeInQuart for smooth exit
+        }
+      }}
+      whileHover={{
+        scale: 1.15,
+        rotateZ: 1,
+        transition: {
+          type: "spring",
+          stiffness: 300,
+          damping: 15,
+          mass: 0.5
+        }
+      }}
+      whileTap={{ scale: 0.92, rotateZ: -1 }}
       transition={{
         layout: {
-          duration: 0.4,
-          ease: "easeInOut"
-        },
-        opacity: { duration: 0.2 },
-        scale: { duration: 0.2 }
+          type: "spring",
+          stiffness: 400,
+          damping: 30,
+          mass: 0.8
+        }
       }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={onLeave}
@@ -169,33 +212,130 @@ export function PatchGrid({ patches, units, totalPatches, selectedEntityId, onEn
     <LayoutGroup>
       <div className="patch-grid-container" data-filtered={!!selectedEntityId}>
         <div className={`patch-grid ${selectedEntityId ? 'filtered' : ''}`}>
-          {/* Race headers */}
+          {/* Race headers with orchestrated animations */}
           <motion.div
             className={selectedEntityId ? "race-headers-filtered" : "race-headers"}
             layout
-            transition={{ duration: 0.4, ease: "easeInOut" }}
+            transition={{
+              type: "spring",
+              stiffness: 250,
+              damping: 30,
+              mass: 0.8
+            }}
           >
-          <div className="patch-label-space"></div>
-          {selectedEntityId ? (
-            // Show only the selected unit's race
-            <div className="race-header" style={{ color: RACE_COLORS[selectedEntity?.race as keyof typeof RACE_COLORS || 'neutral'] }}>
-              {(selectedEntity?.race || 'neutral').charAt(0).toUpperCase() + (selectedEntity?.race || 'neutral').slice(1)}
-            </div>
-          ) : (
-            // Show all races
-            (['terran', 'zerg', 'protoss', 'neutral'] as const).map(race => (
-              <div key={race} className="race-header" style={{ color: RACE_COLORS[race] }}>
-                {race.charAt(0).toUpperCase() + race.slice(1)}
-              </div>
-            ))
+          <motion.div
+            className="patch-label-space"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{
+              duration: 0.4,
+              ease: [0.16, 1, 0.3, 1]
+            }}
+          />
+          <AnimatePresence mode="popLayout" initial={false}>
+            {selectedEntityId ? (
+              // Show only the selected unit's race with smooth transition
+              <motion.div
+                key="filtered-race"
+                className="race-header"
+                initial={{ opacity: 0, y: -20, scale: 0.9 }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                  transition: {
+                    y: {
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 25
+                    },
+                    opacity: { duration: 0.3 },
+                    scale: { duration: 0.4, ease: [0.16, 1, 0.3, 1] }
+                  }
+                }}
+                exit={{
+                  opacity: 0,
+                  y: 20,
+                  scale: 0.9,
+                  transition: {
+                    duration: 0.2,
+                    ease: [0.7, 0, 0.84, 0]
+                  }
+                }}
+                style={{ color: RACE_COLORS[selectedEntity?.race as keyof typeof RACE_COLORS || 'neutral'] }}
+              >
+                {(selectedEntity?.race || 'neutral').charAt(0).toUpperCase() + (selectedEntity?.race || 'neutral').slice(1)}
+              </motion.div>
+            ) : (
+              // Show all races with wave animation
+              (['terran', 'zerg', 'protoss', 'neutral'] as const).map((race, index) => (
+                <motion.div
+                  key={race}
+                  className="race-header"
+                  initial={{ opacity: 0, y: -15, scale: 0.8, rotateX: -30 }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    rotateX: 0,
+                    transition: {
+                      delay: index * 0.08,
+                      y: {
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 22,
+                        delay: index * 0.08
+                      },
+                      opacity: {
+                        duration: 0.4,
+                        delay: index * 0.08
+                      },
+                      scale: {
+                        duration: 0.5,
+                        delay: index * 0.08,
+                        ease: [0.16, 1, 0.3, 1]
+                      },
+                      rotateX: {
+                        duration: 0.6,
+                        delay: index * 0.08,
+                        ease: [0.16, 1, 0.3, 1]
+                      }
+                    }
+                  }}
+                  exit={{
+                    opacity: 0,
+                    y: 15,
+                    scale: 0.8,
+                    rotateX: 30,
+                    transition: {
+                      duration: 0.25,
+                      delay: (3 - index) * 0.03, // Reverse stagger for exit
+                      ease: [0.7, 0, 0.84, 0]
+                    }
+                  }}
+                  style={{ color: RACE_COLORS[race], transformStyle: 'preserve-3d' }}
+                >
+                  {race.charAt(0).toUpperCase() + race.slice(1)}
+                </motion.div>
+              ))
+            )}
+          </AnimatePresence>
+          {selectedEntityId && (
+            <motion.div
+              className="changes-header"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, delay: 0.1, ease: [0.23, 1, 0.32, 1] }}
+            >
+              Changes
+            </motion.div>
           )}
-          {selectedEntityId && <div className="changes-header">Changes</div>}
           </motion.div>
 
           {/* Patch rows with expansion separators */}
-          <AnimatePresence initial={false}>
-            {patchesWithGroupedEntities.map((patch, index) => {
-              const prevExpansion = index > 0 ? patchesWithGroupedEntities[index - 1].expansion : null;
+          <AnimatePresence mode="wait" initial={false}>
+            {patchesWithGroupedEntities.map((patch, patchIndex) => {
+              const prevExpansion = patchIndex > 0 ? patchesWithGroupedEntities[patchIndex - 1].expansion : null;
               const showExpansionBar = patch.expansion !== prevExpansion;
               const hasSelectedEntity = selectedEntityId ? patch.entities.has(selectedEntityId) : false;
 
@@ -204,32 +344,128 @@ export function PatchGrid({ patches, units, totalPatches, selectedEntityId, onEn
                 return null;
               }
 
+              // Calculate cascade delay with exponential easing for cinematic effect
+              const baseDelay = selectedEntityId ? 0.02 : 0.04;
+              const rowDelay = Math.min(patchIndex * baseDelay, 0.8);
+              const depthScale = 1 - (patchIndex * 0.001); // Subtle depth perception
+
               return (
                 <React.Fragment key={patch.version}>
                   {showExpansionBar && !selectedEntityId && (
                     <motion.div
                       className="expansion-separator"
                       layout
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 3 }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
-                      style={{ backgroundColor: EXPANSION_COLORS[patch.expansion] }}
+                      initial={{ opacity: 0, scaleX: 0, scaleY: 0.5 }}
+                      animate={{
+                        opacity: 0.9,
+                        scaleX: 1,
+                        scaleY: 1,
+                        transition: {
+                          delay: rowDelay,
+                          scaleX: {
+                            type: "spring",
+                            stiffness: 100,
+                            damping: 20,
+                            delay: rowDelay,
+                            duration: 0.8
+                          },
+                          scaleY: {
+                            delay: rowDelay + 0.2,
+                            duration: 0.3
+                          },
+                          opacity: {
+                            delay: rowDelay + 0.1,
+                            duration: 0.4
+                          }
+                        }
+                      }}
+                      exit={{
+                        opacity: 0,
+                        scaleX: 0,
+                        scaleY: 0.5,
+                        transition: {
+                          duration: 0.3,
+                          ease: [0.7, 0, 1, 0.5]
+                        }
+                      }}
+                      style={{
+                        backgroundColor: EXPANSION_COLORS[patch.expansion],
+                        transformOrigin: 'center',
+                        filter: `brightness(${1 + Math.sin(patchIndex * 0.5) * 0.1})`
+                      }}
                     >
-                      <span>{patch.expansion.toUpperCase()}</span>
+                      <motion.span
+                        initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                        animate={{
+                          opacity: 1,
+                          scale: 1,
+                          y: 0,
+                          transition: {
+                            delay: rowDelay + 0.4,
+                            duration: 0.4,
+                            ease: [0.16, 1, 0.3, 1]
+                          }
+                        }}
+                      >
+                        {patch.expansion.toUpperCase()}
+                      </motion.span>
                     </motion.div>
                   )}
                   <motion.div
                     className={selectedEntityId ? "patch-row-filtered" : "patch-row"}
                     layout
                     layoutId={`patch-row-${patch.version}`}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
+                    initial={{
+                      opacity: 0,
+                      x: -50,
+                      scale: 0.95,
+                      filter: "blur(4px)"
+                    }}
+                    animate={{
+                      opacity: 1,
+                      x: 0,
+                      scale: depthScale,
+                      filter: "blur(0px)",
+                      transition: {
+                        delay: rowDelay,
+                        x: {
+                          type: "spring",
+                          stiffness: 120,
+                          damping: 25,
+                          delay: rowDelay
+                        },
+                        opacity: {
+                          duration: 0.4,
+                          delay: rowDelay
+                        },
+                        scale: {
+                          duration: 0.6,
+                          delay: rowDelay,
+                          ease: [0.16, 1, 0.3, 1]
+                        },
+                        filter: {
+                          duration: 0.5,
+                          delay: rowDelay + 0.1
+                        }
+                      }
+                    }}
+                    exit={{
+                      opacity: 0,
+                      x: 40,
+                      scale: 0.9,
+                      filter: "blur(4px)",
+                      transition: {
+                        duration: 0.25,
+                        ease: [0.7, 0, 0.84, 0]
+                      }
+                    }}
                     transition={{
-                      layout: { duration: 0.4, ease: "easeInOut" },
-                      opacity: { duration: 0.3 },
-                      y: { duration: 0.3 }
+                      layout: {
+                        type: "spring",
+                        stiffness: 350,
+                        damping: 28,
+                        mass: 0.9
+                      }
                     }}
                   >
                     <div className="patch-info">
@@ -242,7 +478,19 @@ export function PatchGrid({ patches, units, totalPatches, selectedEntityId, onEn
                     {selectedEntityId ? (
                       // Show selected entity with changes
                       <>
-                        <div className="unit-icon-cell">
+                        <motion.div
+                          className="unit-icon-cell"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{
+                            opacity: 1,
+                            scale: 1,
+                            transition: {
+                              delay: rowDelay + 0.1,
+                              duration: 0.3,
+                              ease: [0.23, 1, 0.32, 1]
+                            }
+                          }}
+                        >
                           <EntityCell
                             entityId={selectedEntityId}
                             entity={patch.entities.get(selectedEntityId)!}
@@ -252,9 +500,22 @@ export function PatchGrid({ patches, units, totalPatches, selectedEntityId, onEn
                             onHover={handleEntityHover}
                             onLeave={handleEntityLeave}
                             onClick={() => handleEntityClick(selectedEntityId)}
+                            isFiltered={true}
                           />
-                        </div>
-                        <div className="changes-list">
+                        </motion.div>
+                        <motion.div
+                          className="changes-list"
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{
+                            opacity: 1,
+                            x: 0,
+                            transition: {
+                              delay: rowDelay + 0.2,
+                              duration: 0.4,
+                              ease: [0.23, 1, 0.32, 1]
+                            }
+                          }}
+                        >
                           <ul>
                             {patch.entities.get(selectedEntityId)?.changes.map((change: ProcessedChange, i: number) => {
                               const indicator = change.change_type === 'buff' ? '+ '
@@ -275,27 +536,76 @@ export function PatchGrid({ patches, units, totalPatches, selectedEntityId, onEn
                               );
                             })}
                           </ul>
-                        </div>
+                        </motion.div>
                       </>
                     ) : (
-                      // Show all races with entities
-                      (['terran', 'zerg', 'protoss', 'neutral'] as const).map(race => (
-                        <div key={race} className="race-column">
-                          {patch.byRace[race].map(([entityId, entity]) => (
-                            <EntityCell
-                              key={`${entityId}-${patch.version}`}
-                              entityId={entityId}
-                              entity={entity}
-                              units={units}
-                              patchVersion={patch.version}
-                              isVisible={true}
-                              onHover={handleEntityHover}
-                              onLeave={handleEntityLeave}
-                              onClick={() => handleEntityClick(entityId)}
-                            />
-                          ))}
-                        </div>
-                      ))
+                      // Show all races with entities - orchestrated column animations
+                      (['terran', 'zerg', 'protoss', 'neutral'] as const).map((race, raceIndex) => {
+                        let entityIndex = raceIndex * 10; // Base index per race column
+                        const columnDelay = rowDelay + (raceIndex * 0.06);
+                        const isEmptyColumn = patch.byRace[race].length === 0;
+
+                        return (
+                          <motion.div
+                            key={race}
+                            className="race-column"
+                            initial={{
+                              opacity: 0,
+                              x: -10 + (raceIndex * 5),
+                              scale: 0.98
+                            }}
+                            animate={{
+                              opacity: isEmptyColumn ? 0.3 : 1,
+                              x: 0,
+                              scale: 1,
+                              transition: {
+                                x: {
+                                  type: "spring",
+                                  stiffness: 200,
+                                  damping: 20,
+                                  delay: columnDelay
+                                },
+                                opacity: {
+                                  duration: 0.4,
+                                  delay: columnDelay,
+                                  ease: [0.16, 1, 0.3, 1]
+                                },
+                                scale: {
+                                  duration: 0.5,
+                                  delay: columnDelay,
+                                  ease: [0.16, 1, 0.3, 1]
+                                }
+                              }
+                            }}
+                            exit={{
+                              opacity: 0,
+                              x: 10 - (raceIndex * 5),
+                              scale: 0.98,
+                              transition: {
+                                duration: 0.3,
+                                delay: (3 - raceIndex) * 0.02,
+                                ease: [0.7, 0, 0.84, 0]
+                              }
+                            }}
+                          >
+                            {patch.byRace[race].map(([entityId, entity], idx) => (
+                              <EntityCell
+                                key={`${entityId}-${patch.version}`}
+                                entityId={entityId}
+                                entity={entity}
+                                units={units}
+                                patchVersion={patch.version}
+                                isVisible={true}
+                                onHover={handleEntityHover}
+                                onLeave={handleEntityLeave}
+                                onClick={() => handleEntityClick(entityId)}
+                                index={entityIndex + idx}
+                                isFiltered={false}
+                              />
+                            ))}
+                          </motion.div>
+                        );
+                      })
                     )}
                   </motion.div>
                 </React.Fragment>
