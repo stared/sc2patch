@@ -83,7 +83,7 @@ function App() {
         </p>
 
         <div style={{ overflow: 'auto', background: '#111', borderRadius: '8px', padding: '20px' }}>
-          <PatchGrid patches={patches} units={units} viewMode={viewMode} />
+          <PatchGrid patches={patches} units={units} />
         </div>
       </div>
     </div>

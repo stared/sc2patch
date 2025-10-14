@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { ProcessedPatchData, ProcessedEntity, ProcessedChange, ViewMode, Unit } from '../types';
+import { ProcessedPatchData, ProcessedEntity, ProcessedChange, Unit } from '../types';
 
 interface PatchGridProps {
   patches: ProcessedPatchData[];
   units: Map<string, Unit>;
-  viewMode: ViewMode;
 }
 
 const RACE_COLORS = {
@@ -100,7 +99,7 @@ function EntityCell({ entityId, entity, units, onHover, onLeave, onClick, isSele
   );
 }
 
-export function PatchGrid({ patches, units, _viewMode }: PatchGridProps) {
+export function PatchGrid({ patches, units }: PatchGridProps) {
   const [tooltip, setTooltip] = useState<{
     entity: EntityWithPosition | null;
     visible: boolean;
@@ -193,9 +192,8 @@ export function PatchGrid({ patches, units, _viewMode }: PatchGridProps) {
                   </div>
                   <ul>
                     {entity.changes.map((change: ProcessedChange, i: number) => {
-                      const isChange = typeof change === 'object' && change.text;
-                      const changeText = isChange ? change.text : change;
-                      const changeType = isChange ? change.change_type : null;
+                      const changeText = change.text;
+                      const changeType = change.change_type;
 
                       const indicator = changeType === 'buff' ? '+ '
                                      : changeType === 'nerf' ? '− '
@@ -289,9 +287,8 @@ export function PatchGrid({ patches, units, _viewMode }: PatchGridProps) {
             <h4>{tooltip.entity.name || tooltip.entity.id}</h4>
             <ul>
               {tooltip.entity.changes.map((change: ProcessedChange, i: number) => {
-                const isChange = typeof change === 'object' && change.text;
-                const changeText = isChange ? change.text : change;
-                const changeType = isChange ? change.change_type : null;
+                const changeText = change.text;
+                const changeType = change.change_type;
 
                 // Get indicator based on change type
                 const indicator = changeType === 'buff' ? '+ '
