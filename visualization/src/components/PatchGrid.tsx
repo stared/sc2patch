@@ -80,8 +80,9 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
     const height = currentY + 100;
     svg.attr('width', width).attr('height', height);
 
-    // Define gradients FIRST (after clearing, so always create fresh)
+    // Define gradients and clip paths FIRST (after clearing, so always create fresh)
     const defs = svg.append('defs');
+
     const gradient = defs.append('linearGradient')
       .attr('id', 'cellGradient')
       .attr('x1', '0%')
@@ -96,6 +97,16 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
     gradient.append('stop')
       .attr('offset', '100%')
       .attr('stop-color', '#151515');
+
+    // Clip path for rounded corners on images
+    const clipPath = defs.append('clipPath')
+      .attr('id', 'roundedCorners');
+
+    clipPath.append('rect')
+      .attr('width', CELL_SIZE)
+      .attr('height', CELL_SIZE)
+      .attr('rx', 4)
+      .attr('ry', 4);
 
     // Create main container
     const container = svg.append('g').attr('class', 'patch-container');
@@ -214,8 +225,7 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
           enter => {
             const eg = enter.append('g')
               .attr('class', 'entity-cell-group')
-              .attr('transform', d => `translate(${d.x}, ${d.y})`)
-              .style('opacity', 0);
+              .attr('transform', d => `translate(${d.x}, ${d.y})`);
 
             // Background rect
             eg.append('rect')
@@ -239,8 +249,8 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
               .attr('width', CELL_SIZE)
               .attr('height', CELL_SIZE)
               .attr('href', d => `${import.meta.env.BASE_URL}assets/units/${d.entityId}.png`)
+              .attr('clip-path', 'url(#roundedCorners)')
               .attr('preserveAspectRatio', 'xMidYMid slice')
-              .style('clip-path', 'inset(0 round 4px)')
               .style('pointer-events', 'none');
 
             eg.on('click', (event, d) => {
@@ -267,19 +277,13 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
               setTooltip({ entity: null, visible: false });
             });
 
-            return eg.transition()
-              .duration(400)
-              .style('opacity', 1);
+            return eg;
           },
           update => update,
-          exit => exit
-            .transition()
-            .duration(300)
-            .style('opacity', 0)
-            .remove()
+          exit => exit.remove()
         );
 
-      // Transition entity positions
+      // Transition entity positions smoothly
       entityGroups
         .transition()
         .duration(600)
