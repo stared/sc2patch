@@ -233,8 +233,8 @@ export function PatchGrid({ patches, units, totalPatches, selectedEntityId, onEn
                   key={patch.version}
                   layout
                   style={{
+                    display: 'contents',  // Always keep in layout flow for smooth animations
                     pointerEvents: isVisible ? 'auto' : 'none',
-                    display: isVisible ? 'contents' : 'none',  // Remove from flow when hidden
                     opacity: isVisible ? 1 : 0
                   }}
                 >
