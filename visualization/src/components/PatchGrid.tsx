@@ -68,8 +68,11 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
   }>({ entity: null, visible: false });
 
   useEffect(() => {
+    // Save previous value BEFORE updating ref
+    const prevSelectedId = prevSelectedIdRef.current;
+
     // Determine if we're selecting or deselecting
-    const wasFiltered = prevSelectedIdRef.current !== null;
+    const wasFiltered = prevSelectedId !== null;
     const isFiltered = selectedEntityId !== null;
     const isDeselecting = wasFiltered && !isFiltered;
     const isSelecting = !wasFiltered && isFiltered;
@@ -187,7 +190,7 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
       // When deselecting: previously visible patches move, new ones just fade in
       patchGroups.each(function(d) {
         const patch = d3.select(this);
-        const wasVisible = prevSelectedIdRef.current && d.patch.entities.has(prevSelectedIdRef.current);
+        const wasVisible = prevSelectedId && d.patch.entities.has(prevSelectedId);
 
         if (wasVisible) {
           // Previously visible patch: move to new position
@@ -385,7 +388,7 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
           .attr('transform', d => `translate(${d.x}, ${d.y})`);
       } else if (isDeselecting) {
         // Deselecting: Selected unit moves back, others fade in at final position
-        const wasSelected = (d: EntityItem) => d.entityId === prevSelectedIdRef.current;
+        const wasSelected = (d: EntityItem) => d.entityId === prevSelectedId;
 
         entityGroups.each(function(d) {
           const element = d3.select(this);
