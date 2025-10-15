@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ProcessedPatchData, ProcessedEntity, ProcessedChange, Unit } from '../types';
 
 interface PatchGridProps {
@@ -70,8 +71,14 @@ function EntityCell({ entityId, entity, units, onHover, onLeave, onClick }: Enti
   const hasImage = entity.type === 'unit' || entity.type === 'building';
 
   return (
-    <div
+    <motion.div
       className="entity-cell"
+      layoutId={`entity-${entityId}`}
+      layout
+      transition={{
+        duration: 0.3,
+        ease: [0.16, 1, 0.3, 1]
+      }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={onLeave}
       onClick={onClick}
@@ -95,7 +102,7 @@ function EntityCell({ entityId, entity, units, onHover, onLeave, onClick }: Enti
           <span style={{ color }}>{(entity.name || entityId.split('-').pop() || '?').charAt(0).toUpperCase()}</span>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }
 
@@ -152,51 +159,72 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
         {/* Race headers */}
         <div className={selectedEntityId ? "race-headers-filtered" : "race-headers"}>
           <div className="patch-label-space" />
-          {selectedEntityId ? (
-            // Show only the selected unit's race
-            <div
-              className="race-header"
-              style={{ color: RACE_COLORS[selectedEntity?.race as keyof typeof RACE_COLORS || 'neutral'] }}
-            >
-              {(selectedEntity?.race || 'neutral').charAt(0).toUpperCase() + (selectedEntity?.race || 'neutral').slice(1)}
-            </div>
-          ) : (
-            // Show all races
-            (['terran', 'zerg', 'protoss', 'neutral'] as const).map((race) => (
-              <div
-                key={race}
+          <AnimatePresence mode="popLayout">
+            {selectedEntityId ? (
+              // Show only the selected unit's race
+              <motion.div
+                key="filtered-race"
+                layout
                 className="race-header"
-                style={{ color: RACE_COLORS[race] }}
+                style={{ color: RACE_COLORS[selectedEntity?.race as keyof typeof RACE_COLORS || 'neutral'] }}
               >
-                {race.charAt(0).toUpperCase() + race.slice(1)}
-              </div>
-            ))
-          )}
+                {(selectedEntity?.race || 'neutral').charAt(0).toUpperCase() + (selectedEntity?.race || 'neutral').slice(1)}
+              </motion.div>
+            ) : (
+              // Show all races
+              (['terran', 'zerg', 'protoss', 'neutral'] as const).map((race) => (
+                <motion.div
+                  key={race}
+                  layout
+                  className="race-header"
+                  style={{ color: RACE_COLORS[race] }}
+                >
+                  {race.charAt(0).toUpperCase() + race.slice(1)}
+                </motion.div>
+              ))
+            )}
+          </AnimatePresence>
           {selectedEntityId && (
-            <div className="changes-header">
+            <motion.div
+              layout
+              className="changes-header"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
               Changes
-            </div>
+            </motion.div>
           )}
         </div>
 
           {/* Patch rows with expansion separators */}
-          {patchesWithGroupedEntities.map((patch, patchIndex) => {
-            const prevExpansion = patchIndex > 0 ? patchesWithGroupedEntities[patchIndex - 1].expansion : null;
-            const showExpansionBar = patch.expansion !== prevExpansion;
+          <AnimatePresence mode="popLayout">
+            {patchesWithGroupedEntities.map((patch, patchIndex) => {
+              const prevExpansion = patchIndex > 0 ? patchesWithGroupedEntities[patchIndex - 1].expansion : null;
+              const showExpansionBar = patch.expansion !== prevExpansion;
 
-            return (
-              <React.Fragment key={patch.version}>
-                {showExpansionBar && !selectedEntityId && (
-                  <div
-                    className="expansion-separator"
-                    style={{
-                      backgroundColor: EXPANSION_COLORS[patch.expansion]
-                    }}
+              return (
+                <React.Fragment key={patch.version}>
+                  {showExpansionBar && !selectedEntityId && (
+                    <motion.div
+                      className="expansion-separator"
+                      layout
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      style={{
+                        backgroundColor: EXPANSION_COLORS[patch.expansion]
+                      }}
+                    >
+                      <span>{patch.expansion.toUpperCase()}</span>
+                    </motion.div>
+                  )}
+                  <motion.div
+                    layout
+                    className={selectedEntityId ? "patch-row-filtered" : "patch-row"}
                   >
-                    <span>{patch.expansion.toUpperCase()}</span>
-                  </div>
-                )}
-                <div className={selectedEntityId ? "patch-row-filtered" : "patch-row"}>
                   <div className="patch-info">
                     <a href={patch.url} target="_blank" rel="noopener noreferrer" className="patch-version">
                       {patch.version}
@@ -261,10 +289,11 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
                       </div>
                     ))
                   )}
-                </div>
-              </React.Fragment>
-            );
-          })}
+                  </motion.div>
+                </React.Fragment>
+              );
+            })}
+          </AnimatePresence>
 
         {/* Tooltip (only show when no entity selected) */}
         {!selectedEntityId && tooltip.visible && tooltip.entity && (
