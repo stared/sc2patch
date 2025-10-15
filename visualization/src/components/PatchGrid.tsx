@@ -154,13 +154,17 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
           .remove()
       );
 
-    // Transition patches to new positions
+    // Choreographed transitions:
+    // Step 1: Fade out invisible patches (300ms)
+    // Step 2: Move to new positions (400ms, starts after step 1)
     patchGroups
       .transition()
-      .duration(600)
+      .duration(300)
+      .style('opacity', d => d.visible ? 1 : 0)
+      .transition()
+      .duration(400)
       .ease(d3.easeCubicOut)
-      .attr('transform', d => `translate(0, ${d.y})`)
-      .style('opacity', d => d.visible ? 1 : 0);
+      .attr('transform', d => `translate(0, ${d.y})`);
 
     // Render patch content
     patchGroups.each(function(rowData) {
@@ -304,23 +308,40 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
             return eg;
           },
           update => update,
-          exit => exit.remove()
+          exit => {
+            // Step 1: Fade out irrelevant entities (300ms)
+            return exit
+              .transition()
+              .duration(300)
+              .style('opacity', 0)
+              .remove();
+          }
         );
 
-      // Transition entity positions smoothly
+      // Choreographed entity transitions:
+      // Step 1: Fade out if not selected entity (300ms)
+      // Step 2: Move to new positions (400ms, starts after step 1)
+      const isFiltering = selectedEntityId !== null;
+      const shouldFadeOut = (d: EntityItem) => isFiltering && d.entityId !== selectedEntityId;
+
       entityGroups
         .transition()
-        .duration(600)
+        .duration(300)
+        .style('opacity', d => shouldFadeOut(d) ? 0 : 1)
+        .transition()
+        .duration(400)
         .ease(d3.easeCubicOut)
         .attr('transform', d => `translate(${d.x}, ${d.y})`);
 
       // Render changes text if filtered
+      // Step 3: Fade in after movement completes (700ms delay)
       if (selectedEntityId) {
         const entity = patch.entities.get(selectedEntityId);
         if (entity) {
           const changesGroup = g.append('g')
             .attr('class', 'changes-group')
-            .attr('transform', `translate(${PATCH_LABEL_WIDTH + 140}, 10)`);
+            .attr('transform', `translate(${PATCH_LABEL_WIDTH + 140}, 10)`)
+            .style('opacity', 0); // Start invisible
 
           entity.changes.forEach((change: ProcessedChange, i: number) => {
             const indicator = change.change_type === 'buff' ? '+ '
@@ -347,6 +368,13 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
             changeText.append('tspan')
               .text(change.text);
           });
+
+          // Fade in after 700ms (after fade out + movement)
+          changesGroup
+            .transition()
+            .delay(700)
+            .duration(300)
+            .style('opacity', 1);
         }
       }
     });
