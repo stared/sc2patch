@@ -309,30 +309,6 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
               .attr('preserveAspectRatio', 'xMidYMid slice')
               .style('pointer-events', 'none');
 
-            eg.on('click', (event, d) => {
-              event.stopPropagation();
-              onEntitySelect(selectedEntityId === d.entityId ? null : d.entityId);
-            });
-
-            eg.on('mouseenter', (event, d) => {
-              if (!selectedEntityId) {
-                const rect = (event.target as SVGElement).getBoundingClientRect();
-                setTooltip({
-                  entity: {
-                    ...d.entity,
-                    name: units.get(d.entityId)?.name || d.entity.name || d.entityId,
-                    x: rect.left + rect.width / 2,
-                    y: rect.top
-                  },
-                  visible: true
-                });
-              }
-            });
-
-            eg.on('mouseleave', () => {
-              setTooltip({ entity: null, visible: false });
-            });
-
             return eg;
           },
           update => update,
@@ -345,6 +321,31 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
               .remove();
           }
         );
+
+      // Update event handlers for all entity groups (must be outside join to capture current state)
+      entityGroups.on('click', (event, d) => {
+        event.stopPropagation();
+        onEntitySelect(selectedEntityId === d.entityId ? null : d.entityId);
+      });
+
+      entityGroups.on('mouseenter', (event, d) => {
+        if (!selectedEntityId) {
+          const rect = (event.target as SVGElement).getBoundingClientRect();
+          setTooltip({
+            entity: {
+              ...d.entity,
+              name: units.get(d.entityId)?.name || d.entity.name || d.entityId,
+              x: rect.left + rect.width / 2,
+              y: rect.top
+            },
+            visible: true
+          });
+        }
+      });
+
+      entityGroups.on('mouseleave', () => {
+        setTooltip({ entity: null, visible: false });
+      });
 
       // Choreographed entity transitions:
       if (isSelecting) {
