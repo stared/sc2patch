@@ -214,7 +214,9 @@ body {
   background: rgba(255, 255, 255, 0.02);
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: grid-template-columns 0.3s ease;
+  transition:
+    grid-template-columns 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .patch-label-space {
@@ -235,60 +237,7 @@ body {
   padding: 10px;
   border-bottom: 1px solid #222;
   min-height: 60px;
-  position: relative;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  transform-origin: center left;
-}
-
-.patch-row::before {
-  content: '';
-  position: absolute;
-  left: -10px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 0;
-  background: linear-gradient(180deg,
-    transparent,
-    rgba(74, 158, 255, 0.8),
-    transparent);
-  transition: height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  border-radius: 2px;
-}
-
-.patch-row::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 1px;
-  background: linear-gradient(90deg,
-    transparent,
-    rgba(74, 158, 255, 0.3),
-    transparent);
-  opacity: 0;
-  transform: scaleX(0);
-  transition: opacity 0.3s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  transform-origin: left center;
-}
-
-.patch-row:hover {
-  background: linear-gradient(90deg,
-    rgba(74, 158, 255, 0.02),
-    rgba(74, 158, 255, 0.03),
-    rgba(74, 158, 255, 0.01));
-  transform: translateX(2px);
-  padding-left: 14px;
-}
-
-.patch-row:hover::before {
-  height: 70%;
-}
-
-.patch-row:hover::after {
-  opacity: 1;
-  transform: scaleX(1);
+  transition: grid-template-columns 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .patch-info {
@@ -296,6 +245,7 @@ body {
   flex-direction: column;
   justify-content: center;
   gap: 4px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .patch-version {
@@ -320,6 +270,7 @@ body {
   flex-wrap: wrap;
   gap: 6px;
   align-content: flex-start;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .entity-cell {
@@ -333,7 +284,9 @@ body {
     0 2px 4px rgba(0, 0, 0, 0.3),
     inset 0 0 0 1px rgba(255, 255, 255, 0.02);
   position: relative;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    all 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   transform-style: preserve-3d;
 }
 
@@ -624,7 +577,9 @@ body {
   background: rgba(255, 255, 255, 0.02);
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: grid-template-columns 0.3s ease;
+  transition:
+    grid-template-columns 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .patch-row-filtered {
@@ -634,6 +589,9 @@ body {
   padding: 10px;
   border-bottom: 1px solid #222;
   min-height: 60px;
+  transition:
+    grid-template-columns 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .patch-row-filtered:hover {
@@ -644,6 +602,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .changes-header {
@@ -656,6 +615,7 @@ body {
 
 .changes-list {
   padding: 8px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .changes-list ul {
