@@ -174,7 +174,11 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
           const g = enter.append('g')
             .attr('class', 'patch-row-group')
             .attr('transform', d => `translate(0, ${d.y})`)
-            .style('opacity', d => d.visible ? 1 : 0);
+            .style('opacity', d => {
+              // When deselecting, new patches start hidden and will fade in
+              if (isDeselecting) return 0;
+              return d.visible ? 1 : 0;
+            });
           return g;
         },
         update => update,
