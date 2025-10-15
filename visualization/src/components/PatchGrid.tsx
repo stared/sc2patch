@@ -204,8 +204,9 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
             .ease(d3.easeCubicOut)
             .attr('transform', `translate(0, ${d.y})`);
         } else {
-          // Newly appearing patch: fade in at final position (no movement)
+          // Newly appearing patch: instantly jump to final position, then fade in
           patch
+            .attr('transform', `translate(0, ${d.y})`)  // Instant position update
             .transition()
             .delay(ANIMATION_TIMING.DESELECT_MOVE_DURATION)
             .duration(ANIMATION_TIMING.PATCH_FADE_DURATION)
