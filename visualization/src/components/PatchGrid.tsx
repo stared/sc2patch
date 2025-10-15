@@ -80,6 +80,23 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
     const height = currentY + 100;
     svg.attr('width', width).attr('height', height);
 
+    // Define gradients FIRST (after clearing, so always create fresh)
+    const defs = svg.append('defs');
+    const gradient = defs.append('linearGradient')
+      .attr('id', 'cellGradient')
+      .attr('x1', '0%')
+      .attr('y1', '0%')
+      .attr('x2', '100%')
+      .attr('y2', '100%');
+
+    gradient.append('stop')
+      .attr('offset', '0%')
+      .attr('stop-color', '#1a1a1a');
+
+    gradient.append('stop')
+      .attr('offset', '100%')
+      .attr('stop-color', '#151515');
+
     // Create main container
     const container = svg.append('g').attr('class', 'patch-container');
 
@@ -306,28 +323,19 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
       }
     });
 
-    // Define gradients
-    const defs = svg.append('defs');
-    const gradient = defs.append('linearGradient')
-      .attr('id', 'cellGradient')
-      .attr('x1', '0%')
-      .attr('y1', '0%')
-      .attr('x2', '100%')
-      .attr('y2', '100%');
-
-    gradient.append('stop')
-      .attr('offset', '0%')
-      .attr('stop-color', '#1a1a1a');
-
-    gradient.append('stop')
-      .attr('offset', '100%')
-      .attr('stop-color', '#151515');
-
   }, [patches, selectedEntityId, units, onEntitySelect]);
 
   return (
-    <div className="patch-grid-container">
-      <svg ref={svgRef} style={{ background: '#0a0a0a' }} />
+    <div className="patch-grid-container" style={{ width: '100%', minHeight: '100vh' }}>
+      <svg
+        ref={svgRef}
+        style={{
+          background: '#0a0a0a',
+          display: 'block',
+          width: '100%',
+          height: 'auto'
+        }}
+      />
 
       {/* Tooltip */}
       {!selectedEntityId && tooltip.visible && tooltip.entity && (
