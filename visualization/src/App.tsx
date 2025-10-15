@@ -128,7 +128,6 @@ function App() {
         <PatchGrid
           patches={patches}
           units={units}
-          totalPatches={patches.length}
           selectedEntityId={selectedEntityId}
           onEntitySelect={setSelectedEntityId}
         />
