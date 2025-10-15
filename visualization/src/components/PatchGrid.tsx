@@ -203,8 +203,11 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
           });
 
           raceEntities.forEach(([entityId, entity], entityIndex) => {
-            const col = Math.floor(entityIndex / 1); // Wrap entities
-            const row = entityIndex % 1;
+            // Calculate how many cells fit per row in the race column
+            const cellsPerRow = Math.floor(RACE_COLUMN_WIDTH / (CELL_SIZE + CELL_GAP));
+            const row = Math.floor(entityIndex / cellsPerRow);
+            const col = entityIndex % cellsPerRow;
+
             entities.push({
               id: `${entityId}-${patch.version}`,
               entityId,
