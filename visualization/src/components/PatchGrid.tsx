@@ -19,7 +19,6 @@ const RACE_COLORS = {
 // Layout constants
 const CELL_SIZE = 48;
 const CELL_GAP = 6;
-const PATCH_HEIGHT = 80;
 const PATCH_LABEL_WIDTH = 120;
 const RACE_COLUMN_WIDTH = 250;
 
@@ -40,6 +39,7 @@ interface PatchRow {
   patch: ProcessedPatchData;
   y: number;
   visible: boolean;
+  height: number;
 }
 
 export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: PatchGridProps) {
@@ -58,11 +58,34 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
     // Clear previous render
     svg.selectAll('*').remove();
 
-    // Calculate which patches to show
-    const visiblePatches = patches.map(patch => ({
-      patch,
-      visible: !selectedEntityId || patch.entities.has(selectedEntityId)
-    }));
+    // Calculate which patches to show and their heights
+    const cellsPerRow = Math.floor(RACE_COLUMN_WIDTH / (CELL_SIZE + CELL_GAP));
+
+    const visiblePatches = patches.map(patch => {
+      const visible = !selectedEntityId || patch.entities.has(selectedEntityId);
+
+      // Calculate height based on max rows in any race column
+      let maxRows = 1;
+      if (visible && !selectedEntityId) {
+        const races = ['terran', 'zerg', 'protoss', 'neutral'] as const;
+        races.forEach(race => {
+          let count = 0;
+          patch.entities.forEach((entity) => {
+            if ((entity.race || 'neutral') === race) count++;
+          });
+          const rows = Math.ceil(count / cellsPerRow);
+          maxRows = Math.max(maxRows, rows);
+        });
+      }
+
+      const height = 40 + maxRows * (CELL_SIZE + CELL_GAP) + 10; // padding top + rows + padding bottom
+
+      return {
+        patch,
+        visible,
+        height
+      };
+    });
 
     // Calculate Y positions for patches (accounting for hidden ones)
     let currentY = 80;
@@ -72,7 +95,7 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
         y: item.visible ? currentY : -1000 // Off-screen if not visible
       };
       if (item.visible) {
-        currentY += PATCH_HEIGHT;
+        currentY += item.height;
       }
       return row;
     });
@@ -203,8 +226,6 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
           });
 
           raceEntities.forEach(([entityId, entity], entityIndex) => {
-            // Calculate how many cells fit per row in the race column
-            const cellsPerRow = Math.floor(RACE_COLUMN_WIDTH / (CELL_SIZE + CELL_GAP));
             const row = Math.floor(entityIndex / cellsPerRow);
             const col = entityIndex % cellsPerRow;
 
