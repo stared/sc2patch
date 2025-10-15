@@ -55,9 +55,6 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
     const svg = d3.select(svgRef.current);
     const width = 1400;
 
-    // Clear previous render
-    svg.selectAll('*').remove();
-
     // Calculate which patches to show and their heights
     const cellsPerRow = Math.floor(RACE_COLUMN_WIDTH / (CELL_SIZE + CELL_GAP));
 
@@ -103,36 +100,41 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
     const height = currentY + 100;
     svg.attr('width', width).attr('height', height);
 
-    // Define gradients and clip paths FIRST (after clearing, so always create fresh)
-    const defs = svg.append('defs');
+    // Define gradients and clip paths once
+    if (svg.select('defs').empty()) {
+      const defs = svg.append('defs');
 
-    const gradient = defs.append('linearGradient')
-      .attr('id', 'cellGradient')
-      .attr('x1', '0%')
-      .attr('y1', '0%')
-      .attr('x2', '100%')
-      .attr('y2', '100%');
+      const gradient = defs.append('linearGradient')
+        .attr('id', 'cellGradient')
+        .attr('x1', '0%')
+        .attr('y1', '0%')
+        .attr('x2', '100%')
+        .attr('y2', '100%');
 
-    gradient.append('stop')
-      .attr('offset', '0%')
-      .attr('stop-color', '#1a1a1a');
+      gradient.append('stop')
+        .attr('offset', '0%')
+        .attr('stop-color', '#1a1a1a');
 
-    gradient.append('stop')
-      .attr('offset', '100%')
-      .attr('stop-color', '#151515');
+      gradient.append('stop')
+        .attr('offset', '100%')
+        .attr('stop-color', '#151515');
 
-    // Clip path for rounded corners on images
-    const clipPath = defs.append('clipPath')
-      .attr('id', 'roundedCorners');
+      // Clip path for rounded corners on images
+      const clipPath = defs.append('clipPath')
+        .attr('id', 'roundedCorners');
 
-    clipPath.append('rect')
-      .attr('width', CELL_SIZE)
-      .attr('height', CELL_SIZE)
-      .attr('rx', 4)
-      .attr('ry', 4);
+      clipPath.append('rect')
+        .attr('width', CELL_SIZE)
+        .attr('height', CELL_SIZE)
+        .attr('rx', 4)
+        .attr('ry', 4);
+    }
 
-    // Create main container
-    const container = svg.append('g').attr('class', 'patch-container');
+    // Get or create main container
+    if (svg.select('.patch-container').empty()) {
+      svg.append('g').attr('class', 'patch-container');
+    }
+    const container = svg.select<SVGGElement>('.patch-container');
 
     // Render patches
     const patchGroups = container
@@ -173,32 +175,31 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
 
       if (!visible) return;
 
-      // Clear previous content
-      g.selectAll('*').remove();
+      // Patch label (create once or reuse)
+      if (g.select('.patch-label').empty()) {
+        const patchLabel = g.append('g')
+          .attr('class', 'patch-label')
+          .attr('transform', `translate(0, 20)`);
 
-      // Patch label
-      const patchLabel = g.append('g')
-        .attr('class', 'patch-label')
-        .attr('transform', `translate(0, 20)`);
+        patchLabel.append('text')
+          .attr('class', 'patch-version-text')
+          .attr('x', 10)
+          .attr('y', 0)
+          .style('fill', '#4a9eff')
+          .style('font-size', '14px')
+          .style('font-weight', '600')
+          .style('cursor', 'pointer')
+          .text(patch.version)
+          .on('click', () => window.open(patch.url, '_blank'));
 
-      patchLabel.append('text')
-        .attr('class', 'patch-version-text')
-        .attr('x', 10)
-        .attr('y', 0)
-        .style('fill', '#4a9eff')
-        .style('font-size', '14px')
-        .style('font-weight', '600')
-        .style('cursor', 'pointer')
-        .text(patch.version)
-        .on('click', () => window.open(patch.url, '_blank'));
-
-      patchLabel.append('text')
-        .attr('class', 'patch-date-text')
-        .attr('x', 10)
-        .attr('y', 16)
-        .style('fill', '#666')
-        .style('font-size', '11px')
-        .text(patch.date.split('-').slice(0, 2).join('-'));
+        patchLabel.append('text')
+          .attr('class', 'patch-date-text')
+          .attr('x', 10)
+          .attr('y', 16)
+          .style('fill', '#666')
+          .style('font-size', '11px')
+          .text(patch.date.split('-').slice(0, 2).join('-'));
+      }
 
       // Entity cells
       const entities: EntityItem[] = [];
@@ -337,7 +338,8 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
       // Step 3: Fade in after movement completes (700ms delay)
       if (selectedEntityId) {
         const entity = patch.entities.get(selectedEntityId);
-        if (entity) {
+        if (entity && g.select('.changes-group').empty()) {
+          // Create new changes group
           const changesGroup = g.append('g')
             .attr('class', 'changes-group')
             .attr('transform', `translate(${PATCH_LABEL_WIDTH + 140}, 10)`)
@@ -375,6 +377,12 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
             .delay(700)
             .duration(300)
             .style('opacity', 1);
+        }
+      } else {
+        // Remove changes group when not filtering
+        const existingChangesGroup = g.select('.changes-group');
+        if (!existingChangesGroup.empty()) {
+          existingChangesGroup.remove();
         }
       }
     });
