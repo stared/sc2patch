@@ -22,6 +22,23 @@ const CELL_GAP = 6;
 const PATCH_LABEL_WIDTH = 120;
 const RACE_COLUMN_WIDTH = 250;
 
+// Animation timing configuration (all values in milliseconds)
+const ANIMATION_TIMING = {
+  // When selecting a unit (grid → filtered view)
+  FADE_OUT_DURATION: 600,        // Fade out irrelevant entities (2x 300ms)
+  MOVE_DURATION: 800,            // Move to new positions (2x 400ms)
+  CHANGES_DELAY: 1400,           // Delay before change notes appear (2x 700ms)
+  CHANGES_FADE_IN: 600,          // Fade in change notes (2x 300ms)
+
+  // When deselecting (filtered → grid view)
+  DESELECT_MOVE_DURATION: 800,   // Move back to grid positions (2x 400ms)
+  DESELECT_FADE_IN: 600,         // Fade in other entities (2x 300ms)
+
+  // Patch transitions
+  PATCH_FADE_DURATION: 600,      // Patch opacity transitions (2x 300ms)
+  PATCH_MOVE_DURATION: 800,      // Patch position transitions (2x 400ms)
+} as const;
+
 // Entity with position for tooltip display
 type EntityWithPosition = ProcessedEntity & { x: number; y: number };
 
@@ -44,12 +61,21 @@ interface PatchRow {
 
 export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: PatchGridProps) {
   const svgRef = useRef<SVGSVGElement>(null);
+  const prevSelectedIdRef = useRef<string | null>(null);
   const [tooltip, setTooltip] = useState<{
     entity: EntityWithPosition | null;
     visible: boolean;
   }>({ entity: null, visible: false });
 
   useEffect(() => {
+    // Determine if we're selecting or deselecting
+    const wasFiltered = prevSelectedIdRef.current !== null;
+    const isFiltered = selectedEntityId !== null;
+    const isDeselecting = wasFiltered && !isFiltered;
+    const isSelecting = !wasFiltered && isFiltered;
+
+    // Update ref for next render
+    prevSelectedIdRef.current = selectedEntityId;
     if (!svgRef.current) return;
 
     const svg = d3.select(svgRef.current);
@@ -157,14 +183,14 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
       );
 
     // Choreographed transitions:
-    // Step 1: Fade out invisible patches (300ms)
-    // Step 2: Move to new positions (400ms, starts after step 1)
+    // Step 1: Fade out invisible patches
+    // Step 2: Move to new positions (starts after step 1)
     patchGroups
       .transition()
-      .duration(300)
+      .duration(ANIMATION_TIMING.PATCH_FADE_DURATION)
       .style('opacity', d => d.visible ? 1 : 0)
       .transition()
-      .duration(400)
+      .duration(ANIMATION_TIMING.PATCH_MOVE_DURATION)
       .ease(d3.easeCubicOut)
       .attr('transform', d => `translate(0, ${d.y})`);
 
@@ -214,7 +240,7 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
             patchVersion: patch.version,
             entity,
             x: PATCH_LABEL_WIDTH + 40,
-            y: 20,
+            y: 0,  // Align with grid view positioning
             visible: true
           });
         }
@@ -254,7 +280,8 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
           enter => {
             const eg = enter.append('g')
               .attr('class', 'entity-cell-group')
-              .attr('transform', d => `translate(${d.x}, ${d.y})`);
+              .attr('transform', d => `translate(${d.x}, ${d.y})`)
+              .style('opacity', isDeselecting ? 0 : 1);  // Start hidden when deselecting
 
             // Background rect
             eg.append('rect')
@@ -310,32 +337,49 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
           },
           update => update,
           exit => {
-            // Step 1: Fade out irrelevant entities (300ms)
+            // Fade out entities that are being removed
             return exit
               .transition()
-              .duration(300)
+              .duration(ANIMATION_TIMING.FADE_OUT_DURATION)
               .style('opacity', 0)
               .remove();
           }
         );
 
       // Choreographed entity transitions:
-      // Step 1: Fade out if not selected entity (300ms)
-      // Step 2: Move to new positions (400ms, starts after step 1)
-      const isFiltering = selectedEntityId !== null;
-      const shouldFadeOut = (d: EntityItem) => isFiltering && d.entityId !== selectedEntityId;
+      if (isSelecting) {
+        // Selecting: Fade out → Move → Show changes
+        const shouldFadeOut = (d: EntityItem) => d.entityId !== selectedEntityId;
 
-      entityGroups
-        .transition()
-        .duration(300)
-        .style('opacity', d => shouldFadeOut(d) ? 0 : 1)
-        .transition()
-        .duration(400)
-        .ease(d3.easeCubicOut)
-        .attr('transform', d => `translate(${d.x}, ${d.y})`);
+        entityGroups
+          .transition()
+          .duration(ANIMATION_TIMING.FADE_OUT_DURATION)
+          .style('opacity', d => shouldFadeOut(d) ? 0 : 1)
+          .transition()
+          .duration(ANIMATION_TIMING.MOVE_DURATION)
+          .ease(d3.easeCubicOut)
+          .attr('transform', d => `translate(${d.x}, ${d.y})`);
+      } else if (isDeselecting) {
+        // Deselecting: Move → Fade in other entities
+        entityGroups
+          .transition()
+          .duration(ANIMATION_TIMING.DESELECT_MOVE_DURATION)
+          .ease(d3.easeCubicOut)
+          .attr('transform', d => `translate(${d.x}, ${d.y})`)
+          .transition()
+          .duration(ANIMATION_TIMING.DESELECT_FADE_IN)
+          .style('opacity', 1);
+      } else {
+        // Normal update: just move
+        entityGroups
+          .transition()
+          .duration(ANIMATION_TIMING.MOVE_DURATION)
+          .ease(d3.easeCubicOut)
+          .attr('transform', d => `translate(${d.x}, ${d.y})`);
+      }
 
       // Render changes text if filtered
-      // Step 3: Fade in after movement completes (700ms delay)
+      // Step 3: Fade in after movement completes
       if (selectedEntityId) {
         const entity = patch.entities.get(selectedEntityId);
         if (entity && g.select('.changes-group').empty()) {
@@ -371,11 +415,11 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
               .text(change.text);
           });
 
-          // Fade in after 700ms (after fade out + movement)
+          // Fade in after fade out + movement complete
           changesGroup
             .transition()
-            .delay(700)
-            .duration(300)
+            .delay(ANIMATION_TIMING.CHANGES_DELAY)
+            .duration(ANIMATION_TIMING.CHANGES_FADE_IN)
             .style('opacity', 1);
         }
       } else {
