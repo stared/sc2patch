@@ -361,15 +361,28 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
           .ease(d3.easeCubicOut)
           .attr('transform', d => `translate(${d.x}, ${d.y})`);
       } else if (isDeselecting) {
-        // Deselecting: Move → Fade in other entities
-        entityGroups
-          .transition()
-          .duration(ANIMATION_TIMING.DESELECT_MOVE_DURATION)
-          .ease(d3.easeCubicOut)
-          .attr('transform', d => `translate(${d.x}, ${d.y})`)
-          .transition()
-          .duration(ANIMATION_TIMING.DESELECT_FADE_IN)
-          .style('opacity', 1);
+        // Deselecting: Selected unit moves back, others fade in at final position
+        const wasSelected = (d: EntityItem) => d.entityId === prevSelectedIdRef.current;
+
+        entityGroups.each(function(d) {
+          const element = d3.select(this);
+
+          if (wasSelected(d)) {
+            // Previously selected entity: move to grid position, keep opacity 1
+            element
+              .transition()
+              .duration(ANIMATION_TIMING.DESELECT_MOVE_DURATION)
+              .ease(d3.easeCubicOut)
+              .attr('transform', `translate(${d.x}, ${d.y})`);
+          } else {
+            // Newly appearing entities: fade in at current position (no movement)
+            element
+              .transition()
+              .delay(ANIMATION_TIMING.DESELECT_MOVE_DURATION)
+              .duration(ANIMATION_TIMING.DESELECT_FADE_IN)
+              .style('opacity', 1);
+          }
+        });
       } else {
         // Normal update: just move
         entityGroups
