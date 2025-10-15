@@ -37,12 +37,13 @@ interface EntityCellProps {
   entityId: string;
   entity: ProcessedEntity;
   units: Map<string, Unit>;
+  patchVersion: string;
   onHover: (entity: EntityWithPosition) => void;
   onLeave: () => void;
   onClick: () => void;
 }
 
-function EntityCell({ entityId, entity, units, onHover, onLeave, onClick }: EntityCellProps) {
+function EntityCell({ entityId, entity, units, patchVersion, onHover, onLeave, onClick }: EntityCellProps) {
   const race = (entity.race || 'neutral') as keyof typeof RACE_COLORS;
   const color = RACE_COLORS[race];
 
@@ -73,7 +74,7 @@ function EntityCell({ entityId, entity, units, onHover, onLeave, onClick }: Enti
   return (
     <motion.div
       className="entity-cell"
-      layoutId={`entity-${entityId}`}
+      layoutId={`entity-${entityId}-${patchVersion}`}
       layout
       transition={{
         duration: 0.3,
@@ -199,32 +200,30 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
         </div>
 
           {/* Patch rows with expansion separators */}
-          <AnimatePresence mode="popLayout">
-            {patchesWithGroupedEntities.map((patch, patchIndex) => {
-              const prevExpansion = patchIndex > 0 ? patchesWithGroupedEntities[patchIndex - 1].expansion : null;
-              const showExpansionBar = patch.expansion !== prevExpansion;
+          {patchesWithGroupedEntities.map((patch, patchIndex) => {
+            const prevExpansion = patchIndex > 0 ? patchesWithGroupedEntities[patchIndex - 1].expansion : null;
+            const showExpansionBar = patch.expansion !== prevExpansion;
 
-              return (
-                <React.Fragment key={patch.version}>
-                  {showExpansionBar && !selectedEntityId && (
-                    <motion.div
-                      className="expansion-separator"
-                      layout
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                      style={{
-                        backgroundColor: EXPANSION_COLORS[patch.expansion]
-                      }}
-                    >
-                      <span>{patch.expansion.toUpperCase()}</span>
-                    </motion.div>
-                  )}
-                  <motion.div
-                    layout
-                    className={selectedEntityId ? "patch-row-filtered" : "patch-row"}
+            return (
+              <React.Fragment key={patch.version}>
+                {showExpansionBar && !selectedEntityId && (
+                  <div
+                    className="expansion-separator"
+                    style={{
+                      backgroundColor: EXPANSION_COLORS[patch.expansion]
+                    }}
                   >
+                    <span>{patch.expansion.toUpperCase()}</span>
+                  </div>
+                )}
+                <motion.div
+                  layout
+                  transition={{
+                    duration: 0.3,
+                    ease: [0.16, 1, 0.3, 1]
+                  }}
+                  className={selectedEntityId ? "patch-row-filtered" : "patch-row"}
+                >
                   <div className="patch-info">
                     <a href={patch.url} target="_blank" rel="noopener noreferrer" className="patch-version">
                       {patch.version}
@@ -240,6 +239,7 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
                           entityId={selectedEntityId}
                           entity={patch.entities.get(selectedEntityId)!}
                           units={units}
+                          patchVersion={patch.version}
                           onHover={handleEntityHover}
                           onLeave={handleEntityLeave}
                           onClick={() => handleEntityClick(selectedEntityId)}
@@ -281,6 +281,7 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
                             entityId={entityId}
                             entity={entity}
                             units={units}
+                            patchVersion={patch.version}
                             onHover={handleEntityHover}
                             onLeave={handleEntityLeave}
                             onClick={() => handleEntityClick(entityId)}
@@ -289,11 +290,10 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
                       </div>
                     ))
                   )}
-                  </motion.div>
-                </React.Fragment>
-              );
-            })}
-          </AnimatePresence>
+                </motion.div>
+              </React.Fragment>
+            );
+          })}
 
         {/* Tooltip (only show when no entity selected) */}
         {!selectedEntityId && tooltip.visible && tooltip.entity && (
