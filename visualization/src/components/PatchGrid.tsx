@@ -182,17 +182,25 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
           .remove()
       );
 
-    // Choreographed transitions:
-    // Step 1: Fade out invisible patches
-    // Step 2: Move to new positions (starts after step 1)
-    patchGroups
-      .transition()
-      .duration(ANIMATION_TIMING.PATCH_FADE_DURATION)
-      .style('opacity', d => d.visible ? 1 : 0)
-      .transition()
-      .duration(ANIMATION_TIMING.PATCH_MOVE_DURATION)
-      .ease(d3.easeCubicOut)
-      .attr('transform', d => `translate(0, ${d.y})`);
+    // Choreographed patch transitions:
+    if (isDeselecting) {
+      // When deselecting: only fade in, NO MOVEMENT
+      patchGroups
+        .transition()
+        .delay(ANIMATION_TIMING.DESELECT_MOVE_DURATION)
+        .duration(ANIMATION_TIMING.PATCH_FADE_DURATION)
+        .style('opacity', d => d.visible ? 1 : 0);
+    } else {
+      // When selecting or normal: fade out → move to new positions
+      patchGroups
+        .transition()
+        .duration(ANIMATION_TIMING.PATCH_FADE_DURATION)
+        .style('opacity', d => d.visible ? 1 : 0)
+        .transition()
+        .duration(ANIMATION_TIMING.PATCH_MOVE_DURATION)
+        .ease(d3.easeCubicOut)
+        .attr('transform', d => `translate(0, ${d.y})`);
+    }
 
     // Render patch content
     patchGroups.each(function(rowData) {
