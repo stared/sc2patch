@@ -184,12 +184,27 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
 
     // Choreographed patch transitions:
     if (isDeselecting) {
-      // When deselecting: only fade in, NO MOVEMENT
-      patchGroups
-        .transition()
-        .delay(ANIMATION_TIMING.DESELECT_MOVE_DURATION)
-        .duration(ANIMATION_TIMING.PATCH_FADE_DURATION)
-        .style('opacity', d => d.visible ? 1 : 0);
+      // When deselecting: previously visible patches move, new ones just fade in
+      patchGroups.each(function(d) {
+        const patch = d3.select(this);
+        const wasVisible = prevSelectedIdRef.current && d.patch.entities.has(prevSelectedIdRef.current);
+
+        if (wasVisible) {
+          // Previously visible patch: move to new position
+          patch
+            .transition()
+            .duration(ANIMATION_TIMING.DESELECT_MOVE_DURATION)
+            .ease(d3.easeCubicOut)
+            .attr('transform', `translate(0, ${d.y})`);
+        } else {
+          // Newly appearing patch: fade in at final position (no movement)
+          patch
+            .transition()
+            .delay(ANIMATION_TIMING.DESELECT_MOVE_DURATION)
+            .duration(ANIMATION_TIMING.PATCH_FADE_DURATION)
+            .style('opacity', d.visible ? 1 : 0);
+        }
+      });
     } else {
       // When selecting or normal: fade out → move to new positions
       patchGroups
