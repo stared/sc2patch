@@ -55,11 +55,12 @@ Each stage:
 
 **Single source of truth:** `data/patch_urls.json` (only manually edited file)
 
+**API Keys:** `OPENROUTER_API_KEY` is stored in `.env` file (not committed to git)
+
 **Quick start:**
 ```bash
 uv run python scripts/1_download.py
-export OPENROUTER_API_KEY="your-key"
-uv run python scripts/2_parse.py
+uv run python scripts/2_parse.py  # Uses OPENROUTER_API_KEY from .env
 uv run python scripts/3_validate.py
 uv run python scripts/4_export_for_viz.py
 ```
