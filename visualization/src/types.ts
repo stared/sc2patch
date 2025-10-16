@@ -57,14 +57,7 @@ export type ViewMode = 'by-patch' | 'by-unit';
 export const RACES = ['terran', 'zerg', 'protoss', 'neutral'] as const;
 export type Race = typeof RACES[number];
 
-// Component interfaces
-export interface PatchGridProps {
-  patches: ProcessedPatchData[];
-  units: Map<string, Unit>;
-  selectedEntityId: string | null;
-  onEntitySelect: (entityId: string | null) => void;
-}
-
+// D3 rendering interfaces
 export interface EntityItem {
   id: string;
   entityId: string;

@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
-import { PatchGrid } from './components/PatchGrid';
+import { useEffect, useState, useRef } from 'react';
 import { loadUnits, loadPatches, processPatches } from './utils/dataLoader';
-import { ProcessedPatchData, Unit } from './types';
+import { ProcessedPatchData, Unit, ProcessedChange, EntityWithPosition } from './types';
+import { PatchGridRenderer } from './utils/patchGridRenderer';
+import { getChangeIndicator, getChangeColor, type ChangeType } from './utils/uxSettings';
 
 function App() {
   const [units, setUnits] = useState<Map<string, Unit>>(new Map());
@@ -9,6 +10,14 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
+  const [tooltip, setTooltip] = useState<{
+    entity: EntityWithPosition | null;
+    visible: boolean;
+  }>({ entity: null, visible: false });
+
+  const svgRef = useRef<SVGSVGElement>(null);
+  const rendererRef = useRef<PatchGridRenderer | null>(null);
+  const prevSelectedIdRef = useRef<string | null>(null);
 
   // Read URL on mount
   useEffect(() => {
@@ -44,13 +53,11 @@ function App() {
       try {
         setLoading(true);
 
-        // Load units and patches data
         const [unitsData, patchesData] = await Promise.all([
           loadUnits(),
           loadPatches()
         ]);
 
-        // Process the patches
         const processedPatches = processPatches(patchesData, unitsData);
 
         setUnits(unitsData);
@@ -65,6 +72,27 @@ function App() {
 
     loadData();
   }, []);
+
+  // Render visualization
+  useEffect(() => {
+    if (!svgRef.current || patches.length === 0) return;
+
+    if (!rendererRef.current) {
+      rendererRef.current = new PatchGridRenderer(svgRef.current);
+    }
+
+    const prevSelectedId = prevSelectedIdRef.current;
+    prevSelectedIdRef.current = selectedEntityId;
+
+    rendererRef.current.render(
+      patches,
+      selectedEntityId,
+      prevSelectedId,
+      setSelectedEntityId,
+      setTooltip,
+      units
+    );
+  }, [patches, selectedEntityId, units]);
 
   if (loading) {
     return (
@@ -88,14 +116,12 @@ function App() {
     );
   }
 
-  // Filter patches if an entity is selected
   const filteredPatches = selectedEntityId
     ? patches.filter(patch => patch.entities.has(selectedEntityId))
     : patches;
 
   return (
     <div className="app-container">
-      {/* Header */}
       <header className="app-header">
         <div className="header-content">
           <h1 className="header-title">StarCraft II Balance Changes</h1>
@@ -123,14 +149,42 @@ function App() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="app-main">
-        <PatchGrid
-          patches={patches}
-          units={units}
-          selectedEntityId={selectedEntityId}
-          onEntitySelect={setSelectedEntityId}
-        />
+        <div className="patch-grid-container" style={{ width: '100%', minHeight: '100vh' }}>
+          <svg
+            ref={svgRef}
+            style={{
+              background: '#0a0a0a',
+              display: 'block',
+              width: '100%',
+              height: 'auto'
+            }}
+          />
+
+          {!selectedEntityId && tooltip.visible && tooltip.entity && (
+            <div
+              className="tooltip"
+              style={{
+                left: `${tooltip.entity.x}px`,
+                top: `${tooltip.entity.y}px`,
+                transform: 'translate(-50%, -100%)',
+                marginTop: '-10px'
+              }}
+            >
+              <h4>{tooltip.entity.name || 'Unknown'}</h4>
+              <ul>
+                {tooltip.entity.changes.map((change: ProcessedChange, i: number) => (
+                  <li key={i}>
+                    <span style={{ color: getChangeColor(change.change_type as ChangeType), fontWeight: 'bold' }}>
+                      {getChangeIndicator(change.change_type as ChangeType)}
+                    </span>
+                    {change.text}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
       </main>
     </div>
   );
