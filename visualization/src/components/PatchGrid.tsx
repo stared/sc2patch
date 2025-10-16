@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { ProcessedPatchData, ProcessedEntity, ProcessedChange, Unit, EntityWithPosition } from '../types';
-import { getChangeIndicator, getChangeColor } from '../utils/changeIndicators';
+import { layout, timing, raceColors, getChangeIndicator, getChangeColor } from '../utils/uxSettings';
 
 interface PatchGridProps {
   patches: ProcessedPatchData[];
@@ -9,31 +9,6 @@ interface PatchGridProps {
   selectedEntityId: string | null;
   onEntitySelect: (entityId: string | null) => void;
 }
-
-const RACE_COLORS = {
-  terran: '#4a9eff',
-  zerg: '#c874e9',
-  protoss: '#ffd700',
-  neutral: '#888'
-} as const;
-
-// Layout constants
-const CELL_SIZE = 48;
-const CELL_GAP = 6;
-const PATCH_LABEL_WIDTH = 120;
-const RACE_COLUMN_WIDTH = 250;
-
-// Animation timing configuration (all values in milliseconds)
-const ANIMATION_TIMING = {
-  FADE_OUT_DURATION: 600,
-  MOVE_DURATION: 800,
-  CHANGES_DELAY: 1400,
-  CHANGES_FADE_IN: 600,
-  DESELECT_MOVE_DURATION: 800,
-  DESELECT_FADE_IN: 600,
-  PATCH_FADE_DURATION: 600,
-  PATCH_MOVE_DURATION: 800,
-} as const;
 
 interface EntityItem {
   id: string;
@@ -77,7 +52,7 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
     const width = 1400;
 
     // Calculate layout
-    const cellsPerRow = Math.floor(RACE_COLUMN_WIDTH / (CELL_SIZE + CELL_GAP));
+    const cellsPerRow = Math.floor(layout.raceColumnWidth / (layout.cellSize + layout.cellGap));
 
     const visiblePatches = patches.map(patch => {
       const visible = !selectedEntityId || patch.entities.has(selectedEntityId);
@@ -95,7 +70,7 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
         });
       }
 
-      const height = 40 + maxRows * (CELL_SIZE + CELL_GAP) + 10;
+      const height = 40 + maxRows * (layout.cellSize + layout.cellGap) + 10;
 
       return { patch, visible, height };
     });
@@ -145,8 +120,8 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
         .attr('id', 'roundedCorners');
 
       clipPath.append('rect')
-        .attr('width', CELL_SIZE)
-        .attr('height', CELL_SIZE)
+        .attr('width', layout.cellSize)
+        .attr('height', layout.cellSize)
         .attr('rx', 4)
         .attr('ry', 4);
     }
@@ -189,25 +164,25 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
         if (wasVisible) {
           patch
             .transition()
-            .duration(ANIMATION_TIMING.DESELECT_MOVE_DURATION)
+            .duration(timing.move)
             .ease(d3.easeCubicOut)
             .attr('transform', `translate(0, ${d.y})`);
         } else {
           patch
             .attr('transform', `translate(0, ${d.y})`)
             .transition()
-            .delay(ANIMATION_TIMING.DESELECT_MOVE_DURATION)
-            .duration(ANIMATION_TIMING.PATCH_FADE_DURATION)
+            .delay(timing.move)
+            .duration(timing.patchFade)
             .style('opacity', d.visible ? 1 : 0);
         }
       });
     } else {
       patchGroups
         .transition()
-        .duration(ANIMATION_TIMING.PATCH_FADE_DURATION)
+        .duration(timing.patchFade)
         .style('opacity', d => d.visible ? 1 : 0)
         .transition()
-        .duration(ANIMATION_TIMING.PATCH_MOVE_DURATION)
+        .duration(timing.patchMove)
         .ease(d3.easeCubicOut)
         .attr('transform', d => `translate(0, ${d.y})`);
     }
@@ -229,7 +204,7 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
           .attr('class', 'patch-version-text')
           .attr('x', 10)
           .attr('y', 0)
-          .style('fill', '#4a9eff')
+          .style('fill', raceColors.terran)
           .style('font-size', '14px')
           .style('font-weight', '600')
           .style('cursor', 'pointer')
@@ -256,7 +231,7 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
             entityId: selectedEntityId,
             patchVersion: patch.version,
             entity,
-            x: PATCH_LABEL_WIDTH + 40,
+            x: layout.patchLabelWidth + 40,
             y: 0,
             visible: true
           });
@@ -281,8 +256,8 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
               entityId,
               patchVersion: patch.version,
               entity,
-              x: PATCH_LABEL_WIDTH + raceIndex * RACE_COLUMN_WIDTH + col * (CELL_SIZE + CELL_GAP),
-              y: row * (CELL_SIZE + CELL_GAP),
+              x: layout.patchLabelWidth + raceIndex * layout.raceColumnWidth + col * (layout.cellSize + layout.cellGap),
+              y: row * (layout.cellSize + layout.cellGap),
               visible: true
             });
           });
@@ -300,24 +275,24 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
               .style('opacity', isDeselecting ? 0 : 1);
 
             eg.append('rect')
-              .attr('width', CELL_SIZE)
-              .attr('height', CELL_SIZE)
+              .attr('width', layout.cellSize)
+              .attr('height', layout.cellSize)
               .attr('rx', 4)
               .style('fill', 'url(#cellGradient)')
               .style('stroke', d => {
                 const entity = d.entity;
-                if (entity.status === 'buff') return '#4a9eff';
-                if (entity.status === 'nerf') return '#ff4444';
-                if (entity.status === 'mixed') return '#ff9933';
-                const race = (entity.race || 'neutral') as keyof typeof RACE_COLORS;
-                return RACE_COLORS[race];
+                if (entity.status === 'buff') return getChangeColor('buff');
+                if (entity.status === 'nerf') return getChangeColor('nerf');
+                if (entity.status === 'mixed') return getChangeColor('mixed');
+                const race = (entity.race || 'neutral') as keyof typeof raceColors;
+                return raceColors[race];
               })
               .style('stroke-width', 2)
               .style('cursor', 'pointer');
 
             eg.append('image')
-              .attr('width', CELL_SIZE)
-              .attr('height', CELL_SIZE)
+              .attr('width', layout.cellSize)
+              .attr('height', layout.cellSize)
               .attr('href', d => `${import.meta.env.BASE_URL}assets/units/${d.entityId}.png`)
               .attr('clip-path', 'url(#roundedCorners)')
               .attr('preserveAspectRatio', 'xMidYMid slice')
@@ -328,7 +303,7 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
           update => update,
           exit => exit
             .transition()
-            .duration(ANIMATION_TIMING.FADE_OUT_DURATION)
+            .duration(timing.fadeOut)
             .style('opacity', 0)
             .remove()
         );
@@ -364,10 +339,10 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
 
         entityGroups
           .transition()
-          .duration(ANIMATION_TIMING.FADE_OUT_DURATION)
+          .duration(timing.fadeOut)
           .style('opacity', d => shouldFadeOut(d) ? 0 : 1)
           .transition()
-          .duration(ANIMATION_TIMING.MOVE_DURATION)
+          .duration(timing.move)
           .ease(d3.easeCubicOut)
           .attr('transform', d => `translate(${d.x}, ${d.y})`);
       } else if (isDeselecting) {
@@ -379,21 +354,21 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
           if (wasSelected(d)) {
             element
               .transition()
-              .duration(ANIMATION_TIMING.DESELECT_MOVE_DURATION)
+              .duration(timing.move)
               .ease(d3.easeCubicOut)
               .attr('transform', `translate(${d.x}, ${d.y})`);
           } else {
             element
               .transition()
-              .delay(ANIMATION_TIMING.DESELECT_MOVE_DURATION)
-              .duration(ANIMATION_TIMING.DESELECT_FADE_IN)
+              .delay(timing.move)
+              .duration(timing.fadeIn)
               .style('opacity', 1);
           }
         });
       } else {
         entityGroups
           .transition()
-          .duration(ANIMATION_TIMING.MOVE_DURATION)
+          .duration(timing.move)
           .ease(d3.easeCubicOut)
           .attr('transform', d => `translate(${d.x}, ${d.y})`);
       }
@@ -404,7 +379,7 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
         if (entity && g.select('.changes-group').empty()) {
           const changesGroup = g.append('g')
             .attr('class', 'changes-group')
-            .attr('transform', `translate(${PATCH_LABEL_WIDTH + 140}, 10)`)
+            .attr('transform', `translate(${layout.patchLabelWidth + 140}, 10)`)
             .style('opacity', 0);
 
           entity.changes.forEach((change: ProcessedChange, i: number) => {
@@ -425,8 +400,8 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
 
           changesGroup
             .transition()
-            .delay(ANIMATION_TIMING.CHANGES_DELAY)
-            .duration(ANIMATION_TIMING.CHANGES_FADE_IN)
+            .delay(timing.changesDelay)
+            .duration(timing.fadeIn)
             .style('opacity', 1);
         }
       } else {
