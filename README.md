@@ -17,14 +17,18 @@ Extract, parse, and visualize StarCraft II balance patch changes using a clean 4
 uv sync
 ```
 
+**API Keys:** Create a `.env` file with:
+```
+OPENROUTER_API_KEY=your-key-here
+```
+
 ## Quick Start
 
 ```bash
 # 1. Download patches
 uv run python scripts/1_download.py
 
-# 2. Parse with GPT-5 (requires OPENROUTER_API_KEY)
-export OPENROUTER_API_KEY="your-key-here"
+# 2. Parse with GPT-5 (uses OPENROUTER_API_KEY from .env)
 uv run python scripts/2_parse.py
 
 # 3. Validate
@@ -38,6 +42,23 @@ cd visualization
 pnpm install
 pnpm dev  # Visit http://localhost:5173
 ```
+
+## Tech Tree and Images
+
+The project includes a complete StarCraft II tech tree and unit/building images:
+
+```bash
+# Extract tech tree from Liquipedia (already done, generates data/tech_tree.json)
+uv run python scripts/parse_tech_tree.py
+
+# Download all unit/building images (191 images from tech tree icons)
+uv run python scripts/download_images_from_tech_tree.py
+```
+
+- **Tech tree**: 203 entities (units, buildings, upgrades) with dependencies
+- **Images**: 203 tech tree icons (50×50 for units, 76×76 for buildings)
+- **Sources**: Liquipedia tech tree, manually added for special units
+- **Documentation**: See `visualization/public/assets/units/README.md`
 
 ## Pipeline Stages
 
