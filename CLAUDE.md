@@ -146,3 +146,22 @@ All patches use this JSON structure:
 - Hard validation: fail fast with clear errors, never silent failures
 - Do not commit without an explicit confirmation. Ask for it.
 - When needed, manually check Blizzard websites or Liqudidpedia, e.g. https://liquipedia.net/starcraft2/Units_(Legacy_of_the_Void) and its pages, e.g. https://liquipedia.net/starcraft2/Factory_(Legacy_of_the_Void), https://liquipedia.net/starcraft2/Stalker_(Legacy_of_the_Void) or https://liquipedia.net/starcraft2/Chitinous_Plating (to show you patters for buildings, units, upgrades). Useful websites: https://liquipedia.net/starcraft2/Upgrades and for patches - https://liquipedia.net/starcraft2/Patches.
+
+## Visualization Animation Guidelines
+
+**Selecting a unit (grid → filtered):**
+1. Fade out irrelevant entities (other units, patches without selected unit)
+2. Move selected unit to filtered position
+3. Change notes appear
+
+**Deselecting (filtered → grid):**
+1. Previously selected unit moves back to grid position
+2. Previously visible patches move to new grid positions
+3. Newly appearing patches/units fade in at final positions - **NO MOVEMENT**
+
+**Critical rules:**
+- Animation timings in global `ANIMATION_TIMING` config (not inline)
+- Clicking selected unit = clicking X (deselects)
+- Newly appearing elements: fade in at final position, no movement
+- Previously visible elements: animate to new positions
+- After deselection, positions must match original grid exactly

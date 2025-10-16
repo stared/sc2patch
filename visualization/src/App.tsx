@@ -10,6 +10,35 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
 
+  // Read URL on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const unit = params.get('unit');
+    if (unit) setSelectedEntityId(unit);
+  }, []);
+
+  // Update URL when selection changes
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (selectedEntityId) {
+      params.set('unit', selectedEntityId);
+    } else {
+      params.delete('unit');
+    }
+    const newUrl = params.toString() ? `?${params}` : window.location.pathname;
+    window.history.replaceState(null, '', newUrl);
+  }, [selectedEntityId]);
+
+  // Handle browser back/forward
+  useEffect(() => {
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search);
+      setSelectedEntityId(params.get('unit'));
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   useEffect(() => {
     async function loadData() {
       try {
@@ -99,7 +128,6 @@ function App() {
         <PatchGrid
           patches={patches}
           units={units}
-          totalPatches={patches.length}
           selectedEntityId={selectedEntityId}
           onEntitySelect={setSelectedEntityId}
         />
