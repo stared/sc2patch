@@ -113,7 +113,7 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
       };
     });
 
-    // Calculate Y positions for patches (accounting for hidden ones)
+    // Calculate Y positions for patches
     let currentY = 80;
     const patchRows: PatchRow[] = visiblePatches.map((item) => {
       const row = {
@@ -126,8 +126,15 @@ export function PatchGrid({ patches, units, selectedEntityId, onEntitySelect }: 
       return row;
     });
 
-    const height = currentY + 100;
-    svg.attr('width', width).attr('height', height);
+    // Always size SVG for full unfiltered grid - never change it
+    // This avoids complexity and keeps layout stable during all transitions
+    let fullGridHeight = 80;
+    visiblePatches.forEach(item => {
+      fullGridHeight += item.height;
+    });
+    const svgHeight = fullGridHeight + 200;
+
+    svg.attr('width', width).attr('height', svgHeight);
 
     // Define gradients and clip paths once
     if (svg.select('defs').empty()) {

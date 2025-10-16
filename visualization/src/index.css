@@ -71,6 +71,7 @@ body {
   gap: 10px;
   margin-top: 8px;
   flex-wrap: wrap;
+  min-height: 32px; /* Prevent height changes when filtering */
 }
 
 .filter-label {
