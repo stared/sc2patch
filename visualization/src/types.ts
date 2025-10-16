@@ -48,4 +48,7 @@ export interface ProcessedEntity {
   status: 'buff' | 'nerf' | 'mixed' | null;
 }
 
+// Entity with position for tooltip display
+export type EntityWithPosition = ProcessedEntity & { x: number; y: number };
+
 export type ViewMode = 'by-patch' | 'by-unit';
