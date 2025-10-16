@@ -3,15 +3,15 @@
  * Colors, sizes, timings, and other visual constants
  */
 
+import type { Race } from '../types';
+
 // Race colors
-export const raceColors = {
+export const raceColors: Record<Race, string> = {
   terran: '#4a9eff',
   zerg: '#c874e9',
   protoss: '#ffd700',
   neutral: '#888'
-} as const;
-
-export type RaceType = keyof typeof raceColors;
+};
 
 // Change type colors and indicators
 export const changeTypeConfig = {
@@ -39,43 +39,21 @@ export const layout = {
   raceColumnWidth: 250
 } as const;
 
-// Animation timing (all values in milliseconds)
-// Base durations for consistency
-const baseFade = 300;
-const baseMove = 400;
-
+// Animation timing (milliseconds)
 export const timing = {
-  // Fades
-  fadeOut: baseFade * 2,           // 600ms
-  fadeIn: baseFade * 2,            // 600ms
-
-  // Movements
-  move: baseMove * 2,              // 800ms
-
-  // Complex sequences
-  changesDelay: baseFade * 2 + baseMove * 2,  // 1400ms (fade + move)
-
-  // Patch animations
-  patchFade: baseFade * 2,         // 600ms
-  patchMove: baseMove * 2          // 800ms
+  fade: 600,
+  move: 800
 } as const;
 
 // Helper functions
-export function getChangeColor(changeType: ChangeType | string): string {
-  if (changeType in changeTypeConfig) {
-    return changeTypeConfig[changeType as ChangeType].color;
-  }
-  return '#ccc';
+export function getChangeColor(changeType: ChangeType): string {
+  return changeTypeConfig[changeType].color;
 }
 
-export function getChangeIndicator(changeType: ChangeType | string): string {
-  if (changeType in changeTypeConfig) {
-    return changeTypeConfig[changeType as ChangeType].indicator;
-  }
-  return '';
+export function getChangeIndicator(changeType: ChangeType): string {
+  return changeTypeConfig[changeType].indicator;
 }
 
-export function getRaceColor(race: string): string {
-  const normalizedRace = (race || 'neutral') as RaceType;
-  return raceColors[normalizedRace] || raceColors.neutral;
+export function getRaceColor(race: Race): string {
+  return raceColors[race];
 }

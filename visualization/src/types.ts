@@ -52,3 +52,32 @@ export interface ProcessedEntity {
 export type EntityWithPosition = ProcessedEntity & { x: number; y: number };
 
 export type ViewMode = 'by-patch' | 'by-unit';
+
+// Race types
+export const RACES = ['terran', 'zerg', 'protoss', 'neutral'] as const;
+export type Race = typeof RACES[number];
+
+// Component interfaces
+export interface PatchGridProps {
+  patches: ProcessedPatchData[];
+  units: Map<string, Unit>;
+  selectedEntityId: string | null;
+  onEntitySelect: (entityId: string | null) => void;
+}
+
+export interface EntityItem {
+  id: string;
+  entityId: string;
+  patchVersion: string;
+  entity: ProcessedEntity;
+  x: number;
+  y: number;
+  visible: boolean;
+}
+
+export interface PatchRow {
+  patch: ProcessedPatchData;
+  y: number;
+  visible: boolean;
+  height: number;
+}
