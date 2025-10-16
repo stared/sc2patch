@@ -79,9 +79,8 @@ uv run ty check src/
 ```bash
 cd visualization
 pnpm lint           # Run ESLint
-pnpm type-check     # TypeScript checking
+pnpm build          # Production build (includes TypeScript checking via tsc -b)
 pnpm dev            # Start dev server (localhost:5173)
-pnpm build          # Production build
 ```
 
 ## Project Structure
@@ -148,20 +147,38 @@ All patches use this JSON structure:
 - Do not commit without an explicit confirmation. Ask for it.
 - When needed, manually check Blizzard websites or Liqudidpedia, e.g. https://liquipedia.net/starcraft2/Units_(Legacy_of_the_Void) and its pages, e.g. https://liquipedia.net/starcraft2/Factory_(Legacy_of_the_Void), https://liquipedia.net/starcraft2/Stalker_(Legacy_of_the_Void) or https://liquipedia.net/starcraft2/Chitinous_Plating (to show you patters for buildings, units, upgrades). Useful websites: https://liquipedia.net/starcraft2/Upgrades and for patches - https://liquipedia.net/starcraft2/Patches.
 
-## Visualization Animation Guidelines
+## Visualization Structure
+
+**Architecture:**
+- **App.tsx**: Single component handling data loading, URL state, rendering, and UI
+- **utils/patchGridRenderer.ts**: D3 rendering class (PatchGridRenderer) with methods:
+  - `render()`: Main rendering orchestration
+  - `calculateLayout()`: Compute patch row positions
+  - `renderPatchLabel()`, `renderEntities()`, `renderChanges()`: Specific rendering logic
+- **utils/uxSettings.ts**: Centralized UX config (colors, layout constants, timing)
+- **utils/dataLoader.ts**: Data fetching and processing
+- **types.ts**: TypeScript definitions
+
+**UX Settings:**
+- `timing.fade: 600ms` - All fade transitions
+- `timing.move: 800ms` - All movement transitions
+- No defensive programming - fail fast with strict types
+- Use `RACES` constant from types.ts, not inline arrays
+
+**Animation Guidelines:**
 
 **Selecting a unit (grid → filtered):**
-1. Fade out irrelevant entities (other units, patches without selected unit)
-2. Move selected unit to filtered position
-3. Change notes appear
+1. Fade out irrelevant entities (600ms)
+2. Move selected unit to filtered position (800ms)
+3. Change notes appear (fade in after fade + move = 1400ms)
 
 **Deselecting (filtered → grid):**
-1. Previously selected unit moves back to grid position
-2. Previously visible patches move to new grid positions
+1. Previously selected unit moves back (800ms)
+2. Previously visible patches move to new positions (800ms)
 3. Newly appearing patches/units fade in at final positions - **NO MOVEMENT**
 
 **Critical rules:**
-- Animation timings in global `ANIMATION_TIMING` config (not inline)
+- Animation timings from `timing` object in `utils/uxSettings.ts` (not inline)
 - Clicking selected unit = clicking X (deselects)
 - Newly appearing elements: fade in at final position, no movement
 - Previously visible elements: animate to new positions
