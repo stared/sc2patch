@@ -10,13 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@types/d3": "^7.4.3",
-    "d3": "^7.9.0",
+    "d3-ease": "^3.0.1",
+    "d3-selection": "^3.0.0",
+    "d3-transition": "^3.0.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
+    "@types/d3-ease": "^3.0.2",
+    "@types/d3-selection": "^3.0.11",
+    "@types/d3-transition": "^3.0.9",
     "@types/node": "^24.6.0",
     "@types/react": "^19.1.16",
     "@types/react-dom": "^19.1.9",
