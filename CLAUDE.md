@@ -149,37 +149,44 @@ All patches use this JSON structure:
 
 ## Visualization Structure
 
-**Architecture:**
-- **App.tsx**: Single component handling data loading, URL state, rendering, and UI
-- **utils/patchGridRenderer.ts**: D3 rendering class (PatchGridRenderer) with methods:
-  - `render()`: Main rendering orchestration
-  - `calculateLayout()`: Compute patch row positions
-  - `renderPatchLabel()`, `renderEntities()`, `renderChanges()`: Specific rendering logic
-- **utils/uxSettings.ts**: Centralized UX config (colors, layout constants, timing)
-- **utils/dataLoader.ts**: Data fetching and processing
-- **types.ts**: TypeScript definitions
+```
+visualization/
+├── src/
+│   ├── App.tsx                      # Main component: data, state, UI
+│   ├── types.ts                     # TypeScript definitions
+│   ├── utils/
+│   │   ├── patchGridRenderer.ts     # D3 rendering class
+│   │   ├── uxSettings.ts            # UX config (colors, layout, timing)
+│   │   └── dataLoader.ts            # Data fetching
+│   ├── index.css                    # Global styles
+│   └── main.tsx                     # React entry point
+└── public/
+    ├── data/                        # Exported patch data
+    └── assets/units/                # Unit/building images
+```
 
-**UX Settings:**
-- `timing.fade: 600ms` - All fade transitions
-- `timing.move: 800ms` - All movement transitions
-- No defensive programming - fail fast with strict types
-- Use `RACES` constant from types.ts, not inline arrays
+**Architecture principles:**
+- **App.tsx**: Single component orchestrating everything (data, state, rendering, UI)
+- **patchGridRenderer.ts**: D3 class with clear separation of concerns (render, layout calculation, element rendering)
+- **uxSettings.ts**: Centralized configuration - all colors, sizes, timings in one place
+- **No defensive programming**: Fail fast with strict types, use constants from types.ts (e.g., RACES)
+- **Targeted D3 imports**: Only d3-selection, d3-transition, d3-ease (not full d3 package)
 
-**Animation Guidelines:**
+**Animation philosophy:**
 
 **Selecting a unit (grid → filtered):**
-1. Fade out irrelevant entities (600ms)
-2. Move selected unit to filtered position (800ms)
-3. Change notes appear (fade in after fade + move = 1400ms)
+1. Fade out irrelevant entities
+2. Move selected unit to filtered position
+3. Show change notes (fade in after movement completes)
 
 **Deselecting (filtered → grid):**
-1. Previously selected unit moves back (800ms)
-2. Previously visible patches move to new positions (800ms)
+1. Previously selected unit moves back to grid position
+2. Previously visible patches move to new grid positions
 3. Newly appearing patches/units fade in at final positions - **NO MOVEMENT**
 
 **Critical rules:**
-- Animation timings from `timing` object in `utils/uxSettings.ts` (not inline)
-- Clicking selected unit = clicking X (deselects)
-- Newly appearing elements: fade in at final position, no movement
-- Previously visible elements: animate to new positions
-- After deselection, positions must match original grid exactly
+- All timing values centralized in `uxSettings.ts` (never inline)
+- Clicking selected unit deselects it (same as clicking X button)
+- Newly appearing elements: fade in at final position only (no movement animation)
+- Previously visible elements: animate to their new positions
+- After deselection, positions must match original grid layout exactly
