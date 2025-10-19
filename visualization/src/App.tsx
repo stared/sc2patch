@@ -128,9 +128,12 @@ function App() {
       setSelectedEntityId,
       setTooltip,
       units,
-      selectedRace
+      selectedRace,
+      sortOrder,
+      setSortOrder,
+      setSelectedRace
     );
-  }, [sortedAndFilteredPatches, selectedEntityId, units, selectedRace, windowWidth]);
+  }, [sortedAndFilteredPatches, selectedEntityId, units, selectedRace, sortOrder, windowWidth]);
 
   if (loading) {
     return (
@@ -188,51 +191,6 @@ function App() {
       </header>
 
       <main className="app-main">
-        <div className="controls-panel">
-          <div className="sort-controls">
-            <span className="control-label">Sort:</span>
-            <button
-              className={`control-btn ${sortOrder === 'newest' ? 'active' : ''}`}
-              onClick={() => setSortOrder('newest')}
-              title="Newest first"
-            >
-              ↓ Newest
-            </button>
-            <button
-              className={`control-btn ${sortOrder === 'oldest' ? 'active' : ''}`}
-              onClick={() => setSortOrder('oldest')}
-              title="Oldest first"
-            >
-              ↑ Oldest
-            </button>
-          </div>
-
-          <div className="race-filter-controls">
-            <span className="control-label">Race:</span>
-            <button
-              className={`race-btn ${!selectedRace ? 'active' : ''}`}
-              onClick={() => setSelectedRace(null)}
-              title="Show all races"
-            >
-              All
-            </button>
-            {RACES.map(race => (
-              <button
-                key={race}
-                className={`race-btn ${selectedRace === race ? 'active' : ''}`}
-                style={{
-                  borderColor: selectedRace === race ? raceColors[race] : 'transparent',
-                  color: selectedRace === race ? raceColors[race] : '#999'
-                }}
-                onClick={() => setSelectedRace(selectedRace === race ? null : race)}
-                title={`Filter by ${race}`}
-              >
-                {race.charAt(0).toUpperCase() + race.slice(1)}
-              </button>
-            ))}
-          </div>
-        </div>
-
         <div className="patch-grid-container" style={{ width: '100%', minHeight: '100vh' }}>
           <svg
             ref={svgRef}

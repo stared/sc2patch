@@ -39,6 +39,111 @@ export class PatchGridRenderer {
       .attr('rx', 4).attr('ry', 4);
   }
 
+  private renderHeaders(
+    svgWidth: number,
+    selectedRace: Race | null,
+    sortOrder: 'newest' | 'oldest',
+    setSortOrder?: (order: 'newest' | 'oldest') => void,
+    setSelectedRace?: (race: Race | null) => void
+  ): void {
+    let headersContainer = this.svg.select<SVGGElement>('.headers-container');
+    if (headersContainer.empty()) {
+      headersContainer = this.svg.append('g').attr('class', 'headers-container');
+    }
+
+    const availableWidth = svgWidth - layout.patchLabelWidth;
+    const racesToShow = selectedRace ? [selectedRace] : RACES;
+    const raceColumnWidth = selectedRace ? availableWidth : Math.floor(availableWidth / RACES.length);
+
+    // Render sort control above patch labels
+    const sortGroup = headersContainer.selectAll('.sort-control').data([sortOrder]);
+    const sortEnter = sortGroup.enter().append('g').attr('class', 'sort-control');
+    const sortMerge = sortEnter.merge(sortGroup as any);
+
+    sortMerge.attr('transform', 'translate(10, 50)');
+
+    // Remove old elements
+    sortEnter.append('rect').attr('class', 'sort-bg');
+    sortEnter.append('text').attr('class', 'sort-text');
+
+    sortMerge.select('.sort-bg')
+      .attr('width', 90)
+      .attr('height', 24)
+      .attr('rx', 4)
+      .style('fill', 'rgba(255, 255, 255, 0.03)')
+      .style('stroke', '#4a9eff')
+      .style('stroke-width', 1)
+      .style('cursor', 'pointer')
+      .on('click', () => {
+        if (setSortOrder) {
+          setSortOrder(sortOrder === 'newest' ? 'oldest' : 'newest');
+        }
+      });
+
+    sortMerge.select('.sort-text')
+      .attr('x', 45)
+      .attr('y', 16)
+      .attr('text-anchor', 'middle')
+      .style('fill', '#4a9eff')
+      .style('font-size', '12px')
+      .style('font-weight', '600')
+      .style('cursor', 'pointer')
+      .style('pointer-events', 'none')
+      .text(sortOrder === 'newest' ? '↓ Newest' : '↑ Oldest');
+
+    // Render race headers above columns
+    const raceHeaders = headersContainer.selectAll<SVGGElement, Race>('.race-header')
+      .data(racesToShow, d => d);
+
+    const raceEnter = raceHeaders.enter().append('g').attr('class', 'race-header');
+    const raceMerge = raceEnter.merge(raceHeaders);
+
+    raceMerge
+      .transition()
+      .duration(timing.move)
+      .attr('transform', (race, i) => {
+        const x = selectedRace
+          ? layout.patchLabelWidth + raceColumnWidth / 2
+          : layout.patchLabelWidth + i * raceColumnWidth + raceColumnWidth / 2;
+        return `translate(${x}, 50)`;
+      });
+
+    // Remove old elements and add new ones
+    raceEnter.append('rect').attr('class', 'race-bg');
+    raceEnter.append('text').attr('class', 'race-text');
+
+    raceMerge.select('.race-bg')
+      .attr('x', -40)
+      .attr('width', 80)
+      .attr('height', 24)
+      .attr('rx', 4)
+      .style('fill', (race) => selectedRace === race ? 'rgba(255, 255, 255, 0.08)' : 'rgba(255, 255, 255, 0.03)')
+      .style('stroke', (race) => selectedRace === race ? raceColors[race] : 'rgba(255, 255, 255, 0.08)')
+      .style('stroke-width', 1)
+      .style('cursor', 'pointer')
+      .on('click', (event, race) => {
+        if (setSelectedRace) {
+          setSelectedRace(selectedRace === race ? null : race);
+        }
+      });
+
+    raceMerge.select('.race-text')
+      .attr('text-anchor', 'middle')
+      .attr('y', 16)
+      .style('fill', (race) => selectedRace === race ? raceColors[race] : '#999')
+      .style('font-size', '12px')
+      .style('font-weight', (race) => selectedRace === race ? '600' : '500')
+      .style('cursor', 'pointer')
+      .style('pointer-events', 'none')
+      .text((race) => race.charAt(0).toUpperCase() + race.slice(1));
+
+    raceHeaders.exit()
+      .transition()
+      .duration(timing.fade)
+      .style('opacity', 0)
+      .remove();
+  }
+
   render(
     patches: ProcessedPatchData[],
     selectedEntityId: string | null,
@@ -46,18 +151,28 @@ export class PatchGridRenderer {
     onEntitySelect: (entityId: string | null) => void,
     setTooltip: (tooltip: TooltipState) => void,
     unitsMap: Map<string, Unit>,
-    selectedRace: Race | null = null
+    selectedRace: Race | null = null,
+    sortOrder: 'newest' | 'oldest' = 'newest',
+    setSortOrder?: (order: 'newest' | 'oldest') => void,
+    setSelectedRace?: (race: Race | null) => void
   ): void {
     const svgElement = this.svg.node();
     const containerWidth = svgElement?.parentElement?.clientWidth || 1400;
     const svgWidth = Math.min(containerWidth, 1400);
 
-    const patchRows = this.calculateLayout(patches, selectedEntityId, svgWidth);
+    const patchRows = this.calculateLayout(patches, selectedEntityId, svgWidth, selectedRace);
     const svgHeight = 80 + patchRows.reduce((sum, item) => sum + item.height, 0) + 200;
     this.svg.attr('width', svgWidth).attr('height', svgHeight);
 
     if (this.svg.select('.patch-container').empty()) {
       this.svg.append('g').attr('class', 'patch-container');
+    }
+
+    // Render header controls
+    if (!selectedEntityId) {
+      this.renderHeaders(svgWidth, selectedRace, sortOrder, setSortOrder, setSelectedRace);
+    } else {
+      this.svg.select('.headers-container').remove();
     }
 
     const isDeselecting = prevSelectedId !== null && selectedEntityId === null;
@@ -105,14 +220,14 @@ export class PatchGridRenderer {
       if (!visible) return;
 
       this.renderPatchLabel(g, patch);
-      this.renderEntities(g, patch, selectedEntityId, prevSelectedId, isSelecting, isDeselecting, onEntitySelect, setTooltip, unitsMap, svgWidth);
+      this.renderEntities(g, patch, selectedEntityId, prevSelectedId, isSelecting, isDeselecting, onEntitySelect, setTooltip, unitsMap, svgWidth, selectedRace);
       this.renderChanges(g, patch, selectedEntityId);
     });
   }
 
-  private calculateLayout(patches: ProcessedPatchData[], selectedEntityId: string | null, svgWidth: number): PatchRow[] {
+  private calculateLayout(patches: ProcessedPatchData[], selectedEntityId: string | null, svgWidth: number, selectedRace: Race | null = null): PatchRow[] {
     const availableWidth = svgWidth - layout.patchLabelWidth;
-    const raceColumnWidth = selectedEntityId ? availableWidth : Math.floor(availableWidth / RACES.length);
+    const raceColumnWidth = (selectedEntityId || selectedRace) ? availableWidth : Math.floor(availableWidth / RACES.length);
     const cellsPerRow = Math.floor(raceColumnWidth / (layout.cellSize + layout.cellGap));
 
     const visiblePatches = patches.map(patch => {
@@ -120,7 +235,8 @@ export class PatchGridRenderer {
       let maxRows = 1;
 
       if (visible && !selectedEntityId) {
-        RACES.forEach(race => {
+        const racesToCheck = selectedRace ? [selectedRace] : RACES;
+        racesToCheck.forEach(race => {
           const count = Array.from(patch.entities.values())
             .filter(entity => (entity.race || 'neutral') === race).length;
           maxRows = Math.max(maxRows, Math.ceil(count / cellsPerRow));
@@ -169,9 +285,10 @@ export class PatchGridRenderer {
     onEntitySelect: (entityId: string | null) => void,
     setTooltip: (tooltip: TooltipState) => void,
     unitsMap: Map<string, Unit>,
-    svgWidth: number
+    svgWidth: number,
+    selectedRace: Race | null = null
   ): void {
-    const entities = this.buildEntityList(patch, selectedEntityId, svgWidth);
+    const entities = this.buildEntityList(patch, selectedEntityId, svgWidth, selectedRace);
 
     const entityGroups = g.selectAll<SVGGElement, EntityItem>('.entity-cell-group')
       .data(entities, (d: EntityItem) => d.id)
@@ -251,9 +368,9 @@ export class PatchGridRenderer {
     }
   }
 
-  private buildEntityList(patch: ProcessedPatchData, selectedEntityId: string | null, svgWidth: number): EntityItem[] {
+  private buildEntityList(patch: ProcessedPatchData, selectedEntityId: string | null, svgWidth: number, selectedRace: Race | null = null): EntityItem[] {
     const availableWidth = svgWidth - layout.patchLabelWidth;
-    const raceColumnWidth = selectedEntityId ? availableWidth : Math.floor(availableWidth / RACES.length);
+    const raceColumnWidth = (selectedEntityId || selectedRace) ? availableWidth : Math.floor(availableWidth / RACES.length);
     const cellsPerRow = Math.floor(raceColumnWidth / (layout.cellSize + layout.cellGap));
     const entities: EntityItem[] = [];
 
@@ -271,7 +388,8 @@ export class PatchGridRenderer {
         });
       }
     } else {
-      RACES.forEach((race, raceIndex) => {
+      const racesToShow = selectedRace ? [selectedRace] : RACES;
+      racesToShow.forEach((race, raceIndex) => {
         const raceEntities = Array.from(patch.entities.entries())
           .filter(([_, entity]) => (entity.race || 'neutral') === race);
 
