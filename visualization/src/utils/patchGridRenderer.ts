@@ -213,8 +213,8 @@ export class PatchGridRenderer {
             entity: {
               ...d.entity,
               name: unitsMap.get(d.entityId)?.name || d.entity.name || d.entityId,
-              x: rect.left + rect.width / 2,
-              y: rect.top
+              x: rect.left + rect.width / 2 + window.scrollX,
+              y: rect.top + window.scrollY
             },
             visible: true
           });
