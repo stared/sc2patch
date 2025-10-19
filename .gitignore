@@ -24,3 +24,9 @@ scripts/entity_candidates.json
 
 # Secret
 .env
+
+# macOS
+.DS_Store
+
+# Node modules
+node_modules/
