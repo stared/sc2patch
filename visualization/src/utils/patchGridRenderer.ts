@@ -45,11 +45,16 @@ export class PatchGridRenderer {
     prevSelectedId: string | null,
     onEntitySelect: (entityId: string | null) => void,
     setTooltip: (tooltip: TooltipState) => void,
-    unitsMap: Map<string, Unit>
+    unitsMap: Map<string, Unit>,
+    selectedRace: Race | null = null
   ): void {
-    const patchRows = this.calculateLayout(patches, selectedEntityId);
+    const svgElement = this.svg.node();
+    const containerWidth = svgElement?.parentElement?.clientWidth || 1400;
+    const svgWidth = Math.min(containerWidth, 1400);
+
+    const patchRows = this.calculateLayout(patches, selectedEntityId, svgWidth);
     const svgHeight = 80 + patchRows.reduce((sum, item) => sum + item.height, 0) + 200;
-    this.svg.attr('width', 1400).attr('height', svgHeight);
+    this.svg.attr('width', svgWidth).attr('height', svgHeight);
 
     if (this.svg.select('.patch-container').empty()) {
       this.svg.append('g').attr('class', 'patch-container');
@@ -100,13 +105,15 @@ export class PatchGridRenderer {
       if (!visible) return;
 
       this.renderPatchLabel(g, patch);
-      this.renderEntities(g, patch, selectedEntityId, prevSelectedId, isSelecting, isDeselecting, onEntitySelect, setTooltip, unitsMap);
+      this.renderEntities(g, patch, selectedEntityId, prevSelectedId, isSelecting, isDeselecting, onEntitySelect, setTooltip, unitsMap, svgWidth);
       this.renderChanges(g, patch, selectedEntityId);
     });
   }
 
-  private calculateLayout(patches: ProcessedPatchData[], selectedEntityId: string | null): PatchRow[] {
-    const cellsPerRow = Math.floor(layout.raceColumnWidth / (layout.cellSize + layout.cellGap));
+  private calculateLayout(patches: ProcessedPatchData[], selectedEntityId: string | null, svgWidth: number): PatchRow[] {
+    const availableWidth = svgWidth - layout.patchLabelWidth;
+    const raceColumnWidth = selectedEntityId ? availableWidth : Math.floor(availableWidth / RACES.length);
+    const cellsPerRow = Math.floor(raceColumnWidth / (layout.cellSize + layout.cellGap));
 
     const visiblePatches = patches.map(patch => {
       const visible = !selectedEntityId || patch.entities.has(selectedEntityId);
@@ -161,9 +168,10 @@ export class PatchGridRenderer {
     isDeselecting: boolean,
     onEntitySelect: (entityId: string | null) => void,
     setTooltip: (tooltip: TooltipState) => void,
-    unitsMap: Map<string, Unit>
+    unitsMap: Map<string, Unit>,
+    svgWidth: number
   ): void {
-    const entities = this.buildEntityList(patch, selectedEntityId);
+    const entities = this.buildEntityList(patch, selectedEntityId, svgWidth);
 
     const entityGroups = g.selectAll<SVGGElement, EntityItem>('.entity-cell-group')
       .data(entities, (d: EntityItem) => d.id)
@@ -243,8 +251,10 @@ export class PatchGridRenderer {
     }
   }
 
-  private buildEntityList(patch: ProcessedPatchData, selectedEntityId: string | null): EntityItem[] {
-    const cellsPerRow = Math.floor(layout.raceColumnWidth / (layout.cellSize + layout.cellGap));
+  private buildEntityList(patch: ProcessedPatchData, selectedEntityId: string | null, svgWidth: number): EntityItem[] {
+    const availableWidth = svgWidth - layout.patchLabelWidth;
+    const raceColumnWidth = selectedEntityId ? availableWidth : Math.floor(availableWidth / RACES.length);
+    const cellsPerRow = Math.floor(raceColumnWidth / (layout.cellSize + layout.cellGap));
     const entities: EntityItem[] = [];
 
     if (selectedEntityId) {
@@ -274,7 +284,7 @@ export class PatchGridRenderer {
             entityId,
             patchVersion: patch.version,
             entity,
-            x: layout.patchLabelWidth + raceIndex * layout.raceColumnWidth + col * (layout.cellSize + layout.cellGap),
+            x: layout.patchLabelWidth + raceIndex * raceColumnWidth + col * (layout.cellSize + layout.cellGap),
             y: row * (layout.cellSize + layout.cellGap),
             visible: true
           });

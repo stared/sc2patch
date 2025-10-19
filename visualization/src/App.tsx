@@ -1,8 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
 import { loadUnits, loadPatches, processPatches } from './utils/dataLoader';
-import { ProcessedPatchData, Unit, ProcessedChange, EntityWithPosition } from './types';
+import { ProcessedPatchData, Unit, ProcessedChange, EntityWithPosition, Race, RACES } from './types';
 import { PatchGridRenderer } from './utils/patchGridRenderer';
-import { getChangeIndicator, getChangeColor, type ChangeType } from './utils/uxSettings';
+import { getChangeIndicator, getChangeColor, raceColors, type ChangeType } from './utils/uxSettings';
+
+type SortOrder = 'newest' | 'oldest';
 
 function App() {
   const [units, setUnits] = useState<Map<string, Unit>>(new Map());
@@ -10,6 +12,8 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
+  const [selectedRace, setSelectedRace] = useState<Race | null>(null);
+  const [sortOrder, setSortOrder] = useState<SortOrder>('newest');
   const [tooltip, setTooltip] = useState<{
     entity: EntityWithPosition | null;
     visible: boolean;
@@ -18,6 +22,7 @@ function App() {
   const svgRef = useRef<SVGSVGElement>(null);
   const rendererRef = useRef<PatchGridRenderer | null>(null);
   const prevSelectedIdRef = useRef<string | null>(null);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   // Read URL on mount
   useEffect(() => {
@@ -48,6 +53,15 @@ function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   useEffect(() => {
     async function loadData() {
       try {
@@ -73,6 +87,29 @@ function App() {
     loadData();
   }, []);
 
+  // Sort and filter patches
+  const sortedAndFilteredPatches = (() => {
+    let result = [...patches];
+
+    // Sort by date
+    result.sort((a, b) => {
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+      return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+    });
+
+    // Filter by race
+    if (selectedRace) {
+      result = result.filter(patch =>
+        Array.from(patch.entities.values()).some(entity =>
+          (entity.race || 'neutral') === selectedRace
+        )
+      );
+    }
+
+    return result;
+  })();
+
   // Render visualization
   useEffect(() => {
     if (!svgRef.current || patches.length === 0) return;
@@ -85,14 +122,15 @@ function App() {
     prevSelectedIdRef.current = selectedEntityId;
 
     rendererRef.current.render(
-      patches,
+      sortedAndFilteredPatches,
       selectedEntityId,
       prevSelectedId,
       setSelectedEntityId,
       setTooltip,
-      units
+      units,
+      selectedRace
     );
-  }, [patches, selectedEntityId, units]);
+  }, [sortedAndFilteredPatches, selectedEntityId, units, selectedRace, windowWidth]);
 
   if (loading) {
     return (
@@ -117,8 +155,8 @@ function App() {
   }
 
   const filteredPatches = selectedEntityId
-    ? patches.filter(patch => patch.entities.has(selectedEntityId))
-    : patches;
+    ? sortedAndFilteredPatches.filter(patch => patch.entities.has(selectedEntityId))
+    : sortedAndFilteredPatches;
 
   return (
     <div className="app-container">
@@ -150,6 +188,51 @@ function App() {
       </header>
 
       <main className="app-main">
+        <div className="controls-panel">
+          <div className="sort-controls">
+            <span className="control-label">Sort:</span>
+            <button
+              className={`control-btn ${sortOrder === 'newest' ? 'active' : ''}`}
+              onClick={() => setSortOrder('newest')}
+              title="Newest first"
+            >
+              ↓ Newest
+            </button>
+            <button
+              className={`control-btn ${sortOrder === 'oldest' ? 'active' : ''}`}
+              onClick={() => setSortOrder('oldest')}
+              title="Oldest first"
+            >
+              ↑ Oldest
+            </button>
+          </div>
+
+          <div className="race-filter-controls">
+            <span className="control-label">Race:</span>
+            <button
+              className={`race-btn ${!selectedRace ? 'active' : ''}`}
+              onClick={() => setSelectedRace(null)}
+              title="Show all races"
+            >
+              All
+            </button>
+            {RACES.map(race => (
+              <button
+                key={race}
+                className={`race-btn ${selectedRace === race ? 'active' : ''}`}
+                style={{
+                  borderColor: selectedRace === race ? raceColors[race] : 'transparent',
+                  color: selectedRace === race ? raceColors[race] : '#999'
+                }}
+                onClick={() => setSelectedRace(selectedRace === race ? null : race)}
+                title={`Filter by ${race}`}
+              >
+                {race.charAt(0).toUpperCase() + race.slice(1)}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="patch-grid-container" style={{ width: '100%', minHeight: '100vh' }}>
           <svg
             ref={svgRef}
