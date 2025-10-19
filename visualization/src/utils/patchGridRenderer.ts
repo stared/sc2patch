@@ -96,6 +96,21 @@ export class PatchGridRenderer {
       .data(racesToShow, d => d);
 
     const raceEnter = raceHeaders.enter().append('g').attr('class', 'race-header');
+
+    // Position entering headers at the selected race's position when deselecting
+    if (!selectedRace) {
+      // We're deselecting, so position new headers at center (where selected race was)
+      raceEnter
+        .attr('transform', `translate(${layout.patchLabelWidth + availableWidth / 2}, 50)`)
+        .style('opacity', 0);
+    } else {
+      // We're selecting, position at their final location
+      raceEnter.attr('transform', (race, i) => {
+        const x = layout.patchLabelWidth + raceColumnWidth / 2;
+        return `translate(${x}, 50)`;
+      });
+    }
+
     const raceMerge = raceEnter.merge(raceHeaders);
 
     raceMerge
@@ -106,7 +121,8 @@ export class PatchGridRenderer {
           ? layout.patchLabelWidth + raceColumnWidth / 2
           : layout.patchLabelWidth + i * raceColumnWidth + raceColumnWidth / 2;
         return `translate(${x}, 50)`;
-      });
+      })
+      .style('opacity', 1);
 
     // Remove old elements and add new ones
     raceEnter.append('rect').attr('class', 'race-bg');
