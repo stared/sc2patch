@@ -478,7 +478,11 @@ export class PatchGridRenderer {
     patches: Selection<SVGGElement, PatchRow, SVGGElement, unknown>,
     changes: Selection<SVGGElement, ChangeItem, SVGGElement, unknown>
   ): Promise<void> {
-    // Phase 1 (0-600ms): Fade non-selected entities and patch labels
+    // Get selected entity ID from entities data
+    const selectedEntity = entities.data().find(d => d.animationGroup === 'SELECTED');
+    const selectedEntityId = selectedEntity?.entityId;
+
+    // Phase 1 (0-600ms): Fade non-selected entities and irrelevant patch labels
     const fadePromises = Promise.all([
       entities
         .filter(d => d.animationGroup !== 'SELECTED')
@@ -488,7 +492,9 @@ export class PatchGridRenderer {
         .end()
         .catch(() => {}),
 
+      // Only fade out patch labels for patches that don't contain the selected entity
       patches
+        .filter(d => !selectedEntityId || !d.patch.entities.has(selectedEntityId))
         .select('.patch-label')
         .transition('select-fade-labels')
         .duration(timing.fade)
