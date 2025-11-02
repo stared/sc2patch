@@ -703,20 +703,40 @@ export class PatchGridRenderer {
     const raceHeaders = headersContainer.selectAll<SVGGElement, Race>('.race-header')
       .data(racesToShow, d => d);
 
-    const raceEnter = raceHeaders.enter().append('g').attr('class', 'race-header');
-    const raceMerge = raceEnter.merge(raceHeaders);
+    // Detect if we're deselecting (going from 1 race to all races)
+    const isDeselecting = state.prevSelectedId && !state.selectedEntityId && !state.selectedRace;
 
-    raceMerge
+    const raceEnter = raceHeaders.enter().append('g').attr('class', 'race-header');
+
+    // Position entering headers at their final grid location
+    raceEnter.attr('transform', (race: Race) => {
+      const i = RACES.indexOf(race);
+      const x = layout.patchLabelWidth + i * raceColumnWidth + raceColumnWidth / 2;
+      return `translate(${x}, 50)`;
+    });
+
+    raceEnter.append('rect').attr('class', 'race-bg');
+    raceEnter.append('text').attr('class', 'race-text');
+
+    // Newly appearing headers fade in at their final position (no movement)
+    if (isDeselecting) {
+      raceEnter.style('opacity', 0)
+        .transition().duration(timing.fade)
+        .style('opacity', 1);
+    }
+
+    // Update all headers (existing ones will animate position changes)
+    raceHeaders
       .transition().duration(timing.move)
-      .attr('transform', (_race: Race, i: number) => {
+      .attr('transform', (race: Race) => {
+        const i = RACES.indexOf(race);
         const x = (state.selectedRace || state.selectedEntityId)
           ? layout.patchLabelWidth + raceColumnWidth / 2
           : layout.patchLabelWidth + i * raceColumnWidth + raceColumnWidth / 2;
         return `translate(${x}, 50)`;
       });
 
-    raceEnter.append('rect').attr('class', 'race-bg');
-    raceEnter.append('text').attr('class', 'race-text');
+    const raceMerge = raceEnter.merge(raceHeaders);
 
     raceMerge.select('.race-bg')
       .attr('x', -40).attr('width', 80).attr('height', 24).attr('rx', 4)
