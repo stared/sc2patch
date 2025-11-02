@@ -67,15 +67,18 @@ export class PatchGridRenderer {
   // ==========================================================================
 
   async render(state: RenderState): Promise<void> {
+    // Update SVG width (needed for header positioning)
+    const svgElement = this.svg.node();
+    const containerWidth = svgElement?.parentElement?.clientWidth || 1400;
+    this.svgWidth = Math.min(containerWidth, 1400);
+
+    // Always update headers immediately (they don't animate, so safe during ongoing animations)
+    this.renderHeaders(state);
+
     // Prevent re-renders during animation
     if (this.isAnimating) {
       return Promise.resolve();
     }
-
-    // Update SVG width
-    const svgElement = this.svg.node();
-    const containerWidth = svgElement?.parentElement?.clientWidth || 1400;
-    this.svgWidth = Math.min(containerWidth, 1400);
 
     // Determine animation type
     const animType = this.determineAnimationType(state);
@@ -86,9 +89,6 @@ export class PatchGridRenderer {
 
     // Update SVG height
     this.svg.attr('width', this.svgWidth).attr('height', layoutData.svgHeight);
-
-    // Render headers
-    this.renderHeaders(state);
 
     // Sync DOM structure (immediate, no animations)
     const entities = this.syncEntities(layoutData.entities, state);
@@ -653,19 +653,22 @@ export class PatchGridRenderer {
   // ==========================================================================
 
   private renderHeaders(state: RenderState): void {
-    if (state.selectedEntityId) {
-      this.svg.select('.headers-container').remove();
-      return;
-    }
-
     let headersContainer = this.svg.select<SVGGElement>('.headers-container');
     if (headersContainer.empty()) {
       headersContainer = this.svg.append('g').attr('class', 'headers-container');
     }
 
     const availableWidth = this.svgWidth - layout.patchLabelWidth;
-    const racesToShow = state.selectedRace ? [state.selectedRace] : RACES;
-    const raceColumnWidth = state.selectedRace ? availableWidth : Math.floor(availableWidth / RACES.length);
+
+    // Show only the relevant race: selected race, or race of selected entity, or all races
+    const selectedUnitRace = state.selectedEntityId ? state.unitsMap.get(state.selectedEntityId)?.race as Race | undefined : undefined;
+    const racesToShow = state.selectedRace
+      ? [state.selectedRace]
+      : selectedUnitRace
+        ? [selectedUnitRace]
+        : RACES;
+
+    const raceColumnWidth = (state.selectedRace || state.selectedEntityId) ? availableWidth : Math.floor(availableWidth / RACES.length);
 
     // Sort control
     const sortGroup = headersContainer.selectAll<SVGGElement, SortOrder>('.sort-control').data([state.sortOrder]);
@@ -706,7 +709,7 @@ export class PatchGridRenderer {
     raceMerge
       .transition().duration(timing.move)
       .attr('transform', (_race: Race, i: number) => {
-        const x = state.selectedRace
+        const x = (state.selectedRace || state.selectedEntityId)
           ? layout.patchLabelWidth + raceColumnWidth / 2
           : layout.patchLabelWidth + i * raceColumnWidth + raceColumnWidth / 2;
         return `translate(${x}, 50)`;
@@ -717,8 +720,14 @@ export class PatchGridRenderer {
 
     raceMerge.select('.race-bg')
       .attr('x', -40).attr('width', 80).attr('height', 24).attr('rx', 4)
-      .style('fill', (race) => state.selectedRace === race ? 'rgba(255, 255, 255, 0.08)' : 'rgba(255, 255, 255, 0.03)')
-      .style('stroke', (race) => state.selectedRace === race ? raceColors[race] : 'rgba(255, 255, 255, 0.08)')
+      .style('fill', (race) => {
+        const isActive = state.selectedRace === race || selectedUnitRace === race;
+        return isActive ? 'rgba(255, 255, 255, 0.08)' : 'rgba(255, 255, 255, 0.03)';
+      })
+      .style('stroke', (race) => {
+        const isActive = state.selectedRace === race || selectedUnitRace === race;
+        return isActive ? raceColors[race] : 'rgba(255, 255, 255, 0.08)';
+      })
       .style('stroke-width', 1).style('cursor', 'pointer')
       .on('click', (_event, race) => {
         if (state.setSelectedRace) {
@@ -728,9 +737,15 @@ export class PatchGridRenderer {
 
     raceMerge.select('.race-text')
       .attr('text-anchor', 'middle').attr('y', 16)
-      .style('fill', (race) => state.selectedRace === race ? raceColors[race] : '#999')
+      .style('fill', (race) => {
+        const isActive = state.selectedRace === race || selectedUnitRace === race;
+        return isActive ? raceColors[race] : '#999';
+      })
       .style('font-size', '12px')
-      .style('font-weight', (race) => state.selectedRace === race ? '600' : '500')
+      .style('font-weight', (race) => {
+        const isActive = state.selectedRace === race || selectedUnitRace === race;
+        return isActive ? '600' : '500';
+      })
       .style('cursor', 'pointer').style('pointer-events', 'none')
       .text((race) => race.charAt(0).toUpperCase() + race.slice(1));
 
