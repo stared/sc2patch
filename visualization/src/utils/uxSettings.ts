@@ -36,7 +36,10 @@ export const layout = {
   cellSize: 48,
   cellGap: 6,
   patchLabelWidth: 120,
-  raceColumnWidth: 250
+  raceColumnWidth: 250,
+  // Change notes layout (for filtered view)
+  changeNoteLineHeight: 18,
+  changeNotePadding: 16
 } as const;
 
 // Animation timing (milliseconds)

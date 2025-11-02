@@ -147,7 +147,34 @@ export class PatchGridRenderer {
 
   private calculateLayout(state: RenderState): LayoutData {
     const patchRows = this.calculatePatchRows(state.patches, state.selectedEntityId, state.selectedRace);
-    const entities = this.buildEntitiesList(patchRows, state);
+
+    // Calculate dynamic Y positions for filtered view (used for target positions)
+    // This needs to be done even during SELECTING so entities know where to animate to
+    const filteredY = new Map<string, number>();
+    if (state.selectedEntityId) {
+      let cumulativeY = 80;
+      patchRows.forEach(patchRow => {
+        if (patchRow.visible) {
+          const entity = patchRow.patch.entities.get(state.selectedEntityId!);
+          if (entity) {
+            filteredY.set(patchRow.patch.version, cumulativeY);
+            const changeCount = entity.changes?.length || 0;
+            const changeNotesHeight = changeCount * layout.changeNoteLineHeight;
+            cumulativeY += layout.cellSize + changeNotesHeight + layout.changeNotePadding;
+          }
+        }
+      });
+
+      // Apply dynamic positions to patchRows so patches animate to correct targets
+      patchRows.forEach(patchRow => {
+        const y = filteredY.get(patchRow.patch.version);
+        if (y !== undefined) {
+          patchRow.y = y;
+        }
+      });
+    }
+
+    const entities = this.buildEntitiesList(patchRows, state, filteredY);
     const svgHeight = 80 + patchRows.reduce((sum, item) => sum + item.height, 0) + 200;
 
     return { patchRows, entities, svgHeight };
@@ -186,7 +213,11 @@ export class PatchGridRenderer {
     });
   }
 
-  private buildEntitiesList(patchRows: PatchRow[], state: RenderState): EntityItemWithAnimation[] {
+  private buildEntitiesList(
+    patchRows: PatchRow[],
+    state: RenderState,
+    filteredPositions: Map<string, number>
+  ): EntityItemWithAnimation[] {
     const availableWidth = this.svgWidth - layout.patchLabelWidth;
     const raceColumnWidth = (state.selectedEntityId || state.selectedRace) ? availableWidth : Math.floor(availableWidth / RACES.length);
     const cellsPerRow = Math.floor(raceColumnWidth / (layout.cellSize + layout.cellGap));
@@ -198,18 +229,19 @@ export class PatchGridRenderer {
 
       // During SELECTING, show grid even though selectedEntityId is set
       if (state.selectedEntityId && this.animationState !== 'SELECTING') {
-        // Filtered view - only selected entity
+        // Filtered view - only selected entity with dynamic positioning
         const entity = patch.entities.get(state.selectedEntityId);
         if (entity) {
+          const filteredY = filteredPositions.get(patch.version) || patchY;
           entities.push({
             id: `${state.selectedEntityId}-${patch.version}`,
             entityId: state.selectedEntityId,
             patchVersion: patch.version,
             entity,
             x: layout.patchLabelWidth + 40,
-            y: patchY,
+            y: filteredY,
             targetX: layout.patchLabelWidth + 40,
-            targetY: patchY,
+            targetY: filteredY,
             visible: true,
             animationGroup: 'SELECTED'
           });
@@ -243,9 +275,9 @@ export class PatchGridRenderer {
             } else if (this.animationState === 'SELECTING' && entityId === state.selectedEntityId) {
               // Mark selected entities during selection animation
               animationGroup = 'SELECTED';
-              // Set target position for animation (filtered view position)
+              // Set target position for animation (filtered view position with dynamic spacing)
               targetX = layout.patchLabelWidth + 40;
-              targetY = patchY;
+              targetY = filteredPositions.get(patch.version) || patchY;
             }
 
             entities.push({
