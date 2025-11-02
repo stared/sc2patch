@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
 import { loadUnits, loadPatches, processPatches } from './utils/dataLoader';
-import { ProcessedPatchData, Unit, ProcessedChange, EntityWithPosition, Race, RACES } from './types';
+import { ProcessedPatchData, Unit, ProcessedChange, EntityWithPosition, Race } from './types';
 import { PatchGridRenderer } from './utils/patchGridRenderer';
-import { getChangeIndicator, getChangeColor, raceColors, type ChangeType } from './utils/uxSettings';
+import { getChangeIndicator, getChangeColor, type ChangeType } from './utils/uxSettings';
 
 type SortOrder = 'newest' | 'oldest';
 
@@ -121,18 +121,18 @@ function App() {
     const prevSelectedId = prevSelectedIdRef.current;
     prevSelectedIdRef.current = selectedEntityId;
 
-    rendererRef.current.render(
-      sortedAndFilteredPatches,
+    rendererRef.current.render({
+      patches: sortedAndFilteredPatches,
       selectedEntityId,
       prevSelectedId,
-      setSelectedEntityId,
+      onEntitySelect: setSelectedEntityId,
       setTooltip,
-      units,
+      unitsMap: units,
       selectedRace,
       sortOrder,
       setSortOrder,
       setSelectedRace
-    );
+    });
   }, [sortedAndFilteredPatches, selectedEntityId, units, selectedRace, sortOrder, windowWidth]);
 
   if (loading) {
