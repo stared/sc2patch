@@ -478,17 +478,27 @@ export class PatchGridRenderer {
     patches: Selection<SVGGElement, PatchRow, SVGGElement, unknown>,
     changes: Selection<SVGGElement, ChangeItem, SVGGElement, unknown>
   ): Promise<void> {
-    // Phase 1 (0-600ms): Fade non-selected entities
-    const fadePromises = entities
-      .filter(d => d.animationGroup !== 'SELECTED')
-      .transition('select-fade')
-      .duration(timing.fade)
-      .style('opacity', 0)
-      .end()
-      .catch(() => {}); // Ignore interrupted transitions
+    // Phase 1 (0-600ms): Fade non-selected entities and patch labels
+    const fadePromises = Promise.all([
+      entities
+        .filter(d => d.animationGroup !== 'SELECTED')
+        .transition('select-fade')
+        .duration(timing.fade)
+        .style('opacity', 0)
+        .end()
+        .catch(() => {}),
+
+      patches
+        .select('.patch-label')
+        .transition('select-fade-labels')
+        .duration(timing.fade)
+        .style('opacity', 0)
+        .end()
+        .catch(() => {})
+    ]);
 
     // Phase 2 (600-1400ms): Move selected entities and patches
-    await Promise.all([fadePromises]);
+    await fadePromises;
 
     const movePromises = Promise.all([
       entities
@@ -561,14 +571,24 @@ export class PatchGridRenderer {
 
     await movePromises;
 
-    // Phase 2 (800-1400ms): Fade in newly appearing entities
-    await entities
-      .filter(d => d.animationGroup === 'FADE_IN')
-      .transition('deselect-fade')
-      .duration(timing.fade)
-      .style('opacity', 1)
-      .end()
-      .catch(() => {});
+    // Phase 2 (800-1400ms): Fade in newly appearing entities and patch labels
+    await Promise.all([
+      entities
+        .filter(d => d.animationGroup === 'FADE_IN')
+        .transition('deselect-fade')
+        .duration(timing.fade)
+        .style('opacity', 1)
+        .end()
+        .catch(() => {}),
+
+      patches
+        .select('.patch-label')
+        .transition('deselect-fade-labels')
+        .duration(timing.fade)
+        .style('opacity', 1)
+        .end()
+        .catch(() => {})
+    ]);
 
     // Remove exiting elements
     entities.filter(d => !d.visible).remove();
