@@ -86,7 +86,7 @@ body {
   }
 }
 
-/* Inline Filter Bar */
+/* Filter Bar */
 .filter-bar {
   display: flex;
   align-items: center;
@@ -96,97 +96,53 @@ body {
   margin-top: 16px;
 }
 
+/* Filter Sentence - ONE consistent font style */
 .filter-sentence {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 4px;
-  font-size: 15px;
-  line-height: 1.6;
+  font-size: 14px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 2.2;
+  color: #999;
 }
 
-.filter-text {
-  color: #8b8b8b;
-}
-
-.filter-count {
-  color: #e0e0e0;
-  font-weight: 600;
-}
-
-.filter-date {
-  color: #666;
-  font-family: ui-monospace, 'SF Mono', Monaco, monospace;
-  font-size: 13px;
-}
-
-.filter-separator {
-  color: #555;
-}
-
-/* Filter Buttons - Neutral by default, colored when active */
-.filter-btn {
-  background: none;
-  border: none;
+/* Filter Chips - OUTLINED style matching Newest button */
+.filter-chip {
+  display: inline-block;
+  vertical-align: baseline;
+  background: transparent;
+  border: 1px solid #444;
+  border-radius: 4px;
   cursor: pointer;
   font-family: inherit;
-  font-size: 15px;
-  font-weight: 600;
-  padding: 2px 4px;
-  border-radius: 0;
-  transition: color 0.2s ease, border-color 0.2s ease;
-  border-bottom: 2px solid transparent;
-  /* Neutral grey by default - no rainbow */
-  color: #aaa;
-}
-
-.filter-btn:hover {
+  font-size: 14px;
+  font-weight: 400;
+  font-style: normal;
+  padding: 1px 8px;
+  margin: 0;
   color: #ccc;
+  transition: all 0.15s ease;
 }
 
-/* Active state colors - only show color when selected */
-.filter-btn-wol.active {
+.filter-chip:hover {
+  border-color: #666;
   color: #fff;
-  border-bottom-color: #00e5ff;
-  text-shadow: 0 0 8px rgba(0, 229, 255, 0.3);
 }
 
-.filter-btn-hots.active {
+/* Active state - brighter border and text */
+.filter-chip.active {
+  border-color: #888;
   color: #fff;
-  border-bottom-color: #d500f9;
-  text-shadow: 0 0 8px rgba(213, 0, 249, 0.3);
 }
 
-.filter-btn-lotv.active {
-  color: #fff;
-  border-bottom-color: #00e676;
-  text-shadow: 0 0 8px rgba(0, 230, 118, 0.3);
+/* Inactive state - dimmed when another is selected */
+.filter-chip.inactive {
+  border-color: #444;
+  color: #777;
 }
 
-.filter-btn-protoss.active {
-  color: #fff;
-  border-bottom-color: #ffd700;
-  text-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
-}
-
-.filter-btn-terran.active {
-  color: #fff;
-  border-bottom-color: #40c4ff;
-  text-shadow: 0 0 8px rgba(64, 196, 255, 0.3);
-}
-
-.filter-btn-zerg.active {
-  color: #fff;
-  border-bottom-color: #ff4081;
-  text-shadow: 0 0 8px rgba(255, 64, 129, 0.3);
-}
-
-/* Dimmed state - when another filter is selected */
-.filter-btn.dimmed {
-  color: #555;
-}
-.filter-btn.dimmed:hover {
-  color: #888;
+.filter-chip.inactive:hover {
+  border-color: #666;
+  color: #aaa;
 }
 
 /* Color Legend */

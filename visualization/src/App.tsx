@@ -194,69 +194,50 @@ function App() {
             </div>
           </div>
 
-          {/* Inline Filter Bar */}
+          {/* Filter Sentence */}
           <div className="filter-bar">
             <div className="filter-sentence">
               {selectedEntityId ? (
                 <>
-                  <span className="filter-text">Showing </span>
-                  <span className="filter-count">{filteredPatches.length} patches</span>
-                  <span className="filter-text"> affecting </span>
-                  <span className="selected-unit">
-                    <span className="selected-unit-name">{units.get(selectedEntityId)?.name || selectedEntityId}</span>
-                    <button
-                      className="clear-filter-btn"
-                      onClick={() => setSelectedEntityId(null)}
-                      title="Clear filter"
-                    >
-                      ✕
-                    </button>
-                  </span>
+                  Showing {filteredPatches.length} patches affecting
+                  <button
+                    className="filter-chip active"
+                    onClick={() => setSelectedEntityId(null)}
+                    title="Clear filter"
+                  >
+                    {units.get(selectedEntityId)?.name || selectedEntityId}
+                  </button>
                 </>
               ) : (
                 <>
-                  <span className="filter-text">Showing </span>
-                  <span className="filter-count">{filteredPatches.length} patches</span>
-                  <span className="filter-date">
-                    {' '}({(() => {
-                      const patchesToUse = filteredPatches.length > 0 ? filteredPatches : patches;
-                      if (patchesToUse.length === 0) return '2010–2025';
-                      const dates = patchesToUse.map(p => new Date(p.date).getTime());
-                      const earliest = new Date(Math.min(...dates));
-                      const latest = new Date(Math.max(...dates));
-                      const fmt = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-                      return `${fmt(earliest)} – ${fmt(latest)}`;
-                    })()})
-                  </span>
-                  <span className="filter-text"> across </span>
-                  <span className="filter-expansions">
-                    {(['wol', 'hots', 'lotv'] as const).map((exp, i) => (
-                      <span key={exp}>
-                        <button
-                          className={`filter-btn filter-btn-${exp} ${selectedExpansion === exp ? 'active' : ''} ${selectedExpansion && selectedExpansion !== exp ? 'dimmed' : ''}`}
-                          onClick={() => setSelectedExpansion(selectedExpansion === exp ? null : exp)}
-                          title={`${expansionData[exp].name} (${expansionData[exp].patches} patches)`}
-                        >
-                          {expansionData[exp].name}
-                        </button>
-                        {i < 2 && <span className="filter-separator">, </span>}
-                      </span>
-                    ))}
-                  </span>
-                  <span className="filter-text"> and </span>
-                  <span className="filter-races">
-                    {(['protoss', 'terran', 'zerg'] as const).map((race, i) => (
-                      <span key={race}>
-                        <button
-                          className={`filter-btn filter-btn-${race} ${selectedRace === race ? 'active' : ''} ${selectedRace && selectedRace !== race ? 'dimmed' : ''}`}
-                          onClick={() => setSelectedRace(selectedRace === race ? null : race)}
-                        >
-                          {race.charAt(0).toUpperCase() + race.slice(1)}
-                        </button>
-                        {i < 2 && <span className="filter-separator">, </span>}
-                      </span>
-                    ))}
-                  </span>
+                  Showing {filteredPatches.length} patches from the{' '}
+                  {(['wol', 'hots', 'lotv'] as const).map((exp, i) => (
+                    <span key={exp}>
+                      <button
+                        className={`filter-chip ${selectedExpansion === exp ? 'active' : ''} ${selectedExpansion && selectedExpansion !== exp ? 'inactive' : ''}`}
+                        onClick={() => setSelectedExpansion(selectedExpansion === exp ? null : exp)}
+                        title={`${expansionData[exp].name} (${expansionData[exp].patches} patches)`}
+                      >
+                        {expansionData[exp].name}
+                      </button>
+                      {i === 0 && ', '}
+                      {i === 1 && ', and '}
+                    </span>
+                  ))}
+                  {' '}expansions and the{' '}
+                  {(['protoss', 'terran', 'zerg'] as const).map((race, i) => (
+                    <span key={race}>
+                      <button
+                        className={`filter-chip ${selectedRace === race ? 'active' : ''} ${selectedRace && selectedRace !== race ? 'inactive' : ''}`}
+                        onClick={() => setSelectedRace(selectedRace === race ? null : race)}
+                      >
+                        {race.charAt(0).toUpperCase() + race.slice(1)}
+                      </button>
+                      {i === 0 && ', '}
+                      {i === 1 && ', and '}
+                    </span>
+                  ))}
+                  {' '}races.
                 </>
               )}
             </div>
