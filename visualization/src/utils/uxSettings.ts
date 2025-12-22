@@ -92,3 +92,10 @@ export function getChangeIndicator(changeType: ChangeType): string {
 export function getRaceColor(race: Race): string {
   return raceColors[race];
 }
+
+export function getExpansionFromVersion(version: string): Expansion {
+  const major = version[0];
+  if (major === '1') return 'wol';
+  if (major === '2') return 'hots';
+  return 'lotv';
+}

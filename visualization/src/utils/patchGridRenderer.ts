@@ -2,7 +2,7 @@ import { select, type Selection } from 'd3-selection';
 import { transition } from 'd3-transition';
 import { easeCubicOut } from 'd3-ease';
 import { ProcessedPatchData, ProcessedChange, EntityItem, PatchRow, RACES, Race, Unit, EntityWithPosition } from '../types';
-import { layout, timing, raceColors, getChangeIndicator, getChangeColor, type ChangeType } from './uxSettings';
+import { layout, timing, raceColors, expansionColors, getChangeIndicator, getChangeColor, getExpansionFromVersion, type ChangeType } from './uxSettings';
 
 // Extend d3-selection to include transition
 select.prototype.transition = transition;
@@ -400,7 +400,7 @@ export class PatchGridRenderer {
 
           label.append('text')
             .attr('x', 10).attr('y', 0)
-            .style('fill', raceColors.terran)
+            .style('fill', d => expansionColors[getExpansionFromVersion(d.patch.version)])
             .style('font-size', '14px')
             .style('font-weight', '600')
             .style('cursor', 'pointer')
