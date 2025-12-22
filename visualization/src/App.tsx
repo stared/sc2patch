@@ -184,7 +184,9 @@ function App() {
                 </span>
               </>
             ) : (
-              <span className="filter-label">Tracking {patches.length} balance patches across all units</span>
+              <span className="filter-label">
+                Tracking {patches.length} patches. <span className="hint">Click a unit to filter.</span>
+              </span>
             )}
             <div className="legend">
               <div className="legend-item">
@@ -199,6 +201,11 @@ function App() {
                 <span className="legend-dot mixed"></span>
                 <span>Mixed</span>
               </div>
+            </div>
+            <div className="attribution">
+              by <a href="https://p.migdal.pl" target="_blank" rel="noopener noreferrer">Piotr Migdał</a>
+              <span className="separator">•</span>
+              <a href="https://github.com/stared/sc2patch" target="_blank" rel="noopener noreferrer">Source</a>
             </div>
           </div>
         </div>

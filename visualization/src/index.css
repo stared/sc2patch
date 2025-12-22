@@ -117,6 +117,32 @@ body {
   letter-spacing: 0.01em;
 }
 
+.filter-label .hint {
+  color: #999;
+}
+
+/* Attribution */
+.attribution {
+  font-size: 12px;
+  color: #666;
+  margin-left: 24px;
+}
+
+.attribution a {
+  color: #666;
+  text-decoration: none;
+}
+
+.attribution a:hover {
+  color: #999;
+  text-decoration: underline;
+}
+
+.attribution .separator {
+  margin: 0 6px;
+  color: #444;
+}
+
 .selected-unit {
   display: inline-flex;
   align-items: center;
@@ -183,6 +209,14 @@ body {
   }
 
   .legend {
+    display: none;
+  }
+
+  .attribution {
+    display: none;
+  }
+
+  .filter-label .hint {
     display: none;
   }
 
