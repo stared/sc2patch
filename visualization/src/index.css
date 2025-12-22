@@ -86,103 +86,107 @@ body {
   }
 }
 
-/* Era Timeline */
-.era-timeline {
-  margin: 16px 0 12px;
-}
-
-.era-bar {
-  display: flex;
-  height: 28px;
-  border-radius: 4px;
-  overflow: hidden;
-  gap: 2px;
-}
-
-.era-segment {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
-  transition: filter 0.2s ease, box-shadow 0.2s ease;
-  position: relative;
-  padding: 0 8px;
-}
-
-.era-segment:hover {
-  filter: brightness(1.2);
-}
-
-.era-segment.selected {
-  filter: brightness(1.3);
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
-  z-index: 1;
-}
-
-/* Non-selected segments dim when one is selected */
-.era-bar:has(.selected) .era-segment:not(.selected) {
-  filter: brightness(0.5);
-}
-
-/* Responsive labels - show full by default, short on mobile */
-.era-label-full {
-  font-size: 11px;
-  font-weight: 700;
-  color: rgba(0, 0, 0, 0.85);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
-}
-
-.era-label-short {
-  display: none;
-  font-size: 11px;
-  font-weight: 700;
-  color: rgba(0, 0, 0, 0.85);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-/* Era Dates Row */
-.era-dates {
-  display: flex;
-  margin-top: 6px;
-  position: relative;
-}
-
-.era-date {
-  font-family: ui-monospace, 'SF Mono', Monaco, monospace;
-  font-size: 11px;
-  color: #666;
-  padding-left: 2px;
-}
-
-.era-date-end {
-  position: absolute;
-  right: 0;
-  width: auto !important;
-  padding-left: 0;
-  padding-right: 2px;
-}
-
-/* Header Bottom Row */
-.header-bottom {
+/* Inline Filter Bar */
+.filter-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
-  min-height: 32px;
+  margin-top: 16px;
 }
 
-.filter-info {
+.filter-sentence {
   display: flex;
   align-items: center;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 4px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.filter-text {
   color: #8b8b8b;
-  font-size: 14px;
+}
+
+.filter-count {
+  color: #e0e0e0;
+  font-weight: 600;
+}
+
+.filter-date {
+  color: #666;
+  font-family: ui-monospace, 'SF Mono', Monaco, monospace;
+  font-size: 13px;
+}
+
+.filter-separator {
+  color: #555;
+}
+
+/* Filter Buttons - Neutral by default, colored when active */
+.filter-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 2px 4px;
+  border-radius: 0;
+  transition: color 0.2s ease, border-color 0.2s ease;
+  border-bottom: 2px solid transparent;
+  /* Neutral grey by default - no rainbow */
+  color: #aaa;
+}
+
+.filter-btn:hover {
+  color: #ccc;
+}
+
+/* Active state colors - only show color when selected */
+.filter-btn-wol.active {
+  color: #fff;
+  border-bottom-color: #00e5ff;
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.3);
+}
+
+.filter-btn-hots.active {
+  color: #fff;
+  border-bottom-color: #d500f9;
+  text-shadow: 0 0 8px rgba(213, 0, 249, 0.3);
+}
+
+.filter-btn-lotv.active {
+  color: #fff;
+  border-bottom-color: #00e676;
+  text-shadow: 0 0 8px rgba(0, 230, 118, 0.3);
+}
+
+.filter-btn-protoss.active {
+  color: #fff;
+  border-bottom-color: #ffd700;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+}
+
+.filter-btn-terran.active {
+  color: #fff;
+  border-bottom-color: #40c4ff;
+  text-shadow: 0 0 8px rgba(64, 196, 255, 0.3);
+}
+
+.filter-btn-zerg.active {
+  color: #fff;
+  border-bottom-color: #ff4081;
+  text-shadow: 0 0 8px rgba(255, 64, 129, 0.3);
+}
+
+/* Dimmed state - when another filter is selected */
+.filter-btn.dimmed {
+  color: #555;
+}
+.filter-btn.dimmed:hover {
+  color: #888;
 }
 
 /* Color Legend */
