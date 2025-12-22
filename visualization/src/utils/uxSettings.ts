@@ -13,6 +13,21 @@ export const raceColors: Record<Race, string> = {
   neutral: '#888'
 };
 
+// Expansion colors and data
+export type Expansion = 'wol' | 'hots' | 'lotv';
+
+export const expansionColors: Record<Expansion, string> = {
+  wol: '#00AEEF',   // Wings of Liberty - blue
+  hots: '#A000D8',  // Heart of the Swarm - purple
+  lotv: '#00D18C'   // Legacy of the Void - teal
+};
+
+export const expansionData: Record<Expansion, { name: string; short: string; patches: number; percent: number }> = {
+  wol: { name: 'Wings of Liberty', short: 'WoL', patches: 8, percent: 13 },
+  hots: { name: 'Heart of the Swarm', short: 'HotS', patches: 7, percent: 13 },
+  lotv: { name: 'Legacy of the Void', short: 'LotV', patches: 27, percent: 74 }
+};
+
 // Change type colors and indicators
 export const changeTypeConfig = {
   buff: {

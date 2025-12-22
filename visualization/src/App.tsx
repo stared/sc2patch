@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { loadUnits, loadPatches, processPatches } from './utils/dataLoader';
 import { ProcessedPatchData, Unit, ProcessedChange, EntityWithPosition, Race } from './types';
 import { PatchGridRenderer } from './utils/patchGridRenderer';
-import { getChangeIndicator, getChangeColor, type ChangeType } from './utils/uxSettings';
+import { getChangeIndicator, getChangeColor, type ChangeType, expansionData, expansionColors, type Expansion } from './utils/uxSettings';
 
 type SortOrder = 'newest' | 'oldest';
 
@@ -13,6 +13,7 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
   const [selectedRace, setSelectedRace] = useState<Race | null>(null);
+  const [selectedExpansion, setSelectedExpansion] = useState<Expansion | null>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>('newest');
   const [tooltip, setTooltip] = useState<{
     entity: EntityWithPosition | null;
@@ -87,6 +88,16 @@ function App() {
     loadData();
   }, []);
 
+  // Helper to determine expansion from patch date
+  const getExpansionFromDate = (dateStr: string): Expansion => {
+    const date = new Date(dateStr);
+    const hotsRelease = new Date('2013-03-12');
+    const lotvRelease = new Date('2015-11-10');
+    if (date < hotsRelease) return 'wol';
+    if (date < lotvRelease) return 'hots';
+    return 'lotv';
+  };
+
   // Sort and filter patches
   const sortedAndFilteredPatches = (() => {
     let result = [...patches];
@@ -97,6 +108,11 @@ function App() {
       const dateB = new Date(b.date).getTime();
       return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
     });
+
+    // Filter by expansion
+    if (selectedExpansion) {
+      result = result.filter(patch => getExpansionFromDate(patch.date) === selectedExpansion);
+    }
 
     // Filter by race
     if (selectedRace) {
@@ -133,7 +149,7 @@ function App() {
       setSortOrder,
       setSelectedRace
     });
-  }, [sortedAndFilteredPatches, selectedEntityId, units, selectedRace, sortOrder, windowWidth]);
+  }, [sortedAndFilteredPatches, selectedEntityId, units, selectedRace, selectedExpansion, sortOrder, windowWidth]);
 
   if (loading) {
     return (
@@ -165,29 +181,72 @@ function App() {
     <div className="app-container">
       <header className="app-header">
         <div className="header-content">
-          <h1 className="header-title">StarCraft II Balance Changes</h1>
-          <div className="header-subtitle">
-            {selectedEntityId ? (
-              <>
-                <span className="filter-label">
-                  Showing {filteredPatches.length} of {patches.length} patches affecting
-                </span>
-                <span className="selected-unit">
-                  <span className="selected-unit-name">{units.get(selectedEntityId)?.name || selectedEntityId}</span>
+          {/* Top row: Title + Attribution */}
+          <div className="header-top">
+            <div className="header-title-group">
+              <h1 className="header-title">
+                15 Years of StarCraft II Balance Changes <span className="highlight">Visualized</span>
+              </h1>
+            </div>
+            <div className="attribution">
+              <span className="attribution-author">by <a href="https://p.migdal.pl" target="_blank" rel="noopener noreferrer">Piotr Migdał</a></span>
+              <a href="https://github.com/stared/sc2patch" target="_blank" rel="noopener noreferrer" className="attribution-source">source code</a>
+            </div>
+          </div>
+
+          {/* Era Timeline Bar - CLICKABLE */}
+          <div className="era-bar">
+            {(['wol', 'hots', 'lotv'] as const).map((exp) => (
+              <button
+                key={exp}
+                className={`era-segment era-${exp} ${selectedExpansion === exp ? 'selected' : ''}`}
+                style={{
+                  width: `${expansionData[exp].percent}%`,
+                  backgroundColor: expansionColors[exp]
+                }}
+                onClick={() => setSelectedExpansion(selectedExpansion === exp ? null : exp)}
+                title={expansionData[exp].name}
+              >
+                <span className="era-label">{expansionData[exp].short}</span>
+                <span className="era-count">({expansionData[exp].patches})</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Bottom row: Filter info + Legend */}
+          <div className="header-bottom">
+            <div className="filter-info">
+              {selectedExpansion ? (
+                <>
+                  <span>Showing {filteredPatches.length} {expansionData[selectedExpansion].name} patches</span>
                   <button
                     className="clear-filter-btn"
-                    onClick={() => setSelectedEntityId(null)}
-                    title="Clear filter"
+                    onClick={() => setSelectedExpansion(null)}
+                    title="Clear expansion filter"
                   >
                     ✕
                   </button>
+                </>
+              ) : selectedEntityId ? (
+                <>
+                  <span>Showing {filteredPatches.length} patches affecting</span>
+                  <span className="selected-unit">
+                    <span className="selected-unit-name">{units.get(selectedEntityId)?.name || selectedEntityId}</span>
+                    <button
+                      className="clear-filter-btn"
+                      onClick={() => setSelectedEntityId(null)}
+                      title="Clear filter"
+                    >
+                      ✕
+                    </button>
+                  </span>
+                </>
+              ) : (
+                <span className="filter-label">
+                  Click any unit to see its balance history
                 </span>
-              </>
-            ) : (
-              <span className="filter-label">
-                Tracking {patches.length} patches. <span className="hint">Click a unit to filter.</span>
-              </span>
-            )}
+              )}
+            </div>
             <div className="legend">
               <div className="legend-item">
                 <span className="legend-dot buff"></span>
@@ -201,11 +260,6 @@ function App() {
                 <span className="legend-dot mixed"></span>
                 <span>Mixed</span>
               </div>
-            </div>
-            <div className="attribution">
-              by <a href="https://p.migdal.pl" target="_blank" rel="noopener noreferrer">Piotr Migdał</a>
-              <span className="separator">•</span>
-              <a href="https://github.com/stared/sc2patch" target="_blank" rel="noopener noreferrer">Source</a>
             </div>
           </div>
         </div>
