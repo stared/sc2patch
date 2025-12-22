@@ -24,6 +24,13 @@
 - Check actual files, don't guess or assume
 - Avoid multiple fallback patterns - they hide real problems
 
+## VERIFY ALL LINKS
+
+- When adding any URL or link, ALWAYS verify it exists and has expected content
+- Use `curl` or WebFetch to check before committing
+- This includes: GitHub repos, documentation links, external resources
+- Don't assume URL patterns - check the actual page loads correctly
+
 ## Module Design
 
 - **Modular functions** - each function does one thing
