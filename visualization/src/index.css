@@ -134,15 +134,24 @@ body {
   color: #fff;
 }
 
-/* Inactive state - dimmed when another is selected */
+/* Inactive state - dimmed via opacity (color from inline style) */
 .filter-chip.inactive {
-  border-color: #444;
-  color: #777;
+  opacity: 0.4;
+  color: #666;
 }
 
 .filter-chip.inactive:hover {
-  border-color: #666;
-  color: #aaa;
+  opacity: 0.7;
+  color: #999;
+}
+
+/* Chip labels (color from inline style) */
+.chip-label {
+  display: inline-block;
+  padding: 1px 8px;
+  border: 1px solid;
+  border-radius: 4px;
+  font-size: 14px;
 }
 
 /* Color Legend */

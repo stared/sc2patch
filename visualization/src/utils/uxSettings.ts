@@ -5,22 +5,26 @@
 
 import type { Race } from '../types';
 
-// Race colors
+// Race colors and order (T, Z, P - standard SC2 order)
 export const raceColors: Record<Race, string> = {
   terran: '#4a9eff',
-  zerg: '#c874e9',
-  protoss: '#ffd700',
+  zerg: '#A335EE',
+  protoss: '#FFD700',
   neutral: '#888'
 };
+
+export const filterableRaces: Array<Exclude<Race, 'neutral'>> = ['terran', 'zerg', 'protoss'];
 
 // Expansion colors and data
 export type Expansion = 'wol' | 'hots' | 'lotv';
 
 export const expansionColors: Record<Expansion, string> = {
-  wol: '#00AEEF',   // Wings of Liberty - blue
+  wol: '#00AEEF',   // Wings of Liberty - cyan
   hots: '#A000D8',  // Heart of the Swarm - purple
-  lotv: '#00D18C'   // Legacy of the Void - teal
+  lotv: '#00D18C'   // Legacy of the Void - green
 };
+
+export const expansionOrder: Expansion[] = ['wol', 'hots', 'lotv'];
 
 export const expansionData: Record<Expansion, {
   name: string;
@@ -34,23 +38,28 @@ export const expansionData: Record<Expansion, {
   lotv: { name: 'Legacy of the Void', short: 'LotV', patches: 27, percent: 74, releaseDate: 'Nov 2015' }
 };
 
-// Change type colors and indicators
+// Change type colors, labels, and indicators
 export const changeTypeConfig = {
   buff: {
     color: '#4a9eff',
+    label: 'buffs',
     indicator: '+ '
   },
   nerf: {
     color: '#ff4444',
+    label: 'nerfs',
     indicator: '− '
   },
   mixed: {
     color: '#ff9933',
+    label: 'mixed',
     indicator: '± '
   }
 } as const;
 
 export type ChangeType = keyof typeof changeTypeConfig;
+
+export const changeTypeOrder: ChangeType[] = ['buff', 'nerf', 'mixed'];
 
 // Layout constants
 export const layout = {

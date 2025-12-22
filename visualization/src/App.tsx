@@ -2,7 +2,19 @@ import { useEffect, useState, useRef } from 'react';
 import { loadUnits, loadPatches, processPatches } from './utils/dataLoader';
 import { ProcessedPatchData, Unit, ProcessedChange, EntityWithPosition, Race } from './types';
 import { PatchGridRenderer } from './utils/patchGridRenderer';
-import { getChangeIndicator, getChangeColor, type ChangeType, expansionData, type Expansion } from './utils/uxSettings';
+import {
+  getChangeIndicator,
+  getChangeColor,
+  type ChangeType,
+  expansionData,
+  expansionColors,
+  expansionOrder,
+  raceColors,
+  filterableRaces,
+  changeTypeConfig,
+  changeTypeOrder,
+  type Expansion
+} from './utils/uxSettings';
 
 type SortOrder = 'newest' | 'oldest';
 
@@ -211,10 +223,11 @@ function App() {
               ) : (
                 <>
                   Showing {filteredPatches.length} patches from the{' '}
-                  {(['wol', 'hots', 'lotv'] as const).map((exp, i) => (
+                  {expansionOrder.map((exp, i) => (
                     <span key={exp}>
                       <button
                         className={`filter-chip ${selectedExpansion === exp ? 'active' : ''} ${selectedExpansion && selectedExpansion !== exp ? 'inactive' : ''}`}
+                        style={{ borderColor: expansionColors[exp] }}
                         onClick={() => setSelectedExpansion(selectedExpansion === exp ? null : exp)}
                         title={`${expansionData[exp].name} (${expansionData[exp].patches} patches)`}
                       >
@@ -225,10 +238,11 @@ function App() {
                     </span>
                   ))}
                   {' '}expansions and the{' '}
-                  {(['protoss', 'terran', 'zerg'] as const).map((race, i) => (
+                  {filterableRaces.map((race, i) => (
                     <span key={race}>
                       <button
                         className={`filter-chip ${selectedRace === race ? 'active' : ''} ${selectedRace && selectedRace !== race ? 'inactive' : ''}`}
+                        style={{ borderColor: raceColors[race] }}
                         onClick={() => setSelectedRace(selectedRace === race ? null : race)}
                       >
                         {race.charAt(0).toUpperCase() + race.slice(1)}
@@ -237,23 +251,22 @@ function App() {
                       {i === 1 && ', and '}
                     </span>
                   ))}
-                  {' '}races.
+                  {' '}races. It includes all unit{' '}
+                  {changeTypeOrder.map((type, i) => (
+                    <span key={type}>
+                      <span
+                        className="chip-label"
+                        style={{ borderColor: changeTypeConfig[type].color, color: changeTypeConfig[type].color }}
+                      >
+                        {changeTypeConfig[type].label}
+                      </span>
+                      {i === 0 && ', '}
+                      {i === 1 && ', and '}
+                    </span>
+                  ))}
+                  {' '}balance changes.
                 </>
               )}
-            </div>
-            <div className="legend">
-              <div className="legend-item">
-                <span className="legend-dot buff"></span>
-                <span>Buff</span>
-              </div>
-              <div className="legend-item">
-                <span className="legend-dot nerf"></span>
-                <span>Nerf</span>
-              </div>
-              <div className="legend-item">
-                <span className="legend-dot mixed"></span>
-                <span>Mixed</span>
-              </div>
             </div>
           </div>
         </div>
