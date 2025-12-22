@@ -186,6 +186,20 @@ function App() {
             ) : (
               <span className="filter-label">Tracking {patches.length} balance patches across all units</span>
             )}
+            <div className="legend">
+              <div className="legend-item">
+                <span className="legend-dot buff"></span>
+                <span>Buff</span>
+              </div>
+              <div className="legend-item">
+                <span className="legend-dot nerf"></span>
+                <span>Nerf</span>
+              </div>
+              <div className="legend-item">
+                <span className="legend-dot mixed"></span>
+                <span>Mixed</span>
+              </div>
+            </div>
           </div>
         </div>
       </header>

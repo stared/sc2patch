@@ -68,10 +68,46 @@ body {
 .header-subtitle {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
   margin-top: 8px;
   flex-wrap: wrap;
   min-height: 32px; /* Prevent height changes when filtering */
+}
+
+/* Color Legend */
+.legend {
+  display: flex;
+  gap: 16px;
+  font-size: 13px;
+  color: #888;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.legend-dot.buff {
+  background-color: #4a9eff;
+  box-shadow: 0 0 8px rgba(74, 158, 255, 0.4);
+}
+
+.legend-dot.nerf {
+  background-color: #ff4444;
+  box-shadow: 0 0 8px rgba(255, 68, 68, 0.4);
+}
+
+.legend-dot.mixed {
+  background-color: #ff9933;
+  box-shadow: 0 0 8px rgba(255, 153, 51, 0.4);
 }
 
 .filter-label {
@@ -144,6 +180,10 @@ body {
 
   .header-subtitle {
     font-size: 12px;
+  }
+
+  .legend {
+    display: none;
   }
 
   .app-main {
