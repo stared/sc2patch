@@ -227,7 +227,7 @@ function App() {
                     <span key={exp}>
                       <button
                         className={`filter-chip ${selectedExpansion === exp ? 'active' : ''} ${selectedExpansion && selectedExpansion !== exp ? 'inactive' : ''}`}
-                        style={{ borderColor: expansionColors[exp] }}
+                        style={{ borderColor: expansionColors[exp], '--chip-color': expansionColors[exp] } as React.CSSProperties}
                         onClick={() => setSelectedExpansion(selectedExpansion === exp ? null : exp)}
                         title={`${expansionData[exp].name} (${expansionData[exp].patches} patches)`}
                       >
@@ -242,7 +242,7 @@ function App() {
                     <span key={race}>
                       <button
                         className={`filter-chip ${selectedRace === race ? 'active' : ''} ${selectedRace && selectedRace !== race ? 'inactive' : ''}`}
-                        style={{ borderColor: raceColors[race] }}
+                        style={{ borderColor: raceColors[race], '--chip-color': raceColors[race] } as React.CSSProperties}
                         onClick={() => setSelectedRace(selectedRace === race ? null : race)}
                       >
                         {race.charAt(0).toUpperCase() + race.slice(1)}
@@ -255,8 +255,8 @@ function App() {
                   {changeTypeOrder.map((type, i) => (
                     <span key={type}>
                       <span
-                        className="chip-label"
-                        style={{ borderColor: changeTypeConfig[type].color, color: changeTypeConfig[type].color }}
+                        className="filter-chip"
+                        style={{ borderColor: changeTypeConfig[type].color, '--chip-color': changeTypeConfig[type].color } as React.CSSProperties}
                       >
                         {changeTypeConfig[type].label}
                       </span>

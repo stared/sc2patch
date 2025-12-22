@@ -16,12 +16,13 @@ export const raceColors: Record<Race, string> = {
 export const filterableRaces: Array<Exclude<Race, 'neutral'>> = ['terran', 'zerg', 'protoss'];
 
 // Expansion colors and data
+// Expansions share colors with their featured race (by design, not duplication)
 export type Expansion = 'wol' | 'hots' | 'lotv';
 
 export const expansionColors: Record<Expansion, string> = {
-  wol: '#00AEEF',   // Wings of Liberty - cyan
-  hots: '#A000D8',  // Heart of the Swarm - purple
-  lotv: '#00D18C'   // Legacy of the Void - green
+  wol: raceColors.terran,   // Wings of Liberty = Terran blue
+  hots: raceColors.zerg,    // Heart of the Swarm = Zerg purple
+  lotv: raceColors.protoss  // Legacy of the Void = Protoss gold
 };
 
 export const expansionOrder: Expansion[] = ['wol', 'hots', 'lotv'];
@@ -39,9 +40,10 @@ export const expansionData: Record<Expansion, {
 };
 
 // Change type colors, labels, and indicators
+// Buff uses teal to avoid overlap with Terran blue
 export const changeTypeConfig = {
   buff: {
-    color: '#4a9eff',
+    color: '#00D18C',  // Teal - distinct from race/expansion colors
     label: 'buffs',
     indicator: '+ '
   },
