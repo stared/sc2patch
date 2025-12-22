@@ -86,11 +86,14 @@ body {
   }
 }
 
-/* Era Timeline Bar */
+/* Era Timeline */
+.era-timeline {
+  margin: 16px 0 12px;
+}
+
 .era-bar {
   display: flex;
-  height: 24px;
-  margin: 16px 0;
+  height: 28px;
   border-radius: 4px;
   overflow: hidden;
   gap: 2px;
@@ -100,12 +103,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
   border: none;
   cursor: pointer;
   font-family: inherit;
   transition: filter 0.2s ease, box-shadow 0.2s ease;
   position: relative;
+  padding: 0 8px;
 }
 
 .era-segment:hover {
@@ -123,18 +126,45 @@ body {
   filter: brightness(0.5);
 }
 
-.era-label {
+/* Responsive labels - show full by default, short on mobile */
+.era-label-full {
   font-size: 11px;
   font-weight: 700;
-  color: rgba(0, 0, 0, 0.8);
+  color: rgba(0, 0, 0, 0.85);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.era-label-short {
+  display: none;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.85);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-.era-count {
+/* Era Dates Row */
+.era-dates {
+  display: flex;
+  margin-top: 6px;
+  position: relative;
+}
+
+.era-date {
   font-family: ui-monospace, 'SF Mono', Monaco, monospace;
-  font-size: 10px;
-  color: rgba(0, 0, 0, 0.6);
+  font-size: 11px;
+  color: #666;
+  padding-left: 2px;
+}
+
+.era-date-end {
+  position: absolute;
+  right: 0;
+  width: auto !important;
+  padding-left: 0;
+  padding-right: 2px;
 }
 
 /* Header Bottom Row */
@@ -287,17 +317,20 @@ body {
 }
 
 /* Responsive Design */
+@media (max-width: 1100px) {
+  /* Switch to short names when full names don't fit well */
+  .era-label-full {
+    display: none;
+  }
+
+  .era-label-short {
+    display: block;
+  }
+}
+
 @media (max-width: 1024px) {
   .header-title {
     font-size: 1.4rem;
-  }
-
-  .era-label {
-    font-size: 10px;
-  }
-
-  .era-count {
-    display: none;
   }
 }
 
@@ -326,12 +359,23 @@ body {
   }
 
   .era-bar {
-    height: 16px;
-    margin: 12px 0 16px;
+    height: 20px;
   }
 
-  .era-label {
-    font-size: 9px;
+  .era-timeline {
+    margin: 12px 0 8px;
+  }
+
+  .era-label-short {
+    font-size: 10px;
+  }
+
+  .era-dates {
+    margin-top: 4px;
+  }
+
+  .era-date {
+    font-size: 10px;
   }
 
   .legend {
@@ -357,8 +401,12 @@ body {
     display: none;
   }
 
-  .era-label {
-    font-size: 8px;
+  .era-label-short {
+    font-size: 9px;
+  }
+
+  .era-date {
+    font-size: 9px;
   }
 }
 

@@ -195,22 +195,41 @@ function App() {
           </div>
 
           {/* Era Timeline Bar - CLICKABLE */}
-          <div className="era-bar">
-            {(['wol', 'hots', 'lotv'] as const).map((exp) => (
-              <button
-                key={exp}
-                className={`era-segment era-${exp} ${selectedExpansion === exp ? 'selected' : ''}`}
-                style={{
-                  width: `${expansionData[exp].percent}%`,
-                  backgroundColor: expansionColors[exp]
-                }}
-                onClick={() => setSelectedExpansion(selectedExpansion === exp ? null : exp)}
-                title={expansionData[exp].name}
-              >
-                <span className="era-label">{expansionData[exp].short}</span>
-                <span className="era-count">({expansionData[exp].patches})</span>
-              </button>
-            ))}
+          <div className="era-timeline">
+            <div className="era-bar">
+              {(['wol', 'hots', 'lotv'] as const).map((exp) => (
+                <button
+                  key={exp}
+                  className={`era-segment era-${exp} ${selectedExpansion === exp ? 'selected' : ''}`}
+                  style={{
+                    width: `${expansionData[exp].percent}%`,
+                    backgroundColor: expansionColors[exp]
+                  }}
+                  onClick={() => setSelectedExpansion(selectedExpansion === exp ? null : exp)}
+                  title={`${expansionData[exp].name} (${expansionData[exp].patches} patches)`}
+                >
+                  <span className="era-label-full">{expansionData[exp].name}</span>
+                  <span className="era-label-short">{expansionData[exp].short}</span>
+                </button>
+              ))}
+            </div>
+            <div className="era-dates">
+              {(['wol', 'hots', 'lotv'] as const).map((exp) => (
+                <span
+                  key={exp}
+                  className="era-date"
+                  style={{ width: `${expansionData[exp].percent}%` }}
+                >
+                  {expansionData[exp].releaseDate}
+                </span>
+              ))}
+              <span className="era-date era-date-end">
+                {patches.length > 0 ? (() => {
+                  const latestDate = new Date(Math.max(...patches.map(p => new Date(p.date).getTime())));
+                  return latestDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                })() : '2025'}
+              </span>
+            </div>
           </div>
 
           {/* Bottom row: Filter info + Legend */}
@@ -243,7 +262,7 @@ function App() {
                 </>
               ) : (
                 <span className="filter-label">
-                  Click any unit to see its balance history
+                  {patches.length} balance patches across all expansions and races
                 </span>
               )}
             </div>

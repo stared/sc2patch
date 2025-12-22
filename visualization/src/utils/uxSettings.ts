@@ -22,10 +22,16 @@ export const expansionColors: Record<Expansion, string> = {
   lotv: '#00D18C'   // Legacy of the Void - teal
 };
 
-export const expansionData: Record<Expansion, { name: string; short: string; patches: number; percent: number }> = {
-  wol: { name: 'Wings of Liberty', short: 'WoL', patches: 8, percent: 13 },
-  hots: { name: 'Heart of the Swarm', short: 'HotS', patches: 7, percent: 13 },
-  lotv: { name: 'Legacy of the Void', short: 'LotV', patches: 27, percent: 74 }
+export const expansionData: Record<Expansion, {
+  name: string;
+  short: string;
+  patches: number;
+  percent: number;
+  releaseDate: string;
+}> = {
+  wol: { name: 'Wings of Liberty', short: 'WoL', patches: 8, percent: 13, releaseDate: 'Jul 2010' },
+  hots: { name: 'Heart of the Swarm', short: 'HotS', patches: 7, percent: 13, releaseDate: 'Mar 2013' },
+  lotv: { name: 'Legacy of the Void', short: 'LotV', patches: 27, percent: 74, releaseDate: 'Nov 2015' }
 };
 
 // Change type colors and indicators
