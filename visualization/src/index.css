@@ -53,7 +53,7 @@ body {
   flex: 1;
 }
 
-/* SC2-style title - no external fonts, pure CSS treatment */
+/* SC2-style title */
 .header-title {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   font-size: 1.8rem;
@@ -62,28 +62,7 @@ body {
   letter-spacing: 0.03em;
   margin: 0;
   color: #fff;
-  /* Gradient gives premium feel */
-  background: linear-gradient(135deg, #ffffff 0%, #c0c0c0 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: fadeInDown 0.6s ease-out;
   line-height: 1.2;
-}
-
-.header-title .highlight {
-  -webkit-text-fill-color: #00D18C;
-}
-
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 /* Filter Bar */

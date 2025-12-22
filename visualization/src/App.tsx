@@ -197,7 +197,7 @@ function App() {
           <div className="header-top">
             <div className="header-title-group">
               <h1 className="header-title">
-                15 Years of StarCraft II Balance Changes <span className="highlight">Visualized</span>
+                15 Years of StarCraft II <span style={{ color: changeTypeConfig.mixed.color }}>Balance Changes</span> Visualized
               </h1>
             </div>
             <div className="attribution">
