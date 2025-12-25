@@ -90,6 +90,9 @@ export const layout = {
   cellGap: 6,
   patchLabelWidth: 120,
   raceColumnWidth: 250,
+  // Header positioning
+  headerY: 12,        // Y position of header row (sort button + race labels)
+  gridStartY: 55,     // Y position where first patch row starts
   // Change notes layout (for filtered view)
   changeNoteLineHeight: 18,
   changeNotePadding: 16

@@ -277,7 +277,7 @@ button.filter-chip:hover, .filter-chip.active { color: var(--chip-color); backgr
 /* Main Content Area */
 .app-main {
   flex: 1;
-  padding: 24px;
+  padding: 8px 24px;
   background: #0a0a0a;
 }
 
@@ -352,7 +352,7 @@ button.filter-chip:hover, .filter-chip.active { color: var(--chip-color); backgr
   }
 
   .app-main {
-    padding: 16px;
+    padding: 8px 16px;
   }
 }
 

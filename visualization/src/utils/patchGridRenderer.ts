@@ -210,7 +210,7 @@ export class PatchGridRenderer {
       return { patch, visible, height: 40 + maxRows * (layout.cellSize + layout.cellGap) + 10 };
     });
 
-    let currentY = 80;
+    let currentY = layout.gridStartY;
     return visiblePatches.map(item => {
       const row = { ...item, y: item.visible ? currentY : -1000 };
       if (item.visible) currentY += item.height;
@@ -597,7 +597,7 @@ export class PatchGridRenderer {
         .transition('select-move-headers')
         .duration(timing.move)
         .ease(easeCubicOut)
-        .attr('transform', `translate(${headerTargetX}, 50)`)
+        .attr('transform', `translate(${headerTargetX}, 0)`)
         .end()
         .catch(() => {})
     ]);
@@ -651,7 +651,7 @@ export class PatchGridRenderer {
           .transition('deselect-move-headers')
           .duration(timing.move)
           .ease(easeCubicOut)
-          .attr('transform', `translate(${x}, 50)`)
+          .attr('transform', `translate(${x}, 0)`)
           .style('opacity', 1)
           .end()
           .catch(() => {});
@@ -752,7 +752,7 @@ export class PatchGridRenderer {
             .transition('race-move-headers')
             .duration(timing.move)
             .ease(easeCubicOut)
-            .attr('transform', `translate(${headerTargetX}, 50)`)
+            .attr('transform', `translate(${headerTargetX}, 0)`)
             .end()
             .catch(() => {})
         ]);
@@ -786,7 +786,7 @@ export class PatchGridRenderer {
               .transition('race-move-headers')
               .duration(timing.move)
               .ease(easeCubicOut)
-              .attr('transform', `translate(${x}, 50)`)
+              .attr('transform', `translate(${x}, 0)`)
               .end()
               .catch(() => {});
           })
@@ -825,7 +825,7 @@ export class PatchGridRenderer {
         this.svg.selectAll('.race-header')
           .filter(function() { return select(this).datum() === race; })
           .style('opacity', 1)
-          .attr('transform', `translate(${x}, 50)`);
+          .attr('transform', `translate(${x}, 0)`);
       });
     }
   }
@@ -839,6 +839,8 @@ export class PatchGridRenderer {
     if (headersContainer.empty()) {
       headersContainer = this.svg.append('g').attr('class', 'headers-container');
     }
+    // Position the entire header group - children use Y=0 relative to this
+    headersContainer.attr('transform', `translate(0, ${layout.headerY})`);
 
     const availableWidth = this.svgWidth - layout.patchLabelWidth;
 
@@ -859,7 +861,7 @@ export class PatchGridRenderer {
 
     type SortOrder = 'newest' | 'oldest';
 
-    sortMerge.attr('transform', 'translate(10, 50)');
+    sortMerge.attr('transform', 'translate(10, 0)');
 
     sortEnter.append('rect').attr('class', 'sort-bg');
     sortEnter.append('text').attr('class', 'sort-text');
@@ -888,11 +890,11 @@ export class PatchGridRenderer {
 
     const raceEnter = raceHeaders.enter().append('g').attr('class', 'race-header');
 
-    // Position entering headers at their grid location
+    // Position entering headers at their grid location (Y=0 since container has the offset)
     raceEnter.attr('transform', (race: Race) => {
       const i = RACES.indexOf(race);
       const x = layout.patchLabelWidth + i * raceColumnWidth + raceColumnWidth / 2;
-      return `translate(${x}, 50)`;
+      return `translate(${x}, 0)`;
     });
 
     raceEnter.append('rect').attr('class', 'race-bg');
