@@ -226,7 +226,20 @@ function App() {
 
               return (
                 <>
-                  Showing {filteredPatches.length} patches from {startDate} to {endDate} covering{' '}
+                  Showing {filteredPatches.length} patches with{' '}
+                  {changeTypeOrder.map((type, i) => (
+                    <span key={type}>
+                      <span
+                        className="filter-chip"
+                        style={{ borderColor: changeTypeConfig[type].color, '--chip-color': changeTypeConfig[type].color } as React.CSSProperties}
+                      >
+                        {changeTypeConfig[type].label}
+                      </span>
+                      {i === 0 && ', '}
+                      {i === 1 && ', and '}
+                    </span>
+                  ))}
+                  {' '}balance changes from {startDate} to {endDate} covering{' '}
                   {selectedEra ? (
                     <button
                       className="filter-chip active"
@@ -258,20 +271,7 @@ function App() {
                   ) : (
                     <span>all races</span>
                   )}
-                  . It includes{' '}
-                  {changeTypeOrder.map((type, i) => (
-                    <span key={type}>
-                      <span
-                        className="filter-chip"
-                        style={{ borderColor: changeTypeConfig[type].color, '--chip-color': changeTypeConfig[type].color } as React.CSSProperties}
-                      >
-                        {changeTypeConfig[type].label}
-                      </span>
-                      {i === 0 && ', '}
-                      {i === 1 && ', and '}
-                    </span>
-                  ))}
-                  .
+                  . Hover and click to explore.
                 </>
               );
             })()}
