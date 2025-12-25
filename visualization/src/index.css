@@ -77,24 +77,15 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 6px;
+  gap: 4px;
   background: transparent;
   border: none;
-  padding: 8px 0;
+  padding: 4px 0;
   cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.timeline-segment:hover {
-  background: rgba(255, 255, 255, 0.03);
 }
 
 .timeline-segment.inactive {
   opacity: 0.35;
-}
-
-.timeline-segment.inactive:hover {
-  opacity: 0.6;
 }
 
 .segment-label {
@@ -103,62 +94,19 @@ body {
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: var(--segment-color);
-  padding-left: 6px;
-  transition: all 0.2s ease;
-}
-
-.timeline-segment.active .segment-label {
-  text-shadow: 0 0 10px var(--segment-color);
+  padding-left: 0;
 }
 
 .segment-track {
   display: flex;
   align-items: center;
   width: 100%;
-  height: 12px;
-  position: relative;
-}
-
-.segment-node {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  border: 2px solid var(--segment-color);
-  background: #0a0a0a;
-  flex-shrink: 0;
-  z-index: 2;
-  transition: all 0.2s ease;
-}
-
-.timeline-segment:hover .segment-node,
-.timeline-segment.active .segment-node {
-  background: var(--segment-color);
-  box-shadow: 0 0 8px var(--segment-color);
+  height: 4px;
 }
 
 .segment-line {
   flex: 1;
-  height: 2px;
-  background: var(--segment-color);
-  position: relative;
-  margin-left: -1px;
-  transition: all 0.2s ease;
-}
-
-.timeline-segment.active .segment-line {
-  box-shadow: 0 0 6px var(--segment-color);
-}
-
-.sub-era-tick {
-  position: absolute;
-  top: -4px;
-  width: 2px;
-  height: 10px;
-  background: rgba(255, 255, 255, 0.4);
-  cursor: help;
-}
-
-.sub-era-tick:hover {
+  height: 3px;
   background: var(--segment-color);
 }
 
@@ -168,43 +116,19 @@ body {
   border-top: 5px solid transparent;
   border-bottom: 5px solid transparent;
   border-left: 8px solid var(--segment-color);
-  margin-left: -1px;
-  transition: all 0.2s ease;
-}
-
-.timeline-segment.active .segment-arrow {
-  filter: drop-shadow(0 0 4px var(--segment-color));
 }
 
 .segment-date {
-  font-size: 11px;
+  font-size: 10px;
   font-family: ui-monospace, 'SF Mono', Monaco, monospace;
   color: #666;
-  padding-left: 2px;
-  transition: all 0.2s ease;
 }
 
-.timeline-segment:hover .segment-date,
-.timeline-segment.active .segment-date {
-  color: #999;
-}
-
-/* Filter Bar */
-.filter-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-top: 12px;
-}
-
-/* Filter Sentence */
-.filter-sentence {
+/* Filter Status */
+.filter-status {
   font-size: 14px;
-  font-weight: 400;
-  line-height: 2.2;
-  color: #999;
+  color: #888;
+  margin-top: 8px;
 }
 
 /* Filter chip */

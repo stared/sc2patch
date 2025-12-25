@@ -11,7 +11,6 @@ import {
   eraColors,
   eraOrder,
   raceColors,
-  filterableRaces,
   changeTypeConfig,
   changeTypeOrder,
   type Era
@@ -209,7 +208,6 @@ function App() {
               >
                 <div className="segment-label">{eraData[era].short}</div>
                 <div className="segment-track">
-                  <div className="segment-node" />
                   <div className="segment-line" />
                   {i === eraOrder.length - 1 && <div className="segment-arrow" />}
                 </div>
@@ -218,78 +216,42 @@ function App() {
             ))}
           </div>
 
-          {/* Filter Sentence */}
-          <div className="filter-bar">
-            <div className="filter-sentence">
-              {selectedEntityId ? (
-                <>
-                  Showing {filteredPatches.length} patches affecting
-                  <button
-                    className="filter-chip active"
-                    style={{ borderColor: raceColors[units.get(selectedEntityId)?.race || 'neutral'], '--chip-color': raceColors[units.get(selectedEntityId)?.race || 'neutral'] } as React.CSSProperties}
-                    onClick={() => setSelectedEntityId(null)}
-                    title="Clear filter"
-                  >
-                    {units.get(selectedEntityId)?.name || selectedEntityId} ×
-                  </button>
-                </>
-              ) : (
-                <>
-                  Showing {filteredPatches.length} patches
-                  {selectedEra && (
-                    <>
-                      {' '}from{' '}
-                      <button
-                        className="filter-chip active"
-                        style={{ borderColor: eraColors[selectedEra], '--chip-color': eraColors[selectedEra] } as React.CSSProperties}
-                        onClick={() => setSelectedEra(null)}
-                      >
-                        {eraData[selectedEra].name} ×
-                      </button>
-                    </>
-                  )}
-                  {' '}affecting{' '}
-                  {selectedRace ? (
-                    <button
-                      className="filter-chip active"
-                      style={{ borderColor: raceColors[selectedRace], '--chip-color': raceColors[selectedRace] } as React.CSSProperties}
-                      onClick={() => setSelectedRace(null)}
-                    >
-                      {selectedRace.charAt(0).toUpperCase() + selectedRace.slice(1)} ×
-                    </button>
-                  ) : (
-                    <>
-                      {filterableRaces.map((race, i) => (
-                        <span key={race}>
-                          <span
-                            className="filter-chip"
-                            style={{ borderColor: raceColors[race], '--chip-color': raceColors[race] } as React.CSSProperties}
-                          >
-                            {race.charAt(0).toUpperCase() + race.slice(1)}
-                          </span>
-                          {i === 0 && ', '}
-                          {i === 1 && ', and '}
-                        </span>
-                      ))}
-                    </>
-                  )}
-                  . It includes{' '}
-                  {changeTypeOrder.map((type, i) => (
-                    <span key={type}>
-                      <span
-                        className="filter-chip"
-                        style={{ borderColor: changeTypeConfig[type].color, '--chip-color': changeTypeConfig[type].color } as React.CSSProperties}
-                      >
-                        {changeTypeConfig[type].label}
-                      </span>
-                      {i === 0 && ', '}
-                      {i === 1 && ', and '}
-                    </span>
-                  ))}
-                  {' '}balance changes.
-                </>
-              )}
-            </div>
+          {/* Filter Status */}
+          <div className="filter-status">
+            Showing {filteredPatches.length} patches from Jul 2010 to Dec 2024 affecting{' '}
+            {selectedEntityId ? (
+              <button
+                className="filter-chip active"
+                style={{ borderColor: raceColors[units.get(selectedEntityId)?.race || 'neutral'], '--chip-color': raceColors[units.get(selectedEntityId)?.race || 'neutral'] } as React.CSSProperties}
+                onClick={() => setSelectedEntityId(null)}
+              >
+                {units.get(selectedEntityId)?.name || selectedEntityId} ×
+              </button>
+            ) : selectedRace ? (
+              <button
+                className="filter-chip active"
+                style={{ borderColor: raceColors[selectedRace], '--chip-color': raceColors[selectedRace] } as React.CSSProperties}
+                onClick={() => setSelectedRace(null)}
+              >
+                {selectedRace.charAt(0).toUpperCase() + selectedRace.slice(1)} ×
+              </button>
+            ) : (
+              <span>all races</span>
+            )}
+            . It includes{' '}
+            {changeTypeOrder.map((type, i) => (
+              <span key={type}>
+                <span
+                  className="filter-chip"
+                  style={{ borderColor: changeTypeConfig[type].color, '--chip-color': changeTypeConfig[type].color } as React.CSSProperties}
+                >
+                  {changeTypeConfig[type].label}
+                </span>
+                {i === 0 && ', '}
+                {i === 1 && ', and '}
+              </span>
+            ))}
+            .
           </div>
         </div>
       </header>
