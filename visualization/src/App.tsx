@@ -5,15 +5,16 @@ import { PatchGridRenderer } from './utils/patchGridRenderer';
 import {
   getChangeIndicator,
   getChangeColor,
+  getEraFromVersion,
   type ChangeType,
-  expansionData,
-  expansionColors,
-  expansionOrder,
+  eraData,
+  eraColors,
+  eraOrder,
   raceColors,
   filterableRaces,
   changeTypeConfig,
   changeTypeOrder,
-  type Expansion
+  type Era
 } from './utils/uxSettings';
 
 type SortOrder = 'newest' | 'oldest';
@@ -25,7 +26,7 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
   const [selectedRace, setSelectedRace] = useState<Race | null>(null);
-  const [selectedExpansion, setSelectedExpansion] = useState<Expansion | null>(null);
+  const [selectedEra, setSelectedEra] = useState<Era | null>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>('newest');
   const [tooltip, setTooltip] = useState<{
     entity: EntityWithPosition | null;
@@ -100,16 +101,6 @@ function App() {
     loadData();
   }, []);
 
-  // Helper to determine expansion from patch date
-  const getExpansionFromDate = (dateStr: string): Expansion => {
-    const date = new Date(dateStr);
-    const hotsRelease = new Date('2013-03-12');
-    const lotvRelease = new Date('2015-11-10');
-    if (date < hotsRelease) return 'wol';
-    if (date < lotvRelease) return 'hots';
-    return 'lotv';
-  };
-
   // Sort and filter patches
   const sortedAndFilteredPatches = (() => {
     let result = [...patches];
@@ -121,9 +112,9 @@ function App() {
       return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
     });
 
-    // Filter by expansion
-    if (selectedExpansion) {
-      result = result.filter(patch => getExpansionFromDate(patch.date) === selectedExpansion);
+    // Filter by era
+    if (selectedEra) {
+      result = result.filter(patch => getEraFromVersion(patch.version) === selectedEra);
     }
 
     // Filter by race
@@ -161,7 +152,7 @@ function App() {
       setSortOrder,
       setSelectedRace
     });
-  }, [sortedAndFilteredPatches, selectedEntityId, units, selectedRace, selectedExpansion, sortOrder, windowWidth]);
+  }, [sortedAndFilteredPatches, selectedEntityId, units, selectedRace, selectedEra, sortOrder, windowWidth]);
 
   if (loading) {
     return (
@@ -206,6 +197,27 @@ function App() {
             </div>
           </div>
 
+          {/* Era Timeline */}
+          <div className="era-timeline">
+            {eraOrder.map((era, i) => (
+              <button
+                key={era}
+                className={`timeline-segment ${selectedEra === era ? 'active' : ''} ${selectedEra && selectedEra !== era ? 'inactive' : ''}`}
+                style={{ '--segment-color': eraColors[era] } as React.CSSProperties}
+                onClick={() => setSelectedEra(selectedEra === era ? null : era)}
+                title={`${eraData[era].name} (${eraData[era].version})`}
+              >
+                <div className="segment-label">{eraData[era].short}</div>
+                <div className="segment-track">
+                  <div className="segment-node" />
+                  <div className="segment-line" />
+                  {i === eraOrder.length - 1 && <div className="segment-arrow" />}
+                </div>
+                <div className="segment-date">{eraData[era].releaseDate}</div>
+              </button>
+            ))}
+          </div>
+
           {/* Filter Sentence */}
           <div className="filter-bar">
             <div className="filter-sentence">
@@ -214,44 +226,54 @@ function App() {
                   Showing {filteredPatches.length} patches affecting
                   <button
                     className="filter-chip active"
+                    style={{ borderColor: raceColors[units.get(selectedEntityId)?.race || 'neutral'], '--chip-color': raceColors[units.get(selectedEntityId)?.race || 'neutral'] } as React.CSSProperties}
                     onClick={() => setSelectedEntityId(null)}
                     title="Clear filter"
                   >
-                    {units.get(selectedEntityId)?.name || selectedEntityId}
+                    {units.get(selectedEntityId)?.name || selectedEntityId} ×
                   </button>
                 </>
               ) : (
                 <>
-                  Showing {filteredPatches.length} patches from the{' '}
-                  {expansionOrder.map((exp, i) => (
-                    <span key={exp}>
+                  Showing {filteredPatches.length} patches
+                  {selectedEra && (
+                    <>
+                      {' '}from{' '}
                       <button
-                        className={`filter-chip ${selectedExpansion === exp ? 'active' : ''} ${selectedExpansion && selectedExpansion !== exp ? 'inactive' : ''}`}
-                        style={{ borderColor: expansionColors[exp], '--chip-color': expansionColors[exp] } as React.CSSProperties}
-                        onClick={() => setSelectedExpansion(selectedExpansion === exp ? null : exp)}
-                        title={`${expansionData[exp].name} (${expansionData[exp].patches} patches)`}
+                        className="filter-chip active"
+                        style={{ borderColor: eraColors[selectedEra], '--chip-color': eraColors[selectedEra] } as React.CSSProperties}
+                        onClick={() => setSelectedEra(null)}
                       >
-                        {expansionData[exp].name}
+                        {eraData[selectedEra].name} ×
                       </button>
-                      {i === 0 && ', '}
-                      {i === 1 && ', and '}
-                    </span>
-                  ))}
-                  {' '}expansions and the{' '}
-                  {filterableRaces.map((race, i) => (
-                    <span key={race}>
-                      <button
-                        className={`filter-chip ${selectedRace === race ? 'active' : ''} ${selectedRace && selectedRace !== race ? 'inactive' : ''}`}
-                        style={{ borderColor: raceColors[race], '--chip-color': raceColors[race] } as React.CSSProperties}
-                        onClick={() => setSelectedRace(selectedRace === race ? null : race)}
-                      >
-                        {race.charAt(0).toUpperCase() + race.slice(1)}
-                      </button>
-                      {i === 0 && ', '}
-                      {i === 1 && ', and '}
-                    </span>
-                  ))}
-                  {' '}races. It includes all unit{' '}
+                    </>
+                  )}
+                  {' '}affecting{' '}
+                  {selectedRace ? (
+                    <button
+                      className="filter-chip active"
+                      style={{ borderColor: raceColors[selectedRace], '--chip-color': raceColors[selectedRace] } as React.CSSProperties}
+                      onClick={() => setSelectedRace(null)}
+                    >
+                      {selectedRace.charAt(0).toUpperCase() + selectedRace.slice(1)} ×
+                    </button>
+                  ) : (
+                    <>
+                      {filterableRaces.map((race, i) => (
+                        <span key={race}>
+                          <span
+                            className="filter-chip"
+                            style={{ borderColor: raceColors[race], '--chip-color': raceColors[race] } as React.CSSProperties}
+                          >
+                            {race.charAt(0).toUpperCase() + race.slice(1)}
+                          </span>
+                          {i === 0 && ', '}
+                          {i === 1 && ', and '}
+                        </span>
+                      ))}
+                    </>
+                  )}
+                  . It includes{' '}
                   {changeTypeOrder.map((type, i) => (
                     <span key={type}>
                       <span

@@ -15,29 +15,50 @@ export const raceColors: Record<Race, string> = {
 
 export const filterableRaces: Array<Exclude<Race, 'neutral'>> = ['terran', 'zerg', 'protoss'];
 
-// Expansion colors and data
-// Expansions share colors with their featured race (by design, not duplication)
-export type Expansion = 'wol' | 'hots' | 'lotv';
+// Era colors and data
+// Each major version is its own era
+export type Era = 'wol' | 'hots' | 'lotv' | 'f2p' | 'anniversary';
 
-export const expansionColors: Record<Expansion, string> = {
+export const eraColors: Record<Era, string> = {
   wol: raceColors.terran,   // Wings of Liberty = Terran blue
   hots: raceColors.zerg,    // Heart of the Swarm = Zerg purple
-  lotv: raceColors.protoss  // Legacy of the Void = Protoss gold
+  lotv: raceColors.protoss, // Legacy of the Void = Protoss gold
+  f2p: '#C0A000',           // Free-to-Play = darker gold
+  anniversary: '#E8C500'    // 10th Anniversary = bright gold
 };
 
-export const expansionOrder: Expansion[] = ['wol', 'hots', 'lotv'];
+export const eraOrder: Era[] = ['wol', 'hots', 'lotv', 'f2p', 'anniversary'];
 
-export const expansionData: Record<Expansion, {
+export const eraData: Record<Era, {
   name: string;
   short: string;
-  patches: number;
-  percent: number;
+  version: string;
   releaseDate: string;
 }> = {
-  wol: { name: 'Wings of Liberty', short: 'WoL', patches: 8, percent: 13, releaseDate: 'Jul 2010' },
-  hots: { name: 'Heart of the Swarm', short: 'HotS', patches: 7, percent: 13, releaseDate: 'Mar 2013' },
-  lotv: { name: 'Legacy of the Void', short: 'LotV', patches: 27, percent: 74, releaseDate: 'Nov 2015' }
+  wol: { name: 'Wings of Liberty', short: 'WoL', version: '1.x', releaseDate: 'Jul 2010' },
+  hots: { name: 'Heart of the Swarm', short: 'HotS', version: '2.x', releaseDate: 'Mar 2013' },
+  lotv: { name: 'Legacy of the Void', short: 'LotV', version: '3.x', releaseDate: 'Nov 2015' },
+  f2p: { name: 'Free-to-Play', short: 'F2P', version: '4.x', releaseDate: 'Nov 2017' },
+  anniversary: { name: '10th Anniversary', short: '10th', version: '5.x', releaseDate: 'Jul 2020' }
 };
+
+// Map major version to era
+const versionToEra: Record<string, Era> = {
+  '1': 'wol',
+  '2': 'hots',
+  '3': 'lotv',
+  '4': 'f2p',
+  '5': 'anniversary'
+};
+
+export function getEraFromVersion(version: string): Era {
+  const major = version[0];
+  const era = versionToEra[major];
+  if (!era) {
+    throw new Error(`Unknown version major: ${major} (from version: ${version})`);
+  }
+  return era;
+}
 
 // Change type colors, labels, and indicators
 // Buff uses teal to avoid overlap with Terran blue
@@ -91,11 +112,4 @@ export function getChangeIndicator(changeType: ChangeType): string {
 
 export function getRaceColor(race: Race): string {
   return raceColors[race];
-}
-
-export function getExpansionFromVersion(version: string): Expansion {
-  const major = version[0];
-  if (major === '1') return 'wol';
-  if (major === '2') return 'hots';
-  return 'lotv';
 }
