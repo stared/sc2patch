@@ -869,7 +869,7 @@ export class PatchGridRenderer {
     sortMerge.select('.sort-bg')
       .attr('width', 90).attr('height', 24).attr('rx', 4)
       .style('fill', 'rgba(255, 255, 255, 0.03)')
-      .style('stroke', '#4a9eff').style('stroke-width', 1)
+      .style('stroke', 'rgba(255, 255, 255, 0.08)').style('stroke-width', 1)
       .style('cursor', 'pointer')
       .on('click', () => {
         if (this.isAnimating) return; // Block clicks during animation
@@ -880,7 +880,7 @@ export class PatchGridRenderer {
 
     sortMerge.select('.sort-text')
       .attr('x', 45).attr('y', 16).attr('text-anchor', 'middle')
-      .style('fill', '#4a9eff').style('font-size', '12px').style('font-weight', '600')
+      .style('fill', '#888').style('font-size', '12px').style('font-weight', '600')
       .style('cursor', 'pointer').style('pointer-events', 'none')
       .text(state.sortOrder === 'newest' ? '↓ Newest' : '↑ Oldest');
 
