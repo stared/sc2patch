@@ -916,7 +916,14 @@ export class PatchGridRenderer {
       .style('stroke-width', 1).style('cursor', 'pointer')
       .on('click', (_event, race) => {
         if (this.isAnimating) return; // Block clicks during animation
-        if (state.setSelectedRace) {
+        // If a unit is selected, deselect it and select this race
+        if (state.selectedEntityId) {
+          state.onEntitySelect(null);
+          if (state.setSelectedRace) {
+            state.setSelectedRace(race);
+          }
+        } else if (state.setSelectedRace) {
+          // Toggle race selection when no unit is selected
           state.setSelectedRace(state.selectedRace === race ? null : race);
         }
       });
