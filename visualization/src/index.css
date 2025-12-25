@@ -89,6 +89,14 @@ body {
   opacity: 0.35;
 }
 
+.timeline-segment:hover:not(.inactive):not(.active) {
+  filter: drop-shadow(0 0 12px var(--segment-color)) brightness(1.15);
+}
+
+.timeline-segment.active:hover {
+  filter: drop-shadow(0 0 5px var(--segment-color));
+}
+
 .segment-label {
   font-size: 12px;
   font-weight: 600;
@@ -478,6 +486,27 @@ button.filter-chip:hover, .filter-chip.active { color: var(--chip-color); backgr
   padding: 8px;
 }
 
+/* SVG header hover effects */
+svg .race-header {
+  transition: filter 0.15s ease;
+}
+
+svg .race-header:not(.active):hover {
+  filter: drop-shadow(0 0 12px var(--race-color, #888)) brightness(1.2);
+}
+
+svg .race-header.active:hover {
+  filter: drop-shadow(0 0 5px var(--race-color, #888));
+}
+
+svg .sort-control {
+  transition: filter 0.15s ease;
+}
+
+svg .sort-control:hover {
+  filter: drop-shadow(0 0 10px rgba(136, 136, 136, 0.8)) brightness(1.2);
+}
+
 .patch-row {
   display: grid;
   grid-template-columns: 120px repeat(4, 1fr);
@@ -538,6 +567,11 @@ button.filter-chip:hover, .filter-chip.active { color: var(--chip-color); backgr
   transform-style: preserve-3d;
 }
 
+/* SVG entity cells */
+.entity-cell-group {
+  cursor: pointer;
+}
+
 .entity-cell::before {
   content: '';
   position: absolute;
@@ -573,13 +607,14 @@ button.filter-chip:hover, .filter-chip.active { color: var(--chip-color); backgr
 }
 
 .entity-cell:hover {
-  box-shadow:
-    0 12px 28px rgba(74, 158, 255, 0.35),
-    0 6px 16px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+  filter: drop-shadow(0 0 16px var(--race-color, rgba(74, 158, 255, 0.8))) brightness(1.1);
   z-index: 10;
   transform: translateZ(20px);
+}
+
+/* SVG entity cells - filter only, no transform (D3 manages transforms) */
+.entity-cell-group:hover {
+  filter: drop-shadow(0 0 12px var(--glow-color, rgba(74, 158, 255, 0.8))) brightness(1.15);
 }
 
 .entity-cell:hover::before {

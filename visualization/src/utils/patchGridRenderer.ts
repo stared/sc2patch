@@ -333,7 +333,11 @@ export class PatchGridRenderer {
           const eg = enter.append('g')
             .attr('class', 'entity-cell-group')
             .attr('transform', d => `translate(${d.x}, ${d.y})`)
-            .style('opacity', d => d.animationGroup === 'FADE_IN' ? 0 : 1);
+            .style('opacity', d => d.animationGroup === 'FADE_IN' ? 0 : 1)
+            .style('--glow-color', d => {
+              const { status } = d.entity;
+              return status ? getChangeColor(status as ChangeType) : raceColors[(d.entity.race || 'neutral') as Race];
+            });
 
           eg.append('rect')
             .attr('width', layout.cellSize)
@@ -902,6 +906,11 @@ export class PatchGridRenderer {
     raceEnter.style('opacity', 1);
 
     const raceMerge = raceEnter.merge(raceHeaders);
+
+    // Set race color variable and active class for CSS hover effects
+    raceMerge
+      .style('--race-color', (race: Race) => raceColors[race])
+      .classed('active', (race: Race) => state.selectedRace === race || selectedUnitRace === race);
 
     raceMerge.select('.race-bg')
       .attr('x', -40).attr('width', 80).attr('height', 24).attr('rx', 4)
