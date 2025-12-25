@@ -32,6 +32,7 @@ interface RenderState {
   patches: ProcessedPatchData[];
   selectedEntityId: string | null;
   prevSelectedId: string | null;
+  prevSelectedRace: Race | null;
   onEntitySelect: (entityId: string | null) => void;
   setTooltip: (tooltip: { entity: EntityWithPosition | null; visible: boolean }) => void;
   unitsMap: Map<string, Unit>;
@@ -142,7 +143,12 @@ export class PatchGridRenderer {
     } else if (state.prevSelectedId !== null && state.selectedEntityId === null) {
       return 'DESELECTING';
     }
+    // Race changes without entity selection use IDLE but with transitions
     return 'IDLE';
+  }
+
+  private isRaceChanging(state: RenderState): boolean {
+    return state.prevSelectedRace !== state.selectedRace;
   }
 
   private calculateLayout(state: RenderState): LayoutData {
@@ -493,7 +499,7 @@ export class PatchGridRenderer {
     entities: Selection<SVGGElement, EntityItemWithAnimation, SVGGElement, unknown>,
     patches: Selection<SVGGElement, PatchRow, SVGGElement, unknown>,
     changes: Selection<SVGGElement, ChangeItem, SVGGElement, unknown>,
-    _state: RenderState
+    state: RenderState
   ): Promise<void> {
     switch (type) {
       case 'SELECTING':
@@ -501,7 +507,7 @@ export class PatchGridRenderer {
       case 'DESELECTING':
         return this.applyDeselectAnimation(entities, patches);
       case 'IDLE':
-        return this.applyIdleAnimation(entities, patches);
+        return this.applyIdleAnimation(entities, patches, state);
     }
   }
 
@@ -634,16 +640,70 @@ export class PatchGridRenderer {
 
   private async applyIdleAnimation(
     entities: Selection<SVGGElement, EntityItemWithAnimation, SVGGElement, unknown>,
-    patches: Selection<SVGGElement, PatchRow, SVGGElement, unknown>
+    patches: Selection<SVGGElement, PatchRow, SVGGElement, unknown>,
+    state: RenderState
   ): Promise<void> {
-    // For IDLE state (no selection change), just set positions immediately
-    entities
-      .style('opacity', 1)
-      .attr('transform', d => `translate(${d.x}, ${d.y})`);
+    const raceChanging = this.isRaceChanging(state);
+    const isSelectingRace = state.prevSelectedRace === null && state.selectedRace !== null;
+    const isDeselectingRace = state.prevSelectedRace !== null && state.selectedRace === null;
 
-    patches
-      .style('opacity', d => d.visible ? 1 : 0)
-      .attr('transform', d => `translate(0, ${d.y})`);
+    if (raceChanging) {
+      // When selecting race: fade out first, then move
+      if (isSelectingRace) {
+        // Fade out entities that will be hidden
+        await entities
+          .filter(d => !d.visible)
+          .transition('race-fade-out')
+          .duration(timing.fade)
+          .style('opacity', 0)
+          .end()
+          .catch(() => {});
+
+        // Move remaining entities
+        await entities
+          .filter(d => d.visible)
+          .transition('race-move')
+          .duration(timing.move)
+          .ease(easeCubicOut)
+          .attr('transform', d => `translate(${d.x}, ${d.y})`)
+          .end()
+          .catch(() => {});
+      }
+      // When deselecting race: move first, then fade in
+      else if (isDeselectingRace) {
+        // Move existing entities first
+        await entities
+          .transition('race-move')
+          .duration(timing.move)
+          .ease(easeCubicOut)
+          .attr('transform', d => `translate(${d.x}, ${d.y})`)
+          .end()
+          .catch(() => {});
+
+        // Then fade in new entities
+        await entities
+          .transition('race-fade-in')
+          .duration(timing.fade)
+          .style('opacity', 1)
+          .end()
+          .catch(() => {});
+      }
+
+      patches
+        .transition('race-patches')
+        .duration(timing.move)
+        .style('opacity', d => d.visible ? 1 : 0)
+        .attr('transform', d => `translate(0, ${d.y})`);
+    } else {
+      // No race change - set positions immediately
+      entities
+        .style('opacity', 1)
+        .attr('transform', d => `translate(${d.x}, ${d.y})`);
+
+      patches
+        .style('opacity', d => d.visible ? 1 : 0)
+        .attr('transform', d => `translate(0, ${d.y})`);
+    }
 
     return Promise.resolve();
   }
@@ -703,7 +763,9 @@ export class PatchGridRenderer {
     const raceHeaders = headersContainer.selectAll<SVGGElement, Race>('.race-header')
       .data(racesToShow, d => d);
 
-    // Detect if we're deselecting (going from 1 race to all races)
+    // Detect animation type for race headers
+    const isSelectingRace = state.prevSelectedRace === null && state.selectedRace !== null;
+    const isDeselectingRace = state.prevSelectedRace !== null && state.selectedRace === null;
     const isDeselecting = state.prevSelectedId && !state.selectedEntityId && !state.selectedRace;
 
     const raceEnter = raceHeaders.enter().append('g').attr('class', 'race-header');
@@ -718,16 +780,22 @@ export class PatchGridRenderer {
     raceEnter.append('rect').attr('class', 'race-bg');
     raceEnter.append('text').attr('class', 'race-text');
 
-    // Newly appearing headers fade in at their final position (no movement)
-    if (isDeselecting) {
+    // Newly appearing headers fade in after move completes (for race deselection)
+    if (isDeselecting || isDeselectingRace) {
       raceEnter.style('opacity', 0)
-        .transition().duration(timing.fade)
+        .transition()
+        .delay(timing.move)
+        .duration(timing.fade)
         .style('opacity', 1);
     }
 
     // Update all headers (existing ones will animate position changes)
+    // Sync with entity animation timing
+    const moveDelay = isSelectingRace ? timing.fade : 0;
     raceHeaders
-      .transition().duration(timing.move)
+      .transition()
+      .delay(moveDelay)
+      .duration(timing.move)
       .attr('transform', (race: Race) => {
         const i = RACES.indexOf(race);
         const x = (state.selectedRace || state.selectedEntityId)
@@ -757,10 +825,7 @@ export class PatchGridRenderer {
 
     raceMerge.select('.race-text')
       .attr('text-anchor', 'middle').attr('y', 16)
-      .style('fill', (race) => {
-        const isActive = state.selectedRace === race || selectedUnitRace === race;
-        return isActive ? raceColors[race] : '#999';
-      })
+      .style('fill', (race) => raceColors[race])
       .style('font-size', '12px')
       .style('font-weight', (race) => {
         const isActive = state.selectedRace === race || selectedUnitRace === race;

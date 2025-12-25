@@ -35,6 +35,7 @@ function App() {
   const svgRef = useRef<SVGSVGElement>(null);
   const rendererRef = useRef<PatchGridRenderer | null>(null);
   const prevSelectedIdRef = useRef<string | null>(null);
+  const prevSelectedRaceRef = useRef<Race | null>(null);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   // Read URL on mount
@@ -138,11 +139,14 @@ function App() {
 
     const prevSelectedId = prevSelectedIdRef.current;
     prevSelectedIdRef.current = selectedEntityId;
+    const prevSelectedRace = prevSelectedRaceRef.current;
+    prevSelectedRaceRef.current = selectedRace;
 
     rendererRef.current.render({
       patches: sortedAndFilteredPatches,
       selectedEntityId,
       prevSelectedId,
+      prevSelectedRace,
       onEntitySelect: setSelectedEntityId,
       setTooltip,
       unitsMap: units,
