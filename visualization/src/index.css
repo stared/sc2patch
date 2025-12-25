@@ -82,6 +82,7 @@ body {
   border: none;
   padding: 4px 0;
   cursor: pointer;
+  position: relative;
 }
 
 .timeline-segment.inactive {
@@ -89,12 +90,11 @@ body {
 }
 
 .segment-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
   text-transform: uppercase;
   color: var(--segment-color);
-  padding-left: 0;
 }
 
 .segment-track {
@@ -110,18 +110,15 @@ body {
   background: var(--segment-color);
 }
 
-.segment-arrow {
-  width: 0;
-  height: 0;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-left: 8px solid var(--segment-color);
+.segment-date {
+  font-size: 12px;
+  color: #888;
 }
 
-.segment-date {
-  font-size: 10px;
-  font-family: ui-monospace, 'SF Mono', Monaco, monospace;
-  color: #666;
+.segment-date-now {
+  position: absolute;
+  right: 0;
+  bottom: 4px;
 }
 
 /* Filter Status */
