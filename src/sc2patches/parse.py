@@ -160,7 +160,7 @@ Return ONLY valid JSON matching the example format. Include ALL required fields.
             headers={
                 "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",
-                "HTTP-Referer": "https://github.com/pmigdal/sc2patches",
+                "HTTP-Referer": "https://github.com/stared/sc2-balance-timeline",
                 "X-Title": "SC2 Patch Parser",
             },
             json={
