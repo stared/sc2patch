@@ -61,20 +61,20 @@ export function getEraFromVersion(version: string): Era {
 }
 
 // Change type colors, labels, and indicators
-// Colors chosen for accessibility (colorblind-friendly) and visibility on dark background
+// Palette 1: High Contrast - safest and most readable
 export const changeTypeConfig = {
   buff: {
-    color: '#00E676',  // Vivid Malachite - accessible, distinct from race colors
+    color: '#00E676',  // Bright Green - clear positive
     label: 'buffs',
     indicator: '+ '
   },
   nerf: {
-    color: '#FF3D00',  // Alert Orange-Red - high visibility warning
+    color: '#FF1744',  // Cold Red-Pink - distinct from orange/gold
     label: 'nerfs',
     indicator: '− '
   },
   mixed: {
-    color: '#ff9933',  // Orange - distinct from buff green and nerf red
+    color: '#ff9933',  // Original Orange - distinct from cold red nerf
     label: 'mixed',
     indicator: '± '
   }
