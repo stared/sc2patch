@@ -7,9 +7,9 @@ import type { Race } from '../types';
 
 // Race colors and order (T, Z, P - standard SC2 order)
 export const raceColors: Record<Race, string> = {
-  terran: '#4a9eff',
-  zerg: '#A335EE',
-  protoss: '#FFD700',
+  terran: '#4a9eff',    // Marine Blue
+  zerg: '#C46CFF',      // Swarm Purple (lighter for visibility)
+  protoss: '#E6B800',   // Aiur Gold (slightly darker to separate from mixed)
   neutral: '#888'
 };
 
@@ -23,8 +23,8 @@ export const eraColors: Record<Era, string> = {
   wol: raceColors.terran,   // Wings of Liberty = Terran blue
   hots: raceColors.zerg,    // Heart of the Swarm = Zerg purple
   lotv: raceColors.protoss, // Legacy of the Void = Protoss gold
-  f2p: '#C0A000',           // Free-to-Play = darker gold
-  anniversary: '#E8C500'    // 10th Anniversary = bright gold
+  f2p: '#CFD8DC',           // Free-to-Play = Platinum/Silver (accessible era)
+  anniversary: '#26A69A'    // 10th Anniversary = Pacific Teal (modern, distinct from silver)
 };
 
 export const eraOrder: Era[] = ['wol', 'hots', 'lotv', 'f2p', 'anniversary'];
@@ -61,20 +61,20 @@ export function getEraFromVersion(version: string): Era {
 }
 
 // Change type colors, labels, and indicators
-// Buff uses teal to avoid overlap with Terran blue
+// Colors chosen for accessibility (colorblind-friendly) and visibility on dark background
 export const changeTypeConfig = {
   buff: {
-    color: '#00D18C',  // Teal - distinct from race/expansion colors
+    color: '#00E676',  // Vivid Malachite - accessible, distinct from race colors
     label: 'buffs',
     indicator: '+ '
   },
   nerf: {
-    color: '#ff4444',
+    color: '#FF3D00',  // Alert Orange-Red - high visibility warning
     label: 'nerfs',
     indicator: '− '
   },
   mixed: {
-    color: '#ff9933',
+    color: '#ff9933',  // Orange - distinct from buff green and nerf red
     label: 'mixed',
     indicator: '± '
   }
