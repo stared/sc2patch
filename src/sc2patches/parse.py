@@ -176,14 +176,49 @@ For each changed entity (unit, building, upgrade, ability):
      Before: +5 to all. After: +5 to armored, +3 to non-armored = worse overall
    - Adding a bonus type while reducing base is a NERF because effectiveness is restricted
 
-UPGRADE-TO-UNIT MAPPINGS:
-Assign upgrades/abilities to the UNIT they affect, NOT as separate entities:
-- Stimpack → terran-marine AND terran-marauder (list change under BOTH)
-- Charge → protoss-zealot
-- Blink → protoss-stalker
-- Grooved Spines → zerg-hydralisk
-- Metabolic Boost → zerg-zergling
-- etc.
+UPGRADE PLACEMENT RULES:
+
+1. GENERAL Upgrades (affects 3+ unit types) → attribute to RESEARCH BUILDING:
+   - Infantry Weapons/Armor → terran-engineering_bay
+   - Vehicle/Ship Weapons/Armor → terran-armory
+   - Ground Weapons/Armor/Shields → protoss-forge
+   - Air Weapons/Armor → protoss-cybernetics_core
+   - Melee/Missile/Carapace → zerg-evolution_chamber
+   - Flyer Attack/Carapace → zerg-spire
+
+2. SPECIFIC Upgrades (affects 1-2 units) → attribute to the UNIT:
+   Include both STAT changes AND RESEARCH cost/time changes on the unit.
+   - Stimpack → terran-marine AND terran-marauder
+   - Charge → protoss-zealot
+   - Blink → protoss-stalker
+   - Grooved Spines → zerg-hydralisk
+   - Metabolic Boost → zerg-zergling
+   - Anabolic Synthesis → zerg-ultralisk
+
+3. SUMMONED UNITS → attribute to the CASTER:
+   - Interceptor stats/build time → protoss-carrier
+   - Locust stats → zerg-swarm_host
+   - Auto-Turret stats → terran-raven
+   - Broodling stats → zerg-brood_lord
+
+NEUTRAL ENTITIES - Don't forget map objects:
+- neutral-vespene_geyser (footprint, visibility, yield changes)
+- neutral-mineral_field (health, collision, harvest rate)
+- neutral-rocks (armor, health changes)
+- neutral-collapsible_rock_tower
+- neutral-inhibitor_zone_generator
+- neutral-acceleration_zone_generator
+- neutral-xelnaga_tower
+
+COMMONLY MISSED UNITS - check these explicitly:
+- protoss-tempest (Tectonic Destabilizers upgrade)
+- protoss-mothership (Strategic Recall, Mass Recall, Time Warp)
+- terran-battlecruiser (Tactical Jump, Yamato Cannon)
+- zerg-viper (Parasitic Bomb, Abduct)
+- zerg-queen (Transfuse, Creep Tumor)
+
+VISUAL CHANGES: Only include if they affect player reaction or clarity
+(e.g., "targeting line more visible", "EMP radius indicator"). Ignore cosmetic-only changes.
 
 VALID ENTITY IDS - You MUST use ONLY these exact IDs (no others allowed):
 {valid_ids_text}
