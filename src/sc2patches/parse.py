@@ -220,8 +220,10 @@ COMMONLY MISSED UNITS - check these explicitly:
 VISUAL CHANGES: Only include if they affect player reaction or clarity
 (e.g., "targeting line more visible", "EMP radius indicator"). Ignore cosmetic-only changes.
 
-VALID ENTITY IDS - You MUST use ONLY these exact IDs (no others allowed):
+VALID ENTITY IDS - You MUST use ONLY these exact IDs:
 {valid_ids_text}
+
+If an entity cannot be mapped to any ID above (e.g., new terrain element, new unit), use "unknown" as entity_id.
 
 MORPHED/TOGGLE MODES - use the BASE unit ID (modes are NOT separate entities):
 - Transport Overlord → zerg-overlord

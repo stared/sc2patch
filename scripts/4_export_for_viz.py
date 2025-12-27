@@ -134,6 +134,20 @@ def main() -> None:
     # Sort by date
     patches.sort(key=lambda p: p.date)
 
+    # Check for "unknown" entities and warn
+    unknown_entries = []
+    for patch in patches:
+        for entity in patch.entities:
+            if entity.entity_id == "unknown":
+                for change in entity.changes:
+                    unknown_entries.append((patch.version, change.raw_text))
+
+    if unknown_entries:
+        console.print(f"\n[yellow]⚠ WARNING: Found {len(unknown_entries)} 'unknown' entities:[/yellow]")
+        for version, text in unknown_entries:
+            console.print(f"[yellow]  {version}: {text[:60]}...[/yellow]")
+        console.print("[yellow]  → Add these to units.json with proper entity_ids[/yellow]\n")
+
     # Create combined data
     data = PatchesData.create(patches=patches, units=units)
 

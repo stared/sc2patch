@@ -6154,12 +6154,6 @@
       "type": "unit"
     },
     {
-      "id": "protoss-anion_pulse_crystals",
-      "name": "Anion Pulse-Crystals",
-      "race": "protoss",
-      "type": "upgrade"
-    },
-    {
       "id": "protoss-archon",
       "name": "Archon",
       "race": "protoss",
@@ -6172,34 +6166,10 @@
       "type": "building"
     },
     {
-      "id": "protoss-battery_overcharge",
-      "name": "Battery Overcharge",
-      "race": "protoss",
-      "type": "ability"
-    },
-    {
-      "id": "protoss-blink",
-      "name": "Blink",
-      "race": "protoss",
-      "type": "upgrade"
-    },
-    {
       "id": "protoss-carrier",
       "name": "Carrier",
       "race": "protoss",
       "type": "unit"
-    },
-    {
-      "id": "protoss-charge",
-      "name": "Charge",
-      "race": "protoss",
-      "type": "upgrade"
-    },
-    {
-      "id": "protoss-chrono_boost",
-      "name": "Chrono Boost",
-      "race": "protoss",
-      "type": "ability"
     },
     {
       "id": "protoss-colossus",
@@ -6232,28 +6202,10 @@
       "type": "unit"
     },
     {
-      "id": "protoss-energy_recharge",
-      "name": "Energy Recharge",
-      "race": "protoss",
-      "type": "ability"
-    },
-    {
-      "id": "protoss-extended_thermal_lance",
-      "name": "Extended Thermal Lance",
-      "race": "protoss",
-      "type": "upgrade"
-    },
-    {
       "id": "protoss-fleet_beacon",
       "name": "Fleet Beacon",
       "race": "protoss",
       "type": "building"
-    },
-    {
-      "id": "protoss-flux_vanes",
-      "name": "Flux Vanes",
-      "race": "protoss",
-      "type": "upgrade"
     },
     {
       "id": "protoss-forge",
@@ -6268,36 +6220,6 @@
       "type": "building"
     },
     {
-      "id": "protoss-graviton_catapult",
-      "name": "Graviton Catapult",
-      "race": "protoss",
-      "type": "upgrade"
-    },
-    {
-      "id": "protoss-ground_armor_level_2",
-      "name": "Ground Armor Level 2",
-      "race": "protoss",
-      "type": "upgrade"
-    },
-    {
-      "id": "protoss-ground_armor_level_3",
-      "name": "Ground Armor Level 3",
-      "race": "protoss",
-      "type": "upgrade"
-    },
-    {
-      "id": "protoss-ground_weapons_level_2",
-      "name": "Ground Weapons Level 2",
-      "race": "protoss",
-      "type": "upgrade"
-    },
-    {
-      "id": "protoss-ground_weapons_level_3",
-      "name": "Ground Weapons Level 3",
-      "race": "protoss",
-      "type": "upgrade"
-    },
-    {
       "id": "protoss-high_templar",
       "name": "High Templar",
       "race": "protoss",
@@ -6308,12 +6230,6 @@
       "name": "Immortal",
       "race": "protoss",
       "type": "unit"
-    },
-    {
-      "id": "protoss-mass_recall",
-      "name": "Mass Recall",
-      "race": "protoss",
-      "type": "ability"
     },
     {
       "id": "protoss-mothership",
@@ -6364,22 +6280,10 @@
       "type": "unit"
     },
     {
-      "id": "protoss-psionic_storm",
-      "name": "Psionic Storm",
-      "race": "protoss",
-      "type": "ability"
-    },
-    {
       "id": "protoss-pylon",
       "name": "Pylon",
       "race": "protoss",
       "type": "building"
-    },
-    {
-      "id": "protoss-resonating_glaives",
-      "name": "Resonating Glaives",
-      "race": "protoss",
-      "type": "upgrade"
     },
     {
       "id": "protoss-robotics_bay",
@@ -6400,34 +6304,10 @@
       "type": "unit"
     },
     {
-      "id": "protoss-shadow_stride",
-      "name": "Shadow Stride",
-      "race": "protoss",
-      "type": "upgrade"
-    },
-    {
       "id": "protoss-shield_battery",
       "name": "Shield Battery",
       "race": "protoss",
       "type": "building"
-    },
-    {
-      "id": "protoss-shields_level_1",
-      "name": "Shields Level 1",
-      "race": "protoss",
-      "type": "upgrade"
-    },
-    {
-      "id": "protoss-shields_level_2",
-      "name": "Shields Level 2",
-      "race": "protoss",
-      "type": "upgrade"
-    },
-    {
-      "id": "protoss-shields_level_3",
-      "name": "Shields Level 3",
-      "race": "protoss",
-      "type": "upgrade"
     },
     {
       "id": "protoss-stalker",
@@ -6440,12 +6320,6 @@
       "name": "Stargate",
       "race": "protoss",
       "type": "building"
-    },
-    {
-      "id": "protoss-strategic_recall",
-      "name": "Strategic Recall",
-      "race": "protoss",
-      "type": "ability"
     },
     {
       "id": "protoss-tempest",
@@ -6526,40 +6400,16 @@
       "type": "unit"
     },
     {
-      "id": "terran-combat_shield",
-      "name": "Combat Shield",
-      "race": "terran",
-      "type": "upgrade"
-    },
-    {
       "id": "terran-command_center",
       "name": "Command Center",
       "race": "terran",
       "type": "building"
     },
     {
-      "id": "terran-concussive_shells",
-      "name": "Concussive Shells",
-      "race": "terran",
-      "type": "upgrade"
-    },
-    {
-      "id": "terran-corvid_reactor",
-      "name": "Corvid Reactor",
-      "race": "terran",
-      "type": "upgrade"
-    },
-    {
       "id": "terran-cyclone",
       "name": "Cyclone",
       "race": "terran",
       "type": "unit"
-    },
-    {
-      "id": "terran-drilling_claws",
-      "name": "Drilling Claws",
-      "race": "terran",
-      "type": "upgrade"
     },
     {
       "id": "terran-engineering_bay",
@@ -6610,34 +6460,10 @@
       "type": "unit"
     },
     {
-      "id": "terran-hi_sec_auto_tracking",
-      "name": "Hi-Sec Auto Tracking",
-      "race": "terran",
-      "type": "upgrade"
-    },
-    {
-      "id": "terran-hyperflight_rotors",
-      "name": "Hyperflight Rotors",
-      "race": "terran",
-      "type": "upgrade"
-    },
-    {
-      "id": "terran-infernal_pre_igniter",
-      "name": "Infernal Pre-Igniter",
-      "race": "terran",
-      "type": "upgrade"
-    },
-    {
       "id": "terran-liberator",
       "name": "Liberator",
       "race": "terran",
       "type": "unit"
-    },
-    {
-      "id": "terran-mag_field_accelerators",
-      "name": "Mag-Field Accelerators",
-      "race": "terran",
-      "type": "upgrade"
     },
     {
       "id": "terran-mag_field_launchers",
@@ -6682,12 +6508,6 @@
       "type": "unit"
     },
     {
-      "id": "terran-neosteel_frame",
-      "name": "Neosteel Frame",
-      "race": "terran",
-      "type": "upgrade"
-    },
-    {
       "id": "terran-orbital_command",
       "name": "Orbital Command",
       "race": "terran",
@@ -6698,12 +6518,6 @@
       "name": "Orbital Command Center",
       "race": "terran",
       "type": "building"
-    },
-    {
-      "id": "terran-personal_cloaking",
-      "name": "Personal Cloaking",
-      "race": "terran",
-      "type": "upgrade"
     },
     {
       "id": "terran-planetary_fortress",
@@ -6760,22 +6574,10 @@
       "type": "unit"
     },
     {
-      "id": "terran-smart_servos",
-      "name": "Smart Servos",
-      "race": "terran",
-      "type": "upgrade"
-    },
-    {
       "id": "terran-starport",
       "name": "Starport",
       "race": "terran",
       "type": "building"
-    },
-    {
-      "id": "terran-stimpack",
-      "name": "Stimpack",
-      "race": "terran",
-      "type": "upgrade"
     },
     {
       "id": "terran-supply_depot",
@@ -6808,22 +6610,16 @@
       "type": "unit"
     },
     {
-      "id": "zerg-adrenal_glands",
-      "name": "Adrenal Glands",
-      "race": "zerg",
-      "type": "upgrade"
+      "id": "unknown",
+      "name": "Unknown Entity",
+      "race": "neutral",
+      "type": "unknown"
     },
     {
       "id": "zerg-all_units",
       "name": "All Units",
       "race": "zerg",
       "type": "unit"
-    },
-    {
-      "id": "zerg-anabolic_synthesis",
-      "name": "Anabolic Synthesis",
-      "race": "zerg",
-      "type": "upgrade"
     },
     {
       "id": "zerg-baneling",
@@ -6850,34 +6646,10 @@
       "type": "unit"
     },
     {
-      "id": "zerg-centrifugal_hooks",
-      "name": "Centrifugal Hooks",
-      "race": "zerg",
-      "type": "upgrade"
-    },
-    {
-      "id": "zerg-chitinous_plating",
-      "name": "Chitinous Plating",
-      "race": "zerg",
-      "type": "upgrade"
-    },
-    {
       "id": "zerg-corruptor",
       "name": "Corruptor",
       "race": "zerg",
       "type": "unit"
-    },
-    {
-      "id": "zerg-creep",
-      "name": "Creep",
-      "race": "zerg",
-      "type": "mechanic"
-    },
-    {
-      "id": "zerg-creep_spread",
-      "name": "Creep Spread",
-      "race": "zerg",
-      "type": "ability"
     },
     {
       "id": "zerg-creep_tumor",
@@ -6904,12 +6676,6 @@
       "type": "building"
     },
     {
-      "id": "zerg-evolve_grooved_spines",
-      "name": "Evolve Grooved Spines",
-      "race": "zerg",
-      "type": "upgrade"
-    },
-    {
       "id": "zerg-extractor",
       "name": "Extractor",
       "race": "zerg",
@@ -6922,22 +6688,10 @@
       "type": "unit"
     },
     {
-      "id": "zerg-glial_reconstitution",
-      "name": "Glial Reconstitution",
-      "race": "zerg",
-      "type": "upgrade"
-    },
-    {
       "id": "zerg-greater_spire",
       "name": "Greater Spire",
       "race": "zerg",
       "type": "building"
-    },
-    {
-      "id": "zerg-grooved_spines",
-      "name": "Grooved Spines",
-      "race": "zerg",
-      "type": "upgrade"
     },
     {
       "id": "zerg-hatchery",
@@ -7000,24 +6754,6 @@
       "type": "building"
     },
     {
-      "id": "zerg-metabolic_boost",
-      "name": "Metabolic Boost",
-      "race": "zerg",
-      "type": "upgrade"
-    },
-    {
-      "id": "zerg-microbial_shroud",
-      "name": "Microbial Shroud",
-      "race": "zerg",
-      "type": "ability"
-    },
-    {
-      "id": "zerg-muscular_augments",
-      "name": "Muscular Augments",
-      "race": "zerg",
-      "type": "upgrade"
-    },
-    {
       "id": "zerg-mutalisk",
       "name": "Mutalisk",
       "race": "zerg",
@@ -7054,12 +6790,6 @@
       "type": "unit"
     },
     {
-      "id": "zerg-pneumatized_carapace",
-      "name": "Pneumatized Carapace",
-      "race": "zerg",
-      "type": "upgrade"
-    },
-    {
       "id": "zerg-queen",
       "name": "Queen",
       "race": "zerg",
@@ -7082,12 +6812,6 @@
       "name": "Roach Warren",
       "race": "zerg",
       "type": "building"
-    },
-    {
-      "id": "zerg-spawn_larva",
-      "name": "Spawn Larva",
-      "race": "zerg",
-      "type": "ability"
     },
     {
       "id": "zerg-spawn_locusts",
@@ -7126,18 +6850,6 @@
       "type": "unit"
     },
     {
-      "id": "zerg-transfusion",
-      "name": "Transfusion",
-      "race": "zerg",
-      "type": "ability"
-    },
-    {
-      "id": "zerg-tunneling_claws",
-      "name": "Tunneling Claws",
-      "race": "zerg",
-      "type": "upgrade"
-    },
-    {
       "id": "zerg-ultralisk",
       "name": "Ultralisk",
       "race": "zerg",
@@ -7162,5 +6874,5 @@
       "type": "unit"
     }
   ],
-  "generated_at": "2025-12-27T17:25:22.261405"
+  "generated_at": "2025-12-27T17:41:13.850182"
 }
