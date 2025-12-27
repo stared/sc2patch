@@ -200,6 +200,7 @@ UPGRADE PLACEMENT RULES:
    - Locust stats → zerg-swarm_host
    - Auto-Turret stats → terran-raven
    - Broodling stats → zerg-brood_lord
+   - Creep Tumor stats → zerg-queen
 
 NEUTRAL ENTITIES - Don't forget map objects:
 - neutral-vespene_geyser (footprint, visibility, yield changes)

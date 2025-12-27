@@ -570,12 +570,6 @@
     "type": "unit"
   },
   {
-    "id": "zerg-creep_tumor",
-    "name": "Creep Tumor",
-    "race": "zerg",
-    "type": "building"
-  },
-  {
     "id": "zerg-drone",
     "name": "Drone",
     "race": "zerg",

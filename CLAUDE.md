@@ -24,6 +24,14 @@
 - Check actual files, don't guess or assume
 - Avoid multiple fallback patterns - they hide real problems
 
+## DATA VERIFICATION
+
+- **Don't use grep for JSON verification** - unreliable (misses variations, escaping issues)
+- Always use Python scripts to load and inspect JSON data properly
+- Use Gemini 3 Pro or Gemini Consultant to analyze and verify data
+- Example - BAD: `grep "creep_tumor" data/processed/patches/*.json`
+- Example - GOOD: Load all JSON files with Python, iterate and check with Gemini
+
 ## VERIFY ALL LINKS
 
 - When adding any URL or link, ALWAYS verify it exists and has expected content
@@ -151,7 +159,7 @@ All patches use this JSON structure:
 - Rich console for all user-facing output
 - Run Python with `uv`, TypeScript with `pnpm`
 - Hard validation: fail fast with clear errors, never silent failures
-- Do not commit without an explicit confirmation. Ask for it.
+- **ALWAYS ASK before committing** - never commit without explicit user confirmation
 - When needed, manually check Blizzard websites or Liqudidpedia, e.g. https://liquipedia.net/starcraft2/Units_(Legacy_of_the_Void) and its pages, e.g. https://liquipedia.net/starcraft2/Factory_(Legacy_of_the_Void), https://liquipedia.net/starcraft2/Stalker_(Legacy_of_the_Void) or https://liquipedia.net/starcraft2/Chitinous_Plating (to show you patters for buildings, units, upgrades). Useful websites: https://liquipedia.net/starcraft2/Upgrades and for patches - https://liquipedia.net/starcraft2/Patches.
 
 ## Visualization Structure
