@@ -1,35 +1,276 @@
 [
-  "https://news.blizzard.com/en-us/article/24225313/starcraft-ii-5-0-15-patch-notes",
-  "https://news.blizzard.com/en-us/article/24162754/starcraft-ii-5-0-14-patch-notes",
-  "https://news.blizzard.com/en-us/article/24078322/starcraft-ii-5-0-13-patch-notes",
-  "https://news.blizzard.com/en-us/starcraft2/24009150/starcraft-ii-5-0-12-patch-notes",
-  "https://news.blizzard.com/en-us/article/23893118/starcraft-ii-5-0-11-patch-notes",
-  "https://news.blizzard.com/en-us/article/23442717/starcraft-ii-4-12-0-patch-notes",
-  "https://news.blizzard.com/en-us/article/23227811/starcraft-ii-4-11-0-patch-notes",
-  "https://news.blizzard.com/en-us/article/23188507/starcraft-ii-4-10-4-patch-notes",
-  "https://news.blizzard.com/en-us/article/22933133/starcraft-ii-4-8-4-patch-notes",
-  "https://news.blizzard.com/en-us/article/22871519/starcraft-ii-4-8-2-patch-notes",
-  "https://news.blizzard.com/en-us/starcraft2/22771167/starcraft-ii-4-7-1-patch-notes",
-  "https://news.blizzard.com/en-us/article/22764996/starcraft-ii-4-7-0-patch-notes",
-  "https://news.blizzard.com/en-us/starcraft2/22492977/starcraft-ii-4-6-1-patch-notes",
-  "https://news.blizzard.com/en-us/article/22023343/starcraft-ii-4-5-0-patch-notes",
-  "https://news.blizzard.com/en-us/starcraft2/21870976/starcraft-ii-4-4-0-patch-notes",
-  "https://news.blizzard.com/en-us/starcraft2/21785907/starcraft-ii-balance-update-may-15-2018",
-  "https://news.blizzard.com/en-us/article/21728663/starcraft-ii-4-3-2-patch-notes",
-  "https://news.blizzard.com/en-us/starcraft2/21700683/starcraft-ii-4-2-4-patch-notes",
-  "https://news.blizzard.com/en-us/article/21647153/starcraft-4-2-2-patch-notes",
-  "https://news.blizzard.com/en-us/starcraft2/21313391/starcraft-4-1-4-patch-notes",
-  "https://news.blizzard.com/en-us/starcraft2/21183638/starcraft-ii-4-0-patch-notes",
-  "https://news.blizzard.com/en-us/starcraft2/20799759/starcraft-ii-legacy-of-the-void-3-14-0-patch-notes",
-  "https://news.blizzard.com/en-gb/article/20721907/starcraft-ii-legacy-of-the-void-3-13-0-patch-notes",
-  "https://news.blizzard.com/en-us/article/20481178/starcraft-ii-legacy-of-the-void-3-10-patch-notes",
-  "https://news.blizzard.com/en-gb/starcraft2/20399161/legacy-of-the-void-balance-update-december-8-2016",
-  "https://news.blizzard.com/en-us/starcraft2/20372512/starcraft-ii-legacy-of-the-void-3-8-0-patch-notes",
-  "https://news.blizzard.com/en-gb/article/20118329/starcraft-ii-legacy-of-the-void-3-3-0-patch-notes",
-  "https://news.blizzard.com/en-us/article/20166144/starcraft-ii-legacy-of-the-void-3-4-0-patch-notes",
-  "https://news.blizzard.com/en-us/starcraft2/20012086/legacy-of-the-void-balance-update-january-29-2016",
-  "https://news.blizzard.com/en-us/starcraft2/18446033/starcraft-ii-2-1-9-patch-notes",
-  "https://news.blizzard.com/en-us/starcraft2/9096527/starcraft-ii-patch-2-0-8-notes",
-  "https://news.blizzard.com/en-gb/starcraft2/10000722/patch-1-1-3-is-live",
-  "https://news.blizzard.com/en-us/starcraft2/2053470/patch-1-2-0-now-live"
+  {
+    "version": "5.0.15",
+    "url": "https://news.blizzard.com/en-us/article/24225313/starcraft-ii-5-0-15-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_5.0.15"
+  },
+  {
+    "version": "5.0.14",
+    "url": "https://news.blizzard.com/en-us/article/24162754/starcraft-ii-5-0-14-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_5.0.14"
+  },
+  {
+    "version": "5.0.13",
+    "url": "https://news.blizzard.com/en-us/article/24078322/starcraft-ii-5-0-13-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_5.0.13"
+  },
+  {
+    "version": "5.0.12",
+    "url": "https://news.blizzard.com/en-us/starcraft2/24009150/starcraft-ii-5-0-12-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_5.0.12"
+  },
+  {
+    "version": "5.0.11",
+    "url": "https://news.blizzard.com/en-us/article/23893118/starcraft-ii-5-0-11-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_5.0.11"
+  },
+  {
+    "version": "5.0.9",
+    "url": "https://news.blizzard.com/en-us/starcraft2/23662498/starcraft-ii-5-0-9-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_5.0.9"
+  },
+  {
+    "version": "5.0.2",
+    "url": "https://news.blizzard.com/en-us/starcraft2/23477299/starcraft-ii-5-0-2-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_5.0.2"
+  },
+  {
+    "version": "4.12.0",
+    "url": "https://news.blizzard.com/en-us/article/23442717/starcraft-ii-4-12-0-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.12.0"
+  },
+  {
+    "version": "4.11.3",
+    "url": "https://news.blizzard.com/en-us/starcraft2/23260117/starcraft-ii-4-11-3-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.11.3"
+  },
+  {
+    "version": "4.11.0",
+    "url": "https://news.blizzard.com/en-us/article/23227811/starcraft-ii-4-11-0-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.11.0"
+  },
+  {
+    "version": "4.10.4",
+    "url": "https://news.blizzard.com/en-us/article/23188507/starcraft-ii-4-10-4-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.10.4"
+  },
+  {
+    "version": "4.8.3",
+    "url": "https://news.blizzard.com/en-us/starcraft2/22933133/starcraft-ii-4-8-3-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.8.3"
+  },
+  {
+    "version": "4.8.2",
+    "url": "https://news.blizzard.com/en-us/article/22871519/starcraft-ii-4-8-2-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.8.2"
+  },
+  {
+    "version": "4.7.1",
+    "url": "https://news.blizzard.com/en-us/starcraft2/22771167/starcraft-ii-4-7-1-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.7.1"
+  },
+  {
+    "version": "4.7.0",
+    "url": "https://news.blizzard.com/en-us/article/22764996/starcraft-ii-4-7-0-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.7.0"
+  },
+  {
+    "version": "4.6.1",
+    "url": "https://news.blizzard.com/en-us/starcraft2/22492977/starcraft-ii-4-6-1-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.6.1"
+  },
+  {
+    "version": "4.5.0",
+    "url": "https://news.blizzard.com/en-us/article/22023343/starcraft-ii-4-5-0-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.5.0"
+  },
+  {
+    "version": "4.4.0",
+    "url": "https://news.blizzard.com/en-us/starcraft2/21870976/starcraft-ii-4-4-0-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.4.0"
+  },
+  {
+    "version": "4.3.2",
+    "url": "https://news.blizzard.com/en-us/article/21728663/starcraft-ii-4-3-2-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.3.2"
+  },
+  {
+    "version": "4.2.4",
+    "url": "https://news.blizzard.com/en-us/starcraft2/21700683/starcraft-ii-4-2-4-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.2.4"
+  },
+  {
+    "version": "4.2.2",
+    "url": "https://news.blizzard.com/en-us/article/21647153/starcraft-4-2-2-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.2.2"
+  },
+  {
+    "version": "4.1.4",
+    "url": "https://news.blizzard.com/en-us/starcraft2/21313391/starcraft-4-1-4-patch-notes",
+    "additional_urls": [
+      "https://news.blizzard.com/en-us/starcraft2/21494433/starcraft-ii-balance-update-january-29-2018"
+    ],
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.1.4"
+  },
+  {
+    "version": "4.1.1",
+    "url": "https://news.blizzard.com/en-us/starcraft2/21257260/starcraft-ii-4-1-1-patch-notes",
+    "additional_urls": [
+      "https://news.blizzard.com/en-us/article/21349570/starcraft-ii-balance-update-december-18-2017"
+    ],
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.1.1"
+  },
+  {
+    "version": "4.0.2",
+    "url": "https://news.blizzard.com/en-us/starcraft2/21212284/starcraft-ii-4-0-2-patch-notes",
+    "additional_urls": [
+      "https://news.blizzard.com/en-us/starcraft2/21272911/starcraft-ii-balance-update-november-28-2017"
+    ],
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.0.2"
+  },
+  {
+    "version": "4.0",
+    "url": "https://news.blizzard.com/en-us/starcraft2/21183638/starcraft-ii-4-0-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.0.0"
+  },
+  {
+    "version": "3.14.0",
+    "url": "https://news.blizzard.com/en-us/starcraft2/20799759/starcraft-ii-legacy-of-the-void-3-14-0-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.14.0"
+  },
+  {
+    "version": "3.13.0",
+    "url": "https://news.blizzard.com/en-gb/article/20721907/starcraft-ii-legacy-of-the-void-3-13-0-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.13.0"
+  },
+  {
+    "version": "3.10",
+    "url": "https://news.blizzard.com/en-us/article/20481178/starcraft-ii-legacy-of-the-void-3-10-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.10.0"
+  },
+  {
+    "version": "3.9.0",
+    "url": "https://news.blizzard.com/en-gb/starcraft2/20399161/legacy-of-the-void-balance-update-december-8-2016",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.9.0"
+  },
+  {
+    "version": "3.8.0",
+    "url": "https://news.blizzard.com/en-us/starcraft2/20372512/starcraft-ii-legacy-of-the-void-3-8-0-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.8.0"
+  },
+  {
+    "version": "3.6.0",
+    "url": "https://news.blizzard.com/en-us/starcraft2/20244595/starcraft-ii-legacy-of-the-void-3-6-0-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.6.0"
+  },
+  {
+    "version": "3.4.0",
+    "url": "https://news.blizzard.com/en-us/article/20166144/starcraft-ii-legacy-of-the-void-3-4-0-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.4.0"
+  },
+  {
+    "version": "3.3.0",
+    "url": "https://news.blizzard.com/en-gb/article/20118329/starcraft-ii-legacy-of-the-void-3-3-0-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.3.0"
+  },
+  {
+    "version": "3.1.0",
+    "url": "https://news.blizzard.com/en-us/starcraft2/20012086/legacy-of-the-void-balance-update-january-29-2016",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.1.0"
+  },
+  {
+    "version": "2.1.9",
+    "url": "https://news.blizzard.com/en-us/starcraft2/18446033/starcraft-ii-2-1-9-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_2.1.9"
+  },
+  {
+    "version": "2.1.3",
+    "url": "https://news.blizzard.com/en-us/starcraft2/15094654/starcraft-ii-2-1-3-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_2.1.3"
+  },
+  {
+    "version": "2.1.2",
+    "url": "https://news.blizzard.com/en-us/starcraft2/14323608/starcraft-ii-2-1-2-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_2.1.2"
+  },
+  {
+    "version": "2.1.1",
+    "url": "https://news.blizzard.com/en-us/starcraft2/13104618/starcraft-ii-2-1-1-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_2.1.1"
+  },
+  {
+    "version": "2.1.0",
+    "url": "https://news.blizzard.com/en-us/starcraft2/12253117/starcraft-ii-2-1-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_2.1.0"
+  },
+  {
+    "version": "2.0.12",
+    "url": "https://news.blizzard.com/en-us/starcraft2/12844591/starcraft-ii-2-0-12-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_2.0.12"
+  },
+  {
+    "version": "2.0.11",
+    "url": "https://news.blizzard.com/en-us/starcraft2/11089019/starcraft-ii-2-0-11-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_2.0.11"
+  },
+  {
+    "version": "2.0.10",
+    "url": "https://news.blizzard.com/en-us/starcraft2/10842645/starcraft-ii-2-0-10-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_2.0.10"
+  },
+  {
+    "version": "2.0.9",
+    "url": "https://news.blizzard.com/en-us/starcraft2/10369098/starcraft-ii-2-0-9-patch-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_2.0.9"
+  },
+  {
+    "version": "2.0.8",
+    "url": "https://news.blizzard.com/en-us/starcraft2/9096527/starcraft-ii-patch-2-0-8-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_2.0.8"
+  },
+  {
+    "version": "1.4.3",
+    "url": "https://news.blizzard.com/en-us/starcraft2/4657722/starcraft-ii-patch-1-4-3-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_1.4.3"
+  },
+  {
+    "version": "1.4.2",
+    "url": "https://news.blizzard.com/en-us/starcraft2/4096427/starcraft-ii-patch-1-4-2-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_1.4.2"
+  },
+  {
+    "version": "1.4.0",
+    "url": "https://news.blizzard.com/en-us/starcraft2/3702025/starcraft-ii-patch-1-4-0-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_1.4.0"
+  },
+  {
+    "version": "1.3.3",
+    "url": "https://news.blizzard.com/en-us/starcraft2/3098417/starcraft-ii-patch-1-3-3-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_1.3.3"
+  },
+  {
+    "version": "1.3.0",
+    "url": "https://news.blizzard.com/en-us/starcraft2/2837245/starcraft-ii-patch-1-3-0-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_1.3.0"
+  },
+  {
+    "version": "1.2.0",
+    "url": "https://news.blizzard.com/en-us/starcraft2/2053470/patch-1-2-0-now-live",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_1.2.0"
+  },
+  {
+    "version": "1.1.3",
+    "url": "https://news.blizzard.com/en-gb/starcraft2/10000722/patch-1-1-3-is-live",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_1.1.3"
+  },
+  {
+    "version": "1.1.2",
+    "url": "https://news.blizzard.com/en-us/starcraft2/1010892/starcraft-ii-patch-1-1-2",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_1.1.2"
+  },
+  {
+    "version": "1.1.0",
+    "url": "https://news.blizzard.com/en-us/starcraft2/622030/starcraft-ii-patch-1-1-notes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_1.1.0"
+  }
 ]
