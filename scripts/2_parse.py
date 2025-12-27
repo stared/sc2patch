@@ -89,7 +89,7 @@ def main() -> None:
     else:
         html_files = sorted(html_dir.glob("*.html"))
 
-    console.print("\n[bold]Stage 2: Parse Patches with GPT-5[/bold]")
+    console.print("\n[bold]Stage 2: Parse Patches with Gemini 3 Pro[/bold]")
     console.print(f"HTML files to parse: {len(html_files)}")
     console.print(f"Skip existing: {skip_existing}\n")
 
@@ -148,15 +148,14 @@ def main() -> None:
                         f"[green]  ✓ {version}:[/green] {entities} entities, {changes} changes"
                     )
 
-                # Add detail info
-                logger.log_detail(f"**{version}** ({filename})")
-                logger.log_detail(f"  - Entities: {entities}")
-                logger.log_detail(f"  - Changes: {changes}")
-                logger.log_detail(f"  - Output: {output_path.name}")
-                logger.log_detail("")
+                    # Add detail info
+                    logger.log_detail(f"**{version}** ({filename})")
+                    logger.log_detail(f"  - Entities: {entities}")
+                    logger.log_detail(f"  - Changes: {changes}")
+                    logger.log_detail(f"  - Output: {output_path.name}")
+                    logger.log_detail("")
 
-                # Be polite to API (2 second delay between requests)
-                if not skip_existing:
+                    # Be polite to API (2 second delay between requests)
                     time.sleep(2.0)
 
             except ParseError as e:

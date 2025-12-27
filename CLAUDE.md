@@ -51,7 +51,7 @@
 The pipeline has 4 stages:
 
 1. **Download** (`scripts/1_download.py`) - Fetch HTML from Blizzard News
-2. **Parse** (`scripts/2_parse.py`) - Extract structured data with GPT-5
+2. **Parse** (`scripts/2_parse.py`) - Extract structured data with LLM via OpenRouter
 3. **Validate** (`scripts/3_validate.py`) - Check completeness
 4. **Export** (`scripts/4_export_for_viz.py`) - Copy data to visualization
 

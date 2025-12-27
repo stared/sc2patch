@@ -1,4 +1,4 @@
-"""Parse patch notes with GPT-5 via OpenRouter."""
+"""Parse patch notes with LLM via OpenRouter."""
 
 import json
 import os
@@ -7,6 +7,9 @@ from pathlib import Path
 import httpx
 from bs4 import BeautifulSoup
 from pydantic import BaseModel, Field
+
+# Model to use for parsing
+OPENROUTER_MODEL = "google/gemini-3-pro-preview"
 
 
 class ParseError(Exception):
@@ -78,10 +81,10 @@ def extract_body_from_html(html_path: Path) -> str:
     return body_text
 
 
-def parse_with_gpt5(
+def parse_with_llm(
     body_text: str, version_hint: str | None = None, api_key: str | None = None
 ) -> PatchChanges:
-    """Extract balance changes using GPT-5.
+    """Extract balance changes using LLM via OpenRouter.
 
     Args:
         body_text: Text content to parse
@@ -101,6 +104,30 @@ def parse_with_gpt5(
 
     system_prompt = """You are a StarCraft II balance patch expert. Extract balance changes from patch notes.
 
+CRITICAL: ONLY extract VERSUS (MULTIPLAYER) balance changes!
+
+EXCLUDE these completely - DO NOT include them:
+1. CO-OP COMMANDERS and their units/abilities:
+   - Protoss: Alarak, Karax, Zeratul, Fenix, Artanis (commander abilities)
+   - Terran: Swann, Mengsk, Nova, Tychus (and outlaws: Blaze, Nikara, Rattlesnake, Vega, etc.)
+   - Zerg: Zagara, Stukov, Abathur, Dehaka, Stetmann (Gary, Mecha units), Kerrigan
+   - Any mention of "Commander", "Mastery", "Talent", "Level unlock", "Prestige"
+
+2. CO-OP SPECIFIC UNITS (not in Versus):
+   - Infested units (Infested Marine, Infested Siege Tank, Infested Liberator, etc.)
+   - Mecha units (Mecha Battlecarrier Lord, Mecha Infestor, etc.)
+   - Hercules, Galleon, Sky Fury, Strike Fighter, Laser Drill
+   - Aberration, Vile Roach, Bile Launcher
+   - Automated Refinery, War Prism, etc.
+
+3. CO-OP MUTATORS: Any mention of mutator names (e.g., "We Move Unseen")
+
+4. CAMPAIGN-ONLY content
+
+5. MAP-SPECIFIC changes (e.g., "Destructible Rocks added to Desert Oasis")
+
+ONLY INCLUDE: Standard Versus/Multiplayer units, buildings, and upgrades!
+
 For each changed entity (unit, building, upgrade, ability):
 1. Create entity_id in format: race-entity_name (e.g., "terran-marine", "protoss-stalker")
 2. Use lowercase with underscores for entity_id
@@ -118,6 +145,13 @@ For each changed entity (unit, building, upgrade, ability):
    - Unit cost INCREASED → "nerf" (harder to build)
    - Unit cost DECREASED → "buff" (easier to build)
 
+   DAMAGE TYPE RESTRICTION IS A NERF:
+   - "Damage changed from 50 to 35 (+15 armored)" → "nerf" (NOT mixed!)
+     Before: 50 to all. After: 50 to armored, 35 to non-armored = worse overall
+   - "Upgrade damage changed from +5 to +3 (+2 armored)" → "nerf" (NOT mixed!)
+     Before: +5 to all. After: +5 to armored, +3 to non-armored = worse overall
+   - Adding a bonus type while reducing base is a NERF because effectiveness is restricted
+
 UPGRADE-TO-UNIT MAPPINGS:
 Assign upgrades/abilities to the UNIT they affect, NOT as separate entities:
 - Stimpack → terran-marine AND terran-marauder (list change under BOTH)
@@ -126,6 +160,13 @@ Assign upgrades/abilities to the UNIT they affect, NOT as separate entities:
 - Grooved Spines → zerg-hydralisk
 - Metabolic Boost → zerg-zergling
 - etc.
+
+ENTITY ID STANDARDIZATION (use these exact IDs):
+- Shield Battery → protoss-shield_battery (NOT protoss-battery)
+- Warp Prism → protoss-warp_prism (NOT protoss-war_prism)
+- Nydus Network/Worm → zerg-nydus_network (NOT zerg-nydus_worm)
+- Mothership Core → protoss-mothership_core
+- Siege Tank → terran-siege_tank (NOT terran-tank)
 
 Return JSON in this EXACT format:
 {
@@ -164,7 +205,7 @@ Return ONLY valid JSON matching the example format. Include ALL required fields.
                 "X-Title": "SC2 Patch Parser",
             },
             json={
-                "model": "openai/gpt-5",
+                "model": OPENROUTER_MODEL,
                 "messages": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt},
@@ -181,14 +222,27 @@ Return ONLY valid JSON matching the example format. Include ALL required fields.
 
     try:
         result = response.json()
+
+        # Check for API errors
+        if "error" in result:
+            raise ParseError(f"API error: {result['error']}")
+
+        # Check for empty choices
+        if not result.get("choices"):
+            raise ParseError(f"Empty choices in API response: {result}")
+
         content = result["choices"][0]["message"]["content"]
+
+        # Check for empty content
+        if not content or not content.strip():
+            raise ParseError(f"Empty content from API. Full response: {result}")
 
         # Parse JSON response
         parsed_data = json.loads(content)
         return PatchChanges(**parsed_data)
 
     except (KeyError, IndexError, json.JSONDecodeError) as e:
-        raise ParseError(f"Failed to parse GPT-5 response: {e}") from e
+        raise ParseError(f"Failed to parse LLM response: {e}") from e
 
 
 def parse_patch(html_path: Path, api_key: str | None = None) -> dict:
@@ -210,8 +264,8 @@ def parse_patch(html_path: Path, api_key: str | None = None) -> dict:
     # Try to infer version from filename
     version_hint = html_path.stem
 
-    # Parse with GPT-5
-    patch_data = parse_with_gpt5(body_text, version_hint, api_key)
+    # Parse with LLM
+    patch_data = parse_with_llm(body_text, version_hint, api_key)
 
     # Convert to output format
     result = {

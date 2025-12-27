@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { loadUnits, loadPatches, processPatches } from './utils/dataLoader';
+import { loadPatchesData, createUnitsMap, processPatches } from './utils/dataLoader';
 import { ProcessedPatchData, Unit, ProcessedChange, EntityWithPosition, Race } from './types';
 import { PatchGridRenderer } from './utils/patchGridRenderer';
 import {
@@ -81,14 +81,16 @@ function App() {
       try {
         setLoading(true);
 
-        const [unitsData, patchesData] = await Promise.all([
-          loadUnits(),
-          loadPatches()
-        ]);
+        // Load and validate single JSON file with Zod
+        const data = await loadPatchesData();
 
-        const processedPatches = processPatches(patchesData, unitsData);
+        // Convert to Map for quick lookup
+        const unitsMap = createUnitsMap(data.units);
 
-        setUnits(unitsData);
+        // Process patches for visualization
+        const processedPatches = processPatches(data.patches, unitsMap);
+
+        setUnits(unitsMap);
         setPatches(processedPatches);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load data');
