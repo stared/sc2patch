@@ -11,6 +11,24 @@ from pydantic import BaseModel, Field
 # Model to use for parsing
 OPENROUTER_MODEL = "google/gemini-3-pro-preview"
 
+# Path to units database
+UNITS_JSON_PATH = Path(__file__).parent.parent.parent / "data" / "units.json"
+
+
+def load_valid_entity_ids() -> dict[str, list[str]]:
+    """Load valid entity_ids from units.json, grouped by race."""
+    with open(UNITS_JSON_PATH) as f:
+        units = json.load(f)
+
+    by_race: dict[str, list[str]] = {"terran": [], "zerg": [], "protoss": [], "neutral": []}
+    for unit in units:
+        by_race[unit["race"]].append(unit["id"])
+
+    for race in by_race:
+        by_race[race].sort()
+
+    return by_race
+
 
 class ParseError(Exception):
     """Raised when parsing fails."""
@@ -102,7 +120,13 @@ def parse_with_llm(
         if not api_key:
             raise ParseError("OPENROUTER_API_KEY not found in environment")
 
-    system_prompt = """You are a StarCraft II balance patch expert. Extract balance changes from patch notes.
+    # Load valid entity IDs and format for prompt
+    valid_ids = load_valid_entity_ids()
+    valid_ids_text = "\n".join(
+        f"  {race.upper()}: {', '.join(ids)}" for race, ids in valid_ids.items()
+    )
+
+    system_prompt = f"""You are a StarCraft II balance patch expert. Extract balance changes from patch notes.
 
 CRITICAL: ONLY extract VERSUS (MULTIPLAYER) balance changes!
 
@@ -161,29 +185,35 @@ Assign upgrades/abilities to the UNIT they affect, NOT as separate entities:
 - Metabolic Boost → zerg-zergling
 - etc.
 
-ENTITY ID STANDARDIZATION (use these exact IDs):
-- Shield Battery → protoss-shield_battery (NOT protoss-battery)
-- Warp Prism → protoss-warp_prism (NOT protoss-war_prism)
-- Nydus Network/Worm → zerg-nydus_network (NOT zerg-nydus_worm)
-- Mothership Core → protoss-mothership_core
-- Siege Tank → terran-siege_tank (NOT terran-tank)
+VALID ENTITY IDS - You MUST use ONLY these exact IDs (no others allowed):
+{valid_ids_text}
+
+MORPHED/TOGGLE MODES - use the BASE unit ID (modes are NOT separate entities):
+- Transport Overlord → zerg-overlord
+- Siege Tank (Sieged mode) → terran-siege_tank
+- Viking (Assault/Fighter modes) → terran-viking
+- Lurker (Burrowed) → zerg-lurker
+- Liberator (AG mode) → terran-liberator
+- Warp Prism (Phasing mode) → protoss-warp_prism
+
+NOTE: Hellion and Hellbat ARE separate units (use terran-hellion or terran-hellbat as appropriate)
 
 Return JSON in this EXACT format:
-{
+{{
   "version": "4.0",
   "date": "2017-11-15",
   "changes": [
-    {
+    {{
       "entity_id": "terran-marine",
       "entity_name": "Marine",
       "race": "terran",
       "changes": [
-        {"text": "Health increased from 45 to 55", "change_type": "buff"},
-        {"text": "Attack damage reduced from 6 to 5", "change_type": "nerf"}
+        {{"text": "Health increased from 45 to 55", "change_type": "buff"}},
+        {{"text": "Attack damage reduced from 6 to 5", "change_type": "nerf"}}
       ]
-    }
+    }}
   ]
-}
+}}
 
 CRITICAL: ALL fields (entity_id, entity_name, race, changes with text and change_type) are REQUIRED."""
 

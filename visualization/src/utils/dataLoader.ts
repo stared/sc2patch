@@ -80,15 +80,7 @@ export function processPatches(patches: Patch[], units: Map<string, Unit>): Proc
           status: status
         });
       } else {
-        // Handle unknown entities (assign to neutral)
-        entities.set(entityId, {
-          id: entityId,
-          name: entityId.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
-          race: 'neutral',
-          type: 'unknown',
-          changes: changes,
-          status: status
-        });
+        throw new Error(`Unknown entity_id "${entityId}" in patch ${patch.version}. Add it to units.json or fix the parser.`);
       }
     });
 
