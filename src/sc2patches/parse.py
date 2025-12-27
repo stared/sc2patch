@@ -17,15 +17,15 @@ UNITS_JSON_PATH = Path(__file__).parent.parent.parent / "data" / "units.json"
 
 def load_valid_entity_ids() -> dict[str, list[str]]:
     """Load valid entity_ids from units.json, grouped by race."""
-    with open(UNITS_JSON_PATH) as f:
+    with UNITS_JSON_PATH.open() as f:
         units = json.load(f)
 
     by_race: dict[str, list[str]] = {"terran": [], "zerg": [], "protoss": [], "neutral": []}
     for unit in units:
         by_race[unit["race"]].append(unit["id"])
 
-    for race in by_race:
-        by_race[race].sort()
+    for _race, ids in by_race.items():
+        ids.sort()
 
     return by_race
 
@@ -74,7 +74,7 @@ def extract_body_from_html(html_path: Path) -> str:
     Raises:
         ParseError: If body cannot be extracted
     """
-    with open(html_path, encoding="utf-8") as f:
+    with html_path.open(encoding="utf-8") as f:
         html_content = f.read()
 
     soup = BeautifulSoup(html_content, "html.parser")
@@ -83,7 +83,12 @@ def extract_body_from_html(html_path: Path) -> str:
     body = None
 
     # Modern Blizzard pages
-    if (article := soup.find("section", class_="blog")) or (article := soup.find("article", class_="Content")) or (article := soup.find("div", id="content")) or (article := soup.find("div", class_="article-content")):
+    if (
+        (article := soup.find("section", class_="blog"))
+        or (article := soup.find("article", class_="Content"))
+        or (article := soup.find("div", id="content"))
+        or (article := soup.find("div", class_="article-content"))
+    ):
         body = article
 
     if not body:
@@ -94,13 +99,39 @@ def extract_body_from_html(html_path: Path) -> str:
             raise ParseError(f"Could not find article body in {html_path}")
 
     # Get text content
-    body_text = body.get_text(separator="\n", strip=True)
+    return body.get_text(separator="\n", strip=True)
 
-    return body_text
+
+def extract_bodies_from_html_files(html_paths: list[Path]) -> str:
+    """Extract and combine article bodies from multiple HTML files.
+
+    This is used for parsing main patch + BU patch together.
+
+    Args:
+        html_paths: List of HTML file paths
+
+    Returns:
+        Combined body text with clear section markers
+
+    Raises:
+        ParseError: If any body cannot be extracted
+    """
+    sections = []
+    for i, path in enumerate(html_paths):
+        body = extract_body_from_html(path)
+        if i == 0:
+            sections.append(f"=== PRIMARY PATCH NOTES ===\n\n{body}")
+        else:
+            sections.append(f"=== ADDITIONAL PATCH NOTES (Balance Update) ===\n\n{body}")
+
+    return "\n\n" + "=" * 50 + "\n\n".join(sections)
 
 
 def parse_with_llm(
-    body_text: str, version_hint: str | None = None, api_key: str | None = None
+    body_text: str,
+    version_hint: str | None = None,
+    api_key: str | None = None,
+    is_multi_source: bool = False,
 ) -> PatchChanges:
     """Extract balance changes using LLM via OpenRouter.
 
@@ -108,6 +139,7 @@ def parse_with_llm(
         body_text: Text content to parse
         version_hint: Optional version hint for the model
         api_key: OpenRouter API key (uses OPENROUTER_API_KEY env var if not provided)
+        is_multi_source: If True, content contains multiple sources (main + BU) to merge
 
     Returns:
         Parsed patch changes
@@ -126,8 +158,23 @@ def parse_with_llm(
         f"  {race.upper()}: {', '.join(ids)}" for race, ids in valid_ids.items()
     )
 
-    system_prompt = f"""You are a StarCraft II balance patch expert. Extract balance changes from patch notes.
+    # Add multi-source instructions if combining multiple HTML files
+    multi_source_header = ""
+    if is_multi_source:
+        multi_source_header = """
+IMPORTANT: You are parsing MULTIPLE patch notes for the SAME version:
+1. PRIMARY PATCH NOTES: Main client patch (may include balance changes + bug fixes)
+2. ADDITIONAL PATCH NOTES: Balance Update (server-side balance changes)
 
+Combine ALL balance changes into ONE unified list. DEDUPLICATE:
+- If the SAME entity has the SAME change in both sources, include it ONLY ONCE
+- If sources have DIFFERENT values for same stat, use the LATER (Balance Update) value
+- Use the LATER date (from Balance Update section) as the patch date
+
+"""
+
+    system_prompt = f"""You are a StarCraft II balance patch expert. Extract balance changes from patch notes.
+{multi_source_header}
 CRITICAL: ONLY extract VERSUS (MULTIPLAYER) balance changes!
 
 EXCLUDE these completely - DO NOT include them:
@@ -383,6 +430,87 @@ def parse_patch(html_path: Path, api_key: str | None = None) -> dict:
         raise ParseError(
             f"No balance changes extracted from {html_path.name}\n"
             "This patch may have no balance changes, or the parser failed."
+        )
+
+    return result
+
+
+def parse_patches_combined(html_paths: list[Path], api_key: str | None = None) -> dict:
+    """Parse multiple patch files together (main + BU) and return merged JSON.
+
+    This is used when a patch has both a main client update and a Balance Update.
+    The LLM sees both sources together and intelligently deduplicates.
+
+    Args:
+        html_paths: List of HTML files to parse together (main first, then additional)
+        api_key: Optional OpenRouter API key
+
+    Returns:
+        Dictionary with metadata and merged changes
+
+    Raises:
+        ParseError: If parsing fails
+    """
+    if not html_paths:
+        raise ParseError("No HTML files provided to parse_patches_combined")
+
+    # Extract combined body text from all files
+    body_text = extract_bodies_from_html_files(html_paths)
+
+    # Try to infer version from first filename (main patch)
+    version_hint = html_paths[0].stem
+
+    # Parse with LLM in multi-source mode
+    patch_data = parse_with_llm(body_text, version_hint, api_key, is_multi_source=True)
+
+    # Convert to output format (same as parse_patch)
+    result = {
+        "metadata": {
+            "version": patch_data.version,
+            "date": patch_data.date or "unknown",
+            "title": f"StarCraft II Patch {patch_data.version}",
+            "url": "",  # Will be filled in by pipeline script
+        },
+        "changes": [],
+    }
+
+    # Flatten changes
+    for entity in patch_data.changes:
+        for change in entity.changes:
+            # VALIDATE: Every change MUST have change_type
+            if not change.change_type:
+                raise ParseError(
+                    f"CRITICAL ERROR: Change missing change_type!\n"
+                    f"Entity: {entity.entity_id}\n"
+                    f"Text: {change.text}\n"
+                    "Parser MUST classify every change."
+                )
+
+            # VALIDATE: change_type must be valid
+            if change.change_type not in ["buff", "nerf", "mixed"]:
+                raise ParseError(
+                    f"CRITICAL ERROR: Invalid change_type '{change.change_type}'\n"
+                    f"Entity: {entity.entity_id}\n"
+                    f"Text: {change.text}\n"
+                    f"Must be one of: buff, nerf, mixed"
+                )
+
+            change_id = f"{entity.entity_id}_{len(result['changes'])}"
+            result["changes"].append(
+                {
+                    "id": change_id,
+                    "patch_version": patch_data.version,
+                    "entity_id": entity.entity_id,
+                    "raw_text": change.text,
+                    "change_type": change.change_type,
+                }
+            )
+
+    # FAIL LOUDLY if no changes found
+    if len(result["changes"]) == 0:
+        raise ParseError(
+            f"No balance changes extracted from combined patches.\n"
+            f"Files: {[p.name for p in html_paths]}"
         )
 
     return result

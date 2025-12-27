@@ -1390,6 +1390,113 @@
       ]
     },
     {
+      "version": "3.1.0",
+      "date": "2016-01-29",
+      "url": "https://news.blizzard.com/en-us/starcraft2/20012086/legacy-of-the-void-balance-update-january-29-2016",
+      "entities": [
+        {
+          "entity_id": "protoss-adept",
+          "changes": [
+            {
+              "raw_text": "Damage reduced from 10 (+13 light) to 10 (+12 light)",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-mothership_core",
+          "changes": [
+            {
+              "raw_text": "Photon Overcharge duration increased from 11 seconds to 14 seconds",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Photon Overcharge weapon period decreased from 0.89 seconds to 0.71 second",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Photon Overcharge energy cost increased from 25 to 50",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-viper",
+          "changes": [
+            {
+              "raw_text": "Parasitic Bomb damage decreased from 90 to 60",
+              "change_type": "nerf"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "version": "3.3.0",
+      "date": "2016-05-17",
+      "url": "https://news.blizzard.com/en-gb/article/20118329/starcraft-ii-legacy-of-the-void-3-3-0-patch-notes",
+      "entities": [
+        {
+          "entity_id": "protoss-colossus",
+          "changes": [
+            {
+              "raw_text": "Attack speed increased by 10%",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-immortal",
+          "changes": [
+            {
+              "raw_text": "Barrier absorb reduced from 200 to 100",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-cyclone",
+          "changes": [
+            {
+              "raw_text": "Cost reduced from 150/150 to 150/100",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Supply cost increased from 3 to 4",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-liberator",
+          "changes": [
+            {
+              "raw_text": "Anti-air damage changed from 7 to 5 (+2 light)",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-thor",
+          "changes": [
+            {
+              "raw_text": "Added a second anti-air attack mode which deals 35 (+15 armored) damage every 2.14 seconds",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-swarm_host",
+          "changes": [
+            {
+              "raw_text": "Cost reduced from 200/100 to 150/75",
+              "change_type": "buff"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "3.3.2 BU",
       "date": "2016-07-06",
       "url": "https://starcraft2.com/en-us/news/20142728",
@@ -1834,6 +1941,31 @@
       ]
     },
     {
+      "version": "3.9.1 BU",
+      "date": "2016-12-20",
+      "url": "https://news.blizzard.com/en-us/starcraft2/20407950/legacy-of-the-void-balance-update-december-20-2016",
+      "entities": [
+        {
+          "entity_id": "protoss-carrier",
+          "changes": [
+            {
+              "raw_text": "Interceptor cost increased from 5 to 10 minerals",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-baneling",
+          "changes": [
+            {
+              "raw_text": "Centrifugal Hooks upgrade health bonus reduced from +10 to +5",
+              "change_type": "nerf"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "3.8.0 BU",
       "date": "2016-12-22",
       "url": "https://news.blizzard.com/en-gb/starcraft2/20399161/legacy-of-the-void-balance-update-december-8-2016",
@@ -1920,6 +2052,73 @@
             {
               "raw_text": "Yamato Cannon no longer gets interrupted by the Infestor’s Neural Parasite once it is cast.",
               "change_type": "buff"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "version": "3.11.0 BU",
+      "date": "2017-03-07",
+      "url": "https://news.blizzard.com/en-us/starcraft2/20562669/legacy-of-the-void-balance-update-march-7-2017",
+      "entities": [
+        {
+          "entity_id": "terran-reaper",
+          "changes": [
+            {
+              "raw_text": "KD8 Charge cooldown increased from 7 seconds to 14 seconds",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-widow_mine",
+          "changes": [
+            {
+              "raw_text": "Splash damage +shield bonus reduced from +40 to +25",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-corruptor",
+          "changes": [
+            {
+              "raw_text": "Movement speed changed from 4.1343 to 4.725",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Acceleration speed changed from 3.675 to 4.2",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Parasite Spore weapon damage point changed from .1193 to .0446",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-hydralisk",
+          "changes": [
+            {
+              "raw_text": "Health increased from 80 to 90",
+              "change_type": "buff"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "version": "3.12.0 BU",
+      "date": "2017-04-01",
+      "url": "https://news.blizzard.com/en-us/starcraft2/20720843/legacy-of-the-void-balance-update-april-2017",
+      "entities": [
+        {
+          "entity_id": "protoss-adept",
+          "changes": [
+            {
+              "raw_text": "Maximum Health reduced from 80 to 70",
+              "change_type": "nerf"
             }
           ]
         }
@@ -3198,6 +3397,52 @@
           "changes": [
             {
               "raw_text": "Deceleration will no longer delay the activation of the Oversight ability.",
+              "change_type": "buff"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "version": "4.3.0 BU",
+      "date": "2018-05-15",
+      "url": "https://news.blizzard.com/en-us/starcraft2/21785907/starcraft-ii-balance-update-may-15-2018",
+      "entities": [
+        {
+          "entity_id": "terran-marauder",
+          "changes": [
+            {
+              "raw_text": "Punisher Grenade attacks reduced from 2 to 1",
+              "change_type": "mixed"
+            },
+            {
+              "raw_text": "Damage of each attack increased from 5 (10 vs Armored) to 10 (20 vs Armored)",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Upgrades will provide +1 Base and +2 Armored",
+              "change_type": "mixed"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-raven",
+          "changes": [
+            {
+              "raw_text": "Anti-Armor Missile initial and splash damage reduced from 30 to 15",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Auto-Turret cast range increased from 1 to 2",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-viking",
+          "changes": [
+            {
+              "raw_text": "Health increased from 125 to 135",
               "change_type": "buff"
             }
           ]
@@ -6871,5 +7116,5 @@
       "type": "unit"
     }
   ],
-  "generated_at": "2025-12-27T18:21:25.058551"
+  "generated_at": "2025-12-27T19:55:07.266171"
 }

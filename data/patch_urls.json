@@ -26,12 +26,15 @@
   },
   {
     "version": "5.0.9",
-    "url": "https://news.blizzard.com/en-us/starcraft2/23662498/starcraft-ii-5-0-9-patch-notes",
+    "url": "https://news.blizzard.com/en-us/starcraft2/23774006/starcraft-ii-5-0-9-ptr-patch-notes",
     "liquipedia": "https://liquipedia.net/starcraft2/Patch_5.0.9"
   },
   {
     "version": "5.0.2",
     "url": "https://news.blizzard.com/en-us/starcraft2/23477299/starcraft-ii-5-0-2-patch-notes",
+    "additional_urls": [
+      "https://news.blizzard.com/en-us/starcraft2/23492549/balance-update-august-13-2020"
+    ],
     "liquipedia": "https://liquipedia.net/starcraft2/Patch_5.0.2"
   },
   {
@@ -57,6 +60,9 @@
   {
     "version": "4.8.3",
     "url": "https://news.blizzard.com/en-us/starcraft2/22933133/starcraft-ii-4-8-3-patch-notes",
+    "additional_urls": [
+      "https://news.blizzard.com/en-us/starcraft2/22940765/starcraft-ii-balance-update-march-25-2019"
+    ],
     "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.8.3"
   },
   {
@@ -93,6 +99,11 @@
     "version": "4.3.2",
     "url": "https://news.blizzard.com/en-us/article/21728663/starcraft-ii-4-3-2-patch-notes",
     "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.3.2"
+  },
+  {
+    "version": "4.3.0 BU",
+    "url": "https://news.blizzard.com/en-us/starcraft2/21785907/starcraft-ii-balance-update-may-15-2018",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.3.0"
   },
   {
     "version": "4.2.4",
@@ -149,9 +160,24 @@
     "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.10.0"
   },
   {
+    "version": "3.11.0 BU",
+    "url": "https://news.blizzard.com/en-us/starcraft2/20562669/legacy-of-the-void-balance-update-march-7-2017",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.11.0"
+  },
+  {
+    "version": "3.12.0 BU",
+    "url": "https://news.blizzard.com/en-us/starcraft2/20720843/legacy-of-the-void-balance-update-april-2017",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.12.0"
+  },
+  {
     "version": "3.9.0",
     "url": "https://news.blizzard.com/en-gb/starcraft2/20399161/legacy-of-the-void-balance-update-december-8-2016",
     "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.9.0"
+  },
+  {
+    "version": "3.9.1 BU",
+    "url": "https://news.blizzard.com/en-us/starcraft2/20407950/legacy-of-the-void-balance-update-december-20-2016",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.9.1"
   },
   {
     "version": "3.8.0",
@@ -171,6 +197,9 @@
   {
     "version": "3.3.0",
     "url": "https://news.blizzard.com/en-gb/article/20118329/starcraft-ii-legacy-of-the-void-3-3-0-patch-notes",
+    "additional_urls": [
+      "https://news.blizzard.com/en-us/starcraft2/20125928/legacy-of-the-void-balance-update-may-23-2016"
+    ],
     "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.3.0"
   },
   {
