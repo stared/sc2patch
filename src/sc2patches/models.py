@@ -12,7 +12,7 @@ from pydantic import BaseModel, Field
 # Type aliases
 Race = Literal["terran", "protoss", "zerg", "neutral"]
 ChangeType = Literal["buff", "nerf", "mixed"]
-UnitType = Literal["unit", "building", "unknown"]
+UnitType = Literal["unit", "building", "upgrade", "ability", "mechanic"]
 
 
 class Unit(BaseModel):

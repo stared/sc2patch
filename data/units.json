@@ -531,7 +531,7 @@
     "id": "unknown",
     "name": "Unknown Entity",
     "race": "neutral",
-    "type": "unknown"
+    "type": "mechanic"
   },
   {
     "id": "zerg-all_units",

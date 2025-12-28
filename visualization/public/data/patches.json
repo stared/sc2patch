@@ -6861,7 +6861,7 @@
       "id": "unknown",
       "name": "Unknown Entity",
       "race": "neutral",
-      "type": "unknown"
+      "type": "mechanic"
     },
     {
       "id": "zerg-all_units",
@@ -7116,5 +7116,5 @@
       "type": "unit"
     }
   ],
-  "generated_at": "2025-12-27T19:55:07.266171"
+  "generated_at": "2025-12-28T13:22:56.890111"
 }
