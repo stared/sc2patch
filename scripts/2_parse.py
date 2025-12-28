@@ -11,6 +11,7 @@ The LLM parses main + BU HTML files together for intelligent deduplication.
 """
 
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -29,6 +30,16 @@ from sc2patches.parse import ParseError, parse_patch, parse_patches_combined
 load_dotenv()
 
 console = Console()
+
+
+def get_api_key() -> str:
+    """Get OpenRouter API key from environment. Fails if not found."""
+    api_key = os.getenv("OPENROUTER_API_KEY")
+    if not api_key:
+        console.print("[red]ERROR: OPENROUTER_API_KEY not found in environment[/red]")
+        console.print("Set it in .env file or export OPENROUTER_API_KEY=...")
+        sys.exit(1)
+    return api_key
 
 
 def load_patch_config(urls_path: Path) -> list[dict]:
@@ -105,6 +116,7 @@ def process_single_patch(
     output_dir: Path,
     skip_existing: bool,
     logger: PipelineLogger,
+    api_key: str,
 ) -> bool:
     """Process a single patch configuration.
 
@@ -131,9 +143,9 @@ def process_single_patch(
     # Parse with appropriate method
     if len(html_files) > 1:
         console.print(f"[cyan]  ↳ Parsing {len(html_files)} files together...[/cyan]")
-        result = parse_patches_combined(html_files)
+        result = parse_patches_combined(html_files, version, api_key)
     else:
-        result = parse_patch(html_files[0])
+        result = parse_patch(html_files[0], version, api_key)
 
     # Override version and URL from config (LLM might extract wrong version for BU patches)
     result["metadata"]["version"] = version
@@ -164,6 +176,7 @@ def process_single_patch(
 
 def main() -> None:
     """Parse all HTML patches with Gemini 3 Pro."""
+    api_key = get_api_key()
     skip_existing = "--skip-existing" in sys.argv
     specific_version = next((a for a in sys.argv[1:] if not a.startswith("--")), None)
 
@@ -203,7 +216,9 @@ def main() -> None:
             progress.update(task, description=f"Processing {patch_config['version']}")
 
             try:
-                process_single_patch(patch_config, html_dir, output_dir, skip_existing, logger)
+                process_single_patch(
+                    patch_config, html_dir, output_dir, skip_existing, logger, api_key
+                )
                 time.sleep(2.0)  # Be polite to API
             except ParseError as e:
                 logger.log_failure(patch_config["version"], str(e))

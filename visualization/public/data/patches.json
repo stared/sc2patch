@@ -254,8 +254,17 @@
     {
       "version": "1.2.0",
       "date": "2011-01-11",
-      "url": "https://news.blizzard.com/en-us/starcraft2/2053470/patch-1-2-0-now-live",
+      "url": "https://news.blizzard.com/en-gb/starcraft2/9995561/patch-1-2-0-now-live",
       "entities": [
+        {
+          "entity_id": "neutral-ramp",
+          "changes": [
+            {
+              "raw_text": "Players can no longer block off ramps with two 2x2 buildings",
+              "change_type": "nerf"
+            }
+          ]
+        },
         {
           "entity_id": "protoss-observer",
           "changes": [
@@ -301,16 +310,11 @@
           "changes": [
             {
               "raw_text": "Repairing SCVs now assume the same threat priority as the unit they’re repairing",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "unknown",
-          "changes": [
-            {
-              "raw_text": "Players can no longer block off ramps with two 2x2 buildings",
               "change_type": "nerf"
+            },
+            {
+              "raw_text": "Construction movement has been made more consistent",
+              "change_type": "buff"
             }
           ]
         }
@@ -507,10 +511,10 @@
     {
       "version": "1.4.0",
       "date": "2011-09-20",
-      "url": "https://news.blizzard.com/en-us/starcraft2/3702025/starcraft-ii-patch-1-4-0-notes",
+      "url": "https://news.blizzard.com/en-us/starcraft2/3549513/patch-1-4-0-now-live",
       "entities": [
         {
-          "entity_id": "protoss-all_units",
+          "entity_id": "neutral-ramp",
           "changes": [
             {
               "raw_text": "Unit vision up ramps has been reduced by 1",
@@ -535,7 +539,7 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "The Mothership's Cloaking Field no longer cloaks all units instantaneously, but rather adds units to the cloak field over time (maximum of 25 per second)",
+              "raw_text": "Cloaking Field no longer cloaks all units instantaneously, but rather adds units to the cloak field over time (maximum of 25 per second)",
               "change_type": "nerf"
             }
           ]
@@ -555,15 +559,6 @@
             {
               "raw_text": "Shields increased from 40 to 100",
               "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-all_units",
-          "changes": [
-            {
-              "raw_text": "Unit vision up ramps has been reduced by 1",
-              "change_type": "nerf"
             }
           ]
         },
@@ -591,15 +586,6 @@
             {
               "raw_text": "Seeker missile movement speed increased from 2.5 to 2.953",
               "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-all_units",
-          "changes": [
-            {
-              "raw_text": "Unit vision up ramps has been reduced by 1",
-              "change_type": "nerf"
             }
           ]
         },
@@ -1335,19 +1321,10 @@
       "url": "https://news.blizzard.com/en-us/starcraft2/20372512/starcraft-ii-legacy-of-the-void-3-8-0-patch-notes",
       "entities": [
         {
-          "entity_id": "neutral-rocks",
-          "changes": [
-            {
-              "raw_text": "Rocks now have 0 armor (from 3).",
-              "change_type": "nerf"
-            }
-          ]
-        },
-        {
           "entity_id": "protoss-adept",
           "changes": [
             {
-              "raw_text": "Shade vision reduced from 9 to 2.",
+              "raw_text": "Shade vision reduced from 9 to 2",
               "change_type": "nerf"
             }
           ]
@@ -1356,11 +1333,15 @@
           "entity_id": "protoss-carrier",
           "changes": [
             {
-              "raw_text": "Removed the Release Interceptor ability.",
+              "raw_text": "Removed the Release Interceptor ability",
               "change_type": "nerf"
             },
             {
-              "raw_text": "Interceptors cost reduced from 25 minerals to 5 minerals.",
+              "raw_text": "Interceptors cost reduced from 25 minerals to 5 minerals",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Interceptor auto-build is enabled by default",
               "change_type": "buff"
             }
           ]
@@ -1369,7 +1350,7 @@
           "entity_id": "protoss-dark_templar",
           "changes": [
             {
-              "raw_text": "New Ability: Shadow Stride. Allows short distance teleportation (Research at Dark Shrine).",
+              "raw_text": "New Ability: Shadow Stride (teleport a short distance)",
               "change_type": "buff"
             }
           ]
@@ -1378,19 +1359,19 @@
           "entity_id": "protoss-tempest",
           "changes": [
             {
-              "raw_text": "Supply cost increased from 4 to 6.",
+              "raw_text": "Supply cost increased from 4 to 6",
               "change_type": "nerf"
             },
             {
-              "raw_text": "Anti-ground damage increased from 30 to 35.",
+              "raw_text": "Anti-ground damage increased from 30 to 35",
               "change_type": "buff"
             },
             {
-              "raw_text": "Anti-ground weapon range changed from 15 to 8.",
+              "raw_text": "Anti-ground weapon range changed from 15 to 8",
               "change_type": "nerf"
             },
             {
-              "raw_text": "New ability: Disruption Blast. Stuns enemy ground units and structures for 7 seconds.",
+              "raw_text": "New ability: Disruption Blast (stuns enemy ground units/structures)",
               "change_type": "buff"
             }
           ]
@@ -1399,7 +1380,7 @@
           "entity_id": "protoss-void_ray",
           "changes": [
             {
-              "raw_text": "Speed increased from 3.15 to 3.5.",
+              "raw_text": "Speed increased from 3.15 to 3.5",
               "change_type": "buff"
             }
           ]
@@ -1408,7 +1389,7 @@
           "entity_id": "protoss-warp_prism",
           "changes": [
             {
-              "raw_text": "Health reduced from 100 to 80.",
+              "raw_text": "Health reduced from 100 to 80",
               "change_type": "nerf"
             }
           ]
@@ -1417,7 +1398,7 @@
           "entity_id": "protoss-zealot",
           "changes": [
             {
-              "raw_text": "The Research Charge upgrade now increases movement speed from 3.15 to 4.13.",
+              "raw_text": "Research Charge upgrade now increases movement speed from 3.15 to 4.13",
               "change_type": "buff"
             }
           ]
@@ -1426,11 +1407,11 @@
           "entity_id": "terran-banshee",
           "changes": [
             {
-              "raw_text": "Removed the Fusion Core requirement for the Hyperflight Rotors upgrade.",
+              "raw_text": "Removed the Fusion Core requirement for the Hyperflight Rotors upgrade",
               "change_type": "buff"
             },
             {
-              "raw_text": "Research Hyperflight Rotors upgrade time increased from 93 to 121.",
+              "raw_text": "Research Hyperflight Rotors upgrade time increased from 93 to 121",
               "change_type": "nerf"
             }
           ]
@@ -1439,15 +1420,23 @@
           "entity_id": "terran-battlecruiser",
           "changes": [
             {
-              "raw_text": "Energy bar removed; Yamato Cannon and Tactical Jump now use a 71-second cooldown instead of energy.",
+              "raw_text": "Energy bar removed",
+              "change_type": "mixed"
+            },
+            {
+              "raw_text": "Yamato Cannon and Tactical Jump no longer require energy to cast",
               "change_type": "buff"
             },
             {
-              "raw_text": "Removed the Behemoth Reactor upgrade.",
+              "raw_text": "Yamato Cannon and Tactical Jump now have a cooldown of 71 seconds",
+              "change_type": "mixed"
+            },
+            {
+              "raw_text": "Removed the Behemoth Reactor upgrade",
               "change_type": "nerf"
             },
             {
-              "raw_text": "Yamato Cannon no longer gets interrupted by Neural Parasite.",
+              "raw_text": "Yamato Cannon no longer gets interrupted by Neural Parasite",
               "change_type": "buff"
             }
           ]
@@ -1456,44 +1445,64 @@
           "entity_id": "terran-cyclone",
           "changes": [
             {
-              "raw_text": "Anti-ground damage changed from 18 to 3 (+2 vs armored).",
+              "raw_text": "Anti-ground weapon damage changed from 18 to 3 (+2 vs armored)",
               "change_type": "nerf"
             },
             {
-              "raw_text": "Range decreased from 5 to 4.",
+              "raw_text": "Range decreased from 5 to 4",
               "change_type": "nerf"
             },
             {
-              "raw_text": "Attack period changed from 0.7 to 0.1.",
+              "raw_text": "New 'Mag-Field Launchers' upgrade gives +2 range",
               "change_type": "buff"
             },
             {
-              "raw_text": "Movement speed decreased from 4.72 to 4.13.",
+              "raw_text": "Attack period changed from 0.7 seconds to 0.1 seconds",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Random attack delays removed",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Weapon upgrade amount changed from 2 to 1",
               "change_type": "nerf"
             },
             {
-              "raw_text": "Lock On now targets air units/structures only and deals 160 damage over 14 seconds.",
+              "raw_text": "No anti-air weapon",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Movement speed decreased from 4.72 to 4.13",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Lock On can now target air units and air structures only",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Lock On now deals 160 damage over 14 seconds",
               "change_type": "mixed"
             },
             {
-              "raw_text": "Supply cost decreased from 4 to 3.",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Health increased from 120 to 180.",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "No longer requires a Tech Lab; can be built with a Reactor.",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Removed the Cyclone Lock On Damage upgrade.",
+              "raw_text": "Removed auto-cast for the Lock On ability",
               "change_type": "nerf"
             },
             {
-              "raw_text": "New Mag-Field Launchers upgrade adds +2 range.",
+              "raw_text": "Supply cost decreased from 4 to 3",
               "change_type": "buff"
+            },
+            {
+              "raw_text": "Health increased from 120 to 180",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "No longer requires a Tech Lab and can now be built with a Reactor",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Removed the Cyclone Lock On Damage upgrade",
+              "change_type": "nerf"
             }
           ]
         },
@@ -1501,7 +1510,7 @@
           "entity_id": "terran-liberator",
           "changes": [
             {
-              "raw_text": "Removed the +light damage for the anti-air attack.",
+              "raw_text": "Removed the +light damage for the anti-air attack",
               "change_type": "nerf"
             }
           ]
@@ -1510,11 +1519,19 @@
           "entity_id": "terran-raven",
           "changes": [
             {
-              "raw_text": "Auto Turret damage increased from 16 to 24.",
+              "raw_text": "Auto Turret damage increased from 16 to 24",
               "change_type": "buff"
             },
             {
-              "raw_text": "Research Recalibrated Explosives replaces Explosive Shrapnel Shells: increases Seeker Missile tracking range by 50% and damage by 30%.",
+              "raw_text": "Research Explosive Shrapnel Shells upgrade replaced with Research Recalibrated Explosives upgrade",
+              "change_type": "mixed"
+            },
+            {
+              "raw_text": "Recalibrated Explosives increases Seeker Missile tracking range by 50% (13 to 19.5)",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Recalibrated Explosives increases Seeker Missile damage by 30%",
               "change_type": "buff"
             }
           ]
@@ -1523,19 +1540,19 @@
           "entity_id": "terran-siege_tank",
           "changes": [
             {
-              "raw_text": "Health increased from 160 to 175.",
+              "raw_text": "Health increased from 160 to 175",
               "change_type": "buff"
             },
             {
-              "raw_text": "Damage in Siege Mode increased from 35 (+15 vs armored) to 40 (+30 vs armored).",
+              "raw_text": "Damage in Siege Mode increased from 35 (+15 vs armored) to 40 (+30 vs armored)",
               "change_type": "buff"
             },
             {
-              "raw_text": "Can no longer be picked up by Medivacs when in Siege Mode.",
+              "raw_text": "Can no longer be picked up by Medivacs when in Siege Mode",
               "change_type": "nerf"
             },
             {
-              "raw_text": "Crucio Shock Cannon weapon attack period changed from 2 to 2.14.",
+              "raw_text": "Crucio Shock Cannon weapon attack period changed from 2 to 2.14",
               "change_type": "nerf"
             }
           ]
@@ -1544,11 +1561,11 @@
           "entity_id": "terran-thor",
           "changes": [
             {
-              "raw_text": "Anti-air splash radius for Javelin Missile Launchers increased from 0.5 to 0.6.",
+              "raw_text": "Anti-air splash for the Javelin Missile Launchers radius increased from 0.5 to 0.6",
               "change_type": "buff"
             },
             {
-              "raw_text": "High Impact Payload Mode: 250mm Punisher Cannons prioritized over Thor's Hammer.",
+              "raw_text": "High Impact Payload Mode now prioritizes the anti-air weapon before the anti-ground weapon",
               "change_type": "buff"
             }
           ]
@@ -1557,7 +1574,7 @@
           "entity_id": "terran-viking",
           "changes": [
             {
-              "raw_text": "Assault mode auto-attack now deals bonus (+8 vs mechanical) damage.",
+              "raw_text": "Assault mode auto-attack now deals bonus (+8 vs mechanical) damage",
               "change_type": "buff"
             }
           ]
@@ -1566,7 +1583,7 @@
           "entity_id": "zerg-baneling",
           "changes": [
             {
-              "raw_text": "Centrifugal Hooks now adds +10 life.",
+              "raw_text": "Centrifugal Hooks now adds +10 life in addition to increasing movement speed",
               "change_type": "buff"
             }
           ]
@@ -1575,7 +1592,7 @@
           "entity_id": "zerg-brood_lord",
           "changes": [
             {
-              "raw_text": "Range reduced from 11 to 10.",
+              "raw_text": "Range reduced from 11 to 10",
               "change_type": "nerf"
             }
           ]
@@ -1584,15 +1601,15 @@
           "entity_id": "zerg-hydralisk",
           "changes": [
             {
-              "raw_text": "Muscular Augments and Grooved Spines are now separate upgrades.",
-              "change_type": "mixed"
-            },
-            {
-              "raw_text": "Muscular Augments now gives a 25% speed boost both on and off of Creep.",
+              "raw_text": "Evolve Muscular Augments upgrade increases base movement speed by 25% both on and off Creep",
               "change_type": "buff"
             },
             {
-              "raw_text": "Movement speed on Creep now affected the same as other units.",
+              "raw_text": "Evolve Grooved Spines upgrade increases attack range by 2",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Movement speed is now affected the same as other units while on Creep",
               "change_type": "buff"
             }
           ]
@@ -1601,12 +1618,12 @@
           "entity_id": "zerg-infestor",
           "changes": [
             {
-              "raw_text": "Can cast all abilities while burrowed.",
-              "change_type": "buff"
+              "raw_text": "Has a collision radius while burrowed",
+              "change_type": "nerf"
             },
             {
-              "raw_text": "Has a collision radius while burrowed.",
-              "change_type": "nerf"
+              "raw_text": "Can cast all abilities while burrowed",
+              "change_type": "buff"
             }
           ]
         },
@@ -1614,15 +1631,15 @@
           "entity_id": "zerg-swarm_host",
           "changes": [
             {
-              "raw_text": "Cost reduced from 150/100 to 100/75.",
+              "raw_text": "Cost reduced from 150/100 to 100/75",
               "change_type": "buff"
             },
             {
-              "raw_text": "Increased Locust Swoop range from 4 to 6.",
+              "raw_text": "Locust Swoop range increased from 4 to 6",
               "change_type": "buff"
             },
             {
-              "raw_text": "Locust Acid Spit weapon damage decreased from 12 to 10.",
+              "raw_text": "Locust Acid Spit weapon damage decreased from 12 to 10",
               "change_type": "nerf"
             }
           ]
@@ -1631,11 +1648,11 @@
           "entity_id": "zerg-ultralisk",
           "changes": [
             {
-              "raw_text": "Base armor increased from 1 to 2.",
+              "raw_text": "Base armor increased from 1 to 2",
               "change_type": "buff"
             },
             {
-              "raw_text": "Armor provided by Chitinous Plating reduced from 4 to 2.",
+              "raw_text": "Armor provided by Chitinous Plating reduced from 4 to 2",
               "change_type": "nerf"
             }
           ]
@@ -6052,6 +6069,12 @@
       "type": "unit"
     },
     {
+      "id": "neutral-ramp",
+      "name": "Ramp",
+      "race": "neutral",
+      "type": "mechanic"
+    },
+    {
       "id": "neutral-rocks",
       "name": "Rocks",
       "race": "neutral",
@@ -6808,5 +6831,5 @@
       "type": "unit"
     }
   ],
-  "generated_at": "2025-12-28T20:18:10.932698+00:00"
+  "generated_at": "2025-12-28T21:29:37.930254+00:00"
 }

@@ -30,6 +30,12 @@
     "type": "unit"
   },
   {
+    "id": "neutral-ramp",
+    "name": "Ramp",
+    "race": "neutral",
+    "type": "mechanic"
+  },
+  {
     "id": "neutral-rocks",
     "name": "Rocks",
     "race": "neutral",

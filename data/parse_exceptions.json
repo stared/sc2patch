@@ -1,0 +1,3 @@
+{
+  "3.8.0": "PATCH-SPECIFIC: In this patch, the 'Rocks now have 0 armor' change is in the Co-op Missions section (after the visual separator image following Ultralisk changes). Do NOT include this rocks change - it is Co-op only, not Versus."
+}

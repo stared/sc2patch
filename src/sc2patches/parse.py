@@ -1,7 +1,6 @@
 """Parse patch notes with LLM via OpenRouter."""
 
 import json
-import os
 import re
 from datetime import datetime
 from pathlib import Path
@@ -15,6 +14,20 @@ OPENROUTER_MODEL = "google/gemini-3-pro-preview"
 
 # Path to units database
 UNITS_JSON_PATH = Path(__file__).parent.parent.parent / "data" / "units.json"
+
+# Path to parse exceptions (patch-specific prompt additions)
+PARSE_EXCEPTIONS_PATH = Path(__file__).parent.parent.parent / "data" / "parse_exceptions.json"
+
+
+def load_parse_exceptions() -> dict[str, str]:
+    """Load patch-specific parsing exceptions.
+
+    Returns a dict mapping patch version to additional prompt text.
+    """
+    if not PARSE_EXCEPTIONS_PATH.exists():
+        return {}
+    with PARSE_EXCEPTIONS_PATH.open() as f:
+        return json.load(f)
 
 
 def load_valid_entity_ids() -> dict[str, list[str]]:
@@ -176,16 +189,16 @@ def extract_date_from_html(html_path: Path) -> str | None:
 
 def parse_with_llm(
     body_text: str,
-    version_hint: str | None = None,
-    api_key: str | None = None,
+    version: str,
+    api_key: str,
     is_multi_source: bool = False,
 ) -> PatchChanges:
     """Extract balance changes using LLM via OpenRouter.
 
     Args:
         body_text: Text content to parse
-        version_hint: Optional version hint for the model
-        api_key: OpenRouter API key (uses OPENROUTER_API_KEY env var if not provided)
+        version: Patch version (used for exception lookup and as hint to model)
+        api_key: OpenRouter API key
         is_multi_source: If True, content contains multiple sources (main + BU) to merge
 
     Returns:
@@ -194,16 +207,18 @@ def parse_with_llm(
     Raises:
         ParseError: If parsing fails
     """
-    if api_key is None:
-        api_key = os.getenv("OPENROUTER_API_KEY")
-        if not api_key:
-            raise ParseError("OPENROUTER_API_KEY not found in environment")
 
     # Load valid entity IDs and format for prompt
     valid_ids = load_valid_entity_ids()
     valid_ids_text = "\n".join(
         f"  {race.upper()}: {', '.join(ids)}" for race, ids in valid_ids.items()
     )
+
+    # Load patch-specific exceptions
+    exceptions = load_parse_exceptions()
+    patch_exception = ""
+    if version in exceptions:
+        patch_exception = f"\n\n{exceptions[version]}\n"
 
     # Add multi-source instructions if combining multiple HTML files
     multi_source_header = ""
@@ -221,8 +236,27 @@ Combine ALL balance changes into ONE unified list. DEDUPLICATE:
 """
 
     system_prompt = f"""You are a StarCraft II balance patch expert. Extract balance changes from patch notes.
-{multi_source_header}
+{multi_source_header}{patch_exception}
 CRITICAL: ONLY extract VERSUS (MULTIPLAYER) balance changes!
+
+SECTION DETECTION - Patch notes have distinct sections separated by images/headers:
+- MULTIPLAYER / VERSUS / BALANCE sections → INCLUDE these
+- CO-OP MISSIONS / CO-OP COMMANDERS sections → EXCLUDE entirely
+- CAMPAIGN / NOVA COVERT OPS sections → EXCLUDE entirely
+- BUG FIXES / EDITOR sections → EXCLUDE entirely
+
+HOW TO IDENTIFY VERSUS BALANCE CHANGES:
+- Versus balance is usually under sections with race headers: "Terran", "Protoss", "Zerg"
+- Changes listed directly under units (Marine, Stalker, Roach, etc.) are versus balance
+- "General" subsections within race sections are versus balance
+
+HOW TO IDENTIFY CO-OP CHANGES (EXCLUDE THESE):
+- Sections followed by "Commanders", "Nova Covert Ops", "Campaign" are Co-op
+- "General" sections NOT within the Multiplayer/Versus section are likely Co-op
+- IMPORTANT: In patch notes, sections are separated by image tags (![...]). After the Zerg race
+  section ends and before "Commanders"/"Campaign" sections, any changes are likely Co-op.
+- If a "General" section appears AFTER all race-specific unit changes and BEFORE campaign/commander
+  sections, those changes are Co-op, not versus
 
 EXCLUDE these completely - DO NOT include them:
 1. CO-OP COMMANDERS and their units/abilities:
@@ -296,14 +330,21 @@ UPGRADE PLACEMENT RULES:
    - Broodling stats → zerg-brood_lord
    - Creep Tumor stats → zerg-queen
 
-NEUTRAL ENTITIES - Don't forget map objects:
+NEUTRAL ENTITIES - Map objects and mechanics:
+- neutral-ramp (vision up/down ramps, ramp blocking rules, ramp width)
 - neutral-vespene_geyser (footprint, visibility, yield changes)
 - neutral-mineral_field (health, collision, harvest rate)
-- neutral-rocks (armor, health changes)
+- neutral-rocks (armor, health changes) - ONLY IN VERSUS, ignore Co-op rocks
 - neutral-collapsible_rock_tower
 - neutral-inhibitor_zone_generator
 - neutral-acceleration_zone_generator
 - neutral-xelnaga_tower
+
+GLOBAL MECHANIC CHANGES - Use neutral entity, NOT per-race duplicates:
+- "Vision up ramps reduced" → ONE entry for neutral-ramp (NOT 3 entries per race!)
+- "Ramp blocking rules changed" → ONE entry for neutral-ramp
+- "Building placement on ramps" → ONE entry for neutral-ramp
+These are map mechanics, not race-specific unit changes.
 
 COMMONLY MISSED UNITS - check these explicitly:
 - protoss-tempest (Tectonic Destabilizers upgrade)
@@ -353,7 +394,7 @@ CRITICAL: ALL fields (entity_id, entity_name, race, changes with text and change
 
 {body_text}
 
-Version hint: {version_hint if version_hint else "Unknown - extract from content"}
+Version: {version}
 
 Return ONLY valid JSON matching the example format. Include ALL required fields."""
 
@@ -407,12 +448,13 @@ Return ONLY valid JSON matching the example format. Include ALL required fields.
         raise ParseError(f"Failed to parse LLM response: {e}") from e
 
 
-def parse_patch(html_path: Path, api_key: str | None = None) -> dict:
+def parse_patch(html_path: Path, version: str, api_key: str) -> dict:
     """Parse a single patch file and return structured JSON.
 
     Args:
         html_path: Path to HTML file
-        api_key: Optional OpenRouter API key
+        version: Patch version from config (authoritative, used for exception lookup)
+        api_key: OpenRouter API key
 
     Returns:
         Dictionary with metadata and changes
@@ -426,11 +468,8 @@ def parse_patch(html_path: Path, api_key: str | None = None) -> dict:
     # Extract date from HTML metadata (authoritative source)
     html_date = extract_date_from_html(html_path)
 
-    # Try to infer version from filename
-    version_hint = html_path.stem
-
     # Parse with LLM
-    patch_data = parse_with_llm(body_text, version_hint, api_key)
+    patch_data = parse_with_llm(body_text, version, api_key)
 
     # Use HTML metadata date (authoritative), fallback to LLM date only if HTML has none
     authoritative_date = html_date or patch_data.date or "unknown"
@@ -488,7 +527,7 @@ def parse_patch(html_path: Path, api_key: str | None = None) -> dict:
     return result
 
 
-def parse_patches_combined(html_paths: list[Path], api_key: str | None = None) -> dict:
+def parse_patches_combined(html_paths: list[Path], version: str, api_key: str) -> dict:
     """Parse multiple patch files together (main + BU) and return merged JSON.
 
     This is used when a patch has both a main client update and a Balance Update.
@@ -496,7 +535,8 @@ def parse_patches_combined(html_paths: list[Path], api_key: str | None = None) -
 
     Args:
         html_paths: List of HTML files to parse together (main first, then additional)
-        api_key: Optional OpenRouter API key
+        version: Patch version from config (authoritative, used for exception lookup)
+        api_key: OpenRouter API key
 
     Returns:
         Dictionary with metadata and merged changes
@@ -518,11 +558,8 @@ def parse_patches_combined(html_paths: list[Path], api_key: str | None = None) -
         if html_date:
             break
 
-    # Try to infer version from first filename (main patch)
-    version_hint = html_paths[0].stem
-
     # Parse with LLM in multi-source mode
-    patch_data = parse_with_llm(body_text, version_hint, api_key, is_multi_source=True)
+    patch_data = parse_with_llm(body_text, version, api_key, is_multi_source=True)
 
     # Use HTML metadata date (authoritative), fallback to LLM date only if HTML has none
     authoritative_date = html_date or patch_data.date or "unknown"
