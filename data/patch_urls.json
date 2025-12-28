@@ -50,6 +50,12 @@
     "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.11.0"
   },
   {
+    "version": "4.10.1",
+    "url": "https://liquipedia.net/starcraft2/Patch_4.10.1",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.10.1",
+    "note": "Blizzard URL returns 404"
+  },
+  {
     "version": "4.8.3",
     "url": "https://news.blizzard.com/en-us/starcraft2/22933133/starcraft-ii-4-8-3-patch-notes",
     "additional_urls": [
@@ -76,6 +82,11 @@
     "version": "4.2.1 BU",
     "url": "https://news.blizzard.com/en-us/starcraft2/21637913/starcraft-ii-balance-update-april-10-2018",
     "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.2.1"
+  },
+  {
+    "version": "4.1.4",
+    "url": "https://news.blizzard.com/en-gb/starcraft2/21494433/starcraft-ii-balance-update-january-29-2018",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.1.4"
   },
   {
     "version": "4.1.1",
@@ -131,9 +142,9 @@
     "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.3.0"
   },
   {
-    "version": "3.1.0",
+    "version": "3.1.1",
     "url": "https://news.blizzard.com/en-us/starcraft2/20012086/legacy-of-the-void-balance-update-january-29-2016",
-    "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.1.0"
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.1.1"
   },
   {
     "version": "2.1.9",
@@ -153,12 +164,6 @@
     "version": "2.1.2",
     "url": "https://liquipedia.net/starcraft2/Patch_2.1.2",
     "liquipedia": "https://liquipedia.net/starcraft2/Patch_2.1.2",
-    "note": "Blizzard URL broken, using Liquipedia"
-  },
-  {
-    "version": "2.1.0",
-    "url": "https://liquipedia.net/starcraft2/Patch_2.1",
-    "liquipedia": "https://liquipedia.net/starcraft2/Patch_2.1",
     "note": "Blizzard URL broken, using Liquipedia"
   },
   {
@@ -202,6 +207,23 @@
     "version": "1.4.3",
     "url": "https://news.blizzard.com/en-gb/starcraft2/9995857/patch-1-4-3-now-live",
     "liquipedia": "https://liquipedia.net/starcraft2/Patch_1.4.3"
+  },
+  {
+    "version": "1.4.3 BU",
+    "url": "https://liquipedia.net/starcraft2/Patch_1.4.3",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_1.4.3",
+    "note": "Balance Update - server-side, no patch download"
+  },
+  {
+    "version": "1.5.3 BU",
+    "url": "https://liquipedia.net/starcraft2/Patch_1.5.3",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_1.5.3",
+    "note": "Balance Update - server-side, no patch download"
+  },
+  {
+    "version": "1.5.4",
+    "url": "https://liquipedia.net/starcraft2/Patch_1.5.4",
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_1.5.4"
   },
   {
     "version": "1.4.2",
