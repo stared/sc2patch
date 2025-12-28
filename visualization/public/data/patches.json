@@ -3,7 +3,7 @@
     {
       "version": "1.1.0",
       "date": "2010-09-22",
-      "url": "https://news.blizzard.com/en-us/starcraft2/622030/starcraft-ii-patch-1-1-notes",
+      "url": "https://news.blizzard.com/en-gb/starcraft2/9993888/patch-1-1-0-now-live",
       "entities": [
         {
           "entity_id": "protoss-zealot",
@@ -63,7 +63,7 @@
           "changes": [
             {
               "raw_text": "Ram ability removed. Ultralisk will now use normal attack against buildings",
-              "change_type": "mixed"
+              "change_type": "nerf"
             },
             {
               "raw_text": "Damage decreased from 15 (+25 armored) to 15 (+20 armored)",
@@ -76,13 +76,13 @@
     {
       "version": "1.1.2",
       "date": "2010-10-15",
-      "url": "https://news.blizzard.com/en-us/starcraft2/1010892/starcraft-ii-patch-1-1-2",
+      "url": "https://news.blizzard.com/en-gb/starcraft2/9990145/patch-1-1-2-now-live",
       "entities": [
         {
           "entity_id": "protoss-nexus",
           "changes": [
             {
-              "raw_text": "Nexus life and shields increased from 750/750 to 1000/1000",
+              "raw_text": "Life and shields increased from 750/750 to 1000/1000",
               "change_type": "buff"
             }
           ]
@@ -108,7 +108,7 @@
           "entity_id": "terran-barracks",
           "changes": [
             {
-              "raw_text": "Barracks requirement changed from Command Center to Supply Depot",
+              "raw_text": "Requirement changed from Command Center to Supply Depot",
               "change_type": "nerf"
             }
           ]
@@ -139,7 +139,7 @@
           "entity_id": "terran-supply_depot",
           "changes": [
             {
-              "raw_text": "Supply Depot life increased from 350 to 400",
+              "raw_text": "Life increased from 350 to 400",
               "change_type": "buff"
             }
           ]
@@ -154,6 +154,10 @@
             {
               "raw_text": "250mm Strike Cannons is now cooldown-based on a 50-second cooldown",
               "change_type": "mixed"
+            },
+            {
+              "raw_text": "250mm Strike Cannons starts with cooldown available",
+              "change_type": "buff"
             }
           ]
         },
@@ -167,6 +171,10 @@
             {
               "raw_text": "Corruption is now cooldown-based on a 45-second cooldown",
               "change_type": "mixed"
+            },
+            {
+              "raw_text": "Corruption starts with cooldown expired (must wait for full 45-second cycle before usable)",
+              "change_type": "nerf"
             }
           ]
         },
@@ -174,7 +182,7 @@
           "entity_id": "zerg-hatchery",
           "changes": [
             {
-              "raw_text": "Hatchery life increased from 1250 to 1500",
+              "raw_text": "Life increased from 1250 to 1500",
               "change_type": "buff"
             }
           ]
@@ -192,7 +200,7 @@
           "entity_id": "zerg-lair",
           "changes": [
             {
-              "raw_text": "Lair life increased from 1800 to 2000",
+              "raw_text": "Life increased from 1800 to 2000",
               "change_type": "buff"
             }
           ]
@@ -210,7 +218,7 @@
           "entity_id": "zerg-spawning_pool",
           "changes": [
             {
-              "raw_text": "Spawning Pool life increased from 750 to 1000",
+              "raw_text": "Life increased from 750 to 1000",
               "change_type": "buff"
             }
           ]
@@ -219,7 +227,7 @@
           "entity_id": "zerg-spire",
           "changes": [
             {
-              "raw_text": "Spire life increased from 600 to 850",
+              "raw_text": "Life increased from 600 to 850",
               "change_type": "buff"
             }
           ]
@@ -228,7 +236,7 @@
           "entity_id": "zerg-ultralisk_cavern",
           "changes": [
             {
-              "raw_text": "Ultralisk Cavern life increased from 600 to 850",
+              "raw_text": "Life increased from 600 to 850",
               "change_type": "buff"
             }
           ]
@@ -244,7 +252,7 @@
           "entity_id": "terran-thor",
           "changes": [
             {
-              "raw_text": "This unit will now prioritize attacking ground combat units over Medivacs",
+              "raw_text": "Prioritize attacking ground combat units over Medivacs",
               "change_type": "buff"
             }
           ]
@@ -311,10 +319,6 @@
             {
               "raw_text": "Repairing SCVs now assume the same threat priority as the unit they’re repairing",
               "change_type": "nerf"
-            },
-            {
-              "raw_text": "Construction movement has been made more consistent",
-              "change_type": "buff"
             }
           ]
         }
@@ -323,13 +327,13 @@
     {
       "version": "1.3.0",
       "date": "2011-03-22",
-      "url": "https://news.blizzard.com/en-us/starcraft2/2837245/starcraft-ii-patch-1-3-0-notes",
+      "url": "https://news.blizzard.com/en-us/starcraft2/2514162/patch-1-3-0-now-live",
       "entities": [
         {
           "entity_id": "protoss-high_templar",
           "changes": [
             {
-              "raw_text": "Khaydarin Amulet upgrade (+25 starting energy) has been removed.",
+              "raw_text": "Khaydarin Amulet upgrade (+25 starting energy) has been removed",
               "change_type": "nerf"
             }
           ]
@@ -338,8 +342,8 @@
           "entity_id": "protoss-mothership",
           "changes": [
             {
-              "raw_text": "Units leaving the Mothership's Vortex are now un-targetable and immune to damage for 1.5 seconds.",
-              "change_type": "mixed"
+              "raw_text": "Units leaving the Mothership's Vortex are now un-targetable and immune to damage for 1.5 seconds",
+              "change_type": "nerf"
             }
           ]
         },
@@ -347,7 +351,7 @@
           "entity_id": "protoss-zealot",
           "changes": [
             {
-              "raw_text": "Charging Zealots will now hit fleeing targets at least once.",
+              "raw_text": "Charging Zealots will now hit fleeing targets at least once",
               "change_type": "buff"
             }
           ]
@@ -356,7 +360,7 @@
           "entity_id": "terran-battlecruiser",
           "changes": [
             {
-              "raw_text": "Movement speed increased from 1.406 to 1.875.",
+              "raw_text": "Movement speed increased from 1.406 to 1.875",
               "change_type": "buff"
             }
           ]
@@ -365,7 +369,7 @@
           "entity_id": "terran-bunker",
           "changes": [
             {
-              "raw_text": "Build time increased from 35 to 40 seconds.",
+              "raw_text": "Build time increased from 35 to 40 seconds",
               "change_type": "nerf"
             }
           ]
@@ -374,7 +378,7 @@
           "entity_id": "terran-ghost",
           "changes": [
             {
-              "raw_text": "EMP now drains up to 100 energy instead of all available energy.",
+              "raw_text": "EMP now drains up to 100 energy instead of all available energy",
               "change_type": "nerf"
             }
           ]
@@ -383,7 +387,7 @@
           "entity_id": "terran-marauder",
           "changes": [
             {
-              "raw_text": "Stimpack upgrade research time increased from 140 to 170 seconds.",
+              "raw_text": "Stimpack upgrade research time increased from 140 to 170 seconds",
               "change_type": "nerf"
             }
           ]
@@ -392,7 +396,16 @@
           "entity_id": "terran-marine",
           "changes": [
             {
-              "raw_text": "Stimpack upgrade research time increased from 140 to 170 seconds.",
+              "raw_text": "Stimpack upgrade research time increased from 140 to 170 seconds",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-viking",
+          "changes": [
+            {
+              "raw_text": "Players can no longer hide units by setting them in a close proximity patrol (ex: Viking flower)",
               "change_type": "nerf"
             }
           ]
@@ -401,11 +414,11 @@
           "entity_id": "zerg-infestor",
           "changes": [
             {
-              "raw_text": "Fungal Growth stun duration decreased from 8 to 4 seconds.",
+              "raw_text": "Fungal Growth Stun duration decreased from 8 to 4 seconds",
               "change_type": "nerf"
             },
             {
-              "raw_text": "Fungal Growth damage increased by +30% vs. armored units.",
+              "raw_text": "Fungal Growth damage increased by +30% vs. armored units",
               "change_type": "buff"
             }
           ]
@@ -415,17 +428,17 @@
     {
       "version": "1.3.3",
       "date": "2011-05-13",
-      "url": "https://news.blizzard.com/en-us/starcraft2/3098417/starcraft-ii-patch-1-3-3-notes",
+      "url": "https://news.blizzard.com/en-gb/starcraft2/9982849/patch-1-3-3-now-live",
       "entities": [
         {
           "entity_id": "protoss-archon",
           "changes": [
             {
-              "raw_text": "Now a massive unit.",
+              "raw_text": "Now a massive unit",
               "change_type": "buff"
             },
             {
-              "raw_text": "Range increased from 2 to 3.",
+              "raw_text": "Range increased from 2 to 3",
               "change_type": "buff"
             }
           ]
@@ -434,7 +447,7 @@
           "entity_id": "protoss-cybernetics_core",
           "changes": [
             {
-              "raw_text": "Research Warp Gate time increased from 140 to 160.",
+              "raw_text": "Research Warp Gate time increased from 140 to 160",
               "change_type": "nerf"
             }
           ]
@@ -443,7 +456,7 @@
           "entity_id": "protoss-pylon",
           "changes": [
             {
-              "raw_text": "Pylon power radius has been decreased from 7.5 to 6.5.",
+              "raw_text": "Power radius decreased from 7.5 to 6.5",
               "change_type": "nerf"
             }
           ]
@@ -452,7 +465,7 @@
           "entity_id": "protoss-sentry",
           "changes": [
             {
-              "raw_text": "Sentry train time decreased from 42 to 37.",
+              "raw_text": "Train time decreased from 42 to 37",
               "change_type": "buff"
             }
           ]
@@ -461,7 +474,7 @@
           "entity_id": "terran-bunker",
           "changes": [
             {
-              "raw_text": "Salvage resource return reduced from 100% to 75%.",
+              "raw_text": "Salvage resource return reduced from 100% to 75%",
               "change_type": "nerf"
             }
           ]
@@ -479,11 +492,11 @@
           "entity_id": "terran-thor",
           "changes": [
             {
-              "raw_text": "Thor now has 200 max energy, and starts with 50 energy.",
+              "raw_text": "Now has 200 max energy, and starts with 50 energy",
               "change_type": "mixed"
             },
             {
-              "raw_text": "250mm Strike Cannons now cost 150 energy to use (cooldown removed).",
+              "raw_text": "250mm Strike Cannons now cost 150 energy to use (cooldown removed)",
               "change_type": "mixed"
             }
           ]
@@ -492,7 +505,7 @@
           "entity_id": "zerg-infestor",
           "changes": [
             {
-              "raw_text": "Speed decreased from 2.5 to 2.25.",
+              "raw_text": "Speed decreased from 2.5 to 2.25",
               "change_type": "nerf"
             }
           ]
@@ -501,7 +514,7 @@
           "entity_id": "zerg-spore_crawler",
           "changes": [
             {
-              "raw_text": "Root time decreased from 12 to 6.",
+              "raw_text": "Root time decreased from 12 to 6",
               "change_type": "buff"
             }
           ]
@@ -628,8 +641,8 @@
     },
     {
       "version": "1.4.2",
-      "date": "2011-11-08",
-      "url": "https://news.blizzard.com/en-us/starcraft2/4096427/starcraft-ii-patch-1-4-2-notes",
+      "date": "2011-11-09",
+      "url": "https://news.blizzard.com/en-gb/starcraft2/10002543/patch-1-4-2-now-live",
       "entities": [
         {
           "entity_id": "protoss-forge",
@@ -677,14 +690,14 @@
     },
     {
       "version": "1.4.3",
-      "date": "2012-02-21",
-      "url": "https://news.blizzard.com/en-us/starcraft2/4657722/starcraft-ii-patch-1-4-3-notes",
+      "date": "2012-02-22",
+      "url": "https://news.blizzard.com/en-gb/starcraft2/9995857/patch-1-4-3-now-live",
       "entities": [
         {
           "entity_id": "protoss-phoenix",
           "changes": [
             {
-              "raw_text": "New upgrade added to the Fleet Beacon: Anion Pulse-Crystals. This upgrade increases Phoenix weapon range by +2",
+              "raw_text": "A new upgrade has been added to the Fleet Beacon: Anion Pulse-Crystals. This upgrade increases Phoenix weapon range by +2",
               "change_type": "buff"
             }
           ]
@@ -694,12 +707,12 @@
           "changes": [
             {
               "raw_text": "Snipe damage changed from 45 to 25 (+25 vs Psionic)",
-              "change_type": "mixed"
+              "change_type": "nerf"
             }
           ]
         },
         {
-          "entity_id": "terran-mule",
+          "entity_id": "terran-orbital_command",
           "changes": [
             {
               "raw_text": "MULE now always returns 30 minerals per trip, regardless of mineral type",
@@ -710,9 +723,9 @@
       ]
     },
     {
-      "version": "2.0.8 BU",
-      "date": "2013-05-23",
-      "url": "https://news.blizzard.com/en-us/starcraft2/9693907",
+      "version": "2.0.8",
+      "date": "2013-05-13",
+      "url": "https://news.blizzard.com/en-us/starcraft2/9096527/starcraft-ii-patch-2-0-8-notes",
       "entities": [
         {
           "entity_id": "zerg-spore_crawler",
@@ -726,31 +739,28 @@
       ]
     },
     {
-      "version": "2.0.11 BU",
-      "date": "2013-07-09",
-      "url": "https://news.blizzard.com/en-us/starcraft2/10782713",
+      "version": "2.0.9",
+      "date": "2013-07-11",
+      "url": "https://news.blizzard.com/en-us/starcraft2/10278173/starcraft-ii-2-0-9-patch-notes",
       "entities": [
         {
-          "entity_id": "zerg-overseer",
+          "entity_id": "protoss-warp_prism",
           "changes": [
             {
-              "raw_text": "Pneumatized Carapace now increases Overseer movement speed from 1.88 to 3.375 (was 1.88 to 2.75)",
+              "raw_text": "Movement speed increased from 2.5 to 2.953",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Acceleration increased from 2.125 to 2.625",
               "change_type": "buff"
             }
           ]
-        }
-      ]
-    },
-    {
-      "version": "2.0.9 BU",
-      "date": "2013-08-14",
-      "url": "https://news.blizzard.com/en-us/starcraft2/10393911",
-      "entities": [
+        },
         {
-          "entity_id": "terran-ghost",
+          "entity_id": "terran-banshee",
           "changes": [
             {
-              "raw_text": "[Cloaking Field] Cloaking research cost decreased from 200/200 to 100/100.",
+              "raw_text": "Cloaking research cost decreased from 200/200 to 100/100",
               "change_type": "buff"
             }
           ]
@@ -759,11 +769,11 @@
           "entity_id": "terran-hellbat",
           "changes": [
             {
-              "raw_text": "Attack damage decreased from 18 + 12 vs. light to 18.",
+              "raw_text": "Attack damage decreased from 18 + 12 vs. light to 18",
               "change_type": "nerf"
             },
             {
-              "raw_text": "[Infernal Pre Igniter] The Infernal Pre-Igniter upgrade now increases attack damage to 18 + 12 vs. light.",
+              "raw_text": "The Infernal Pre-Igniter upgrade now increases attack damage to 18 + 12 vs. light",
               "change_type": "buff"
             }
           ]
@@ -772,8 +782,8 @@
     },
     {
       "version": "2.0.11",
-      "date": "2013-08-26",
-      "url": "https://news.blizzard.com/en-us/starcraft2/11089019/starcraft-ii-2-0-11-patch-notes",
+      "date": "2013-08-28",
+      "url": "https://news.blizzard.com/en-us/starcraft2/10782713/starcraft-ii-balance-update-july-9-2013",
       "entities": [
         {
           "entity_id": "zerg-overseer",
@@ -787,9 +797,9 @@
       ]
     },
     {
-      "version": "2.1.0",
+      "version": "2.0.12",
       "date": "2013-11-11",
-      "url": "https://news.blizzard.com/en-us/starcraft2/12253117/starcraft-ii-2-1-patch-notes",
+      "url": "https://news.blizzard.com/en-us/starcraft2/11523757/starcraft-ii-2-0-12-patch-notes",
       "entities": [
         {
           "entity_id": "protoss-oracle",
@@ -809,52 +819,7 @@
           ]
         },
         {
-          "entity_id": "terran-banshee",
-          "changes": [
-            {
-              "raw_text": "Vehicle and Ship Weapon upgrades have been combined",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-battlecruiser",
-          "changes": [
-            {
-              "raw_text": "Vehicle and Ship Weapon upgrades have been combined",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-hellbat",
-          "changes": [
-            {
-              "raw_text": "Vehicle and Ship Weapon upgrades have been combined",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-hellion",
-          "changes": [
-            {
-              "raw_text": "Vehicle and Ship Weapon upgrades have been combined",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-medivac",
-          "changes": [
-            {
-              "raw_text": "Vehicle and Ship Weapon upgrades have been combined",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-raven",
+          "entity_id": "terran-armory",
           "changes": [
             {
               "raw_text": "Vehicle and Ship Weapon upgrades have been combined",
@@ -866,29 +831,7 @@
           "entity_id": "terran-siege_tank",
           "changes": [
             {
-              "raw_text": "Vehicle and Ship Weapon upgrades have been combined",
-              "change_type": "buff"
-            },
-            {
               "raw_text": "Siege Mode attack period decreased from 3.0 to 2.8",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-thor",
-          "changes": [
-            {
-              "raw_text": "Vehicle and Ship Weapon upgrades have been combined",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-viking",
-          "changes": [
-            {
-              "raw_text": "Vehicle and Ship Weapon upgrades have been combined",
               "change_type": "buff"
             }
           ]
@@ -897,7 +840,11 @@
           "entity_id": "terran-widow_mine",
           "changes": [
             {
-              "raw_text": "Sentinel Missiles now deal reduced damage to units caught within its splash radius based on their distance from the target: 40 damage within 1.25 radius, 20 damage from 1.25 to 1.5, 10 damage from 1.5 to 1.75",
+              "raw_text": "Sentinel Missiles now deal reduced damage to units caught within its splash radius based on their distance from the target",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Splash damage changed to: 40 damage within 1.25 radius, 20 damage from 1.25 to 1.5, and 10 damage from 1.5 to 1.75",
               "change_type": "nerf"
             }
           ]
@@ -906,7 +853,66 @@
           "entity_id": "zerg-roach",
           "changes": [
             {
-              "raw_text": "The Tunneling Claws upgrade now increases burrowed Roach movement speed from 1.41 to 2",
+              "raw_text": "Tunneling Claws upgrade now increases burrowed movement speed from 1.41 to 2",
+              "change_type": "buff"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "version": "2.1.0",
+      "date": "2014-01-21",
+      "url": "https://liquipedia.net/starcraft2/Patch_2.1",
+      "entities": [
+        {
+          "entity_id": "protoss-mothership_core",
+          "changes": [
+            {
+              "raw_text": "Time Warp cost increased from 75 to 100",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Vision decreased from 14 to 9",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-ghost",
+          "changes": [
+            {
+              "raw_text": "Ghosts start with the energy upgrade built in",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-widow_mine",
+          "changes": [
+            {
+              "raw_text": "Splash damage increased from 40 to 40 +40 shields",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Up to 1.25 radius, splash damage increased from 40 to 40 +40 vs. shields",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "From 1.25 to 1.5 radius, splash damage increased from 20 to 20 +20 vs. shields",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "From 1.5 to 1.75 radius, splash damage increased from 10 to 10 +10 vs. shields",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-hydralisk",
+          "changes": [
+            {
+              "raw_text": "Attack delay decreased from 0.83 to 0.75",
               "change_type": "buff"
             }
           ]
@@ -915,8 +921,8 @@
     },
     {
       "version": "2.1 BU",
-      "date": "2014-02-13",
-      "url": "https://news.blizzard.com/en-us/starcraft2/12802185",
+      "date": "2014-02-05",
+      "url": "https://news.blizzard.com/en-us/starcraft2/12802185/starcraft-ii-balance-update-february-13-2014",
       "entities": [
         {
           "entity_id": "protoss-mothership_core",
@@ -935,53 +941,7 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "[Moebius Reactor] Upgrade removed from the Ghost Academy",
-              "change_type": "nerf"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "version": "2.0.12",
-      "date": "2014-02-24",
-      "url": "https://news.blizzard.com/en-us/starcraft2/12844591/starcraft-ii-2-0-12-patch-notes",
-      "entities": [
-        {
-          "entity_id": "terran-hellbat",
-          "changes": [
-            {
-              "raw_text": "Removed Transformation Servos upgrade",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Hellion/Hellbat transform requirement changed to Armory",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-hellion",
-          "changes": [
-            {
-              "raw_text": "Removed Transformation Servos upgrade",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Hellion/Hellbat transform requirement changed to Armory",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-brood_lord",
-          "changes": [
-            {
-              "raw_text": "Gains the Frenzied ability",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Frenzied is changed to also be immune to movement altering abilities",
+              "raw_text": "The Moebius Reactor upgrade has been removed from the Ghost Academy",
               "change_type": "buff"
             }
           ]
@@ -990,8 +950,8 @@
     },
     {
       "version": "2.1 BU2",
-      "date": "2014-02-25",
-      "url": "https://news.blizzard.com/en-us/starcraft2/13108934",
+      "date": "2014-02-28",
+      "url": "https://news.blizzard.com/en-us/starcraft2/13108934/starcraft-ii-balance-update-february-25-2014",
       "entities": [
         {
           "entity_id": "protoss-mothership_core",
@@ -1006,19 +966,7 @@
           "entity_id": "terran-widow_mine",
           "changes": [
             {
-              "raw_text": "Sentinel Missiles now deal bonus splash damage to units with Shields, based on distance from the target",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Splash damage is now 40 + 40 vs. Shields within 1.25 radius",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Splash damage is now 20 + 20 vs. Shields from 1.25 to 1.5 radius",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Splash damage is now 10 + 10 vs. Shields from 1.5 to 1.75 radius",
+              "raw_text": "Sentinel Missiles now deal bonus splash damage to units with Shields based on distance: 40 + 40 vs Shields within 1.25 radius, 20 + 20 vs Shields from 1.25 to 1.5, and 10 + 10 vs Shields from 1.5 to 1.75",
               "change_type": "buff"
             }
           ]
@@ -1035,9 +983,60 @@
       ]
     },
     {
-      "version": "2.1.3 BU",
+      "version": "2.1.2",
+      "date": "2014-05-20",
+      "url": "https://liquipedia.net/starcraft2/Patch_2.1.2",
+      "entities": [
+        {
+          "entity_id": "terran-hellbat",
+          "changes": [
+            {
+              "raw_text": "Transformation Servos upgrade removed",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Transform requirement changed to Armory",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-hellion",
+          "changes": [
+            {
+              "raw_text": "Transformation Servos upgrade removed",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Transform requirement changed to Armory",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-brood_lord",
+          "changes": [
+            {
+              "raw_text": "Gained the Frenzied ability",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-ultralisk",
+          "changes": [
+            {
+              "raw_text": "Frenzied ability changed to also be immune to movement altering abilities",
+              "change_type": "buff"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "version": "2.1.3",
       "date": "2014-07-25",
-      "url": "https://news.blizzard.com/en-us/starcraft2/14933073",
+      "url": "https://news.blizzard.com/en-us/starcraft2/14933073/starcraft-ii-balance-update-april-22-2014",
       "entities": [
         {
           "entity_id": "protoss-mothership_core",
@@ -1052,7 +1051,7 @@
           "entity_id": "terran-thor",
           "changes": [
             {
-              "raw_text": "Now prioritizes anti-air (AA) weapon over anti-ground (AG) weapon",
+              "raw_text": "Changed to prioritize their AA weapon over the AG weapon",
               "change_type": "buff"
             }
           ]
@@ -1061,11 +1060,11 @@
           "entity_id": "terran-widow_mine",
           "changes": [
             {
-              "raw_text": "Splash radius is now 1.75; removed 50% and 25% damage zones",
+              "raw_text": "Splash radius is now 1.75 with no 50% or 25% damage zones",
               "change_type": "buff"
             },
             {
-              "raw_text": "Splash damage is now 40 (+40 vs. Shields) uniformly across the full 1.75 radius",
+              "raw_text": "Splash damage is now 40 (+40 Shields) for the full 1.75 splash radius",
               "change_type": "buff"
             }
           ]
@@ -1074,7 +1073,7 @@
     },
     {
       "version": "2.1.9",
-      "date": "2015-04-09",
+      "date": "2015-04-07",
       "url": "https://news.blizzard.com/en-us/starcraft2/18446033/starcraft-ii-2-1-9-patch-notes",
       "entities": [
         {
@@ -1111,15 +1110,15 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "Swarm Hosts now require the Burrow research in order to burrow",
+              "raw_text": "Now requires the Burrow research in order to burrow",
               "change_type": "nerf"
             },
             {
-              "raw_text": "Swarm Hosts no longer collide with Locusts",
+              "raw_text": "No longer collides with Locusts",
               "change_type": "buff"
             },
             {
-              "raw_text": "Spawn Locusts: Auto-cast removed, must now be manually cast",
+              "raw_text": "Spawn Locusts auto-cast removed",
               "change_type": "nerf"
             },
             {
@@ -1131,11 +1130,11 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "Weapon speed increased from .8 to .6",
+              "raw_text": "Locust weapon speed increased from .8 to .6",
               "change_type": "buff"
             },
             {
-              "raw_text": "Locust duration increased from 15 seconds (+10 with Enduring Locusts) to 25 seconds",
+              "raw_text": "Locust duration increased from 15 seconds to 25 seconds",
               "change_type": "buff"
             },
             {
@@ -1143,7 +1142,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "New upgrade: Flying Locusts - Allows Locusts to fly and use Swoop to land and attack",
+              "raw_text": "New upgrade: Flying Locusts added",
               "change_type": "buff"
             }
           ]
@@ -1210,7 +1209,7 @@
           "entity_id": "protoss-colossus",
           "changes": [
             {
-              "raw_text": "Attack speed increased by 10% (includes ground sweep)",
+              "raw_text": "Attack speed increased by 10%",
               "change_type": "buff"
             }
           ]
@@ -1250,7 +1249,7 @@
           "entity_id": "terran-thor",
           "changes": [
             {
-              "raw_text": "Added a second anti-air attack 'mode' which can be toggled on/off: Attack deals 35 (+15 armored) damage every 2.14 seconds",
+              "raw_text": "Added a second anti-air attack mode which can be toggled on/off (deals 35 (+15 armored) damage every 2.14 seconds)",
               "change_type": "buff"
             }
           ]
@@ -1260,55 +1259,6 @@
           "changes": [
             {
               "raw_text": "Cost reduced from 200/100 to 150/75",
-              "change_type": "buff"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "version": "3.4.0",
-      "date": "2016-07-11",
-      "url": "https://news.blizzard.com/en-us/article/20166144/starcraft-ii-legacy-of-the-void-3-4-0-patch-notes",
-      "entities": [
-        {
-          "entity_id": "terran-thor",
-          "changes": [
-            {
-              "raw_text": "Fixed an issue where High Impact Payload and Explosive Payload could still be used while under the effect of Fungal Growth.",
-              "change_type": "nerf"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "version": "3.6.0",
-      "date": "2016-09-12",
-      "url": "https://news.blizzard.com/en-us/starcraft2/20273794",
-      "entities": [
-        {
-          "entity_id": "terran-battlecruiser",
-          "changes": [
-            {
-              "raw_text": "Hitpoints increased from 450 to 550",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Energy removed",
-              "change_type": "mixed"
-            },
-            {
-              "raw_text": "Yamato Cannon now has 100 seconds cooldown (no longer requires energy)",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-queen",
-          "changes": [
-            {
-              "raw_text": "Queens now start attacking from the maximum attack range",
               "change_type": "buff"
             }
           ]
@@ -1350,7 +1300,11 @@
           "entity_id": "protoss-dark_templar",
           "changes": [
             {
-              "raw_text": "New Ability: Shadow Stride (teleport a short distance)",
+              "raw_text": "New Ability: Shadow Stride allows teleporting a short distance",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Shadow Stride research added to Dark Shrine (100/100 cost, 121 research time)",
               "change_type": "buff"
             }
           ]
@@ -1367,11 +1321,11 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "Anti-ground weapon range changed from 15 to 8",
+              "raw_text": "Anti-ground weapon range reduced from 15 to 8",
               "change_type": "nerf"
             },
             {
-              "raw_text": "New ability: Disruption Blast (stuns enemy ground units/structures)",
+              "raw_text": "New ability: Disruption Blast stuns enemy ground units and structures for 7 seconds",
               "change_type": "buff"
             }
           ]
@@ -1424,12 +1378,8 @@
               "change_type": "mixed"
             },
             {
-              "raw_text": "Yamato Cannon and Tactical Jump no longer require energy to cast",
+              "raw_text": "Yamato Cannon and Tactical Jump no longer require energy to cast and instead have a cooldown of 71 seconds",
               "change_type": "buff"
-            },
-            {
-              "raw_text": "Yamato Cannon and Tactical Jump now have a cooldown of 71 seconds",
-              "change_type": "mixed"
             },
             {
               "raw_text": "Removed the Behemoth Reactor upgrade",
@@ -1445,7 +1395,7 @@
           "entity_id": "terran-cyclone",
           "changes": [
             {
-              "raw_text": "Anti-ground weapon damage changed from 18 to 3 (+2 vs armored)",
+              "raw_text": "Anti-ground damage changed from 18 to 3 (+2 vs armored)",
               "change_type": "nerf"
             },
             {
@@ -1453,7 +1403,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "New 'Mag-Field Launchers' upgrade gives +2 range",
+              "raw_text": "Mag-Field Launchers upgrade gives +2 range",
               "change_type": "buff"
             },
             {
@@ -1469,7 +1419,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "No anti-air weapon",
+              "raw_text": "Anti-air weapon removed",
               "change_type": "nerf"
             },
             {
@@ -1481,7 +1431,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "Lock On now deals 160 damage over 14 seconds",
+              "raw_text": "Lock On deals 160 damage over 14 seconds",
               "change_type": "mixed"
             },
             {
@@ -1497,7 +1447,7 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "No longer requires a Tech Lab and can now be built with a Reactor",
+              "raw_text": "No longer requires a Tech Lab and can be built with a Reactor",
               "change_type": "buff"
             },
             {
@@ -1527,11 +1477,11 @@
               "change_type": "mixed"
             },
             {
-              "raw_text": "Recalibrated Explosives increases Seeker Missile tracking range by 50% (13 to 19.5)",
+              "raw_text": "Research Recalibrated Explosives upgrade increases Seeker Missile tracking range by 50% (13 to 19.5)",
               "change_type": "buff"
             },
             {
-              "raw_text": "Recalibrated Explosives increases Seeker Missile damage by 30%",
+              "raw_text": "Research Recalibrated Explosives upgrade increases Seeker Missile damage by 30%",
               "change_type": "buff"
             }
           ]
@@ -1565,7 +1515,7 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "High Impact Payload Mode now prioritizes the anti-air weapon before the anti-ground weapon",
+              "raw_text": "High Impact Payload Mode prioritizes anti-air weapon before anti-ground weapon",
               "change_type": "buff"
             }
           ]
@@ -1601,7 +1551,11 @@
           "entity_id": "zerg-hydralisk",
           "changes": [
             {
-              "raw_text": "Evolve Muscular Augments upgrade increases base movement speed by 25% both on and off Creep",
+              "raw_text": "Evolve Muscular Augments is now split into two separate upgrades: Muscular Augments and Grooved Spines",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Evolve Muscular Augments upgrade increases base movement speed by 25%",
               "change_type": "buff"
             },
             {
@@ -1609,7 +1563,11 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "Movement speed is now affected the same as other units while on Creep",
+              "raw_text": "Movement speed on Creep changed to be affected the same as other units",
+              "change_type": "mixed"
+            },
+            {
+              "raw_text": "Muscular Augments now gives a 25% speed boost both on and off of Creep",
               "change_type": "buff"
             }
           ]
@@ -1668,12 +1626,8 @@
           "entity_id": "protoss-immortal",
           "changes": [
             {
-              "raw_text": "Barrier is now a passive ability",
+              "raw_text": "\"Barrier\" is now a passive ability, and its cooldown is reduced from 43 to 32",
               "change_type": "mixed"
-            },
-            {
-              "raw_text": "Barrier cooldown reduced from 43 to 32",
-              "change_type": "buff"
             }
           ]
         },
@@ -1681,7 +1635,7 @@
           "entity_id": "protoss-tempest",
           "changes": [
             {
-              "raw_text": "Removed Disruption Blast ability",
+              "raw_text": "Removed \"Disruption Blast\" ability",
               "change_type": "nerf"
             },
             {
@@ -1702,11 +1656,11 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "Anti-ground weapon minimum scan range updated to 6.5",
+              "raw_text": "Anti-grounds weapon minimum scan range updated to 6.5",
               "change_type": "buff"
             },
             {
-              "raw_text": "Mag-Field Launchers upgrade removed",
+              "raw_text": "\"Mag-Field Launchers\" upgrade removed",
               "change_type": "nerf"
             }
           ]
@@ -1715,12 +1669,8 @@
           "entity_id": "zerg-hydralisk",
           "changes": [
             {
-              "raw_text": "Evolve Grooved Spines upgrade removed",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "+1 range is now added back to Muscular Augments upgrade",
-              "change_type": "buff"
+              "raw_text": "\"Evolve Grooved Spines\" upgrade removed, and +1 range is now added back to \"Muscular Augments\" upgrade",
+              "change_type": "mixed"
             }
           ]
         },
@@ -1728,7 +1678,7 @@
           "entity_id": "zerg-viper",
           "changes": [
             {
-              "raw_text": "Reduced Blinding Cloud ability duration from 10 seconds to 6 seconds",
+              "raw_text": "Reduced \"Blinding Cloud\" ability duration from 10 seconds to 6 seconds",
               "change_type": "nerf"
             }
           ]
@@ -1753,100 +1703,8 @@
           "entity_id": "zerg-baneling",
           "changes": [
             {
-              "raw_text": "Centrifugal Hooks upgrade health bonus reduced from +10 to +5",
+              "raw_text": "Centrifugal Hooks upgrade now grants +5 health instead of +10",
               "change_type": "nerf"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "version": "3.8.0 BU",
-      "date": "2016-12-22",
-      "url": "https://news.blizzard.com/en-gb/starcraft2/20399161/legacy-of-the-void-balance-update-december-8-2016",
-      "entities": [
-        {
-          "entity_id": "protoss-immortal",
-          "changes": [
-            {
-              "raw_text": "\"Barrier\" is now a passive ability.",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "\"Barrier\" cooldown reduced from 43 to 32.",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "protoss-tempest",
-          "changes": [
-            {
-              "raw_text": "Removed \"Disruption Blast\" ability.",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Anti-ground weapon range increased from 8 to 10.",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Anti-ground weapon damage increased from 35 to 40.",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-cyclone",
-          "changes": [
-            {
-              "raw_text": "Anti-ground weapon range increased from 4 to 6.",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Anti-grounds weapon minimum scan range updated to 6.5.",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "[Mag Field Launchers] \"Mag-Field Launchers\" upgrade removed.",
-              "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-hydralisk",
-          "changes": [
-            {
-              "raw_text": "[Evolve Grooved Spines] \"Evolve Grooved Spines\" upgrade removed.",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "[Muscular Augments] +1 range is now added back to \"Muscular Augments\" upgrade.",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-viper",
-          "changes": [
-            {
-              "raw_text": "Reduced \"Blinding Cloud\" ability duration from 10 seconds to 6 seconds.",
-              "change_type": "nerf"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "version": "3.10",
-      "date": "2017-01-24",
-      "url": "https://news.blizzard.com/en-us/article/20481178/starcraft-ii-legacy-of-the-void-3-10-patch-notes",
-      "entities": [
-        {
-          "entity_id": "terran-battlecruiser",
-          "changes": [
-            {
-              "raw_text": "Yamato Cannon no longer gets interrupted by the Infestor’s Neural Parasite once it is cast.",
-              "change_type": "buff"
             }
           ]
         }
@@ -1914,22 +1772,6 @@
             {
               "raw_text": "Maximum Health reduced from 80 to 70",
               "change_type": "nerf"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "version": "3.13.0",
-      "date": "2017-05-01",
-      "url": "https://news.blizzard.com/en-gb/article/20721907/starcraft-ii-legacy-of-the-void-3-13-0-patch-notes",
-      "entities": [
-        {
-          "entity_id": "zerg-queen",
-          "changes": [
-            {
-              "raw_text": "Increased anti-air range to 8 from 7.",
-              "change_type": "buff"
             }
           ]
         }
@@ -2063,10 +1905,10 @@
             },
             {
               "raw_text": "Thermal Lance damage changed from 12 to 10 (+5 light)",
-              "change_type": "mixed"
+              "change_type": "nerf"
             },
             {
-              "raw_text": "Protoss ground weapon upgrades will add +1 to base and +1 to light",
+              "raw_text": "Ground weapon upgrades will add +1 to base and +1 to light",
               "change_type": "buff"
             },
             {
@@ -2074,7 +1916,7 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "Extended Thermal Lance range upgrade increased range by +2 instead of +3",
+              "raw_text": "Extended Thermal Lance upgrade increases range by +2 instead of +3",
               "change_type": "nerf"
             }
           ]
@@ -2087,6 +1929,14 @@
               "change_type": "buff"
             },
             {
+              "raw_text": "Purification Nova detonation radius is 0.25",
+              "change_type": "mixed"
+            },
+            {
+              "raw_text": "Purification Nova will not trigger on enemy structures or changelings",
+              "change_type": "nerf"
+            },
+            {
               "raw_text": "Purification Nova cooldown reduced from 21.4 to 14.3 seconds",
               "change_type": "buff"
             }
@@ -2096,7 +1946,7 @@
           "entity_id": "protoss-high_templar",
           "changes": [
             {
-              "raw_text": "New weapon 'Psi Blast' added",
+              "raw_text": "Gained 'Psi Blast' weapon: 4 damage, 1.25 speed, 6 range, targets ground",
               "change_type": "buff"
             }
           ]
@@ -2109,7 +1959,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "Mass Recall changed to Strategic Recall (no cooldown, no shared global cooldown)",
+              "raw_text": "Mass Recall changed to Strategic Recall: Recalls all player units in target area, no cooldown, no shared global cooldown",
               "change_type": "buff"
             }
           ]
@@ -2127,20 +1977,16 @@
           "entity_id": "protoss-nexus",
           "changes": [
             {
-              "raw_text": "Chrono Boost changed to cost 50 energy and operate 100% faster for 10 seconds",
+              "raw_text": "Chrono Boost costs 50 energy and causes the target structure to operate 100% faster for 10 seconds",
               "change_type": "mixed"
             },
             {
-              "raw_text": "Now has energy (200 maximum, 50 starting)",
+              "raw_text": "Now has energy, 200 maximum, starting energy is 50",
               "change_type": "buff"
             },
             {
-              "raw_text": "Added 'Mass Recall' ability",
+              "raw_text": "Gained 'Mass Recall' ability: Recalls units to the Nexus (50 energy, 130s global cooldown)",
               "change_type": "buff"
-            },
-            {
-              "raw_text": "130 second global cooldown for all Mass Recalls across all Nexus structures",
-              "change_type": "nerf"
             }
           ]
         },
@@ -2148,7 +1994,7 @@
           "entity_id": "protoss-observer",
           "changes": [
             {
-              "raw_text": "New ability 'Surveillance Mode' added",
+              "raw_text": "New ability 'Surveillance Mode': Increases vision by 25% and immobilizes the observer",
               "change_type": "buff"
             }
           ]
@@ -2169,7 +2015,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "Pulsar Beam weapon changed from Spell to Normal damage (affected by armor)",
+              "raw_text": "Pulsar Beam weapon changed from Spell to Normal damage (reduced by armor)",
               "change_type": "nerf"
             }
           ]
@@ -2178,15 +2024,11 @@
           "entity_id": "protoss-shield_battery",
           "changes": [
             {
-              "raw_text": "New defensive structure added",
+              "raw_text": "New defensive structure added (Cost: 75 Minerals, 28.6s warp in, 200/200/100 stats)",
               "change_type": "buff"
             },
             {
-              "raw_text": "Cost: 75 minerals",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Restores shields of a single friendly unit within 6 range",
+              "raw_text": "Restores shields of a single friendly unit within 6 range (50.4 shields/sec, 1 energy per 3 shields)",
               "change_type": "buff"
             }
           ]
@@ -2216,7 +2058,7 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "New upgrade 'Rapid Fire Launchers' added to Factory Tech Lab",
+              "raw_text": "New upgrade 'Rapid Fire Launchers': Increases the attack speed of the first 12 shots of Lock On (Cost: 150/150/79s)",
               "change_type": "buff"
             }
           ]
@@ -2233,7 +2075,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "New upgrade 'Moebius Reactor' added to Ghost Academy",
+              "raw_text": "New upgrade 'Moebius Reactor': Increases starting energy by 25 (Cost: 100/100/57s)",
               "change_type": "buff"
             }
           ]
@@ -2259,19 +2101,19 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "Added Interference Matrix ability",
+              "raw_text": "Added Interference Matrix ability: Disables a Mechanical or Psionic unit for 6 seconds",
               "change_type": "buff"
             },
             {
-              "raw_text": "Added Repair Drone ability",
+              "raw_text": "Added Repair Drone ability: Deploys a drone that automatically repairs nearby friendly mechanical units for 90 seconds",
               "change_type": "buff"
             },
             {
-              "raw_text": "Added Anti-Armor Missile ability",
+              "raw_text": "Added Anti-Armor Missile ability: Pursues target, deals 30 splash damage and reduces armor by 3 for 21 seconds",
               "change_type": "buff"
             },
             {
-              "raw_text": "New upgrade 'Enhanced Munitions' added to Starport Tech Lab",
+              "raw_text": "New upgrade 'Enhanced Munitions': Increases Anti-Armor Missile explosion radius by 20% and tracking range by 50% (Cost: 150/150/79s)",
               "change_type": "buff"
             }
           ]
@@ -2280,7 +2122,7 @@
           "entity_id": "terran-tech_lab",
           "changes": [
             {
-              "raw_text": "New upgrade 'Smart Servos' added (allows Hellions, Hellbats, Vikings, and Thors to transform quickly)",
+              "raw_text": "New upgrade 'Smart Servos': Allows Hellions, Hellbats, Vikings, and Thors to transform quickly between combat modes (Cost: 150/150/79s)",
               "change_type": "buff"
             }
           ]
@@ -2298,15 +2140,19 @@
           "entity_id": "zerg-infestor",
           "changes": [
             {
-              "raw_text": "Infested Gauss Rifle damage reduced from 8 to 6",
+              "raw_text": "Undetected burrowed Infestors will be more visible on low graphics quality settings",
               "change_type": "nerf"
             },
             {
-              "raw_text": "Infested Gauss Rifle no longer targets air units",
+              "raw_text": "Infested Gauss Rifle (Infested Terran) damage reduced from 8 to 6",
               "change_type": "nerf"
             },
             {
-              "raw_text": "New weapon 'Infested Rockets' added to Infested Terrans (targets air only)",
+              "raw_text": "Infested Gauss Rifle (Infested Terran) no longer targets air units",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Infested Terrans gained 'Infested Rockets' weapon: Targets air units only, 14 damage, 6 range",
               "change_type": "buff"
             },
             {
@@ -2314,7 +2160,7 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "Fungal Growth slows the target's movement speed by 75% instead of rooting",
+              "raw_text": "Fungal Growth slows the target's movement speed by 75% (previously rooted)",
               "change_type": "nerf"
             },
             {
@@ -2327,7 +2173,7 @@
           "entity_id": "zerg-lurker",
           "changes": [
             {
-              "raw_text": "New upgrade 'Adaptive Talons' added",
+              "raw_text": "New upgrade 'Adaptive Talons': Reduces burrow time from 2 to 0.7 seconds and increase movement speed by 10% (Cost: 150/150/54s)",
               "change_type": "buff"
             }
           ]
@@ -2336,11 +2182,7 @@
           "entity_id": "zerg-lurker_den",
           "changes": [
             {
-              "raw_text": "Lurker Den is morphed from the Drone instead of the Hydralisk Den",
-              "change_type": "mixed"
-            },
-            {
-              "raw_text": "Cost changed to 100 Minerals/150 Vespene Gas/86 Seconds",
+              "raw_text": "Lurker Den is morphed from the Drone instead of the Hydralisk Den (Cost: 100 Minerals/150 Vespene Gas/86 Seconds)",
               "change_type": "mixed"
             }
           ]
@@ -2358,7 +2200,7 @@
           "entity_id": "zerg-overseer",
           "changes": [
             {
-              "raw_text": "New ability 'Oversight' added",
+              "raw_text": "New ability 'Oversight': Increases vision by 25% and immobilizes the Overseer",
               "change_type": "buff"
             }
           ]
@@ -2376,7 +2218,7 @@
           "entity_id": "zerg-viper",
           "changes": [
             {
-              "raw_text": "Parasitic Bomb damage increased from 60 to 120",
+              "raw_text": "Parasitic Bomb damage increased from 60 to 120 over 7 seconds",
               "change_type": "buff"
             },
             {
@@ -2393,8 +2235,8 @@
     },
     {
       "version": "4.0.2",
-      "date": "2017-11-21",
-      "url": "https://news.blizzard.com/en-us/starcraft2/21212284/starcraft-ii-4-0-2-patch-notes",
+      "date": "2017-11-28",
+      "url": "https://news.blizzard.com/en-us/starcraft2/21272911/starcraft-ii-balance-update-november-28-2017",
       "entities": [
         {
           "entity_id": "protoss-oracle",
@@ -2445,37 +2287,10 @@
           ]
         },
         {
-          "entity_id": "terran-hellbat",
+          "entity_id": "terran-tech_lab",
           "changes": [
             {
-              "raw_text": "Smart Servos cost reduced from 150/150 to 100/100",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-hellion",
-          "changes": [
-            {
-              "raw_text": "Smart Servos cost reduced from 150/150 to 100/100",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-thor",
-          "changes": [
-            {
-              "raw_text": "Smart Servos cost reduced from 150/150 to 100/100",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-viking",
-          "changes": [
-            {
-              "raw_text": "Smart Servos cost reduced from 150/150 to 100/100",
+              "raw_text": "Smart Servos cost reduced from 150 Minerals / 150 Vespene Gas to 100/100",
               "change_type": "buff"
             }
           ]
@@ -2493,7 +2308,7 @@
           "entity_id": "zerg-corruptor",
           "changes": [
             {
-              "raw_text": "Will respond more quickly to morph commands",
+              "raw_text": "Responds more quickly to morph commands",
               "change_type": "buff"
             }
           ]
@@ -2519,7 +2334,7 @@
           "entity_id": "zerg-overlord",
           "changes": [
             {
-              "raw_text": "Will respond more quickly to morph commands",
+              "raw_text": "Responds more quickly to morph commands",
               "change_type": "buff"
             }
           ]
@@ -2527,31 +2342,15 @@
       ]
     },
     {
-      "version": "4.1.0",
-      "date": "2017-12-08",
-      "url": "https://news.blizzard.com/en-us/starcraft2/21313391/starcraft-4-1-4-patch-notes",
-      "entities": [
-        {
-          "entity_id": "terran-widow_mine",
-          "changes": [
-            {
-              "raw_text": "Now benefits from Significant Other Buff, reducing the cooldown on its attack.",
-              "change_type": "buff"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "version": "4.1.1 BU",
-      "date": "2017-12-18",
-      "url": "https://news.blizzard.com/en-us/starcraft2/21349570",
+      "version": "4.1.1",
+      "date": "2017-12-19",
+      "url": "https://news.blizzard.com/en-us/starcraft2/21349570/starcraft-ii-balance-update-december-18-2017",
       "entities": [
         {
           "entity_id": "protoss-disruptor",
           "changes": [
             {
-              "raw_text": "Purification Nova now has a 1 second charge-up time before launch",
+              "raw_text": "Purification Nova has a 1 second charge-up time before launch",
               "change_type": "nerf"
             }
           ]
@@ -2560,12 +2359,8 @@
           "entity_id": "protoss-nexus",
           "changes": [
             {
-              "raw_text": "Chrono Boost strength reduced from 100% to 50%",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Chrono Boost duration per cast increased from 10 to 20 seconds",
-              "change_type": "buff"
+              "raw_text": "Chrono Boost strength reduced from 100% to 50% and duration per cast increased from 10 seconds to 20 seconds",
+              "change_type": "mixed"
             }
           ]
         },
@@ -2582,7 +2377,7 @@
           "entity_id": "terran-raven",
           "changes": [
             {
-              "raw_text": "Anti-Armor Missile lock time reduced from 2.14 to 1.43 seconds",
+              "raw_text": "Anti-Armor Missile lock time reduced from 2.14 to 1.43",
               "change_type": "buff"
             },
             {
@@ -2603,7 +2398,7 @@
           "entity_id": "terran-viking",
           "changes": [
             {
-              "raw_text": "Now switches to Assault Mode immediately when activated instead of after coming to a complete stop",
+              "raw_text": "Now switches to Assault Mode immediately when activated instead of after the unit comes to a complete stop",
               "change_type": "buff"
             }
           ]
@@ -2620,472 +2415,16 @@
       ]
     },
     {
-      "version": "4.0.2 BU",
-      "date": "2017-12-19",
-      "url": "https://news.blizzard.com/en-us/starcraft2/21272911/starcraft-ii-balance-update-november-28-2017",
-      "entities": [
-        {
-          "entity_id": "protoss-oracle",
-          "changes": [
-            {
-              "raw_text": "Pulsar Beam damage reduced from 15 (+10 Light) to 15 (+7 Light).",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Pulsar Beam damage type changed from normal to spell damage.",
-              "change_type": "mixed"
-            },
-            {
-              "raw_text": "Build time increased from 37 to 43 seconds.",
-              "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "protoss-shield_battery",
-          "changes": [
-            {
-              "raw_text": "Cost increased from 75 Minerals to 100 Minerals.",
-              "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-cyclone",
-          "changes": [
-            {
-              "raw_text": "[Rapid Fire Launchers] Cost reduced from 150/150 to 75/75.",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-ghost",
-          "changes": [
-            {
-              "raw_text": "Steady Targeting will return 100% energy when interrupted.",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Cost changed from 200 Minerals / 100 Vespene Gas to 150 Minerals / 125 Vespene Gas.",
-              "change_type": "mixed"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-thor",
-          "changes": [
-            {
-              "raw_text": "[Smart Servos] Cost reduced from 150 Minerals / 150 Vespene Gas to 100/100.",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-widow_mine",
-          "changes": [
-            {
-              "raw_text": "[Drilling Claws] Cost reduced from 150/150 to 75/75.",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-infestor",
-          "changes": [
-            {
-              "raw_text": "Can no longer cast Fungal Growth while burrowed.",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Fungal Growth radius reduced from 2.5 to 2.25.",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Infested Terran cast range reduced from 9 to 7.",
-              "change_type": "nerf"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "version": "4.1.4 BU",
-      "date": "2018-01-29",
-      "url": "https://news.blizzard.com/en-gb/starcraft2/21494433/starcraft-ii-balance-update-january-29-2018",
-      "entities": [
-        {
-          "entity_id": "protoss-disruptor",
-          "changes": [
-            {
-              "raw_text": "Purification Nova’s initial pause duration reduced from 1 to 0",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "After unloading from transports, Purification Nova has a 0.7 second activation delay when not on cooldown",
-              "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "protoss-nexus",
-          "changes": [
-            {
-              "raw_text": "[Mass Recall] Warp-in time increased from 0 to 0.7 seconds",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "[Strategic Recall] Warp-in time increased from 0 to 0.7 seconds",
-              "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "protoss-stalker",
-          "changes": [
-            {
-              "raw_text": "Particle Disruptors’ damage reduced from 15 (21 vs. armored) to 13 (18 vs. armored)",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Attack period reduced from 1.54 to 1.34",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Protoss Ground Weapons upgrade effect changed for Stalkers: now provides +1 base damage and +1 vs. armored instead of +2 base damage",
-              "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-engineering_bay",
-          "changes": [
-            {
-              "raw_text": "[Hi Sec Auto Tracking] Now increases the range of Auto Turrets by +1",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-ghost",
-          "changes": [
-            {
-              "raw_text": "Starting energy increased from 50 to 75",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "No longer starts with the Personal Cloaking upgrade",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "[Personal Cloaking] Upgrade added at the Ghost Academy with a cost of 150 Minerals / 150 Gas and 85.7 seconds research time",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "[Moebius Reactor] Upgrade removed",
-              "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-liberator",
-          "changes": [
-            {
-              "raw_text": "[Enhanced Munitions] Upgrade removed",
-              "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-raven",
-          "changes": [
-            {
-              "raw_text": "Interference Matrix duration increased from 5.7 to 7.9",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Repair Drone ability removed",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Auto Turret ability added",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Auto Turret cast range reduced from 3 to 1",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Anti-Armor Missile will no longer have a delay and will fly immediately towards the target",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Anti-Armor Missile splash radius increased from 2.4 to 2.88",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Anti-Armor Missile 100% damage radius increased from 0.6 to 0.72",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Anti-Armor Missile 50% damage radius increased from 1.2 to 1.44",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Anti-Armor Missile 25% damage radius increased from 2.4 to 2.88",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Anti-Armor Missile energy cost reduced from 100 to 75",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-hydralisk",
-          "changes": [
-            {
-              "raw_text": "[Muscular Augments] Split from the previous combined upgrade; now separate from range and available as its own upgrade with a research cost of 100 Minerals / 100 Vespene Gas / 71.4 seconds",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "[Grooved Spines] Reintroduced as a separate upgrade with a research cost of 100 Minerals / 100 Vespene Gas / 71.4 seconds",
-              "change_type": "buff"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "version": "4.1.4",
-      "date": "2018-01-29",
-      "url": "https://news.blizzard.com/en-us/starcraft2/21313391/starcraft-4-1-4-patch-notes",
-      "entities": [
-        {
-          "entity_id": "protoss-adept",
-          "changes": [
-            {
-              "raw_text": "Adepts continue with last issued command instead of stopping after Psionic Transfer",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "protoss-disruptor",
-          "changes": [
-            {
-              "raw_text": "Purification Nova initial pause duration reduced from 1 to 0",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "0.7 second pause applied to Purification Nova after dropping from transport if not on cooldown",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Range indicators displayed for Purification Nova",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "protoss-high_templar",
-          "changes": [
-            {
-              "raw_text": "Cannot cast Feedback on Shield Battery",
-              "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "protoss-mothership",
-          "changes": [
-            {
-              "raw_text": "Strategic Recall warp-in time increased from 0 to 0.7 seconds",
-              "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "protoss-nexus",
-          "changes": [
-            {
-              "raw_text": "Mass Recall warp-in time increased from 0 to 0.7 seconds",
-              "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "protoss-shield_battery",
-          "changes": [
-            {
-              "raw_text": "Added Stop command",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "protoss-stalker",
-          "changes": [
-            {
-              "raw_text": "Particle Disruptors damage reduced from 15 (21 vs. armored) to 13 (18 vs. armored)",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Particle Disruptors period reduced from 1.54 to 1.34",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Protoss Ground Weapons upgrade provides +1 base damage and +1 armored instead of +2 base damage",
-              "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-ghost",
-          "changes": [
-            {
-              "raw_text": "Starting energy increased from 50 to 75",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "No longer starts with the Personal Cloaking upgrade",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Removed Moebius Reactor upgrade",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Added Personal Cloaking upgrade (Cost: 150 Minerals / 150 Gas / 85.7 Research time)",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-raven",
-          "changes": [
-            {
-              "raw_text": "Interference Matrix duration increased from 5.7 to 7.9",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Interference Matrix affected units now display a status bar for duration",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Repair Drone ability removed",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Auto Turret ability added",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Auto Turret cast range reduced from 3 to 1",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Hi-Sec Auto Tracking increases the range of Auto Turrets by +1",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Anti-Armor Missile no longer has a delay and flies immediately to target",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Anti-Armor Missile splash radius increased from 2.4 to 2.88",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Anti-Armor Missile 100% damage radius increased from 0.6 to 0.72",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Anti-Armor Missile 50% damage radius increased from 1.2 to 1.44",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Anti-Armor Missile 25% damage radius increased from 2.4 to 2.88",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Anti-Armor Missile energy cost reduced from 100 to 75",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Enhanced Munitions upgrade removed",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Cannot cast Interference Matrix on units affected by Stasis Ward",
-              "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-hydralisk",
-          "changes": [
-            {
-              "raw_text": "Muscular Augments upgrade split into Muscular Augments and Grooved Spines",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Muscular Augments upgrade cost is 100 Minerals / 100 Vespene Gas / 71.4 Research time",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Grooved Spines upgrade cost is 100 Minerals / 100 Vespene Gas / 71.4 Research time",
-              "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-viper",
-          "changes": [
-            {
-              "raw_text": "Parasitic Bomb initial pause duration increased from 0 to 0.7 seconds",
-              "change_type": "nerf"
-            }
-          ]
-        }
-      ]
-    },
-    {
       "version": "4.2.1 BU",
-      "date": "2018-04-10",
-      "url": "https://news.blizzard.com/en-us/starcraft2/21637913",
+      "date": "2018-03-19",
+      "url": "https://news.blizzard.com/en-us/starcraft2/21637913/starcraft-ii-balance-update-april-10-2018",
       "entities": [
         {
           "entity_id": "zerg-overlord",
           "changes": [
             {
-              "raw_text": "[Mutate Ventral Sacs] Tech requirement changed from Evolution Chamber to Lair",
+              "raw_text": "The Mutate Ventral Sacs upgrade now requires a Lair instead of an Evolution Chamber",
               "change_type": "nerf"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "version": "4.2.4",
-      "date": "2018-04-17",
-      "url": "https://news.blizzard.com/en-us/starcraft2/21700683/starcraft-ii-4-2-4-patch-notes",
-      "entities": [
-        {
-          "entity_id": "protoss-observer",
-          "changes": [
-            {
-              "raw_text": "Deceleration will no longer delay the activation of the Surveillance Mode ability.",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-overseer",
-          "changes": [
-            {
-              "raw_text": "Deceleration will no longer delay the activation of the Oversight ability.",
-              "change_type": "buff"
             }
           ]
         }
@@ -3131,108 +2470,6 @@
           "changes": [
             {
               "raw_text": "Health increased from 125 to 135",
-              "change_type": "buff"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "version": "4.3.2",
-      "date": "2018-05-30",
-      "url": "https://news.blizzard.com/en-us/article/21728663/starcraft-ii-4-3-2-patch-notes",
-      "entities": [
-        {
-          "entity_id": "protoss-mothership",
-          "changes": [
-            {
-              "raw_text": "Mass Recall will no longer teleport units that are in the process of warping in.",
-              "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "protoss-nexus",
-          "changes": [
-            {
-              "raw_text": "Strategic Recall will no longer teleport units that are in the process of warping in.",
-              "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "protoss-observer",
-          "changes": [
-            {
-              "raw_text": "When activating Surveillance Mode with multiple Observers selected, the units will now activate all at once instead of one at a time.",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-overseer",
-          "changes": [
-            {
-              "raw_text": "When activating Oversight with multiple Overseers selected, the units will now activate all at once instead of one at a time.",
-              "change_type": "buff"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "version": "4.4.0",
-      "date": "2018-06-19",
-      "url": "https://news.blizzard.com/en-us/starcraft2/21870976/starcraft-ii-4-4-0-patch-notes",
-      "entities": [
-        {
-          "entity_id": "protoss-observer",
-          "changes": [
-            {
-              "raw_text": "Can now immediately receive move commands after changing modes instead of having to wait a brief moment.",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-overseer",
-          "changes": [
-            {
-              "raw_text": "Can now immediately receive move commands after changing modes instead of having to wait a brief moment.",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-spine_crawler",
-          "changes": [
-            {
-              "raw_text": "Can now immediately receive move commands after uprooting instead of having to wait a brief moment.",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-spore_crawler",
-          "changes": [
-            {
-              "raw_text": "Can now immediately receive move commands after uprooting instead of having to wait a brief moment.",
-              "change_type": "buff"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "version": "4.7.0",
-      "date": "2018-11-13",
-      "url": "https://news.blizzard.com/en-us/article/22764996/starcraft-ii-4-7-0-patch-notes",
-      "entities": [
-        {
-          "entity_id": "terran-scv",
-          "changes": [
-            {
-              "raw_text": "It is now easier to select an SCV that is currently constructing a building using mouse click selection",
               "change_type": "buff"
             }
           ]
@@ -3304,7 +2541,11 @@
           "entity_id": "protoss-disruptor",
           "changes": [
             {
-              "raw_text": "Purification Nova deploys a ball of energy that will detonate after 2 seconds, dealing 155 damage and an additional 55 shield damage to all ground units in its radius",
+              "raw_text": "Purification Nova changed back to pre-4.0 state: deploys a ball of energy that will detonate after 2 seconds",
+              "change_type": "mixed"
+            },
+            {
+              "raw_text": "Purification Nova deals 155 damage and an additional 55 shield damage to all ground units in its radius",
               "change_type": "mixed"
             },
             {
@@ -3313,7 +2554,7 @@
             },
             {
               "raw_text": "Purification Nova now sends a threat signal to the opponent on detonation instead of during the launch phase",
-              "change_type": "buff"
+              "change_type": "nerf"
             }
           ]
         },
@@ -3330,7 +2571,7 @@
           "entity_id": "protoss-high_templar",
           "changes": [
             {
-              "raw_text": "Feedback now deals 0.5 damage per point of energy drained, down from 1",
+              "raw_text": "Feedback now deals 0.5 damage per point of energy drained, down from 1 damage per point of energy drained",
               "change_type": "nerf"
             }
           ]
@@ -3353,10 +2594,6 @@
             },
             {
               "raw_text": "Strategic Recall cooldown decreased from 130 to 85 seconds",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Chrono Boost will now display a visual status on boosted structures",
               "change_type": "buff"
             }
           ]
@@ -3476,11 +2713,15 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "Weapon damage changed from 3 (+2 vs Armored) to 18",
+              "raw_text": "Tornado Blaster weapon changed to the Typhoon Missile Pod weapon",
+              "change_type": "mixed"
+            },
+            {
+              "raw_text": "Damage changed from 3 (+2 vs Armored) to 18",
               "change_type": "buff"
             },
             {
-              "raw_text": "Weapon can now target air and ground units",
+              "raw_text": "Can target air and ground units",
               "change_type": "buff"
             },
             {
@@ -3488,7 +2729,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "Weapon range decreased from 6 to 5",
+              "raw_text": "Range decreased from 6 to 5",
               "change_type": "nerf"
             },
             {
@@ -3496,7 +2737,7 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "Lock On ability can now auto cast",
+              "raw_text": "Lock On ability can auto cast",
               "change_type": "buff"
             },
             {
@@ -3512,7 +2753,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "Added Mag-Field Accelerator upgrade: Lock On deals 400 (+400 vs Armored) over 14 seconds",
+              "raw_text": "Added Mag-Field Accelerator upgrade: Lock On will deal 400 (+400 vs Armored) over 14 seconds",
               "change_type": "buff"
             }
           ]
@@ -3521,7 +2762,7 @@
           "entity_id": "terran-engineering_bay",
           "changes": [
             {
-              "raw_text": "Neosteel Frame and Structure Armor upgrades merged into Neosteel Armor",
+              "raw_text": "Neosteel Frame and Structure Armor upgrades merged into Neosteel Armor (Cost: 150/150, Time: 100s)",
               "change_type": "buff"
             }
           ]
@@ -3534,7 +2775,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "Rapid Reignition System upgrade now decreases Ignite Afterburners cooldown duration from 8.57 seconds to 6.43 seconds",
+              "raw_text": "Rapid Reignition System upgrade decreases Ignite Afterburners cooldown duration from 8.57 seconds to 6.43 seconds",
               "change_type": "buff"
             },
             {
@@ -3553,24 +2794,6 @@
             {
               "raw_text": "Anti-Armor Missile will also reduce Protoss shield armor by 3",
               "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-sensor_tower",
-          "changes": [
-            {
-              "raw_text": "Pre-placement selection display will now show a range indicator on the mini-map",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-tech_lab",
-          "changes": [
-            {
-              "raw_text": "Players can no longer lift a structure when there is an upgrade being researched in an attached Tech Lab",
-              "change_type": "nerf"
             }
           ]
         },
@@ -3603,7 +2826,7 @@
           "entity_id": "terran-widow_mine",
           "changes": [
             {
-              "raw_text": "Drilling Claws upgrade now permanently cloaks Widow Mines when they're burrowed",
+              "raw_text": "The Drilling Claws upgrade now permanently cloaks Widow Mines when they're burrowed",
               "change_type": "buff"
             }
           ]
@@ -3630,10 +2853,6 @@
           "changes": [
             {
               "raw_text": "Unit radius decreased from 0.75 to 0.625",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Burrowed unit radius now matches the new unborrowed unit radius",
               "change_type": "buff"
             },
             {
@@ -3693,7 +2912,11 @@
           "entity_id": "zerg-queen",
           "changes": [
             {
-              "raw_text": "Transfusion no longer restores 125 health instantly, now restores 75 health instantly plus 50 health over 7.14 seconds",
+              "raw_text": "Transfusion no longer restores 125 health instantly",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Transfusion restores 75 health instantly plus an additional 50 health over the next 7.14 seconds",
               "change_type": "nerf"
             },
             {
@@ -3710,7 +2933,7 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "Tunneling Claws no longer increases health regeneration rate",
+              "raw_text": "Tunneling Claws no longer increases the health regeneration rate from 7 HP/second to 14 HP/second",
               "change_type": "nerf"
             }
           ]
@@ -3719,7 +2942,7 @@
           "entity_id": "zerg-ultralisk",
           "changes": [
             {
-              "raw_text": "New upgrade added: Evolve Anabolic Synthesis (Cost: 150/150, 42.85s)",
+              "raw_text": "New upgrade added: Evolve Anabolic Synthesis (Cost: 150/150/42.85s)",
               "change_type": "buff"
             },
             {
@@ -3863,11 +3086,28 @@
           "entity_id": "zerg-nydus_network",
           "changes": [
             {
-              "raw_text": "Nydus Worm health increased from 200 to 300",
+              "raw_text": "Initial unload delay decreased from 0.36 to 0.18",
               "change_type": "buff"
             },
             {
-              "raw_text": "Nydus Worm armor while emerging decreased from 6 to 5",
+              "raw_text": "Unload period changed from 0.36 to 0.18",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Load period changed from 0.18 to 0.09",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-nydus_worm",
+          "changes": [
+            {
+              "raw_text": "Health increased from 200 to 300",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Armor while emerging decreased from 6 to 5",
               "change_type": "nerf"
             },
             {
@@ -3946,22 +3186,6 @@
       ]
     },
     {
-      "version": "4.10.4",
-      "date": "2019-10-22",
-      "url": "https://news.blizzard.com/en-us/article/23188507/starcraft-ii-4-10-4-patch-notes",
-      "entities": [
-        {
-          "entity_id": "protoss-adept",
-          "changes": [
-            {
-              "raw_text": "The opponent can no longer see certain visual effects from the Psionic Transfer ability through the fog of war if they have units nearby.",
-              "change_type": "buff"
-            }
-          ]
-        }
-      ]
-    },
-    {
       "version": "4.11.0",
       "date": "2019-11-26",
       "url": "https://news.blizzard.com/en-us/article/23227811/starcraft-ii-4-11-0-patch-notes",
@@ -3970,11 +3194,11 @@
           "entity_id": "neutral-acceleration_zone_generator",
           "changes": [
             {
-              "raw_text": "New map mechanic: Acceleration Zone Generators (Increases movement speed by 35%)",
+              "raw_text": "New map mechanic: Increases movement speed of ground and air units within the generated field by 35%",
               "change_type": "buff"
             },
             {
-              "raw_text": "The center of Acceleration Zone Generators are now pathable",
+              "raw_text": "The center of Acceleration Zone Generators is now pathable",
               "change_type": "buff"
             }
           ]
@@ -3983,7 +3207,7 @@
           "entity_id": "neutral-inhibitor_zone_generator",
           "changes": [
             {
-              "raw_text": "The center of Inhibitor Zone Generators are now pathable",
+              "raw_text": "The center of Inhibitor Zone Generators is now pathable",
               "change_type": "buff"
             }
           ]
@@ -3992,7 +3216,7 @@
           "entity_id": "protoss-adept",
           "changes": [
             {
-              "raw_text": "Resonating Glaives reworked: increases attack speed by 60% for 6 seconds after Psionic Transfer instead of constant 45%",
+              "raw_text": "Resonating Glaives reworked: Instead of increasing attack speed by 45%, it increases attack speed by 60% for 6 seconds after a completed Psionic Transfer",
               "change_type": "mixed"
             }
           ]
@@ -4009,7 +3233,7 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "Gains the Heroic Tag",
+              "raw_text": "Gains the Heroic Tag (Neural Parasite can no longer target it)",
               "change_type": "buff"
             }
           ]
@@ -4048,7 +3272,7 @@
           "entity_id": "protoss-void_ray",
           "changes": [
             {
-              "raw_text": "New upgrade: Flux Vanes (Increases movement speed and acceleration)",
+              "raw_text": "New upgrade: Flux Vanes (Increases movement speed from 3.5 to 4.65, acceleration from 2.8 to 3.76, Cost 100/100, Duration 57s)",
               "change_type": "buff"
             }
           ]
@@ -4061,7 +3285,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "Charge upgrade increases movement speed from 3.15 to 4.72, up from 4.13",
+              "raw_text": "Charge upgrade increases movement speed from 3.15 to 4.72 (up from 4.13)",
               "change_type": "buff"
             }
           ]
@@ -4074,17 +3298,12 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "Yamato Cannon will no longer cancel itself if a target enters a transport or becomes cloaked/burrowed (it will miss and go on cooldown)",
+              "raw_text": "Tactical Jump may not be canceled during the vulnerability phase",
               "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-hellbat",
-          "changes": [
+            },
             {
-              "raw_text": "Infernal Pre-Igniter research cost decreased from 150/150 to 100/100",
-              "change_type": "buff"
+              "raw_text": "Yamato Cannon will no longer cancel itself if a target enters a transport or becomes cloaked/burrowed (it will miss and go on cooldown instead)",
+              "change_type": "nerf"
             }
           ]
         },
@@ -4118,7 +3337,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "Rapid Re-Ignition System upgrade increases base movement speed from 3.5 to 4.13",
+              "raw_text": "Rapid Re-Ignition System upgrade now increases base movement speed from 3.5 to 4.13",
               "change_type": "buff"
             }
           ]
@@ -4179,12 +3398,12 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "New Ability: Microbial Shroud (Reduces damage taken from air units by 50%)",
+              "raw_text": "New Ability: Microbial Shroud (Reduces damage taken from air units by 50% for ground units in radius 3, lasts 11s, cost 100 energy)",
               "change_type": "buff"
             },
             {
-              "raw_text": "New upgrade: Evolve Microbial Shroud",
-              "change_type": "buff"
+              "raw_text": "New upgrade: Evolve Microbial Shroud (Requires Hive, Cost 150/150, Duration 79s)",
+              "change_type": "mixed"
             },
             {
               "raw_text": "Neural Parasite range decreased from 9 to 8",
@@ -4204,7 +3423,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "New Upgrade: Seismic Spines (Increases range from 8 to 10)",
+              "raw_text": "New Upgrade: Seismic Spines (Increases range from 8 to 10, Requires Hive, Cost 150/150, Duration 57s)",
               "change_type": "buff"
             },
             {
@@ -4232,15 +3451,6 @@
             {
               "raw_text": "Summon Nydus Worm ability cooldown increased from 0 to 14",
               "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-nydus_worm",
-          "changes": [
-            {
-              "raw_text": "Cost increased from 50/50 to 75/75",
-              "change_type": "nerf"
             },
             {
               "raw_text": "Initial unload delay increased from 0.18 to 0.36",
@@ -4252,6 +3462,15 @@
             },
             {
               "raw_text": "Unload period increased from 0.18 to 0.36",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-nydus_worm",
+          "changes": [
+            {
+              "raw_text": "Cost increased from 50/50 to 75/75",
               "change_type": "nerf"
             }
           ]
@@ -4279,13 +3498,13 @@
     {
       "version": "4.11.3",
       "date": "2019-12-17",
-      "url": "https://news.blizzard.com/en-us/starcraft2/23260117/starcraft-ii-4-11-3-patch-notes",
+      "url": "https://news.blizzard.com/en-us/article/23230078/starcraft-ii-4-11-3-patch-notes",
       "entities": [
         {
           "entity_id": "protoss-adept",
           "changes": [
             {
-              "raw_text": "Resonating Glaives upgrade effects reverted; upgrade now increases attack speed by 45%",
+              "raw_text": "Resonating Glaives upgrade effects reverted to increase attack speed by 45%",
               "change_type": "mixed"
             }
           ]
@@ -4327,7 +3546,11 @@
           "entity_id": "protoss-nexus",
           "changes": [
             {
-              "raw_text": "New ability 'Battery Overcharge': Overcharges a target Shield Battery near a Nexus, increasing its shield restoration rate by 100% and allowing it to restore shields without consuming energy for 14 seconds (Cost: 50 Energy, Cooldown: 60 seconds)",
+              "raw_text": "New ability: Battery Overcharge (Cost: 50 Energy, Cooldown: 60 seconds)",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Battery Overcharge increases a target Shield Battery's shield restoration rate by 100% and allows it to restore shields without consuming energy for 14 seconds",
               "change_type": "buff"
             }
           ]
@@ -4353,12 +3576,8 @@
           "entity_id": "terran-widow_mine",
           "changes": [
             {
-              "raw_text": "Drilling Claws upgrade no longer grants burrowed Widow Mines invisibility while reloading",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "The existence of an Armory will grant burrowed Widow Mines invisibility while reloading",
-              "change_type": "buff"
+              "raw_text": "Drilling Claws upgrade no longer grants burrowed Widow Mines invisibility while reloading. Instead, the existence of an Armory will grant burrowed Widow Mines invisibility while reloading",
+              "change_type": "mixed"
             }
           ]
         },
@@ -4388,11 +3607,11 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "Creep Tumor 'Armored' attribute removed",
+              "raw_text": "Creep Tumor: 'Armored' attribute removed",
               "change_type": "buff"
             },
             {
-              "raw_text": "Creep Tumor 'Light' attribute added",
+              "raw_text": "Creep Tumor: 'Light' attribute added",
               "change_type": "nerf"
             }
           ]
@@ -4401,9 +3620,18 @@
     },
     {
       "version": "5.0.2",
-      "date": "2020-08-06",
-      "url": "https://news.blizzard.com/en-us/starcraft2/23477299/starcraft-ii-5-0-2-patch-notes",
+      "date": "2020-08-13",
+      "url": "https://news.blizzard.com/en-gb/starcraft2/23495670/starcraft-ii-5-0-2-patch-notes",
       "entities": [
+        {
+          "entity_id": "protoss-carrier",
+          "changes": [
+            {
+              "raw_text": "Interceptors belonging to a Carrier that has been Neural Parasited will no longer draw aggression from units belonging to the Carrier’s original owner",
+              "change_type": "mixed"
+            }
+          ]
+        },
         {
           "entity_id": "protoss-oracle",
           "changes": [
@@ -4417,7 +3645,19 @@
           "entity_id": "protoss-tempest",
           "changes": [
             {
-              "raw_text": "New upgrade: Tectonic Destabilizers. Improves Resonance Coil to deal +40 damage vs structures. Cost: 150/150. Research time: 100 seconds",
+              "raw_text": "New upgrade added to Fleet Beacon: Tectonic Destabilizers",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Tectonic Destabilizers effect: Improves Resonance Coil to deal +40 damage vs structures",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Tectonic Destabilizers cost: 150/150",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Tectonic Destabilizers research time: 100 seconds",
               "change_type": "buff"
             }
           ]
@@ -4436,10 +3676,6 @@
             {
               "raw_text": "Movement speed increased from 3.5 to 3.85",
               "change_type": "buff"
-            },
-            {
-              "raw_text": "Flux Vanes movement speed increased from 4.65 to 5.11",
-              "change_type": "buff"
             }
           ]
         },
@@ -4447,7 +3683,7 @@
           "entity_id": "zerg-baneling",
           "changes": [
             {
-              "raw_text": "Weapon damage changed from 18(+17 vs light) to 15(+20 vs light)",
+              "raw_text": "Weapon damage changed from 18 (+17 vs light) to 16 (+19 vs light)",
               "change_type": "nerf"
             }
           ]
@@ -4534,6 +3770,15 @@
       "url": "https://news.blizzard.com/en-us/article/23893118/starcraft-ii-5-0-11-patch-notes",
       "entities": [
         {
+          "entity_id": "protoss-adept",
+          "changes": [
+            {
+              "raw_text": "Can now be ordered to load into a Warp Prism while shading, automatically canceling the Shade",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
           "entity_id": "protoss-archon",
           "changes": [
             {
@@ -4618,6 +3863,10 @@
             {
               "raw_text": "Stasis Ward attack target priority increased from 10 to 20",
               "change_type": "nerf"
+            },
+            {
+              "raw_text": "Stasised Units can now be issued basic orders, executed after the Stasis effect expires",
+              "change_type": "nerf"
             }
           ]
         },
@@ -4682,6 +3931,15 @@
             },
             {
               "raw_text": "Lock On Auto-Cast range increased from 7 to 7.5",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-factory",
+          "changes": [
+            {
+              "raw_text": "Increase maximum spawn radius by 1",
               "change_type": "buff"
             }
           ]
@@ -4882,6 +4140,10 @@
             {
               "raw_text": "Creep Tumor sight range reduced from 11 to 10",
               "change_type": "nerf"
+            },
+            {
+              "raw_text": "No longer unable to receive basic orders for 0.6 seconds after spawning",
+              "change_type": "buff"
             }
           ]
         },
@@ -4894,6 +4156,15 @@
             },
             {
               "raw_text": "Removed the random delay of up to 0.36 seconds",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-swarm_host",
+          "changes": [
+            {
+              "raw_text": "Spawn Locusts no longer interrupts the current order",
               "change_type": "buff"
             }
           ]
@@ -4995,11 +4266,23 @@
               "change_type": "nerf"
             },
             {
+              "raw_text": "Radius/Model scale reduced by 10%",
+              "change_type": "buff"
+            },
+            {
               "raw_text": "No longer has energy (Spells are now cooldown based)",
               "change_type": "buff"
             },
             {
+              "raw_text": "Recall now has a 89 second cooldown",
+              "change_type": "nerf"
+            },
+            {
               "raw_text": "Recall radius reduced from 6.5 to 5",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Time Warp now has a 60 second cooldown",
               "change_type": "nerf"
             },
             {
@@ -5015,7 +4298,7 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "Cloak Field is no longer passive. It is now an activated ability (20s duration, 50s cooldown)",
+              "raw_text": "Cloak Field is no longer passive. It is now an activated ability which lasts for 20 seconds, with a 50 second cooldown",
               "change_type": "nerf"
             }
           ]
@@ -5047,6 +4330,15 @@
             },
             {
               "raw_text": "Radius/Model scale reduced by 10%",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-void_ray",
+          "changes": [
+            {
+              "raw_text": "Move speed with Flux Vanes while Prismatic Alignment is active increased from 2.62 to 2.89",
               "change_type": "buff"
             }
           ]
@@ -5089,10 +4381,10 @@
             },
             {
               "raw_text": "Lock On now uses the Cyclone's auto attack damage, and no longer ignores armor",
-              "change_type": "mixed"
+              "change_type": "nerf"
             },
             {
-              "raw_text": "Auto attack damage/attack speed now 11 (+3 vs mechanical), 0.481 cooldown, +1 damage per upgrade",
+              "raw_text": "Auto attack damage/attack speed changed to 11 (+3 vs mechanical), 0.481 cooldown, +1 damage per upgrade",
               "change_type": "mixed"
             },
             {
@@ -5124,8 +4416,8 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "New upgrade, increasing move speed to 4.73 (Cost: 100/100, 100 seconds, Researched at the Factory's Tech Lab)",
-              "change_type": "mixed"
+              "raw_text": "New upgrade added to increase move speed to 4.73 (Cost: 100/100, 100 seconds)",
+              "change_type": "buff"
             }
           ]
         },
@@ -5155,8 +4447,12 @@
           "entity_id": "terran-medivac",
           "changes": [
             {
-              "raw_text": "Speed upgrade replaced with Caduceus Reactor - Increases Medivac's energy regeneration rate by 100%",
-              "change_type": "mixed"
+              "raw_text": "Speed upgrade removed",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Caduceus Reactor upgrade added (Increases energy regeneration rate by 100%)",
+              "change_type": "buff"
             },
             {
               "raw_text": "Minimap radius increased from 0.75 to 1",
@@ -5168,7 +4464,7 @@
           "entity_id": "terran-raven",
           "changes": [
             {
-              "raw_text": "Interference Matrix now requires a research (Cost: 50/50, 57.14 seconds research time)",
+              "raw_text": "Interference Matrix now requires a research (Cost: 50/50, 57.14 seconds)",
               "change_type": "nerf"
             }
           ]
@@ -5209,17 +4505,22 @@
             {
               "raw_text": "Move speed increased from 2.24 to 2.62",
               "change_type": "buff"
-            },
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-broodling",
+          "changes": [
             {
-              "raw_text": "Broodling move speed reduced from 5.37 to 4.13",
+              "raw_text": "Move speed reduced from 5.37 to 4.13",
               "change_type": "nerf"
             },
             {
-              "raw_text": "Broodling health reduced from 30 to 20",
+              "raw_text": "Health reduced from 30 to 20",
               "change_type": "nerf"
             },
             {
-              "raw_text": "Broodling attack speed reduced from 0.46 to 0.57",
+              "raw_text": "Attack speed reduced from 0.46 to 0.57",
               "change_type": "nerf"
             }
           ]
@@ -5237,11 +4538,15 @@
           "entity_id": "zerg-hydralisk",
           "changes": [
             {
-              "raw_text": "Speed upgrade research time reduced from 71 to 64 seconds",
+              "raw_text": "Muscular Augments research time reduced from 71 to 64 seconds",
               "change_type": "buff"
             },
             {
-              "raw_text": "Range upgrade research cost / time reduced from 100/100 / 71 seconds to 75/75 / 50 seconds",
+              "raw_text": "Grooved Spines research cost reduced from 100/100 to 75/75",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Grooved Spines research time reduced from 71 to 50 seconds",
               "change_type": "buff"
             }
           ]
@@ -5254,7 +4559,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "Infestor starting energy increased from 50 to 75",
+              "raw_text": "Starting energy increased from 50 to 75",
               "change_type": "buff"
             },
             {
@@ -5292,11 +4597,11 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "Transport Upgraded: Move speed increased from 0.9023 to 1.099",
+              "raw_text": "Transport mode move speed increased from 0.9023 to 1.099",
               "change_type": "buff"
             },
             {
-              "raw_text": "Transport Upgraded: Move speed with Pneumatized Carapace increased from 2.62 to 2.83",
+              "raw_text": "Transport mode move speed with Pneumatized Carapace increased from 2.62 to 2.83",
               "change_type": "buff"
             }
           ]
@@ -5344,7 +4649,7 @@
           "changes": [
             {
               "raw_text": "Can now be destroyed by collapsible rock towers",
-              "change_type": "nerf"
+              "change_type": "mixed"
             }
           ]
         },
@@ -5352,7 +4657,7 @@
           "entity_id": "neutral-vespene_geyser",
           "changes": [
             {
-              "raw_text": "Adjusted footprint size to allow mapmakers to create 'Worker only Paths'",
+              "raw_text": "Adjusted footprint size",
               "change_type": "mixed"
             }
           ]
@@ -5361,7 +4666,7 @@
           "entity_id": "neutral-zerg_rocks",
           "changes": [
             {
-              "raw_text": "Now lose HP off creep",
+              "raw_text": "Now lose hp off creep",
               "change_type": "buff"
             }
           ]
@@ -5419,15 +4724,6 @@
           ]
         },
         {
-          "entity_id": "protoss-tempest",
-          "changes": [
-            {
-              "raw_text": "Tectonic Destabilizers upgrade now also applies to attacks targeting flying buildings",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
           "entity_id": "terran-armory",
           "changes": [
             {
@@ -5448,7 +4744,11 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "Weapon now has turret tracking, damage point reduced from 0.119 to 0.036",
+              "raw_text": "Weapon now has turret tracking",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Damage point reduced from 0.119 to 0.036",
               "change_type": "buff"
             },
             {
@@ -5587,7 +4887,11 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "Transport Overlord move speed increased from 1.10 to 1.28 (2.83 to 3.00 with Pneumatized Carapace)",
+              "raw_text": "Transport Overlord move speed increased from 1.10 to 1.28",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Transport Overlord move speed with Pneumatized Carapace increased from 2.83 to 3.00",
               "change_type": "buff"
             }
           ]
@@ -5671,7 +4975,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "New ability: Energy Recharge (50 Energy / 60 second cooldown) - Recharges 100 Energy to any unit or structure within 12 range of a Nexus",
+              "raw_text": "New ability: Energy Recharge (50 Energy / 60 second cooldown) Recharges 100 Energy to any unit or structure within 12 range of a Nexus",
               "change_type": "buff"
             }
           ]
@@ -5711,11 +5015,11 @@
           "entity_id": "terran-bunker",
           "changes": [
             {
-              "raw_text": "Salvage: Damage now cancels the Salvage process",
+              "raw_text": "Damage now cancels the Salvage process",
               "change_type": "nerf"
             },
             {
-              "raw_text": "Salvage: Salvage timer is now visible to enemies",
+              "raw_text": "Salvage timer is now visible to enemies",
               "change_type": "nerf"
             }
           ]
@@ -5790,7 +5094,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "New research: Nanomuscular Swell (Cost: 100/100, 64s) - Researches new Lunge ability",
+              "raw_text": "New research: Nanomuscular Swell (Cost: 100/100, 64 seconds) - Researches Lunge ability",
               "change_type": "buff"
             },
             {
@@ -5877,7 +5181,7 @@
           "changes": [
             {
               "raw_text": "Psionic Storm changed from 80 damage over 3 seconds to 140 damage over 6 seconds (26.7 DPS > 23.3 DPS)",
-              "change_type": "nerf"
+              "change_type": "mixed"
             },
             {
               "raw_text": "Psionic Storm radius increased from 1.5 to 2",
@@ -5895,6 +5199,19 @@
             {
               "raw_text": "Movement speed reduced from 2.83 to 2.25",
               "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-nexus",
+          "changes": [
+            {
+              "raw_text": "Energy Recharge grant has been reduced from 100 to 50 energy",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Energy Recharge cooldown reduced from 60 to 45 seconds",
+              "change_type": "buff"
             }
           ]
         },
@@ -5917,19 +5234,6 @@
             {
               "raw_text": "Stasis Ward duration reduced from 170 seconds to 90 seconds",
               "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "protoss-shield_battery",
-          "changes": [
-            {
-              "raw_text": "Energy Recharge grant has been reduced from 100 to 50 energy",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Energy Recharge cooldown reduced from 60 to 45 seconds",
-              "change_type": "buff"
             }
           ]
         },
@@ -6831,5 +6135,5 @@
       "type": "unit"
     }
   ],
-  "generated_at": "2025-12-28T21:29:37.930254+00:00"
+  "generated_at": "2025-12-28T23:34:00.891308+00:00"
 }

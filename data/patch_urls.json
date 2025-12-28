@@ -50,11 +50,6 @@
     "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.11.0"
   },
   {
-    "version": "4.10.4",
-    "url": "https://news.blizzard.com/en-us/article/23188507/starcraft-ii-4-10-4-patch-notes",
-    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.10.4"
-  },
-  {
     "version": "4.8.3",
     "url": "https://news.blizzard.com/en-us/starcraft2/22933133/starcraft-ii-4-8-3-patch-notes",
     "additional_urls": [
@@ -73,44 +68,9 @@
     "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.7.1"
   },
   {
-    "version": "4.7.0",
-    "url": "https://news.blizzard.com/en-us/article/22764996/starcraft-ii-4-7-0-patch-notes",
-    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.7.0"
-  },
-  {
-    "version": "4.6.1",
-    "url": "https://news.blizzard.com/en-us/starcraft2/22492977/starcraft-ii-4-6-1-patch-notes",
-    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.6.1"
-  },
-  {
-    "version": "4.5.0",
-    "url": "https://news.blizzard.com/en-us/article/22023343/starcraft-ii-4-5-0-patch-notes",
-    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.5.0"
-  },
-  {
-    "version": "4.4.0",
-    "url": "https://news.blizzard.com/en-us/starcraft2/21870976/starcraft-ii-4-4-0-patch-notes",
-    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.4.0"
-  },
-  {
-    "version": "4.3.2",
-    "url": "https://news.blizzard.com/en-us/article/21728663/starcraft-ii-4-3-2-patch-notes",
-    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.3.2"
-  },
-  {
     "version": "4.3.0 BU",
     "url": "https://news.blizzard.com/en-us/starcraft2/21785907/starcraft-ii-balance-update-may-15-2018",
     "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.3.0"
-  },
-  {
-    "version": "4.2.4",
-    "url": "https://news.blizzard.com/en-us/starcraft2/21700683/starcraft-ii-4-2-4-patch-notes",
-    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.2.4"
-  },
-  {
-    "version": "4.2.2",
-    "url": "https://news.blizzard.com/en-us/article/21647153/starcraft-4-2-2-patch-notes",
-    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.2.2"
   },
   {
     "version": "4.2.1 BU",
@@ -118,23 +78,9 @@
     "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.2.1"
   },
   {
-    "version": "4.1.4",
-    "url": "https://news.blizzard.com/en-us/starcraft2/21313391/starcraft-4-1-4-patch-notes",
-    "additional_urls": [
-      "https://news.blizzard.com/en-gb/starcraft2/21494433/starcraft-ii-balance-update-january-29-2018"
-    ],
-    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.1.4"
-  },
-  {
     "version": "4.1.1",
     "url": "https://news.blizzard.com/en-us/starcraft2/21349570/starcraft-ii-balance-update-december-18-2017",
     "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.1.1"
-  },
-  {
-    "version": "4.1.0",
-    "url": "https://liquipedia.net/starcraft2/Patch_4.1.0",
-    "liquipedia": "https://liquipedia.net/starcraft2/Patch_4.1.0",
-    "note": "Blizzard URL broken, using Liquipedia"
   },
   {
     "version": "4.0.2",
@@ -152,11 +98,6 @@
     "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.14.0"
   },
   {
-    "version": "3.13.0",
-    "url": "https://news.blizzard.com/en-gb/article/20721907/starcraft-ii-legacy-of-the-void-3-13-0-patch-notes",
-    "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.13.0"
-  },
-  {
     "version": "3.12.0 BU",
     "url": "https://news.blizzard.com/en-us/starcraft2/20720843/legacy-of-the-void-balance-update-april-2017",
     "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.12.0"
@@ -165,11 +106,6 @@
     "version": "3.11.0 BU",
     "url": "https://news.blizzard.com/en-us/starcraft2/20562669/legacy-of-the-void-balance-update-march-7-2017",
     "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.11.0"
-  },
-  {
-    "version": "3.10",
-    "url": "https://news.blizzard.com/en-us/article/20481178/starcraft-ii-legacy-of-the-void-3-10-patch-notes",
-    "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.10.0"
   },
   {
     "version": "3.9.1 BU",
@@ -185,17 +121,6 @@
     "version": "3.8.0",
     "url": "https://news.blizzard.com/en-us/starcraft2/20372512/starcraft-ii-legacy-of-the-void-3-8-0-patch-notes",
     "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.8.0"
-  },
-  {
-    "version": "3.6.0",
-    "url": "https://liquipedia.net/starcraft2/Patch_3.6.0",
-    "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.6.0",
-    "note": "Blizzard URL broken, using Liquipedia"
-  },
-  {
-    "version": "3.4.0",
-    "url": "https://news.blizzard.com/en-us/article/20166144/starcraft-ii-legacy-of-the-void-3-4-0-patch-notes",
-    "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.4.0"
   },
   {
     "version": "3.3.0",
@@ -231,12 +156,6 @@
     "note": "Blizzard URL broken, using Liquipedia"
   },
   {
-    "version": "2.1.1",
-    "url": "https://liquipedia.net/starcraft2/Patch_2.1.1",
-    "liquipedia": "https://liquipedia.net/starcraft2/Patch_2.1.1",
-    "note": "Blizzard URL broken, using Liquipedia"
-  },
-  {
     "version": "2.1.0",
     "url": "https://liquipedia.net/starcraft2/Patch_2.1",
     "liquipedia": "https://liquipedia.net/starcraft2/Patch_2.1",
@@ -262,12 +181,6 @@
     "url": "https://news.blizzard.com/en-us/starcraft2/10782713/starcraft-ii-balance-update-july-9-2013",
     "liquipedia": "https://liquipedia.net/starcraft2/Patch_2.0.11",
     "note": "Main patch URL broken, using BU URL"
-  },
-  {
-    "version": "2.0.10",
-    "url": "https://liquipedia.net/starcraft2/Patch_2.0.10",
-    "liquipedia": "https://liquipedia.net/starcraft2/Patch_2.0.10",
-    "note": "Blizzard URL broken, using Liquipedia"
   },
   {
     "version": "2.0.9",

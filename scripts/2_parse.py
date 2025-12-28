@@ -79,23 +79,34 @@ def find_html_files_for_patch(html_dir: Path, version: str, url: str | None = No
     Returns:
         List of HTML paths, main file first
     """
-    main_files = []
+    import re
+
+    url_matched_files = []
+    version_matched_files = []
     additional_files = []
 
     # Expected filename from URL
     expected_filename = url_to_filename(url) if url else None
 
-    # Find main file - look for files containing the version OR matching URL
+    # Version pattern with word boundaries to avoid "4-0" matching "4-4-0"
+    # Match version at end of filename or followed by non-digit
+    version_dashed = version.replace(".", "-")
+    # Pattern: version at end, or version followed by non-digit (like "-bu" or ".html")
+    version_pattern = re.compile(rf"(^|[^0-9]){re.escape(version_dashed)}($|[^0-9])")
+
+    # Find main file - prioritize URL match over version match
     for html_path in html_dir.glob("*.html"):
         stem = html_path.stem
         # Skip additional files
         if "_additional_" in stem:
             continue
-        # Match version in filename or URL-derived filename
-        version_matches = version.replace(".", "-") in stem or version in stem
-        url_matches = expected_filename and stem == expected_filename
-        if version_matches or url_matches:
-            main_files.append(html_path)
+
+        # Check URL match first (exact match)
+        if expected_filename and stem == expected_filename:
+            url_matched_files.append(html_path)
+        # Check version match with word boundaries
+        elif version_pattern.search(stem):
+            version_matched_files.append(html_path)
 
     # Find additional files
     for html_path in html_dir.glob(f"{version}_additional_*.html"):
@@ -104,9 +115,11 @@ def find_html_files_for_patch(html_dir: Path, version: str, url: str | None = No
     # Sort additional files by index
     additional_files.sort()
 
-    # Return main file first, then additional
-    if main_files:
-        return main_files[:1] + additional_files
+    # Prioritize URL matches over version matches
+    if url_matched_files:
+        return url_matched_files[:1] + additional_files
+    if version_matched_files:
+        return version_matched_files[:1] + additional_files
     return additional_files
 
 
