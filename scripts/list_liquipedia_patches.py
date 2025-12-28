@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """List all SC2 patches with balance changes from Liquipedia.
 
-Uses Gemini 3 Pro to extract patch information from Liquipedia's patches page.
+Uses LLM to extract patch information from Liquipedia's patches page.
 
 Usage:
     uv run python scripts/list_liquipedia_patches.py
@@ -16,8 +16,11 @@ from pathlib import Path
 
 import httpx
 from dotenv import load_dotenv
+from markdownify import markdownify
 from rich.console import Console
 from rich.table import Table
+
+from sc2patches.llm_config import DEFAULT_MODEL
 
 load_dotenv()
 
@@ -25,26 +28,30 @@ console = Console()
 
 LIQUIPEDIA_URL = "https://liquipedia.net/starcraft2/Patches"
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
-MODEL = "google/gemini-2.5-pro-preview"
 
 
 def fetch_liquipedia_page(url: str) -> str:
     """Fetch and return the text content of a Liquipedia page."""
-    headers = {
-        "User-Agent": "SC2PatchesBot/1.0 (https://github.com/stared/sc2-balance-timeline)"
-    }
+    headers = {"User-Agent": "SC2PatchesBot/1.0 (https://github.com/stared/sc2-balance-timeline)"}
     response = httpx.get(url, headers=headers, follow_redirects=True, timeout=30)
     response.raise_for_status()
     return response.text
 
 
-def extract_patches_with_llm(html_content: str) -> list[dict]:
-    """Use Gemini 3 Pro to extract patches with balance changes."""
+def extract_patches_with_llm(html_content: str, model: str = DEFAULT_MODEL) -> list[dict]:
+    """Use LLM to extract patches with balance changes."""
     if not OPENROUTER_API_KEY:
         console.print("[red]Error: OPENROUTER_API_KEY not set[/red]")
         sys.exit(1)
 
-    prompt = f"""Analyze this Liquipedia StarCraft II patches page and extract ALL patches that have balance changes.
+    console.print(f"[dim]Using model: {model}[/dim]")
+
+    # Convert HTML to markdown to reduce size while preserving structure
+    markdown_content = markdownify(html_content, heading_style="ATX")
+    console.print(f"[dim]Converted to {len(markdown_content):,} chars markdown[/dim]")
+
+    prompt = f"""Analyze this Liquipedia StarCraft II patches page.
+Extract ALL patches that have balance changes.
 
 For each patch with balance changes, return:
 - version: The patch version (e.g., "5.0.15", "4.1.4", "2.1.9 BU")
@@ -65,8 +72,8 @@ Return a JSON array of objects. Example:
   {{"version": "4.1.4 BU", "date": "2018-01-29", "has_balance_changes": true, "liquipedia_url": "https://liquipedia.net/starcraft2/Patch_4.1.4"}}
 ]
 
-HTML content:
-{html_content[:100000]}
+Page content (markdown):
+{markdown_content}
 """
 
     response = httpx.post(
@@ -76,7 +83,7 @@ HTML content:
             "Content-Type": "application/json",
         },
         json={
-            "model": MODEL,
+            "model": model,
             "messages": [{"role": "user", "content": prompt}],
             "temperature": 0.1,
             "response_format": {"type": "json_object"},
@@ -93,14 +100,13 @@ HTML content:
         # Handle both direct array and wrapped object
         if isinstance(data, list):
             return data
-        elif isinstance(data, dict) and "patches" in data:
+        if isinstance(data, dict) and "patches" in data:
             return data["patches"]
-        else:
-            # Try to find an array in the response
-            for value in data.values():
-                if isinstance(value, list):
-                    return value
-            return []
+        # Try to find an array in the response
+        for value in data.values():
+            if isinstance(value, list):
+                return value
+        return []
     except json.JSONDecodeError as e:
         console.print(f"[red]Failed to parse LLM response: {e}[/red]")
         console.print(content[:500])
@@ -108,17 +114,19 @@ HTML content:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="List SC2 patches with balance changes from Liquipedia")
+    parser = argparse.ArgumentParser(
+        description="List SC2 patches with balance changes from Liquipedia"
+    )
     parser.add_argument("--output", "-o", type=Path, help="Output JSON file path")
     args = parser.parse_args()
 
-    console.print(f"[bold]Fetching Liquipedia patches page...[/bold]")
+    console.print("[bold]Fetching Liquipedia patches page...[/bold]")
     console.print(f"URL: {LIQUIPEDIA_URL}")
 
     html_content = fetch_liquipedia_page(LIQUIPEDIA_URL)
     console.print(f"Fetched {len(html_content):,} bytes")
 
-    console.print(f"\n[bold]Extracting patches with Gemini 3 Pro...[/bold]")
+    console.print("\n[bold]Extracting patches...[/bold]")
     patches = extract_patches_with_llm(html_content)
 
     # Filter to only patches with balance changes

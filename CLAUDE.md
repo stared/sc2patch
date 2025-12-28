@@ -15,6 +15,12 @@
 - Provide clear error messages with context
 - Exit with code 1 on failures
 
+## NO CONTENT TRUNCATION
+
+- **NEVER slice content** like `html_content[:80000]` - this may cut crucial information
+- If content is too long for LLM, convert to markdown or extract relevant sections first
+- Use proper HTML-to-markdown conversion (e.g., `markdownify`) to reduce size while preserving structure
+
 ## NO DEFENSIVE PROGRAMMING
 
 - **CRITICAL RULE**: Do NOT add fallbacks or "if this fails, try that" patterns
@@ -71,6 +77,14 @@ Each stage:
 **Single source of truth:** `data/patch_urls.json` (only manually edited file)
 
 **API Keys:** `OPENROUTER_API_KEY` is stored in `.env` file (not committed to git)
+
+**Allowed LLM Models:** Only these models may be used (via OpenRouter):
+- `google/gemini-3-pro-preview` (default)
+- `google/gemini-3-flash-preview`
+- `openai/gpt-5.2`
+- `anthropic/claude-opus-4.5`
+
+See `src/sc2patches/llm_config.py` for the canonical list.
 
 ## Pipeline Integrity
 
