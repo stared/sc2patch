@@ -34,7 +34,7 @@ export const EntityChangesSchema = z.object({
 export const PatchSchema = z.object({
   version: z.string(),
   date: z.string(),
-  url: z.string(),
+  url: z.string().url(), // Must be valid URL - no empty strings or about:blank
   entities: z.array(EntityChangesSchema),
 });
 

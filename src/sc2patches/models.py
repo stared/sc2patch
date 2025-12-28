@@ -4,10 +4,10 @@ These Pydantic models define the schema for all patch data.
 The TypeScript side mirrors these with Zod schemas.
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 # Type aliases
 Race = Literal["terran", "protoss", "zerg", "neutral"]
@@ -43,8 +43,18 @@ class Patch(BaseModel):
 
     version: str = Field(description="Patch version (e.g., '5.0.12')")
     date: str = Field(description="ISO date YYYY-MM-DD")
-    url: str = Field(description="URL to patch notes")
+    url: str = Field(description="URL to patch notes - must be valid HTTP(S) URL")
     entities: list[EntityChanges]
+
+    @field_validator("url")
+    @classmethod
+    def url_must_be_valid(cls, v: str) -> str:
+        """Ensure URL is not empty and starts with http."""
+        if not v or not v.strip():
+            raise ValueError("URL cannot be empty")
+        if not v.startswith("http://") and not v.startswith("https://"):
+            raise ValueError(f"URL must start with http:// or https://, got: {v}")
+        return v
 
 
 class PatchesData(BaseModel):
@@ -60,5 +70,5 @@ class PatchesData(BaseModel):
         return cls(
             patches=patches,
             units=units,
-            generated_at=datetime.now().isoformat(),
+            generated_at=datetime.now(tz=timezone.utc).isoformat(),
         )
