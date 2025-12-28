@@ -1,38 +1,27 @@
-// Types for SC2 patch data
+/**
+ * TypeScript types for SC2 patch visualization.
+ *
+ * Data types (Unit, Patch, etc.) are defined in schemas.ts via Zod.
+ * This file contains visualization-specific types.
+ */
 
-export interface Unit {
-  id: string;
-  name: string;
-  race: 'terran' | 'protoss' | 'zerg';
-  type: 'unit' | 'building' | 'upgrade' | 'ability' | 'mechanic';
-}
+// Re-export data types from Zod schemas
+export type {
+  Race,
+  ChangeType,
+  UnitType,
+  Unit,
+  Change,
+  EntityChanges,
+  Patch,
+  PatchesData,
+} from './schemas';
 
-export interface PatchChange {
-  id: string;
-  patch_version: string;
-  entity_id: string;
-  raw_text: string;
-  change_type: 'buff' | 'nerf' | 'mixed';
-}
+// Re-export race enum for iteration
+export { RaceSchema } from './schemas';
+export const RACES = ['terran', 'zerg', 'protoss', 'neutral'] as const;
 
-export interface PatchMetadata {
-  version: string;
-  date: string;
-  title: string;
-  url: string;
-}
-
-export interface PatchData {
-  metadata: PatchMetadata;
-  changes: PatchChange[];
-}
-
-export interface ProcessedPatchData {
-  version: string;
-  date: string;
-  url: string;
-  entities: Map<string, ProcessedEntity>;
-}
+// Visualization types (post-processing)
 
 export interface ProcessedChange {
   text: string;
@@ -43,19 +32,22 @@ export interface ProcessedEntity {
   id: string;
   name: string;
   race: string;
-  type?: string;  // 'unit' | 'building' | 'upgrade' | 'ability' | 'unknown'
+  type: 'unit' | 'building' | 'upgrade' | 'ability' | 'mechanic' | 'unknown';
   changes: ProcessedChange[];
   status: 'buff' | 'nerf' | 'mixed' | null;
+}
+
+export interface ProcessedPatchData {
+  version: string;
+  date: string;
+  url: string;
+  entities: Map<string, ProcessedEntity>;
 }
 
 // Entity with position for tooltip display
 export type EntityWithPosition = ProcessedEntity & { x: number; y: number };
 
 export type ViewMode = 'by-patch' | 'by-unit';
-
-// Race types
-export const RACES = ['terran', 'zerg', 'protoss', 'neutral'] as const;
-export type Race = typeof RACES[number];
 
 // D3 rendering interfaces
 export interface EntityItem {

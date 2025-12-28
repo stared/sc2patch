@@ -155,12 +155,13 @@ def extract_url(html: str) -> str:
     return og_url["content"]
 
 
-def extract_metadata(html: str, source_url: str) -> PatchMetadata:
+def extract_metadata(html: str, source_url: str, version_hint: str | None = None) -> PatchMetadata:
     """Extract all metadata from HTML via JSON-LD.
 
     Args:
         html: HTML content
         source_url: Original source URL (used as fallback)
+        version_hint: Optional version to use if not found in title (e.g., for BU patches)
 
     Returns:
         PatchMetadata object
@@ -187,15 +188,20 @@ def extract_metadata(html: str, source_url: str) -> PatchMetadata:
     except (ValueError, AttributeError) as e:
         raise DownloadError(f"Invalid datePublished format: {date_published}") from e
 
-    # Extract version from title
+    # Extract version from title, or use version_hint if provided
     match = re.search(r"\b(\d+\.\d+\.?\d*)\b", title)
-    if not match:
+    if match:
+        version = match.group(1)
+    elif version_hint:
+        version = version_hint
+    else:
         raise DownloadError(f"No version number found in title: {title}")
 
-    version = match.group(1)
-
-    # Get canonical URL from meta tags
-    url = extract_url(html)
+    # Get canonical URL from meta tags, fallback to source_url
+    try:
+        url = extract_url(html)
+    except DownloadError:
+        url = source_url
 
     return PatchMetadata(version=version, date=date_str, title=title, url=url)
 
@@ -275,7 +281,11 @@ def url_to_filename(url: str) -> str:
 
 
 def download_patch(
-    url: str, html_dir: Path, markdown_dir: Path, skip_existing: bool = True
+    url: str,
+    html_dir: Path,
+    markdown_dir: Path,
+    skip_existing: bool = True,
+    version_hint: str | None = None,
 ) -> tuple[Path, Path, PatchMetadata]:
     """Download and convert a single patch.
 
@@ -284,6 +294,7 @@ def download_patch(
         html_dir: Directory to save HTML files
         markdown_dir: Directory to save Markdown files
         skip_existing: Skip if HTML file already exists
+        version_hint: Optional version to use if not found in title (e.g., for BU patches)
 
     Returns:
         Tuple of (html_path, markdown_path, metadata)
@@ -299,7 +310,7 @@ def download_patch(
     if skip_existing and html_path.exists():
         # Read existing HTML to extract metadata
         html = html_path.read_text(encoding="utf-8")
-        metadata = extract_metadata(html, url)
+        metadata = extract_metadata(html, url, version_hint)
         markdown_path = markdown_dir / f"{metadata.version}.md"
         return html_path, markdown_path, metadata
 
@@ -310,7 +321,7 @@ def download_patch(
     validate_patch_html(html, url)
 
     # Extract metadata FROM HTML
-    metadata = extract_metadata(html, url)
+    metadata = extract_metadata(html, url, version_hint)
 
     # Save HTML
     html_dir.mkdir(parents=True, exist_ok=True)

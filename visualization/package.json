@@ -14,7 +14,8 @@
     "d3-selection": "^3.0.0",
     "d3-transition": "^3.0.1",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "zod": "^4.2.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
