@@ -2,6 +2,8 @@
 
 import json
 import os
+import re
+from datetime import datetime
 from pathlib import Path
 
 import httpx
@@ -125,6 +127,51 @@ def extract_bodies_from_html_files(html_paths: list[Path]) -> str:
             sections.append(f"=== ADDITIONAL PATCH NOTES (Balance Update) ===\n\n{body}")
 
     return "\n\n" + "=" * 50 + "\n\n".join(sections)
+
+
+def extract_date_from_html(html_path: Path) -> str | None:
+    """Extract date from HTML JSON-LD metadata.
+
+    This is the authoritative source for patch dates, not LLM extraction.
+
+    Args:
+        html_path: Path to HTML file
+
+    Returns:
+        Date string in YYYY-MM-DD format, or None if not found
+    """
+    with html_path.open(encoding="utf-8") as f:
+        html_content = f.read()
+
+    soup = BeautifulSoup(html_content, "html.parser")
+
+    # Find JSON-LD script tag
+    script = soup.find("script", type="application/ld+json")
+    if not script or not script.string:
+        return None
+
+    # Fix common JSON syntax error in Blizzard's JSON-LD
+    json_str = script.string
+    json_str = re.sub(r'(\])\s*("publisher")', r"\1,\2", json_str)
+
+    try:
+        data = json.loads(json_str)
+    except json.JSONDecodeError:
+        return None
+
+    if not isinstance(data, dict) or data.get("@type") != "NewsArticle":
+        return None
+
+    date_published = data.get("datePublished")
+    if not date_published:
+        return None
+
+    # Parse ISO datetime to date
+    try:
+        dt = datetime.fromisoformat(date_published.replace("Z", "+00:00"))
+        return dt.strftime("%Y-%m-%d")
+    except (ValueError, AttributeError):
+        return None
 
 
 def parse_with_llm(
@@ -376,17 +423,23 @@ def parse_patch(html_path: Path, api_key: str | None = None) -> dict:
     # Extract body text
     body_text = extract_body_from_html(html_path)
 
+    # Extract date from HTML metadata (authoritative source)
+    html_date = extract_date_from_html(html_path)
+
     # Try to infer version from filename
     version_hint = html_path.stem
 
     # Parse with LLM
     patch_data = parse_with_llm(body_text, version_hint, api_key)
 
+    # Use HTML metadata date (authoritative), fallback to LLM date only if HTML has none
+    authoritative_date = html_date or patch_data.date or "unknown"
+
     # Convert to output format
     result = {
         "metadata": {
             "version": patch_data.version,
-            "date": patch_data.date or "unknown",
+            "date": authoritative_date,
             "title": f"StarCraft II Patch {patch_data.version}",
             "url": "",  # Will be filled in by pipeline script
         },
@@ -457,17 +510,28 @@ def parse_patches_combined(html_paths: list[Path], api_key: str | None = None) -
     # Extract combined body text from all files
     body_text = extract_bodies_from_html_files(html_paths)
 
+    # Extract date from LAST file (Balance Update has the later date)
+    # This is when ALL changes were live
+    html_date = None
+    for path in reversed(html_paths):
+        html_date = extract_date_from_html(path)
+        if html_date:
+            break
+
     # Try to infer version from first filename (main patch)
     version_hint = html_paths[0].stem
 
     # Parse with LLM in multi-source mode
     patch_data = parse_with_llm(body_text, version_hint, api_key, is_multi_source=True)
 
+    # Use HTML metadata date (authoritative), fallback to LLM date only if HTML has none
+    authoritative_date = html_date or patch_data.date or "unknown"
+
     # Convert to output format (same as parse_patch)
     result = {
         "metadata": {
             "version": patch_data.version,
-            "date": patch_data.date or "unknown",
+            "date": authoritative_date,
             "title": f"StarCraft II Patch {patch_data.version}",
             "url": "",  # Will be filled in by pipeline script
         },
