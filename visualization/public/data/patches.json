@@ -785,24 +785,8 @@
       ]
     },
     {
-      "version": "2.0.10",
-      "date": "2013-08-26",
-      "url": "https://news.blizzard.com/en-us/starcraft2/10842645/starcraft-ii-2-0-10-patch-notes",
-      "entities": [
-        {
-          "entity_id": "zerg-overseer",
-          "changes": [
-            {
-              "raw_text": "The Pneumatized Carapace upgrade now increases Overseer movement speed from 1.88 to 3.375 (previously 1.88 to 2.75)",
-              "change_type": "buff"
-            }
-          ]
-        }
-      ]
-    },
-    {
       "version": "2.0.11",
-      "date": "2013-09-23",
+      "date": "2013-08-26",
       "url": "https://news.blizzard.com/en-us/starcraft2/11089019/starcraft-ii-2-0-11-patch-notes",
       "entities": [
         {
@@ -1065,42 +1049,8 @@
       ]
     },
     {
-      "version": "2.1.1",
-      "date": "2014-02-28",
-      "url": "https://news.blizzard.com/en-us/starcraft2/13104618/starcraft-ii-2-1-1-patch-notes",
-      "entities": [
-        {
-          "entity_id": "protoss-mothership_core",
-          "changes": [
-            {
-              "raw_text": "Vision radius reduced from 14 to 9.",
-              "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-widow_mine",
-          "changes": [
-            {
-              "raw_text": "Sentinel Missiles now deal bonus splash damage to units with Shields: 40 + 40 vs. Shields within 1.25 radius, 20 + 20 vs. Shields from 1.25 to 1.5, and 10 + 10 vs. Shields from 1.5 to 1.75.",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-hydralisk",
-          "changes": [
-            {
-              "raw_text": "Delay between attacks decreased from .83 to .75 seconds.",
-              "change_type": "buff"
-            }
-          ]
-        }
-      ]
-    },
-    {
       "version": "2.1.3 BU",
-      "date": "2014-04-22",
+      "date": "2014-07-25",
       "url": "https://news.blizzard.com/en-us/starcraft2/14933073",
       "entities": [
         {
@@ -1137,84 +1087,8 @@
       ]
     },
     {
-      "version": "2.1.2",
-      "date": "2014-05-23",
-      "url": "https://news.blizzard.com/en-us/starcraft2/14323608/starcraft-ii-2-1-2-patch-notes",
-      "entities": [
-        {
-          "entity_id": "protoss-mothership_core",
-          "changes": [
-            {
-              "raw_text": "Time Warp duration decreased from 30 to 10 seconds",
-              "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-thor",
-          "changes": [
-            {
-              "raw_text": "Changed to prioritize their AA weapon over the AG weapon",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-widow_mine",
-          "changes": [
-            {
-              "raw_text": "Splash radius is now 1.75. There are no longer 50% or 25% damage zones.",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Splash damage is now 40 (+40 Shields) for the full 1.75 splash radius.",
-              "change_type": "buff"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "version": "2.1.3",
-      "date": "2014-07-24",
-      "url": "https://news.blizzard.com/en-us/starcraft2/15094654/starcraft-ii-2-1-3-patch-notes",
-      "entities": [
-        {
-          "entity_id": "protoss-mothership_core",
-          "changes": [
-            {
-              "raw_text": "Time Warp duration decreased from 30 to 10 seconds",
-              "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-thor",
-          "changes": [
-            {
-              "raw_text": "Changed to prioritize their AA weapon over the AG weapon",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-widow_mine",
-          "changes": [
-            {
-              "raw_text": "Splash radius is now 1.75 (no longer 50% or 25% damage zones)",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Splash damage is now 40 (+40 Shields) for the full 1.75 splash radius",
-              "change_type": "buff"
-            }
-          ]
-        }
-      ]
-    },
-    {
       "version": "2.1.9",
-      "date": "2015-03-24",
+      "date": "2015-04-09",
       "url": "https://news.blizzard.com/en-us/starcraft2/18446033/starcraft-ii-2-1-9-patch-notes",
       "entities": [
         {
@@ -1284,105 +1158,6 @@
             },
             {
               "raw_text": "New upgrade: Flying Locusts - Allows Locusts to fly and use Swoop to land and attack",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-viper",
-          "changes": [
-            {
-              "raw_text": "Blinding Cloud range increased from 10 to 11",
-              "change_type": "buff"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "version": "2.1.9 BU",
-      "date": "2015-04-09",
-      "url": "https://news.blizzard.com/en-us/starcraft2/18598811",
-      "entities": [
-        {
-          "entity_id": "protoss-tempest",
-          "changes": [
-            {
-              "raw_text": "Bonus damage versus massive air units decreased from +50 to +14",
-              "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-raven",
-          "changes": [
-            {
-              "raw_text": "Point Defense Drone duration decreased from 180 seconds to 20 seconds",
-              "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-swarm_host",
-          "changes": [
-            {
-              "raw_text": "Cost modified from 200 Minerals / 100 Vespene to 100 Minerals / 200 Vespene",
-              "change_type": "mixed"
-            },
-            {
-              "raw_text": "Supply cost increased from 3 to 4",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Movement speed increased from 2.25 to 2.95",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Now requires the Burrow research in order to burrow",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "No longer collide with Locusts",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "[Spawn Locusts] Auto-cast removed; Spawn Locusts must now be manually cast",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "[Spawn Locusts] Cooldown increased from 25 seconds to 60 seconds",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "[Spawn Locusts] Casting no longer requires the Swarm Host to be burrowed",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "[Locust] Weapon speed increased from 0.8 to 0.6",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "[Locust] Duration increased from 15 seconds (+10 seconds with Enduring Locusts) to 25 seconds",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "[Enduring Locusts] Upgrade removed",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "[Flying Locusts] New upgrade added: Flying Locusts",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "[Flying Locusts] Requires Lair",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "[Flying Locusts] Cost set to 200 Minerals / 200 Vespene; research time 160 seconds",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "[Flying Locusts] Allows Locusts spawned by Swarm Hosts to fly and use Swoop to land and attack",
               "change_type": "buff"
             }
           ]
@@ -1504,12 +1279,6 @@
           ]
         }
       ]
-    },
-    {
-      "version": "3.3.2 BU",
-      "date": "2016-07-06",
-      "url": "https://starcraft2.com/en-us/news/20142728",
-      "entities": []
     },
     {
       "version": "3.4.0",
@@ -2228,6 +1997,384 @@
       ]
     },
     {
+      "version": "4.0",
+      "date": "2017-11-15",
+      "url": "https://news.blizzard.com/en-us/starcraft2/21183638/starcraft-ii-4-0-patch-notes",
+      "entities": [
+        {
+          "entity_id": "neutral-mineral_field",
+          "changes": [
+            {
+              "raw_text": "Large mineral node values increased from 1500 to 1800",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "neutral-vespene_geyser",
+          "changes": [
+            {
+              "raw_text": "Vespene Geyser values increased from 2000 to 2250",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-adept",
+          "changes": [
+            {
+              "raw_text": "Shade sight increased from 2 to 4",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-carrier",
+          "changes": [
+            {
+              "raw_text": "Interceptor cost increased from 10 to 15",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-colossus",
+          "changes": [
+            {
+              "raw_text": "Thermal Lance base range increased from 6 to 7",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Thermal Lance damage changed from 12 to 10 (+5 light)",
+              "change_type": "mixed"
+            },
+            {
+              "raw_text": "Protoss ground weapon upgrades will add +1 to base and +1 to light",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Extended Thermal Lance cost reduced from 200/200 to 150/150",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Extended Thermal Lance range upgrade increased range by +2 instead of +3",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-disruptor",
+          "changes": [
+            {
+              "raw_text": "Purification Nova will detonate when in contact with an enemy unit",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Purification Nova cooldown reduced from 21.4 to 14.3 seconds",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-high_templar",
+          "changes": [
+            {
+              "raw_text": "New weapon 'Psi Blast' added",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-mothership",
+          "changes": [
+            {
+              "raw_text": "Photon Overcharge removed",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Mass Recall changed to Strategic Recall (no cooldown, no shared global cooldown)",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-mothership_core",
+          "changes": [
+            {
+              "raw_text": "Unit removed",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-nexus",
+          "changes": [
+            {
+              "raw_text": "Chrono Boost changed to cost 50 energy and operate 100% faster for 10 seconds",
+              "change_type": "mixed"
+            },
+            {
+              "raw_text": "Now has energy (200 maximum, 50 starting)",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Added 'Mass Recall' ability",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "130 second global cooldown for all Mass Recalls across all Nexus structures",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-observer",
+          "changes": [
+            {
+              "raw_text": "New ability 'Surveillance Mode' added",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-oracle",
+          "changes": [
+            {
+              "raw_text": "Revelation duration reduced from 43 to 30 seconds",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Stasis Ward will no longer affect Zerg larva or eggs",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Stasis Ward has a 170 second timed life duration",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Pulsar Beam weapon changed from Spell to Normal damage (affected by armor)",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-shield_battery",
+          "changes": [
+            {
+              "raw_text": "New defensive structure added",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Cost: 75 minerals",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Restores shields of a single friendly unit within 6 range",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-stalker",
+          "changes": [
+            {
+              "raw_text": "Particle Disruptors weapon damage changed from 10 (+4 Armored) to 15 (+6 Armored)",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Weapon speed changed from 1 to 1.54",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Receives +2 base damage per level of Protoss Ground Weapon upgrades",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-cyclone",
+          "changes": [
+            {
+              "raw_text": "First four shots will fire quickly for the Lock On ability",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "New upgrade 'Rapid Fire Launchers' added to Factory Tech Lab",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-ghost",
+          "changes": [
+            {
+              "raw_text": "Starts with the Cloak ability",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Starting energy decreased from 75 to 50",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "New upgrade 'Moebius Reactor' added to Ghost Academy",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-liberator",
+          "changes": [
+            {
+              "raw_text": "No longer receives a sight range bonus after transforming into Defender mode",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Receives vision of the targeted location in Defender mode",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-raven",
+          "changes": [
+            {
+              "raw_text": "Removed Auto-Turret, Point Defense Drone, and Seeker Missile abilities",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Added Interference Matrix ability",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Added Repair Drone ability",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Added Anti-Armor Missile ability",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "New upgrade 'Enhanced Munitions' added to Starport Tech Lab",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-tech_lab",
+          "changes": [
+            {
+              "raw_text": "New upgrade 'Smart Servos' added (allows Hellions, Hellbats, Vikings, and Thors to transform quickly)",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-widow_mine",
+          "changes": [
+            {
+              "raw_text": "Widow Mines are now revealed while Sentinel Missile is on cooldown",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-infestor",
+          "changes": [
+            {
+              "raw_text": "Infested Gauss Rifle damage reduced from 8 to 6",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Infested Gauss Rifle no longer targets air units",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "New weapon 'Infested Rockets' added to Infested Terrans (targets air only)",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Zerg missile attack and ground carapace upgrades will affect Infested Terrans",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Fungal Growth slows the target's movement speed by 75% instead of rooting",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Fungal Growth radius increased from 2.0 to 2.5",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-lurker",
+          "changes": [
+            {
+              "raw_text": "New upgrade 'Adaptive Talons' added",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-lurker_den",
+          "changes": [
+            {
+              "raw_text": "Lurker Den is morphed from the Drone instead of the Hydralisk Den",
+              "change_type": "mixed"
+            },
+            {
+              "raw_text": "Cost changed to 100 Minerals/150 Vespene Gas/86 Seconds",
+              "change_type": "mixed"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-overlord",
+          "changes": [
+            {
+              "raw_text": "Movement speed increased from 0.82 to 0.902",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-overseer",
+          "changes": [
+            {
+              "raw_text": "New ability 'Oversight' added",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-swarm_host",
+          "changes": [
+            {
+              "raw_text": "Movement speed reduced from 4.13 to 3.15",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-viper",
+          "changes": [
+            {
+              "raw_text": "Parasitic Bomb damage increased from 60 to 120",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Parasitic Bomb damage no longer stacks",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "0.7 second delay before Parasitic Bomb effects begin",
+              "change_type": "nerf"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "4.0.2",
       "date": "2017-11-21",
       "url": "https://news.blizzard.com/en-us/starcraft2/21212284/starcraft-ii-4-0-2-patch-notes",
@@ -2356,136 +2503,6 @@
           "changes": [
             {
               "raw_text": "Will respond more quickly to morph commands",
-              "change_type": "buff"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "version": "4.1.1",
-      "date": "2017-12-07",
-      "url": "https://news.blizzard.com/en-us/starcraft2/21257260/starcraft-ii-4-1-1-patch-notes",
-      "entities": [
-        {
-          "entity_id": "protoss-oracle",
-          "changes": [
-            {
-              "raw_text": "Pulsar Beam damage reduced from 15 (+10 Light) to 15 (+7 Light).",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Pulsar Beam damage type changed from normal to spell damage.",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Build time increased from 37 to 43 seconds.",
-              "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "protoss-shield_battery",
-          "changes": [
-            {
-              "raw_text": "Cost increased from 75 Minerals to 100 Minerals.",
-              "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-ghost",
-          "changes": [
-            {
-              "raw_text": "Steady Targeting will return 100% energy when interrupted.",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Cost changed from 200/100 to 150/125.",
-              "change_type": "mixed"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-hellbat",
-          "changes": [
-            {
-              "raw_text": "Smart Servos cost reduced from 150/150 to 100/100.",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-hellion",
-          "changes": [
-            {
-              "raw_text": "Smart Servos cost reduced from 150/150 to 100/100.",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-thor",
-          "changes": [
-            {
-              "raw_text": "Smart Servos cost reduced from 150/150 to 100/100.",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Rapid Fire Launchers cost reduced from 150/150 to 75/75.",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-viking",
-          "changes": [
-            {
-              "raw_text": "Smart Servos cost reduced from 150/150 to 100/100.",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "terran-widow_mine",
-          "changes": [
-            {
-              "raw_text": "Drilling Claws cost reduced from 150/150 to 75/75.",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-corruptor",
-          "changes": [
-            {
-              "raw_text": "Will respond more quickly to morph commands.",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-infestor",
-          "changes": [
-            {
-              "raw_text": "Can no longer cast Fungal Growth while burrowed.",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Fungal Growth radius reduced from 2.5 to 2.25.",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Infested Terran cast range reduced from 9 to 7.",
-              "change_type": "nerf"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-overlord",
-          "changes": [
-            {
-              "raw_text": "Will respond more quickly to morph commands.",
               "change_type": "buff"
             }
           ]
@@ -3140,49 +3157,6 @@
           "changes": [
             {
               "raw_text": "When activating Oversight with multiple Overseers selected, the units will now activate all at once instead of one at a time.",
-              "change_type": "buff"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "version": "4.0",
-      "date": "2018-06-19",
-      "url": "https://news.blizzard.com/en-us/starcraft2/21183638/starcraft-ii-4-0-patch-notes",
-      "entities": [
-        {
-          "entity_id": "protoss-observer",
-          "changes": [
-            {
-              "raw_text": "Can now immediately receive move commands after changing modes instead of having to wait a brief moment",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-overseer",
-          "changes": [
-            {
-              "raw_text": "Can now immediately receive move commands after changing modes instead of having to wait a brief moment",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-spine_crawler",
-          "changes": [
-            {
-              "raw_text": "Can now immediately receive move commands after uprooting instead of having to wait a brief moment",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-spore_crawler",
-          "changes": [
-            {
-              "raw_text": "Can now immediately receive move commands after uprooting instead of having to wait a brief moment",
               "change_type": "buff"
             }
           ]
@@ -6834,5 +6808,5 @@
       "type": "unit"
     }
   ],
-  "generated_at": "2025-12-28T13:19:42.587555+00:00"
+  "generated_at": "2025-12-28T20:18:10.932698+00:00"
 }
