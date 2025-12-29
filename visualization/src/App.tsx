@@ -297,7 +297,7 @@ function App() {
             }}
           />
 
-          {!selectedEntityId && tooltip.visible && tooltip.entity && (
+          {tooltip.visible && tooltip.entity && (
             <div
               className="tooltip"
               style={{
@@ -308,16 +308,18 @@ function App() {
               }}
             >
               <h4>{tooltip.entity.name || 'Unknown'}</h4>
-              <ul>
-                {tooltip.entity.changes.map((change: ProcessedChange, i: number) => (
-                  <li key={i}>
-                    <span style={{ color: getChangeColor(change.change_type as ChangeType), fontWeight: 'bold' }}>
-                      {getChangeIndicator(change.change_type as ChangeType)}
-                    </span>
-                    {change.text}
-                  </li>
-                ))}
-              </ul>
+              {!selectedEntityId && (
+                <ul>
+                  {tooltip.entity.changes.map((change: ProcessedChange, i: number) => (
+                    <li key={i}>
+                      <span style={{ color: getChangeColor(change.change_type as ChangeType), fontWeight: 'bold' }}>
+                        {getChangeIndicator(change.change_type as ChangeType)}
+                      </span>
+                      {change.text}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           )}
         </div>

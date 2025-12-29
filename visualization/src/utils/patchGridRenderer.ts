@@ -374,18 +374,16 @@ export class PatchGridRenderer {
         state.onEntitySelect(state.selectedEntityId === d.entityId ? null : d.entityId);
       })
       .on('mouseenter', (event, d) => {
-        if (!state.selectedEntityId) {
-          const rect = (event.target as SVGElement).getBoundingClientRect();
-          state.setTooltip({
-            entity: {
-              ...d.entity,
-              name: state.unitsMap.get(d.entityId)?.name || d.entity.name || d.entityId,
-              x: rect.left + rect.width / 2 + window.scrollX,
-              y: rect.top + window.scrollY
-            },
-            visible: true
-          });
-        }
+        const rect = (event.target as SVGElement).getBoundingClientRect();
+        state.setTooltip({
+          entity: {
+            ...d.entity,
+            name: state.unitsMap.get(d.entityId)?.name || d.entity.name || d.entityId,
+            x: rect.left + rect.width / 2 + window.scrollX,
+            y: rect.top + window.scrollY
+          },
+          visible: true
+        });
       })
       .on('mouseleave', () => state.setTooltip({ entity: null, visible: false }));
 
