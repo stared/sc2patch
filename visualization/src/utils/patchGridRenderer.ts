@@ -411,25 +411,29 @@ export class PatchGridRenderer {
             .attr('transform', d => `translate(0, ${d.y})`)
             .style('opacity', d => d.visible ? 1 : 0);
 
-          // Render patch label
+          // Render patch label - date prominent, version smaller
           const label = pg.append('g')
             .attr('class', 'patch-label')
             .attr('transform', 'translate(0, 20)');
 
+          // Date first (prominent)
           label.append('text')
             .attr('x', 10).attr('y', 0)
             .style('fill', d => eraColors[getEraFromVersion(d.patch.version)])
-            .style('font-size', '14px')
+            .style('font-size', '13px')
             .style('font-weight', '600')
+            .style('cursor', 'pointer')
+            .text(d => d.patch.date.split('-').slice(0, 2).join('-'))
+            .on('click', (_e, d) => window.open(d.patch.url, '_blank'));
+
+          // Version below (smaller)
+          label.append('text')
+            .attr('x', 10).attr('y', 14)
+            .style('fill', '#777')
+            .style('font-size', '11px')
             .style('cursor', 'pointer')
             .text(d => d.patch.version)
             .on('click', (_e, d) => window.open(d.patch.url, '_blank'));
-
-          label.append('text')
-            .attr('x', 10).attr('y', 16)
-            .style('fill', '#666')
-            .style('font-size', '11px')
-            .text(d => d.patch.date.split('-').slice(0, 2).join('-'));
 
           return pg;
         },
