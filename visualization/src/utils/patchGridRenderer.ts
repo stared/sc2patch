@@ -560,9 +560,16 @@ export class PatchGridRenderer {
     // Get selected entity ID from entities data
     const selectedEntity = entities.data().find(d => d.animationGroup === 'SELECTED');
     const selectedEntityId = selectedEntity?.entityId;
-
-    // Header target position (left-aligned with unit icons)
     const headerTargetX = this.getHeaderCenterX();
+
+    // Change header text to unit name IMMEDIATELY (before animation starts)
+    const unit = state.unitsMap.get(selectedEntityId || '');
+    const unitName = unit?.name || '';
+    const selectedRace = unit?.race;
+    this.svg.selectAll('.race-header')
+      .filter(function() { return select(this).datum() === selectedRace; })
+      .select('.race-text')
+      .text(unitName);
 
     // Phase 1 (0-600ms): Fade non-selected entities and irrelevant patch labels
     await Promise.all([
@@ -599,12 +606,8 @@ export class PatchGridRenderer {
     ]);
 
     // Phase 2 (600-1400ms): Move selected entities, patches, and headers together
-    const selectedRace = state.unitsMap.get(selectedEntityId || '')?.race;
     const selectedHeader = this.svg.selectAll('.race-header')
-      .filter(function() {
-        const race = select(this).datum() as Race;
-        return race === selectedRace;
-      });
+      .filter(function() { return select(this).datum() === selectedRace; });
 
     await Promise.all([
       entities
@@ -636,11 +639,6 @@ export class PatchGridRenderer {
         .catch(() => {})
     ]);
 
-    // After movement completes, change header text to unit name (keep centered)
-    const unit = state.unitsMap.get(selectedEntityId || '');
-    const unitName = unit?.name || '';
-    selectedHeader.select('.race-text').text(unitName);
-
     // Phase 3 (1400ms+): Show change notes
     await changes
       .transition('select-changes')
@@ -655,6 +653,14 @@ export class PatchGridRenderer {
     patches: Selection<SVGGElement, PatchRow, SVGGElement, unknown>,
     state: RenderState
   ): Promise<void> {
+    // Change header text back to race names IMMEDIATELY (before animation starts)
+    RACES.forEach(race => {
+      this.svg.selectAll('.race-header')
+        .filter(function() { return select(this).datum() === race; })
+        .select('.race-text')
+        .text(race.charAt(0).toUpperCase() + race.slice(1));
+    });
+
     // Target position depends on whether a race is still selected
     const getTargetX = (race: Race, i: number) =>
       state.selectedRace === race ? this.getHeaderCenterX() : this.getHeaderGridX(i);
@@ -693,15 +699,7 @@ export class PatchGridRenderer {
       })
     ]);
 
-    // After movement completes, change header text back to race names (keep centered)
-    RACES.forEach(race => {
-      this.svg.selectAll('.race-header')
-        .filter(function() { return select(this).datum() === race; })
-        .select('.race-text')
-        .text(race.charAt(0).toUpperCase() + race.slice(1));
-    });
-
-    // Phase 2 (800-1400ms): Fade in newly appearing entities, patch labels, and headers
+    // Phase 2: Fade in newly appearing entities, patch labels, and headers
     await Promise.all([
       entities
         .filter(d => d.animationGroup === 'FADE_IN')
