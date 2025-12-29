@@ -76,6 +76,7 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
+  cursor: pointer;
   align-items: flex-start;
   gap: 4px;
   background: transparent;
@@ -489,6 +490,7 @@ button.filter-chip:hover, .filter-chip.active { color: var(--chip-color); backgr
 /* SVG header hover effects */
 svg .race-header {
   transition: filter 0.15s ease;
+  cursor: pointer;
 }
 
 svg .race-header:not(.active):hover {
@@ -501,6 +503,7 @@ svg .race-header.active:hover {
 
 svg .sort-control {
   transition: filter 0.15s ease;
+  cursor: pointer;
 }
 
 svg .sort-control:hover {
@@ -510,6 +513,7 @@ svg .sort-control:hover {
 /* SVG patch label hover glow */
 svg .patch-label {
   transition: filter 0.15s ease;
+  cursor: pointer;
 }
 
 svg .patch-label:hover {
