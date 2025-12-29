@@ -507,6 +507,15 @@ svg .sort-control:hover {
   filter: drop-shadow(0 0 10px rgba(136, 136, 136, 0.8)) brightness(1.2);
 }
 
+/* SVG patch label hover glow */
+svg .patch-label {
+  transition: filter 0.15s ease;
+}
+
+svg .patch-label:hover {
+  filter: drop-shadow(0 0 8px currentColor) brightness(1.2);
+}
+
 .patch-row {
   display: grid;
   grid-template-columns: 120px repeat(4, 1fr);
