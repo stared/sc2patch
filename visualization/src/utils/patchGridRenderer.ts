@@ -67,20 +67,25 @@ export class PatchGridRenderer {
   // HEADER POSITION HELPERS - Single source of truth
   // ==========================================================================
 
-  /** Header X position in a column (handles both center and grid modes) */
+  /** Header X position in a column (centered over content) */
   private getHeaderX(columnWidth: number, columnIndex: number = 0): number {
     const cellsPerRow = Math.max(1, Math.floor(columnWidth / (layout.cellSize + layout.cellGap)));
     const contentWidth = cellsPerRow * layout.cellSize + (cellsPerRow - 1) * layout.cellGap;
     return layout.patchLabelWidth + columnIndex * columnWidth + contentWidth / 2;
   }
 
-  /** Header X position when centered (unit or race selected - full width column) */
+  /** Header X position when unit selected (left-aligned with unit icons) */
+  private getHeaderUnitX(): number {
+    return layout.patchLabelWidth + layout.filteredEntityOffset;
+  }
+
+  /** Header X position when race selected (centered over full width) */
   private getHeaderCenterX(): number {
     const availableWidth = this.svgWidth - layout.patchLabelWidth;
     return this.getHeaderX(availableWidth, 0);
   }
 
-  /** Header X position in grid layout (4 columns) */
+  /** Header X position in grid layout (4 columns, centered per column) */
   private getHeaderGridX(raceIndex: number): number {
     const availableWidth = this.svgWidth - layout.patchLabelWidth;
     const columnWidth = Math.floor(availableWidth / RACES.length);
@@ -267,9 +272,9 @@ export class PatchGridRenderer {
             entityId: state.selectedEntityId,
             patchVersion: patch.version,
             entity,
-            x: layout.patchLabelWidth + 40,
+            x: layout.patchLabelWidth + layout.filteredEntityOffset,
             y: filteredY,
-            targetX: layout.patchLabelWidth + 40,
+            targetX: layout.patchLabelWidth + layout.filteredEntityOffset,
             targetY: filteredY,
             visible: true,
             animationGroup: 'SELECTED'
@@ -309,7 +314,7 @@ export class PatchGridRenderer {
               // Mark selected entities during selection animation
               animationGroup = 'SELECTED';
               // Set target position for animation (filtered view position with dynamic spacing)
-              targetX = layout.patchLabelWidth + 40;
+              targetX = layout.patchLabelWidth + layout.filteredEntityOffset;
               targetY = filteredPositions.get(patch.version) || patchY;
             } else if (isDeselectingRace && wasHiddenByRaceFilter) {
               // Entity was hidden by race filter, should fade in after movement
@@ -561,8 +566,8 @@ export class PatchGridRenderer {
     const selectedEntity = entities.data().find(d => d.animationGroup === 'SELECTED');
     const selectedEntityId = selectedEntity?.entityId;
 
-    // Header target position (centered)
-    const headerTargetX = this.getHeaderCenterX();
+    // Header target position (left-aligned with unit icons)
+    const headerTargetX = this.getHeaderUnitX();
 
     // Phase 1 (0-600ms): Fade non-selected entities and irrelevant patch labels
     await Promise.all([
@@ -842,14 +847,13 @@ export class PatchGridRenderer {
         .attr('transform', d => `translate(0, ${d.y})`);
 
       // Set header positions immediately
-      // When a unit is selected, position at center; otherwise at grid positions
       if (state.selectedEntityId) {
-        // Unit selected - single header at center
+        // Unit selected - header left-aligned with unit icons
         const selectedUnitRace = state.unitsMap.get(state.selectedEntityId)?.race;
         this.svg.selectAll('.race-header')
           .filter(function() { return select(this).datum() === selectedUnitRace; })
           .style('opacity', 1)
-          .attr('transform', `translate(${this.getHeaderCenterX()}, 0)`);
+          .attr('transform', `translate(${this.getHeaderUnitX()}, 0)`);
       } else {
         // No unit selected - all headers at grid positions
         RACES.forEach((race, i) => {
@@ -911,11 +915,14 @@ export class PatchGridRenderer {
       .data(racesToShow, d => d);
 
     const raceEnter = raceHeaders.enter().append('g').attr('class', 'race-header');
-    const isFiltered = !!(state.selectedRace || state.selectedEntityId);
 
-    // Position entering headers using single source of truth
+    // Position entering headers: unit=left-aligned, race=centered, grid=per-column
     raceEnter.attr('transform', (race: Race) => {
-      const x = isFiltered ? this.getHeaderCenterX() : this.getHeaderGridX(RACES.indexOf(race));
+      const x = state.selectedEntityId
+        ? this.getHeaderUnitX()
+        : state.selectedRace
+          ? this.getHeaderCenterX()
+          : this.getHeaderGridX(RACES.indexOf(race));
       return `translate(${x}, 0)`;
     });
 
@@ -930,8 +937,24 @@ export class PatchGridRenderer {
       .style('--race-color', (race: Race) => raceColors[race])
       .classed('active', (race: Race) => state.selectedRace === race || selectedUnitRace === race);
 
+    // Unit mode: left-aligned, variable width bg based on text
+    // Race/grid mode: centered, fixed width bg
+    const isUnitMode = !!state.selectedEntityId;
+
+    // Calculate text width for unit mode (rough approximation: 7px per char + padding)
+    const getTextWidth = (race: Race): number => {
+      if (isUnitMode && selectedUnitRace === race) {
+        const unit = state.unitsMap.get(state.selectedEntityId!);
+        const text = unit?.name || race.charAt(0).toUpperCase() + race.slice(1);
+        return text.length * 7 + 16; // 7px per char + 16px padding
+      }
+      return 80; // Fixed width for race mode
+    };
+
     raceMerge.select('.race-bg')
-      .attr('x', -40).attr('width', 80).attr('height', 24).attr('rx', 4)
+      .attr('x', (race) => isUnitMode && selectedUnitRace === race ? 0 : -40)
+      .attr('width', getTextWidth)
+      .attr('height', 24).attr('rx', 4)
       .style('fill', (race) => {
         const isActive = state.selectedRace === race || selectedUnitRace === race;
         return isActive ? 'rgba(255, 255, 255, 0.08)' : 'rgba(255, 255, 255, 0.03)';
@@ -953,7 +976,9 @@ export class PatchGridRenderer {
       });
 
     raceMerge.select('.race-text')
-      .attr('text-anchor', 'middle').attr('y', 16)
+      .attr('text-anchor', isUnitMode ? 'start' : 'middle')
+      .attr('x', isUnitMode ? 8 : 0)  // Padding from left edge when left-aligned
+      .attr('y', 16)
       .style('fill', (race) => raceColors[race])
       .style('font-size', '12px')
       .style('font-weight', (race) => {
@@ -962,7 +987,6 @@ export class PatchGridRenderer {
       })
       .style('cursor', 'pointer').style('pointer-events', 'none')
       .text((race) => {
-        // Show unit name when selected, otherwise race name
         if (state.selectedEntityId && selectedUnitRace === race) {
           const unit = state.unitsMap.get(state.selectedEntityId);
           return unit?.name || race.charAt(0).toUpperCase() + race.slice(1);

@@ -93,6 +93,8 @@ export const layout = {
   // Header positioning
   headerY: 12,        // Y position of header row (sort button + race labels)
   gridStartY: 55,     // Y position where first patch row starts
+  // Filtered view (single unit selected)
+  filteredEntityOffset: 40, // X offset from patchLabelWidth for entity in filtered view
   // Change notes layout (for filtered view)
   changeNoteLineHeight: 18,
   changeNotePadding: 16
