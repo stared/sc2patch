@@ -88,7 +88,7 @@ export const changeTypeOrder: ChangeType[] = ['buff', 'nerf', 'mixed'];
 export const layout = {
   cellSize: 48,
   cellGap: 6,
-  patchLabelWidth: 120,
+  patchLabelWidth: 90,  // Reduced from 120 - sort arrow is minimal
   raceColumnWidth: 250,
   // Header positioning
   headerY: 12,        // Y position of header row (sort button + race labels)

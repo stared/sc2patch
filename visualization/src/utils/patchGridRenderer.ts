@@ -858,35 +858,29 @@ export class PatchGridRenderer {
 
     const raceColumnWidth = (state.selectedRace || state.selectedEntityId) ? availableWidth : Math.floor(availableWidth / RACES.length);
 
-    // Sort control
+    // Sort control - minimal arrow only
     const sortGroup = headersContainer.selectAll<SVGGElement, SortOrder>('.sort-control').data([state.sortOrder]);
     const sortEnter = sortGroup.enter().append('g').attr('class', 'sort-control');
     const sortMerge = sortEnter.merge(sortGroup);
 
     type SortOrder = 'newest' | 'oldest';
 
-    sortMerge.attr('transform', 'translate(10, 0)');
+    sortMerge.attr('transform', 'translate(30, 0)');
 
-    sortEnter.append('rect').attr('class', 'sort-bg');
     sortEnter.append('text').attr('class', 'sort-text');
 
-    sortMerge.select('.sort-bg')
-      .attr('width', 90).attr('height', 24).attr('rx', 4)
-      .style('fill', 'rgba(255, 255, 255, 0.03)')
-      .style('stroke', 'rgba(255, 255, 255, 0.08)').style('stroke-width', 1)
+    // Arrow: ↑ for newest (time flows up), ↓ for oldest
+    sortMerge.select('.sort-text')
+      .attr('x', 0).attr('y', 16).attr('text-anchor', 'middle')
+      .style('fill', '#666').style('font-size', '16px').style('font-weight', '400')
       .style('cursor', 'pointer')
+      .text(state.sortOrder === 'newest' ? '↑' : '↓')
       .on('click', () => {
         if (this.isAnimating) return; // Block clicks during animation
         if (state.setSortOrder) {
           state.setSortOrder(state.sortOrder === 'newest' ? 'oldest' : 'newest');
         }
       });
-
-    sortMerge.select('.sort-text')
-      .attr('x', 45).attr('y', 16).attr('text-anchor', 'middle')
-      .style('fill', '#888').style('font-size', '12px').style('font-weight', '600')
-      .style('cursor', 'pointer').style('pointer-events', 'none')
-      .text(state.sortOrder === 'newest' ? '↓ Newest' : '↑ Oldest');
 
     // Race headers - structure only, no transitions (animations handled in applyAnimation)
     const raceHeaders = headersContainer.selectAll<SVGGElement, Race>('.race-header')
