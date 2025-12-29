@@ -400,13 +400,15 @@ export class PatchGridRenderer {
       .on('mouseenter', (event, d) => {
         // No tooltip when a unit is already selected
         if (state.selectedEntityId) return;
-        const rect = (event.target as SVGElement).getBoundingClientRect();
+        // Use currentTarget (the group), not target (could be child image/rect)
+        const group = event.currentTarget as SVGGElement;
+        const rect = group.getBoundingClientRect();
         state.setTooltip({
           entity: {
             ...d.entity,
             name: state.unitsMap.get(d.entityId)?.name || d.entity.name || d.entityId,
-            x: rect.left + rect.width / 2 + window.scrollX,
-            y: rect.top + window.scrollY
+            x: rect.left + rect.width / 2,
+            y: rect.top + rect.height / 2
           },
           visible: true
         });

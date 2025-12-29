@@ -396,23 +396,36 @@ button.filter-chip:hover, .filter-chip.active { color: var(--chip-color); backgr
   }
 }
 
+/* Tooltip - left/right of icon, change-type colored border */
 .tooltip {
-  position: absolute;
-  background: rgba(20, 20, 20, 0.95);
-  border: 1px solid #444;
+  position: fixed;
+  background: rgba(16, 16, 16, 0.95);
+  backdrop-filter: blur(4px);
+  border: 1px solid var(--change-color, #888);
   border-radius: 4px;
-  padding: 8px 12px;
-  font-size: 14px;
+  padding: 10px 14px;
+  font-size: 13px;
   pointer-events: none;
   z-index: 1000;
-  max-width: 400px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  max-width: 320px;
+  width: max-content;
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.6),
+    0 0 8px color-mix(in srgb, var(--change-color, #888) 25%, transparent);
+  /* Animation */
+  opacity: 0;
+  transition: opacity 0.12s ease-out;
+}
+
+.tooltip.visible {
+  opacity: 1;
 }
 
 .tooltip h4 {
-  margin: 0 0 8px 0;
-  color: #fff;
-  font-size: 16px;
+  margin: 0 0 6px 0;
+  color: var(--race-color, #fff);
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .tooltip ul {
@@ -422,9 +435,10 @@ button.filter-chip:hover, .filter-chip.active { color: var(--chip-color); backgr
 }
 
 .tooltip li {
-  margin: 4px 0;
+  margin: 6px 0;
   color: #ccc;
-  line-height: 1.4;
+  line-height: 1.5;
+  font-size: 13px;
 }
 
 .tooltip-link {
