@@ -103,7 +103,14 @@ export const layout = {
 // Animation timing (milliseconds)
 export const timing = {
   fade: 600,
-  move: 800
+  move: 800,
+  textCrossFade: 200  // Race/unit text cross-fade duration
+} as const;
+
+// Header text layout
+export const headerText = {
+  unitTextX: 8,  // X offset for left-aligned unit text
+  raceTextX: 0   // X offset for centered race text (text-anchor: middle)
 } as const;
 
 // Helper functions

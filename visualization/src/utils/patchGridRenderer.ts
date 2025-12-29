@@ -74,12 +74,7 @@ export class PatchGridRenderer {
     return layout.patchLabelWidth + columnIndex * columnWidth + contentWidth / 2;
   }
 
-  /** Header X position when unit selected (left-aligned with unit icons) */
-  private getHeaderUnitX(): number {
-    return layout.patchLabelWidth + layout.filteredEntityOffset;
-  }
-
-  /** Header X position when race selected (centered over full width) */
+  /** Header X position when race OR unit selected (centered over full width) */
   private getHeaderCenterX(): number {
     const availableWidth = this.svgWidth - layout.patchLabelWidth;
     return this.getHeaderX(availableWidth, 0);
@@ -567,7 +562,7 @@ export class PatchGridRenderer {
     const selectedEntityId = selectedEntity?.entityId;
 
     // Header target position (left-aligned with unit icons)
-    const headerTargetX = this.getHeaderUnitX();
+    const headerTargetX = this.getHeaderCenterX();
 
     // Phase 1 (0-600ms): Fade non-selected entities and irrelevant patch labels
     await Promise.all([
@@ -604,6 +599,13 @@ export class PatchGridRenderer {
     ]);
 
     // Phase 2 (600-1400ms): Move selected entities, patches, and headers together
+    const selectedRace = state.unitsMap.get(selectedEntityId || '')?.race;
+    const selectedHeader = this.svg.selectAll('.race-header')
+      .filter(function() {
+        const race = select(this).datum() as Race;
+        return race === selectedRace;
+      });
+
     await Promise.all([
       entities
         .filter(d => d.animationGroup === 'SELECTED')
@@ -624,12 +626,7 @@ export class PatchGridRenderer {
         .catch(() => {}),
 
       // Move remaining header to center and ensure it's visible
-      this.svg.selectAll('.race-header')
-        .filter(function() {
-          const race = select(this).datum() as Race;
-          const selectedRace = state.unitsMap.get(selectedEntityId || '')?.race;
-          return race === selectedRace;
-        })
+      selectedHeader
         .transition('select-move-headers')
         .duration(timing.move)
         .ease(easeCubicOut)
@@ -638,6 +635,11 @@ export class PatchGridRenderer {
         .end()
         .catch(() => {})
     ]);
+
+    // After movement completes, change header text to unit name (keep centered)
+    const unit = state.unitsMap.get(selectedEntityId || '');
+    const unitName = unit?.name || '';
+    selectedHeader.select('.race-text').text(unitName);
 
     // Phase 3 (1400ms+): Show change notes
     await changes
@@ -651,9 +653,13 @@ export class PatchGridRenderer {
   private async applyDeselectAnimation(
     entities: Selection<SVGGElement, EntityItemWithAnimation, SVGGElement, unknown>,
     patches: Selection<SVGGElement, PatchRow, SVGGElement, unknown>,
-    _state: RenderState
+    state: RenderState
   ): Promise<void> {
-    // Phase 1 (0-800ms): Move entities, patches, and headers back to grid
+    // Target position depends on whether a race is still selected
+    const getTargetX = (race: Race, i: number) =>
+      state.selectedRace === race ? this.getHeaderCenterX() : this.getHeaderGridX(i);
+
+    // Phase 1: Move entities, patches, and headers to target positions
     await Promise.all([
       entities
         .filter(d => d.animationGroup === 'MOVE_BACK')
@@ -664,7 +670,6 @@ export class PatchGridRenderer {
         .end()
         .catch(() => {}),
 
-      // Move patches
       ...patches.data().map(d => {
         const patch = patches.filter(pd => pd.patch.version === d.patch.version);
         return patch
@@ -676,19 +681,25 @@ export class PatchGridRenderer {
           .catch(() => {});
       }),
 
-      // Move headers back to grid positions
       ...RACES.map((race, i) => {
         return this.svg.selectAll('.race-header')
           .filter(function() { return select(this).datum() === race; })
           .transition('deselect-move-headers')
           .duration(timing.move)
           .ease(easeCubicOut)
-          .attr('transform', `translate(${this.getHeaderGridX(i)}, 0)`)
-          .style('opacity', 1)
+          .attr('transform', `translate(${getTargetX(race, i)}, 0)`)
           .end()
           .catch(() => {});
       })
     ]);
+
+    // After movement completes, change header text back to race names (keep centered)
+    RACES.forEach(race => {
+      this.svg.selectAll('.race-header')
+        .filter(function() { return select(this).datum() === race; })
+        .select('.race-text')
+        .text(race.charAt(0).toUpperCase() + race.slice(1));
+    });
 
     // Phase 2 (800-1400ms): Fade in newly appearing entities, patch labels, and headers
     await Promise.all([
@@ -708,8 +719,12 @@ export class PatchGridRenderer {
         .end()
         .catch(() => {}),
 
-      // Fade in all headers (some may have been hidden during selection)
+      // Fade in headers that should be visible (all if no race selected, just selected race otherwise)
       this.svg.selectAll('.race-header')
+        .filter(function() {
+          const race = select(this).datum() as Race;
+          return !state.selectedRace || race === state.selectedRace;
+        })
         .transition('deselect-fade-headers')
         .duration(timing.fade)
         .style('opacity', 1)
@@ -743,14 +758,10 @@ export class PatchGridRenderer {
             .end()
             .catch(() => {}),
 
-          // Fade out non-selected race headers
+          // Hide non-selected race headers immediately (no fade - instant)
           this.svg.selectAll('.race-header')
             .filter(function() { return select(this).datum() !== state.selectedRace; })
-            .transition('race-fade-out-headers')
-            .duration(timing.fade)
             .style('opacity', 0)
-            .end()
-            .catch(() => {})
         ]);
 
         // Phase 2: Move remaining entities, patches, and header together
@@ -847,28 +858,47 @@ export class PatchGridRenderer {
         .style('opacity', d => d.visible ? 1 : 0)
         .attr('transform', d => `translate(0, ${d.y})`);
 
-      // Set header positions immediately based on mode:
-      // 1. Unit selected -> left-aligned
-      // 2. Race selected -> centered
-      // 3. Nothing selected -> grid positions
-      if (state.selectedEntityId) {
-        const selectedUnitRace = state.unitsMap.get(state.selectedEntityId)?.race;
-        this.svg.selectAll('.race-header')
-          .filter(function() { return select(this).datum() === selectedUnitRace; })
-          .style('opacity', 1)
-          .attr('transform', `translate(${this.getHeaderUnitX()}, 0)`);
-      } else if (state.selectedRace) {
-        this.svg.selectAll('.race-header')
-          .style('opacity', 1)
-          .attr('transform', `translate(${this.getHeaderCenterX()}, 0)`);
-      } else {
-        RACES.forEach((race, i) => {
-          this.svg.selectAll('.race-header')
-            .filter(function() { return select(this).datum() === race; })
-            .style('opacity', 1)
-            .attr('transform', `translate(${this.getHeaderGridX(i)}, 0)`);
-        });
-      }
+      // Set header positions and visibility immediately based on mode
+      // Headers stay in DOM always, opacity controls visibility
+      const selectedUnitRace = state.selectedEntityId
+        ? state.unitsMap.get(state.selectedEntityId)?.race
+        : undefined;
+
+      RACES.forEach((race, i) => {
+        const header = this.svg.selectAll('.race-header')
+          .filter(function() { return select(this).datum() === race; });
+
+        // Determine visibility
+        let visible = true;
+        if (state.selectedEntityId) {
+          visible = race === selectedUnitRace;
+        } else if (state.selectedRace) {
+          visible = race === state.selectedRace;
+        }
+
+        // Determine position based on mode (text always centered, rect always fixed)
+        let x: number;
+        let textContent: string;
+
+        if (state.selectedEntityId && race === selectedUnitRace) {
+          x = this.getHeaderCenterX();
+          const unit = state.unitsMap.get(state.selectedEntityId);
+          textContent = unit?.name || race.charAt(0).toUpperCase() + race.slice(1);
+        } else if (state.selectedRace && race === state.selectedRace) {
+          x = this.getHeaderCenterX();
+          textContent = race.charAt(0).toUpperCase() + race.slice(1);
+        } else {
+          x = this.getHeaderGridX(i);
+          textContent = race.charAt(0).toUpperCase() + race.slice(1);
+        }
+
+        header
+          .style('opacity', visible ? 1 : 0)
+          .style('pointer-events', visible ? 'all' : 'none')
+          .attr('transform', `translate(${x}, 0)`);
+
+        header.select('.race-text').text(textContent);
+      });
     }
   }
 
@@ -927,7 +957,7 @@ export class PatchGridRenderer {
     // Position entering headers: unit=left-aligned, race=centered, grid=per-column
     raceEnter.attr('transform', (race: Race) => {
       const x = state.selectedEntityId
-        ? this.getHeaderUnitX()
+        ? this.getHeaderCenterX()
         : state.selectedRace
           ? this.getHeaderCenterX()
           : this.getHeaderGridX(RACES.indexOf(race));
@@ -936,34 +966,20 @@ export class PatchGridRenderer {
 
     raceEnter.append('rect').attr('class', 'race-bg');
     raceEnter.append('text').attr('class', 'race-text');
-    raceEnter.style('opacity', 0); // Start invisible, fade in via animation
+    raceEnter.style('opacity', 0); // Group starts invisible, fade in via animation
 
     const raceMerge = raceEnter.merge(raceHeaders);
 
     // Set race color variable and active class for CSS hover effects
-    // Also set visibility (opacity + pointer-events) - animations handle transitions
+    // Position and opacity transitions are handled by animation code
     raceMerge
       .style('--race-color', (race: Race) => raceColors[race])
       .style('pointer-events', (race: Race) => isHeaderVisible(race) ? 'all' : 'none')
       .classed('active', (race: Race) => state.selectedRace === race || selectedUnitRace === race);
 
-    // Unit mode: left-aligned, variable width bg based on text
-    // Race/grid mode: centered, fixed width bg
-    const isUnitMode = !!state.selectedEntityId;
-
-    // Calculate text width for unit mode (rough approximation: 7px per char + padding)
-    const getTextWidth = (race: Race): number => {
-      if (isUnitMode && selectedUnitRace === race) {
-        const unit = state.unitsMap.get(state.selectedEntityId!);
-        const text = unit?.name || race.charAt(0).toUpperCase() + race.slice(1);
-        return text.length * 7 + 16; // 7px per char + 16px padding
-      }
-      return 80; // Fixed width for race mode
-    };
-
+    // Background rect - always centered, fixed size (no mode-specific changes)
     raceMerge.select('.race-bg')
-      .attr('x', (race) => isUnitMode && selectedUnitRace === race ? 0 : -40)
-      .attr('width', getTextWidth)
+      .attr('x', -40).attr('width', 80)
       .attr('height', 24).attr('rx', 4)
       .style('fill', (race) => {
         const isActive = state.selectedRace === race || selectedUnitRace === race;
@@ -985,24 +1001,13 @@ export class PatchGridRenderer {
         }
       });
 
+    // Header text - always centered (text content set by animation code)
     raceMerge.select('.race-text')
-      .attr('text-anchor', isUnitMode ? 'start' : 'middle')
-      .attr('x', isUnitMode ? 8 : 0)  // Padding from left edge when left-aligned
+      .classed('active', (race: Race) => state.selectedRace === race || selectedUnitRace === race)
+      .attr('text-anchor', 'middle')
+      .attr('x', 0)
       .attr('y', 16)
-      .style('fill', (race) => raceColors[race])
-      .style('font-size', '12px')
-      .style('font-weight', (race) => {
-        const isActive = state.selectedRace === race || selectedUnitRace === race;
-        return isActive ? '600' : '500';
-      })
-      .style('cursor', 'pointer').style('pointer-events', 'none')
-      .text((race) => {
-        if (state.selectedEntityId && selectedUnitRace === race) {
-          const unit = state.unitsMap.get(state.selectedEntityId);
-          return unit?.name || race.charAt(0).toUpperCase() + race.slice(1);
-        }
-        return race.charAt(0).toUpperCase() + race.slice(1);
-      });
+      .style('fill', (race) => raceColors[race]);
 
     // No exit().remove() - headers stay in DOM, visibility controlled by opacity
 

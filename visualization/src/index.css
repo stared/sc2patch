@@ -559,6 +559,26 @@ svg .wiki-link:hover {
   fill: #999 !important;
 }
 
+/* Header text base styles (race and unit names) */
+svg .race-text,
+svg .unit-text {
+  font-size: 12px;
+  cursor: pointer;
+  pointer-events: none;
+}
+
+svg .race-text {
+  font-weight: 500;
+}
+
+svg .race-text.active {
+  font-weight: 600;
+}
+
+svg .unit-text {
+  font-weight: 600;
+}
+
 .patch-row {
   display: grid;
   grid-template-columns: 120px repeat(4, 1fr);
