@@ -372,7 +372,17 @@ button.filter-chip:hover, .filter-chip.active { color: var(--chip-color); backgr
   }
 
   .attribution {
-    display: none;
+    flex-direction: row;
+    gap: 8px;
+    font-size: 10px;
+  }
+
+  .attribution-author {
+    color: #666;
+  }
+
+  .attribution-source {
+    font-size: 10px;
   }
 
   .era-label-short {
