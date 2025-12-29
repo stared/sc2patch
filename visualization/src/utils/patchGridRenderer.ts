@@ -777,6 +777,7 @@ export class PatchGridRenderer {
           // Move remaining header to center
           this.svg.selectAll('.race-header')
             .filter(function() { return select(this).datum() === state.selectedRace; })
+            .interrupt()
             .transition('race-move-headers')
             .duration(timing.move)
             .ease(easeCubicOut)
@@ -846,16 +847,21 @@ export class PatchGridRenderer {
         .style('opacity', d => d.visible ? 1 : 0)
         .attr('transform', d => `translate(0, ${d.y})`);
 
-      // Set header positions immediately
+      // Set header positions immediately based on mode:
+      // 1. Unit selected -> left-aligned
+      // 2. Race selected -> centered
+      // 3. Nothing selected -> grid positions
       if (state.selectedEntityId) {
-        // Unit selected - header left-aligned with unit icons
         const selectedUnitRace = state.unitsMap.get(state.selectedEntityId)?.race;
         this.svg.selectAll('.race-header')
           .filter(function() { return select(this).datum() === selectedUnitRace; })
           .style('opacity', 1)
           .attr('transform', `translate(${this.getHeaderUnitX()}, 0)`);
+      } else if (state.selectedRace) {
+        this.svg.selectAll('.race-header')
+          .style('opacity', 1)
+          .attr('transform', `translate(${this.getHeaderCenterX()}, 0)`);
       } else {
-        // No unit selected - all headers at grid positions
         RACES.forEach((race, i) => {
           this.svg.selectAll('.race-header')
             .filter(function() { return select(this).datum() === race; })
