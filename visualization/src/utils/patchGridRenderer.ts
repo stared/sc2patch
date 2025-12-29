@@ -374,6 +374,8 @@ export class PatchGridRenderer {
         state.onEntitySelect(state.selectedEntityId === d.entityId ? null : d.entityId);
       })
       .on('mouseenter', (event, d) => {
+        // No tooltip when a unit is already selected
+        if (state.selectedEntityId) return;
         const rect = (event.target as SVGElement).getBoundingClientRect();
         state.setTooltip({
           entity: {
@@ -975,14 +977,7 @@ export class PatchGridRenderer {
       const unit = state.unitsMap.get(state.selectedEntityId);
       const unitName = unit?.name || '';
       const wikiUrl = `https://liquipedia.net/starcraft2/${unitName.replace(/ /g, '_')}_(Legacy_of_the_Void)`;
-      const raceIdx = RACES.indexOf(selectedUnitRace!);
-      const availWidth = this.svgWidth - layout.patchLabelWidth;
-      const colWidth = Math.floor(availWidth / RACES.length);
-      const cellsPerRow = Math.max(1, Math.floor(colWidth / (layout.cellSize + layout.cellGap)));
-      const contentWidth = cellsPerRow * layout.cellSize + (cellsPerRow - 1) * layout.cellGap;
-      const x = layout.patchLabelWidth + raceIdx * colWidth + contentWidth / 2;
 
-      // Position on the right side of the screen
       linksMerge
         .attr('class', 'unit-links wiki-link')
         .attr('x', this.svgWidth - 20).attr('y', 16).attr('text-anchor', 'end')
