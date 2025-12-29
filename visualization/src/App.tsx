@@ -307,8 +307,6 @@ function App() {
                 transform: 'translate(-50%, -100%)',
                 marginTop: '-10px'
               }}
-              onMouseEnter={() => setTooltip(prev => ({ ...prev, visible: true }))}
-              onMouseLeave={() => setTooltip({ entity: null, visible: false })}
             >
               <h4>{tooltip.entity.name || 'Unknown'}</h4>
               {!selectedEntityId && (
@@ -323,15 +321,6 @@ function App() {
                   ))}
                 </ul>
               )}
-              <a
-                href={`https://liquipedia.net/starcraft2/${(tooltip.entity.name || '').replace(/ /g, '_')}_(Legacy_of_the_Void)`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="tooltip-link"
-                onClick={(e) => e.stopPropagation()}
-              >
-                Liquipedia ↗
-              </a>
             </div>
           )}
         </div>

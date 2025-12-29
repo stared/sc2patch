@@ -411,7 +411,7 @@ button.filter-chip:hover, .filter-chip.active { color: var(--chip-color); backgr
   border-radius: 4px;
   padding: 8px 12px;
   font-size: 14px;
-  pointer-events: auto;
+  pointer-events: none;
   z-index: 1000;
   max-width: 400px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
@@ -557,6 +557,15 @@ svg .patch-label {
 
 svg .patch-label:hover {
   filter: drop-shadow(0 0 8px currentColor) brightness(1.2);
+}
+
+svg .wiki-link {
+  transition: filter 0.15s ease;
+}
+
+svg .wiki-link:hover {
+  filter: drop-shadow(0 0 6px rgba(136, 136, 136, 0.6)) brightness(1.3);
+  fill: #999 !important;
 }
 
 .patch-row {
