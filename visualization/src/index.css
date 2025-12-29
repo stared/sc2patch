@@ -391,7 +391,7 @@ button.filter-chip:hover, .filter-chip.active { color: var(--chip-color); backgr
   border-radius: 4px;
   padding: 8px 12px;
   font-size: 14px;
-  pointer-events: none;
+  pointer-events: auto;
   z-index: 1000;
   max-width: 400px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
@@ -413,6 +413,21 @@ button.filter-chip:hover, .filter-chip.active { color: var(--chip-color); backgr
   margin: 4px 0;
   color: #ccc;
   line-height: 1.4;
+}
+
+.tooltip-link {
+  display: block;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #333;
+  color: #66fcf1;
+  text-decoration: none;
+  font-size: 12px;
+}
+
+.tooltip-link:hover {
+  color: #9ff;
+  text-decoration: underline;
 }
 
 .controls {
