@@ -986,3 +986,25 @@ svg .unit-text {
   line-height: 1.4;
   font-size: 13px;
 }
+
+/* Footer */
+.app-footer {
+  text-align: center;
+  padding: 32px 24px 48px;
+  color: #888;
+  font-size: 14px;
+}
+
+.footer-wol {
+  color: var(--wol-color);
+}
+
+.app-footer a {
+  color: var(--wol-color);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.app-footer a:hover {
+  filter: drop-shadow(0 0 8px var(--wol-color)) brightness(1.3);
+}

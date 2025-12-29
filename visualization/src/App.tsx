@@ -323,6 +323,13 @@ function App() {
             </div>
           )}
         </div>
+
+        <footer className="app-footer" style={{ '--wol-color': eraColors.wol } as React.CSSProperties}>
+          <p>
+            <span className="footer-wol">StarCraft II: Wings of Liberty</span> was released worldwide on July 27, 2010.
+            See its <a href="https://www.youtube.com/watch?v=VSGmPpidDvo" target="_blank" rel="noopener noreferrer">epic cinematic teaser</a>, showcasing Blizzard's legendary animation craft.
+          </p>
+        </footer>
       </main>
     </div>
   );
