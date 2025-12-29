@@ -1,3 +1,4 @@
 {
-  "3.8.0": "PATCH-SPECIFIC: In this patch, the 'Rocks now have 0 armor' change is in the Co-op Missions section (after the visual separator image following Ultralisk changes). Do NOT include this rocks change - it is Co-op only, not Versus."
+  "3.8.0": "PATCH-SPECIFIC: In this patch, the 'Rocks now have 0 armor' change is in the Co-op Missions section (after the visual separator image following Ultralisk changes). Do NOT include this rocks change - it is Co-op only, not Versus.",
+  "1.4.3 BU": "PATCH-SPECIFIC: This Liquipedia page contains BOTH the main patch 1.4.3 changes (Phoenix, Ghost, MULE) AND the Balance Update changes (Observer, Overlord, Queen). ONLY extract the Balance Update section changes (dated May 10, 2012): Observer build time, Overlord speed, Queen range. Do NOT include the main patch changes (Phoenix Anion Pulse-Crystals, Ghost Snipe, MULE minerals)."
 }
