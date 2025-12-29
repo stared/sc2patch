@@ -884,13 +884,15 @@ export class PatchGridRenderer {
     // Position the entire header group - children use Y=0 relative to this
     headersContainer.attr('transform', `translate(0, ${layout.headerY})`);
 
-    // Show only the relevant race: selected race, or race of selected entity, or all races
+    // Determine which race should be visible (for opacity/pointer-events)
     const selectedUnitRace = state.selectedEntityId ? state.unitsMap.get(state.selectedEntityId)?.race as Race | undefined : undefined;
-    const racesToShow = state.selectedRace
-      ? [state.selectedRace]
-      : selectedUnitRace
-        ? [selectedUnitRace]
-        : RACES;
+
+    // Helper: is this race header currently visible?
+    const isHeaderVisible = (race: Race): boolean => {
+      if (state.selectedEntityId) return race === selectedUnitRace;
+      if (state.selectedRace) return race === state.selectedRace;
+      return true; // All visible in grid mode
+    };
 
     // Sort control - minimal arrow only
     const sortGroup = headersContainer.selectAll<SVGGElement, SortOrder>('.sort-control').data([state.sortOrder]);
@@ -916,9 +918,9 @@ export class PatchGridRenderer {
         }
       });
 
-    // Race headers - structure only, no transitions (animations handled in applyAnimation)
+    // Race headers - always keep ALL 4 in DOM, use opacity to show/hide
     const raceHeaders = headersContainer.selectAll<SVGGElement, Race>('.race-header')
-      .data(racesToShow, d => d);
+      .data(RACES, d => d);  // Always all 4 races
 
     const raceEnter = raceHeaders.enter().append('g').attr('class', 'race-header');
 
@@ -939,8 +941,10 @@ export class PatchGridRenderer {
     const raceMerge = raceEnter.merge(raceHeaders);
 
     // Set race color variable and active class for CSS hover effects
+    // Also set visibility (opacity + pointer-events) - animations handle transitions
     raceMerge
       .style('--race-color', (race: Race) => raceColors[race])
+      .style('pointer-events', (race: Race) => isHeaderVisible(race) ? 'all' : 'none')
       .classed('active', (race: Race) => state.selectedRace === race || selectedUnitRace === race);
 
     // Unit mode: left-aligned, variable width bg based on text
@@ -1000,8 +1004,7 @@ export class PatchGridRenderer {
         return race.charAt(0).toUpperCase() + race.slice(1);
       });
 
-    // Exit handled in animation functions
-    raceHeaders.exit().remove();
+    // No exit().remove() - headers stay in DOM, visibility controlled by opacity
 
     // Liquipedia link to the right of unit name (only when unit selected)
     const linksData = state.selectedEntityId ? [state.selectedEntityId] : [];
