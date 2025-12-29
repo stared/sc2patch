@@ -240,15 +240,6 @@ button.filter-chip:hover, .filter-chip.active { color: var(--chip-color); backgr
   color: #aaa;
 }
 
-.attribution-source.report-link {
-  color: #ff9933;
-  opacity: 0.7;
-}
-
-.attribution-source.report-link:hover {
-  color: #ffb366;
-  opacity: 1;
-}
 
 .selected-unit {
   display: inline-flex;

@@ -199,7 +199,6 @@ function App() {
             <div className="attribution">
               <span className="attribution-author">by <a href="https://p.migdal.pl" target="_blank" rel="noopener noreferrer">Piotr Migdał</a></span>
               <a href="https://github.com/stared/sc2-balance-timeline" target="_blank" rel="noopener noreferrer" className="attribution-source">source code</a>
-              <a href="https://github.com/stared/sc2-balance-timeline/issues/new?template=factual_error.yml" target="_blank" rel="noopener noreferrer" className="attribution-source report-link">report error</a>
             </div>
           </div>
 
