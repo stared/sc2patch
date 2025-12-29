@@ -45,7 +45,7 @@ body {
 .header-top {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: flex-end;
   gap: 24px;
 }
 
@@ -205,15 +205,15 @@ button.filter-chip:hover, .filter-chip.active { color: var(--chip-color); backgr
   color: #999;
 }
 
-/* Attribution */
+/* Attribution - subdued, minimal */
 .attribution {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 4px;
-  font-family: ui-monospace, 'SF Mono', Monaco, monospace;
+  gap: 2px;
   font-size: 12px;
   flex-shrink: 0;
+  margin-top: 0.5em;
 }
 
 .attribution-author {
@@ -221,23 +221,24 @@ button.filter-chip:hover, .filter-chip.active { color: var(--chip-color); backgr
 }
 
 .attribution-author a {
-  color: #fff;
+  color: #26A69A;  /* 10th Anniversary teal */
   text-decoration: none;
-  border-bottom: 1px dotted #66fcf1;
+  transition: all 0.2s ease;
 }
 
 .attribution-author a:hover {
-  color: #66fcf1;
+  filter: drop-shadow(0 0 8px rgba(38, 166, 154, 0.8)) brightness(1.3);
 }
 
 .attribution-source {
-  color: #777;
+  color: #888;
   text-decoration: none;
-  font-size: 11px;
+  transition: all 0.2s ease;
 }
 
 .attribution-source:hover {
-  color: #aaa;
+  color: #fff;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5)) brightness(1.2);
 }
 
 
