@@ -64,6 +64,30 @@ export class PatchGridRenderer {
   }
 
   // ==========================================================================
+  // HEADER POSITION HELPERS - Single source of truth
+  // ==========================================================================
+
+  /** Header X position in a column (handles both center and grid modes) */
+  private getHeaderX(columnWidth: number, columnIndex: number = 0): number {
+    const cellsPerRow = Math.max(1, Math.floor(columnWidth / (layout.cellSize + layout.cellGap)));
+    const contentWidth = cellsPerRow * layout.cellSize + (cellsPerRow - 1) * layout.cellGap;
+    return layout.patchLabelWidth + columnIndex * columnWidth + contentWidth / 2;
+  }
+
+  /** Header X position when centered (unit or race selected - full width column) */
+  private getHeaderCenterX(): number {
+    const availableWidth = this.svgWidth - layout.patchLabelWidth;
+    return this.getHeaderX(availableWidth, 0);
+  }
+
+  /** Header X position in grid layout (4 columns) */
+  private getHeaderGridX(raceIndex: number): number {
+    const availableWidth = this.svgWidth - layout.patchLabelWidth;
+    const columnWidth = Math.floor(availableWidth / RACES.length);
+    return this.getHeaderX(columnWidth, raceIndex);
+  }
+
+  // ==========================================================================
   // PUBLIC API
   // ==========================================================================
 
@@ -537,9 +561,8 @@ export class PatchGridRenderer {
     const selectedEntity = entities.data().find(d => d.animationGroup === 'SELECTED');
     const selectedEntityId = selectedEntity?.entityId;
 
-    // Calculate header target position (single column when selected)
-    const availableWidth = this.svgWidth - layout.patchLabelWidth;
-    const headerTargetX = layout.patchLabelWidth + availableWidth / 2;
+    // Header target position (centered)
+    const headerTargetX = this.getHeaderCenterX();
 
     // Phase 1 (0-600ms): Fade non-selected entities and irrelevant patch labels
     await Promise.all([
@@ -595,7 +618,7 @@ export class PatchGridRenderer {
         .end()
         .catch(() => {}),
 
-      // Move remaining header to center
+      // Move remaining header to center and ensure it's visible
       this.svg.selectAll('.race-header')
         .filter(function() {
           const race = select(this).datum() as Race;
@@ -606,6 +629,7 @@ export class PatchGridRenderer {
         .duration(timing.move)
         .ease(easeCubicOut)
         .attr('transform', `translate(${headerTargetX}, 0)`)
+        .style('opacity', 1)
         .end()
         .catch(() => {})
     ]);
@@ -624,10 +648,6 @@ export class PatchGridRenderer {
     patches: Selection<SVGGElement, PatchRow, SVGGElement, unknown>,
     _state: RenderState
   ): Promise<void> {
-    // Calculate header positions for grid layout (4 columns)
-    const availableWidth = this.svgWidth - layout.patchLabelWidth;
-    const raceColumnWidth = Math.floor(availableWidth / RACES.length);
-
     // Phase 1 (0-800ms): Move entities, patches, and headers back to grid
     await Promise.all([
       entities
@@ -651,17 +671,14 @@ export class PatchGridRenderer {
           .catch(() => {});
       }),
 
-      // Move headers back to grid positions (centered over content)
+      // Move headers back to grid positions
       ...RACES.map((race, i) => {
-        const cellsPerRow = Math.max(1, Math.floor(raceColumnWidth / (layout.cellSize + layout.cellGap)));
-        const contentWidth = cellsPerRow * layout.cellSize + (cellsPerRow - 1) * layout.cellGap;
-        const x = layout.patchLabelWidth + i * raceColumnWidth + contentWidth / 2;
         return this.svg.selectAll('.race-header')
           .filter(function() { return select(this).datum() === race; })
           .transition('deselect-move-headers')
           .duration(timing.move)
           .ease(easeCubicOut)
-          .attr('transform', `translate(${x}, 0)`)
+          .attr('transform', `translate(${this.getHeaderGridX(i)}, 0)`)
           .style('opacity', 1)
           .end()
           .catch(() => {});
@@ -708,10 +725,6 @@ export class PatchGridRenderer {
     const isSelectingRace = state.prevSelectedRace === null && state.selectedRace !== null;
     const isDeselectingRace = state.prevSelectedRace !== null && state.selectedRace === null;
 
-    // Calculate header positions
-    const availableWidth = this.svgWidth - layout.patchLabelWidth;
-    const gridColumnWidth = Math.floor(availableWidth / RACES.length);
-
     if (raceChanging) {
       // When selecting race: fade out first, then move
       if (isSelectingRace && state.selectedRace) {
@@ -736,7 +749,7 @@ export class PatchGridRenderer {
         ]);
 
         // Phase 2: Move remaining entities, patches, and header together
-        const headerTargetX = layout.patchLabelWidth + availableWidth / 2;
+        const headerTargetX = this.getHeaderCenterX();
         await Promise.all([
           entities
             .filter(d => d.visible)
@@ -788,17 +801,14 @@ export class PatchGridRenderer {
             .end()
             .catch(() => {}),
 
-          // Move headers back to grid positions (centered over content)
+          // Move headers back to grid positions
           ...RACES.map((race, i) => {
-            const cellsPerRow = Math.max(1, Math.floor(gridColumnWidth / (layout.cellSize + layout.cellGap)));
-            const contentWidth = cellsPerRow * layout.cellSize + (cellsPerRow - 1) * layout.cellGap;
-            const x = layout.patchLabelWidth + i * gridColumnWidth + contentWidth / 2;
             return this.svg.selectAll('.race-header')
               .filter(function() { return select(this).datum() === race; })
               .transition('race-move-headers')
               .duration(timing.move)
               .ease(easeCubicOut)
-              .attr('transform', `translate(${x}, 0)`)
+              .attr('transform', `translate(${this.getHeaderGridX(i)}, 0)`)
               .end()
               .catch(() => {});
           })
@@ -831,16 +841,24 @@ export class PatchGridRenderer {
         .style('opacity', d => d.visible ? 1 : 0)
         .attr('transform', d => `translate(0, ${d.y})`);
 
-      // Set header positions immediately (centered over content)
-      RACES.forEach((race, i) => {
-        const cellsPerRow = Math.max(1, Math.floor(gridColumnWidth / (layout.cellSize + layout.cellGap)));
-        const contentWidth = cellsPerRow * layout.cellSize + (cellsPerRow - 1) * layout.cellGap;
-        const x = layout.patchLabelWidth + i * gridColumnWidth + contentWidth / 2;
+      // Set header positions immediately
+      // When a unit is selected, position at center; otherwise at grid positions
+      if (state.selectedEntityId) {
+        // Unit selected - single header at center
+        const selectedUnitRace = state.unitsMap.get(state.selectedEntityId)?.race;
         this.svg.selectAll('.race-header')
-          .filter(function() { return select(this).datum() === race; })
+          .filter(function() { return select(this).datum() === selectedUnitRace; })
           .style('opacity', 1)
-          .attr('transform', `translate(${x}, 0)`);
-      });
+          .attr('transform', `translate(${this.getHeaderCenterX()}, 0)`);
+      } else {
+        // No unit selected - all headers at grid positions
+        RACES.forEach((race, i) => {
+          this.svg.selectAll('.race-header')
+            .filter(function() { return select(this).datum() === race; })
+            .style('opacity', 1)
+            .attr('transform', `translate(${this.getHeaderGridX(i)}, 0)`);
+        });
+      }
     }
   }
 
@@ -856,8 +874,6 @@ export class PatchGridRenderer {
     // Position the entire header group - children use Y=0 relative to this
     headersContainer.attr('transform', `translate(0, ${layout.headerY})`);
 
-    const availableWidth = this.svgWidth - layout.patchLabelWidth;
-
     // Show only the relevant race: selected race, or race of selected entity, or all races
     const selectedUnitRace = state.selectedEntityId ? state.unitsMap.get(state.selectedEntityId)?.race as Race | undefined : undefined;
     const racesToShow = state.selectedRace
@@ -865,8 +881,6 @@ export class PatchGridRenderer {
       : selectedUnitRace
         ? [selectedUnitRace]
         : RACES;
-
-    const raceColumnWidth = (state.selectedRace || state.selectedEntityId) ? availableWidth : Math.floor(availableWidth / RACES.length);
 
     // Sort control - minimal arrow only
     const sortGroup = headersContainer.selectAll<SVGGElement, SortOrder>('.sort-control').data([state.sortOrder]);
@@ -897,21 +911,17 @@ export class PatchGridRenderer {
       .data(racesToShow, d => d);
 
     const raceEnter = raceHeaders.enter().append('g').attr('class', 'race-header');
+    const isFiltered = !!(state.selectedRace || state.selectedEntityId);
 
-    // Calculate content-aware centering: center over actual entity content, not full column
-    const cellsPerRow = Math.max(1, Math.floor(raceColumnWidth / (layout.cellSize + layout.cellGap)));
-    const contentWidth = cellsPerRow * layout.cellSize + (cellsPerRow - 1) * layout.cellGap;
-
-    // Position entering headers centered over entity content
+    // Position entering headers using single source of truth
     raceEnter.attr('transform', (race: Race) => {
-      const i = RACES.indexOf(race);
-      const x = layout.patchLabelWidth + i * raceColumnWidth + contentWidth / 2;
+      const x = isFiltered ? this.getHeaderCenterX() : this.getHeaderGridX(RACES.indexOf(race));
       return `translate(${x}, 0)`;
     });
 
     raceEnter.append('rect').attr('class', 'race-bg');
     raceEnter.append('text').attr('class', 'race-text');
-    raceEnter.style('opacity', 1);
+    raceEnter.style('opacity', 0); // Start invisible, fade in via animation
 
     const raceMerge = raceEnter.merge(raceHeaders);
 
