@@ -9,7 +9,12 @@ from bs4 import BeautifulSoup
 from markdownify import markdownify as md
 from pydantic import BaseModel
 
-from sc2patches.extraction import ExtractionError, extract_jsonld, url_to_filename
+from sc2patches.extraction import (
+    ExtractionError,
+    extract_body_html,
+    extract_jsonld,
+    url_to_filename,
+)
 
 # Re-export ExtractionError for callers that catch it
 __all__ = ["DownloadError", "ExtractionError", "download_patch"]
@@ -177,7 +182,7 @@ def extract_metadata(html: str, source_url: str, version_hint: str | None = None
 def extract_article_content(html: str) -> str:
     """Extract main article content from HTML.
 
-    All Blizzard patch notes have a section.blog element containing the content.
+    Thin wrapper around extraction.extract_body_html.
 
     Args:
         html: Full HTML content
@@ -186,17 +191,9 @@ def extract_article_content(html: str) -> str:
         Extracted article HTML (content only, no header)
 
     Raises:
-        DownloadError: If blog section cannot be found
+        ExtractionError: If blog section cannot be found
     """
-    soup = BeautifulSoup(html, "html.parser")
-
-    # All files have section.blog - verified across all patches
-    blog_section = soup.find("section", class_="blog")
-
-    if not blog_section:
-        raise DownloadError("No section.blog found in HTML")
-
-    return str(blog_section)
+    return extract_body_html(html)
 
 
 def html_to_markdown(html: str, metadata: PatchMetadata) -> str:

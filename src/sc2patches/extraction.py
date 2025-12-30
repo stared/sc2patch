@@ -95,3 +95,26 @@ def extract_date_from_jsonld(html: str) -> str | None:
         return dt.strftime("%Y-%m-%d")
     except (ValueError, AttributeError):
         return None
+
+
+def extract_body_html(html: str) -> str:
+    """Extract article body HTML from Blizzard patch notes.
+
+    All Blizzard patch notes use section.blog for content.
+
+    Args:
+        html: Full HTML content
+
+    Returns:
+        Article body as HTML string
+
+    Raises:
+        ExtractionError: If section.blog not found
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    blog_section = soup.find("section", class_="blog")
+
+    if not blog_section:
+        raise ExtractionError("No section.blog found in HTML")
+
+    return str(blog_section)

@@ -7,7 +7,7 @@ import httpx
 from bs4 import BeautifulSoup
 from pydantic import BaseModel, Field
 
-from sc2patches.extraction import extract_date_from_jsonld
+from sc2patches.extraction import extract_body_html, extract_date_from_jsonld
 
 # Model to use for parsing
 OPENROUTER_MODEL = "google/gemini-3-pro-preview"
@@ -78,7 +78,9 @@ class PatchChanges(BaseModel):
 
 
 def extract_body_from_html(html_path: Path) -> str:
-    """Extract article body from HTML, removing HEAD and navigation.
+    """Extract article body text from HTML.
+
+    Thin wrapper around extraction.extract_body_html.
 
     Args:
         html_path: Path to HTML file
@@ -87,34 +89,12 @@ def extract_body_from_html(html_path: Path) -> str:
         Body text content
 
     Raises:
-        ParseError: If body cannot be extracted
+        ExtractionError: If section.blog not found
     """
-    with html_path.open(encoding="utf-8") as f:
-        html_content = f.read()
-
-    soup = BeautifulSoup(html_content, "html.parser")
-
-    # Extract article body - try multiple selectors
-    body = None
-
-    # Modern Blizzard pages
-    if (
-        (article := soup.find("section", class_="blog"))
-        or (article := soup.find("article", class_="Content"))
-        or (article := soup.find("div", id="content"))
-        or (article := soup.find("div", class_="article-content"))
-    ):
-        body = article
-
-    if not body:
-        # Fallback: get everything after </head>
-        if soup.body:
-            body = soup.body
-        else:
-            raise ParseError(f"Could not find article body in {html_path}")
-
-    # Get text content
-    return body.get_text(separator="\n", strip=True)
+    html_content = html_path.read_text(encoding="utf-8")
+    body_html = extract_body_html(html_content)
+    soup = BeautifulSoup(body_html, "html.parser")
+    return soup.get_text(separator="\n", strip=True)
 
 
 def extract_bodies_from_html_files(html_paths: list[Path]) -> str:
