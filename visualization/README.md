@@ -107,7 +107,7 @@ Unit and building images are located in `public/assets/units/`:
 The visualization is deployed to GitHub Pages:
 
 ```bash
-pnpm build          # Creates dist/ with BASE_URL=/sc2patch/
+pnpm build          # Creates dist/ with base=/sc2-balance-timeline/
 # Push to GitHub, Actions will deploy
 ```
 

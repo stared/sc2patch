@@ -75,7 +75,7 @@ uv run python scripts/4_export_for_viz.py
 
 ## Docs
 
-- [PIPELINE.md](PIPELINE.md) — detailed pipeline docs
+- [DATA.md](DATA.md) — patch coverage, known issues
 - [CLAUDE.md](CLAUDE.md) — development guidelines
 
 ## License

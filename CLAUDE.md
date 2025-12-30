@@ -60,7 +60,7 @@
 
 ## Data Pipeline
 
-**See PIPELINE.md for complete documentation**
+**See scripts/README.md for pipeline details**
 
 The pipeline has 4 stages:
 
@@ -131,7 +131,7 @@ pnpm dev            # Start dev server (localhost:5173)
 
 ```
 sc2patches/
-├── PIPELINE.md              # Complete pipeline documentation
+├── DATA.md                  # Patch coverage, known issues
 ├── data/
 │   ├── patch_urls.json      # ← ONLY manually edited file
 │   ├── logs/                # Timestamped execution logs
@@ -141,10 +141,10 @@ sc2patches/
 ├── src/sc2patches/          # Python library
 │   ├── logger.py            # Markdown log generation
 │   ├── download.py          # Download & convert logic
-│   └── parse.py             # GPT-5 parsing logic
+│   └── parse.py             # LLM parsing logic
 ├── scripts/                 # Pipeline scripts
 │   ├── 1_download.py        # Stage 1: Download
-│   ├── 2_parse.py           # Stage 2: Parse with GPT-5
+│   ├── 2_parse.py           # Stage 2: Parse with LLM
 │   ├── 3_validate.py        # Stage 3: Validate
 │   └── 4_export_for_viz.py  # Stage 4: Export
 ├── visualization/           # React + Vite visualization
@@ -161,13 +161,10 @@ All patches use this JSON structure:
   "metadata": {
     "version": "5.0.9",
     "date": "2022-03-08",
-    "title": "StarCraft II Patch 5.0.9",
     "url": "https://..."
   },
   "changes": [
     {
-      "id": "protoss-void_ray_0",
-      "patch_version": "5.0.9",
       "entity_id": "protoss-void_ray",
       "raw_text": "Cost increased from 200 to 250",
       "change_type": "nerf"
