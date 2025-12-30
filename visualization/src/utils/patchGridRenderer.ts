@@ -1024,7 +1024,7 @@ export class PatchGridRenderer {
         .attr('class', 'unit-links wiki-link')
         .attr('x', this.svgWidth - 20).attr('y', 16).attr('text-anchor', 'end')
         .style('fill', '#666').style('font-size', '11px').style('cursor', 'pointer')
-        .text(`wiki`)
+        .text(`more on ${unit.name}`)
         .on('click', () => window.open(unit.liquipedia_url, '_blank'));
     }
 
