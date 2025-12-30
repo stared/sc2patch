@@ -75,6 +75,7 @@ def load_patch(patch_file: Path, logger: PipelineLogger) -> Patch | None:
             version=metadata["version"],
             date=metadata["date"],
             url=metadata.get("url", ""),
+            patch_type=metadata.get("patch_type", "balance"),
             entities=entities,
         )
     except Exception as e:

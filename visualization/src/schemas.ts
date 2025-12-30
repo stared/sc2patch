@@ -9,6 +9,7 @@ import { z } from 'zod';
 export const RaceSchema = z.enum(['terran', 'protoss', 'zerg', 'neutral']);
 export const ChangeTypeSchema = z.enum(['buff', 'nerf', 'mixed']);
 export const UnitTypeSchema = z.enum(['unit', 'building', 'upgrade', 'ability', 'mechanic']);
+export const PatchTypeSchema = z.enum(['balance', 'release']);
 
 // Unit schema
 export const UnitSchema = z.object({
@@ -36,6 +37,7 @@ export const PatchSchema = z.object({
   version: z.string(),
   date: z.string(),
   url: z.string().url(), // Must be valid URL - no empty strings or about:blank
+  patch_type: PatchTypeSchema.default('balance'),
   entities: z.array(EntityChangesSchema),
 });
 
@@ -50,6 +52,7 @@ export const PatchesDataSchema = z.object({
 export type Race = z.infer<typeof RaceSchema>;
 export type ChangeType = z.infer<typeof ChangeTypeSchema>;
 export type UnitType = z.infer<typeof UnitTypeSchema>;
+export type PatchType = z.infer<typeof PatchTypeSchema>;
 export type Unit = z.infer<typeof UnitSchema>;
 export type Change = z.infer<typeof ChangeSchema>;
 export type EntityChanges = z.infer<typeof EntityChangesSchema>;

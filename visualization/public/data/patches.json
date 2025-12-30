@@ -1,9 +1,414 @@
 {
   "patches": [
     {
+      "version": "1.0.0",
+      "date": "2010-07-27",
+      "url": "https://starcraft2.blizzard.com/en-us/",
+      "patch_type": "release",
+      "entities": [
+        {
+          "entity_id": "protoss-archon",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-carrier",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-colossus",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-dark_templar",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-high_templar",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-immortal",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-mothership",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-observer",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-phoenix",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-probe",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-sentry",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-stalker",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-void_ray",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-warp_prism",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-zealot",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-banshee",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-battlecruiser",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-ghost",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-hellion",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-marauder",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-marine",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-medivac",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-mule",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-raven",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-reaper",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-scv",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-siege_tank",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-thor",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-viking",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-baneling",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-brood_lord",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-broodling",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-corruptor",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-drone",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-hydralisk",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-infestor",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-locust",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-mutalisk",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-overlord",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-overseer",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-queen",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-roach",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-ultralisk",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-zergling",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "1.1.0",
       "date": "2010-09-22",
       "url": "https://news.blizzard.com/en-gb/starcraft2/9993888/patch-1-1-0-now-live",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-zealot",
@@ -77,6 +482,7 @@
       "version": "1.1.2",
       "date": "2010-10-15",
       "url": "https://news.blizzard.com/en-gb/starcraft2/9990145/patch-1-1-2-now-live",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-nexus",
@@ -247,6 +653,7 @@
       "version": "1.1.3",
       "date": "2010-11-09",
       "url": "https://news.blizzard.com/en-gb/starcraft2/10000722/patch-1-1-3-is-live",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "terran-thor",
@@ -263,6 +670,7 @@
       "version": "1.2.0",
       "date": "2011-01-11",
       "url": "https://news.blizzard.com/en-gb/starcraft2/9995561/patch-1-2-0-now-live",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "neutral-ramp",
@@ -328,6 +736,7 @@
       "version": "1.3.0",
       "date": "2011-03-22",
       "url": "https://news.blizzard.com/en-us/starcraft2/2514162/patch-1-3-0-now-live",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-high_templar",
@@ -429,6 +838,7 @@
       "version": "1.3.3",
       "date": "2011-05-13",
       "url": "https://news.blizzard.com/en-gb/starcraft2/9982849/patch-1-3-3-now-live",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-archon",
@@ -525,6 +935,7 @@
       "version": "1.4.0",
       "date": "2011-09-20",
       "url": "https://news.blizzard.com/en-us/starcraft2/3549513/patch-1-4-0-now-live",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "neutral-ramp",
@@ -643,6 +1054,7 @@
       "version": "1.4.2",
       "date": "2011-11-09",
       "url": "https://news.blizzard.com/en-gb/starcraft2/10002543/patch-1-4-2-now-live",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-forge",
@@ -692,6 +1104,7 @@
       "version": "1.4.3",
       "date": "2012-02-22",
       "url": "https://news.blizzard.com/en-gb/starcraft2/9995857/patch-1-4-3-now-live",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-phoenix",
@@ -726,6 +1139,7 @@
       "version": "1.4.3 BU",
       "date": "2012-05-10",
       "url": "https://liquipedia.net/starcraft2/Patch_1.4.3",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-observer",
@@ -760,6 +1174,7 @@
       "version": "1.5.3 BU",
       "date": "2012-12-04",
       "url": "https://liquipedia.net/starcraft2/Patch_1.5.3",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "terran-raven",
@@ -789,6 +1204,7 @@
       "version": "1.5.4",
       "date": "2013-01-15",
       "url": "https://liquipedia.net/starcraft2/Patch_1.5.4",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "zerg-infestor",
@@ -802,9 +1218,81 @@
       ]
     },
     {
+      "version": "2.0.0",
+      "date": "2013-03-12",
+      "url": "https://starcraft2.blizzard.com/en-us/",
+      "patch_type": "release",
+      "entities": [
+        {
+          "entity_id": "protoss-mothership_core",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-oracle",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-tempest",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-hellbat",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-widow_mine",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-swarm_host",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-viper",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "2.0.8",
       "date": "2013-05-13",
       "url": "https://news.blizzard.com/en-us/starcraft2/9096527/starcraft-ii-patch-2-0-8-notes",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "zerg-spore_crawler",
@@ -821,6 +1309,7 @@
       "version": "2.0.9",
       "date": "2013-07-11",
       "url": "https://news.blizzard.com/en-us/starcraft2/10278173/starcraft-ii-2-0-9-patch-notes",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-warp_prism",
@@ -863,6 +1352,7 @@
       "version": "2.0.11",
       "date": "2013-08-28",
       "url": "https://news.blizzard.com/en-us/starcraft2/10782713/starcraft-ii-balance-update-july-9-2013",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "zerg-overseer",
@@ -879,6 +1369,7 @@
       "version": "2.0.12",
       "date": "2013-11-11",
       "url": "https://news.blizzard.com/en-us/starcraft2/11523757/starcraft-ii-2-0-12-patch-notes",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-oracle",
@@ -943,6 +1434,7 @@
       "version": "2.1 BU",
       "date": "2014-02-05",
       "url": "https://news.blizzard.com/en-us/starcraft2/12802185/starcraft-ii-balance-update-february-13-2014",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-mothership_core",
@@ -972,6 +1464,7 @@
       "version": "2.1 BU2",
       "date": "2014-02-28",
       "url": "https://news.blizzard.com/en-us/starcraft2/13108934/starcraft-ii-balance-update-february-25-2014",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-mothership_core",
@@ -1006,6 +1499,7 @@
       "version": "2.1.2",
       "date": "2014-05-20",
       "url": "https://liquipedia.net/starcraft2/Patch_2.1.2",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "terran-hellbat",
@@ -1057,6 +1551,7 @@
       "version": "2.1.3",
       "date": "2014-07-25",
       "url": "https://news.blizzard.com/en-us/starcraft2/14933073/starcraft-ii-balance-update-april-22-2014",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-mothership_core",
@@ -1095,6 +1590,7 @@
       "version": "2.1.9",
       "date": "2015-04-07",
       "url": "https://news.blizzard.com/en-us/starcraft2/18446033/starcraft-ii-2-1-9-patch-notes",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-tempest",
@@ -1179,9 +1675,72 @@
       ]
     },
     {
+      "version": "3.0.0",
+      "date": "2015-11-10",
+      "url": "https://starcraft2.blizzard.com/en-us/",
+      "patch_type": "release",
+      "entities": [
+        {
+          "entity_id": "protoss-adept",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-disruptor",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-cyclone",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-liberator",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-lurker",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-ravager",
+          "changes": [
+            {
+              "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "3.1.1",
       "date": "2016-01-29",
       "url": "https://news.blizzard.com/en-us/starcraft2/20012086/legacy-of-the-void-balance-update-january-29-2016",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-adept",
@@ -1224,6 +1783,7 @@
       "version": "3.3.0",
       "date": "2016-05-23",
       "url": "https://news.blizzard.com/en-gb/article/20118329/starcraft-ii-legacy-of-the-void-3-3-0-patch-notes",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-colossus",
@@ -1289,6 +1849,7 @@
       "version": "3.8.0",
       "date": "2016-11-21",
       "url": "https://news.blizzard.com/en-us/starcraft2/20372512/starcraft-ii-legacy-of-the-void-3-8-0-patch-notes",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-adept",
@@ -1641,6 +2202,7 @@
       "version": "3.9.0",
       "date": "2016-12-08",
       "url": "https://news.blizzard.com/en-gb/starcraft2/20399161/legacy-of-the-void-balance-update-december-8-2016",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-immortal",
@@ -1709,6 +2271,7 @@
       "version": "3.9.1 BU",
       "date": "2016-12-20",
       "url": "https://news.blizzard.com/en-us/starcraft2/20407950/legacy-of-the-void-balance-update-december-20-2016",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-carrier",
@@ -1734,6 +2297,7 @@
       "version": "3.11.0 BU",
       "date": "2017-03-06",
       "url": "https://news.blizzard.com/en-us/starcraft2/20562669/legacy-of-the-void-balance-update-march-7-2017",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "terran-reaper",
@@ -1785,6 +2349,7 @@
       "version": "3.12.0 BU",
       "date": "2017-04-19",
       "url": "https://news.blizzard.com/en-us/starcraft2/20720843/legacy-of-the-void-balance-update-april-2017",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-adept",
@@ -1801,6 +2366,7 @@
       "version": "3.14.0",
       "date": "2017-05-22",
       "url": "https://news.blizzard.com/en-us/starcraft2/20799759/starcraft-ii-legacy-of-the-void-3-14-0-patch-notes",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-tempest",
@@ -1879,6 +2445,7 @@
       "version": "4.0",
       "date": "2017-11-15",
       "url": "https://news.blizzard.com/en-us/starcraft2/21183638/starcraft-ii-4-0-patch-notes",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "neutral-mineral_field",
@@ -2257,6 +2824,7 @@
       "version": "4.0.2",
       "date": "2017-11-28",
       "url": "https://news.blizzard.com/en-us/starcraft2/21272911/starcraft-ii-balance-update-november-28-2017",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-oracle",
@@ -2365,6 +2933,7 @@
       "version": "4.1.1",
       "date": "2017-12-19",
       "url": "https://news.blizzard.com/en-us/starcraft2/21349570/starcraft-ii-balance-update-december-18-2017",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-disruptor",
@@ -2438,6 +3007,7 @@
       "version": "4.1.4",
       "date": "2018-01-29",
       "url": "https://news.blizzard.com/en-gb/starcraft2/21494433/starcraft-ii-balance-update-january-29-2018",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-adept",
@@ -2628,6 +3198,7 @@
       "version": "4.2.1 BU",
       "date": "2018-03-19",
       "url": "https://news.blizzard.com/en-us/starcraft2/21637913/starcraft-ii-balance-update-april-10-2018",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "zerg-overlord",
@@ -2644,6 +3215,7 @@
       "version": "4.3.0 BU",
       "date": "2018-05-17",
       "url": "https://news.blizzard.com/en-us/starcraft2/21785907/starcraft-ii-balance-update-may-15-2018",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "terran-marauder",
@@ -2690,6 +3262,7 @@
       "version": "4.7.1",
       "date": "2018-11-20",
       "url": "https://news.blizzard.com/en-us/starcraft2/22771167/starcraft-ii-4-7-1-patch-notes",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-assimilator",
@@ -3180,6 +3753,7 @@
       "version": "4.8.2",
       "date": "2019-01-22",
       "url": "https://news.blizzard.com/en-us/article/22871519/starcraft-ii-4-8-2-patch-notes",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-adept",
@@ -3349,6 +3923,7 @@
       "version": "4.8.3",
       "date": "2019-03-25",
       "url": "https://news.blizzard.com/en-us/starcraft2/22933133/starcraft-ii-4-8-3-patch-notes",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-cybernetics_core",
@@ -3399,6 +3974,7 @@
       "version": "4.10.1",
       "date": "2019-08-16",
       "url": "https://liquipedia.net/starcraft2/Patch_4.10.1",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-carrier",
@@ -3482,6 +4058,7 @@
       "version": "4.11.0",
       "date": "2019-11-26",
       "url": "https://news.blizzard.com/en-us/article/23227811/starcraft-ii-4-11-0-patch-notes",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "neutral-acceleration_zone_generator",
@@ -3792,6 +4369,7 @@
       "version": "4.11.3",
       "date": "2019-12-17",
       "url": "https://news.blizzard.com/en-us/article/23230078/starcraft-ii-4-11-3-patch-notes",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-adept",
@@ -3825,6 +4403,7 @@
       "version": "4.12.0",
       "date": "2020-06-09",
       "url": "https://news.blizzard.com/en-us/article/23442717/starcraft-ii-4-12-0-patch-notes",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-high_templar",
@@ -3915,6 +4494,7 @@
       "version": "5.0.2",
       "date": "2020-08-13",
       "url": "https://news.blizzard.com/en-gb/starcraft2/23495670/starcraft-ii-5-0-2-patch-notes",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-carrier",
@@ -3987,6 +4567,7 @@
       "version": "5.0.9",
       "date": "2022-03-08",
       "url": "https://news.blizzard.com/en-us/starcraft2/23774006/starcraft-ii-5-0-9-ptr-patch-notes",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-dark_templar",
@@ -4061,6 +4642,7 @@
       "version": "5.0.11",
       "date": "2023-01-23",
       "url": "https://news.blizzard.com/en-us/article/23893118/starcraft-ii-5-0-11-patch-notes",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-adept",
@@ -4490,6 +5072,7 @@
       "version": "5.0.12",
       "date": "2023-09-28",
       "url": "https://news.blizzard.com/en-us/starcraft2/24009150/starcraft-ii-5-0-12-patch-notes",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-cybernetics_core",
@@ -4936,6 +5519,7 @@
       "version": "5.0.13",
       "date": "2024-03-26",
       "url": "https://news.blizzard.com/en-us/article/24078322/starcraft-ii-5-0-13-patch-notes",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "neutral-mineral_field",
@@ -5195,6 +5779,7 @@
       "version": "5.0.14",
       "date": "2024-11-25",
       "url": "https://news.blizzard.com/en-us/article/24162754/starcraft-ii-5-0-14-patch-notes",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-colossus",
@@ -5450,6 +6035,7 @@
       "version": "5.0.15",
       "date": "2025-09-30",
       "url": "https://news.blizzard.com/en-us/article/24225313/starcraft-ii-5-0-15-patch-notes",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-dark_templar",
@@ -5639,35 +6225,35 @@
       "id": "neutral-acceleration_zone_generator",
       "name": "Acceleration Zone Generator",
       "race": "neutral",
-      "type": "unit",
+      "type": "mechanic",
       "liquipedia_url": "https://starcraft.fandom.com/wiki/Acceleration_zone_generator"
     },
     {
       "id": "neutral-collapsible_rock_tower",
       "name": "Collapsible Rock Tower",
       "race": "neutral",
-      "type": "unit",
+      "type": "mechanic",
       "liquipedia_url": "https://liquipedia.net/starcraft2/Destructible_Towers"
     },
     {
       "id": "neutral-inhibitor_zone_generator",
       "name": "Inhibitor Zone Generator",
       "race": "neutral",
-      "type": "unit",
+      "type": "mechanic",
       "liquipedia_url": "https://starcraft.fandom.com/wiki/Inhibitor_zone_generator"
     },
     {
       "id": "neutral-mineral_field",
       "name": "Mineral Field",
       "race": "neutral",
-      "type": "unit",
+      "type": "mechanic",
       "liquipedia_url": "https://liquipedia.net/starcraft2/Minerals"
     },
     {
       "id": "neutral-minerals",
       "name": "Minerals",
       "race": "neutral",
-      "type": "unit",
+      "type": "mechanic",
       "liquipedia_url": "https://liquipedia.net/starcraft2/Minerals"
     },
     {
@@ -5681,21 +6267,21 @@
       "id": "neutral-rocks",
       "name": "Rocks",
       "race": "neutral",
-      "type": "unit",
+      "type": "mechanic",
       "liquipedia_url": "https://liquipedia.net/starcraft2/Destructible_Rocks"
     },
     {
       "id": "neutral-vespene_gas",
       "name": "Vespene Gas",
       "race": "neutral",
-      "type": "unit",
+      "type": "mechanic",
       "liquipedia_url": "https://liquipedia.net/starcraft2/Vespene_Gas"
     },
     {
       "id": "neutral-vespene_geyser",
       "name": "Vespene Geyser",
       "race": "neutral",
-      "type": "unit",
+      "type": "mechanic",
       "liquipedia_url": "https://liquipedia.net/starcraft2/Vespene_Geyser"
     },
     {
@@ -5709,7 +6295,7 @@
       "id": "neutral-zerg_rocks",
       "name": "Zerg Rocks",
       "race": "neutral",
-      "type": "unit",
+      "type": "mechanic",
       "liquipedia_url": "https://liquipedia.net/starcraft2/Destructible_Rocks"
     },
     {
@@ -5723,7 +6309,7 @@
       "id": "protoss-all_units",
       "name": "All Units",
       "race": "protoss",
-      "type": "unit",
+      "type": "mechanic",
       "liquipedia_url": "https://liquipedia.net/starcraft2/Protoss_Units_(Legacy_of_the_Void)"
     },
     {
@@ -5968,7 +6554,7 @@
       "id": "terran-all_units",
       "name": "All Units",
       "race": "terran",
-      "type": "unit",
+      "type": "mechanic",
       "liquipedia_url": "https://liquipedia.net/starcraft2/Terran_Units_(Legacy_of_the_Void)"
     },
     {
@@ -6010,7 +6596,7 @@
       "id": "terran-cloaking_field",
       "name": "Cloaking Field",
       "race": "terran",
-      "type": "unit",
+      "type": "ability",
       "liquipedia_url": "https://liquipedia.net/starcraft2/Cloaking_Field"
     },
     {
@@ -6038,7 +6624,7 @@
       "id": "terran-enhanced_munitions",
       "name": "Enhanced Munitions",
       "race": "terran",
-      "type": "unit",
+      "type": "upgrade",
       "liquipedia_url": "https://liquipedia.net/starcraft2/SCUpgrade/Enhanced_Munitions"
     },
     {
@@ -6094,7 +6680,7 @@
       "id": "terran-mag_field_launchers",
       "name": "Mag Field Launchers",
       "race": "terran",
-      "type": "unit",
+      "type": "upgrade",
       "liquipedia_url": "https://liquipedia.net/starcraft2/SCUpgrade/Mag-Field_Launchers"
     },
     {
@@ -6164,7 +6750,7 @@
       "id": "terran-rapid_fire_launchers",
       "name": "Rapid Fire Launchers",
       "race": "terran",
-      "type": "unit",
+      "type": "upgrade",
       "liquipedia_url": "https://liquipedia.net/starcraft2/SCUpgrade/Rapid_Fire_Launchers"
     },
     {
@@ -6269,7 +6855,7 @@
       "id": "zerg-all_units",
       "name": "All Units",
       "race": "zerg",
-      "type": "unit",
+      "type": "mechanic",
       "liquipedia_url": "https://liquipedia.net/starcraft2/Zerg_Units_(Legacy_of_the_Void)"
     },
     {
@@ -6318,7 +6904,7 @@
       "id": "zerg-enduring_locusts",
       "name": "Enduring Locusts",
       "race": "zerg",
-      "type": "unit",
+      "type": "upgrade",
       "liquipedia_url": "https://liquipedia.net/starcraft2/Enduring_Locusts"
     },
     {
@@ -6339,7 +6925,7 @@
       "id": "zerg-flying_locusts",
       "name": "Flying Locusts",
       "race": "zerg",
-      "type": "unit",
+      "type": "upgrade",
       "liquipedia_url": "https://liquipedia.net/starcraft2/SCUpgrade/Flying_Locusts"
     },
     {
@@ -6430,7 +7016,7 @@
       "id": "zerg-mutate_ventral_sacs",
       "name": "Mutate Ventral Sacs",
       "race": "zerg",
-      "type": "unit",
+      "type": "upgrade",
       "liquipedia_url": "https://liquipedia.net/starcraft2/Mutate_Ventral_Sacs"
     },
     {
@@ -6493,7 +7079,7 @@
       "id": "zerg-spawn_locusts",
       "name": "Spawn Locusts",
       "race": "zerg",
-      "type": "unit",
+      "type": "ability",
       "liquipedia_url": "https://liquipedia.net/starcraft2/SCAbility/Spawn_Locusts"
     },
     {
@@ -6560,5 +7146,5 @@
       "liquipedia_url": "https://liquipedia.net/starcraft2/Zergling"
     }
   ],
-  "generated_at": "2025-12-30T09:47:29.286814+00:00"
+  "generated_at": "2025-12-30T12:54:16.162288+00:00"
 }
