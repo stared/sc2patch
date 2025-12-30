@@ -20,8 +20,8 @@ from sc2patches.logger import PipelineLogger
 console = Console()
 
 VALID_CHANGE_TYPES = {"buff", "nerf", "mixed"}
-REQUIRED_METADATA_FIELDS = ["version", "date", "title"]
-REQUIRED_CHANGE_FIELDS = ["id", "patch_version", "entity_id", "raw_text", "change_type"]
+REQUIRED_METADATA_FIELDS = ["version", "date", "url"]
+REQUIRED_CHANGE_FIELDS = ["entity_id", "raw_text", "change_type"]
 
 
 @dataclass

@@ -10,7 +10,6 @@ Usage:
 import json
 import re
 import sys
-from collections import defaultdict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
@@ -18,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from rich.console import Console
 
 from sc2patches.logger import PipelineLogger
-from sc2patches.models import Change, EntityChanges, Patch, PatchesData, Unit
+from sc2patches.models import ParsedPatch, Patch, PatchesData, Unit
 
 console = Console()
 
@@ -41,37 +40,21 @@ def load_units(units_file: Path) -> list[Unit]:
 
 
 def load_patch(patch_file: Path, logger: PipelineLogger) -> Patch | None:
-    """Load and convert a patch file to the new format."""
+    """Load patch file and convert to visualization format."""
     try:
         with patch_file.open() as f:
             data = json.load(f)
 
-        metadata = data["metadata"]
-        version = metadata["version"]
-
-        # Validate version format
+        version = data["metadata"]["version"]
         if not is_valid_version(version):
             console.print(f"[yellow]Skipping {patch_file.name}: invalid version '{version}'[/yellow]")
             logger.log_skip(version, "invalid version format (must start with 1-5)")
             return None
 
-        changes = data["changes"]
+        # Use ParsedPatch methods for conversion
+        parsed = ParsedPatch.from_json_file(data)
+        return parsed.to_patch()
 
-        # Group changes by entity_id
-        entity_changes: dict[str, list[Change]] = defaultdict(list)
-        for c in changes:
-            entity_changes[c["entity_id"]].append(Change(raw_text=c["raw_text"], change_type=c["change_type"]))
-
-        # Convert to EntityChanges
-        entities = [EntityChanges(entity_id=eid, changes=changes) for eid, changes in sorted(entity_changes.items())]
-
-        return Patch(
-            version=metadata["version"],
-            date=metadata["date"],
-            url=metadata.get("url", ""),
-            patch_type=metadata.get("patch_type", "balance"),
-            entities=entities,
-        )
     except Exception as e:
         console.print(f"[yellow]Warning: Could not load {patch_file.name}: {e}[/yellow]")
         return None

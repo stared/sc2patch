@@ -30,10 +30,10 @@ console = Console()
 def get_api_key() -> str:
     """Get OpenRouter API key from environment."""
     api_key = os.getenv("OPENROUTER_API_KEY")
-    if not api_key:
-        console.print("[red]OPENROUTER_API_KEY not set in environment[/red]")
-        sys.exit(1)
-    return api_key
+    if api_key:
+        return api_key
+    console.print("[red]OPENROUTER_API_KEY not set in environment[/red]")
+    sys.exit(1)
 
 
 # Co-op keywords to detect
@@ -163,17 +163,18 @@ def main() -> None:
 
             console.print(f"Re-parsing {html_path.name}...")
             try:
-                result = parse_patch(html_path, version=spec, api_key=api_key)
-                version = result["metadata"]["version"]
-                coop = has_coop_content(result["changes"])
+                parsed = parse_patch(html_path, version=spec, api_key=api_key)
+                # Convert ParsedChange list to dicts for coop check
+                changes_dicts = [{"entity_id": c.entity_id, "raw_text": c.raw_text} for c in parsed.changes]
+                coop = has_coop_content(changes_dicts)
 
-                # Add URL
+                # Add URL from mapping
                 filename = html_path.stem
                 if filename in url_mapping:
-                    result["metadata"]["url"] = url_mapping[filename]
+                    parsed.url = url_mapping[filename]
 
-                console.print(f"  Version: {version}")
-                console.print(f"  Changes: {len(result['changes'])}")
+                console.print(f"  Version: {parsed.version}")
+                console.print(f"  Changes: {len(parsed.changes)}")
                 console.print(f"  Co-op entries: {len(coop)}")
 
                 if coop:
@@ -182,9 +183,9 @@ def main() -> None:
                         console.print(f"    - {c['entity_id']}")
 
                 # Save
-                output_path = patches_dir / f"{version}.json"
+                output_path = patches_dir / f"{parsed.version}.json"
                 with output_path.open("w") as f:
-                    json.dump(result, f, indent=2)
+                    json.dump(parsed.to_json_dict(), f, indent=2)
                 console.print(f"[green]  Saved to {output_path}[/green]")
 
                 time.sleep(2.0)  # Rate limit
@@ -220,29 +221,29 @@ def main() -> None:
             html_path = find_html_for_version(version, html_dir)
 
             if not html_path:
-                # Try filename from the json
                 console.print(f"[red]  ✗ {version}: No HTML file found[/red]")
                 continue
 
             console.print(f"Re-parsing {version} ({html_path.name})...")
             try:
-                result = parse_patch(html_path, version=version, api_key=api_key)
-                new_coop = has_coop_content(result["changes"])
+                parsed = parse_patch(html_path, version=version, api_key=api_key)
+                changes_dicts = [{"entity_id": c.entity_id} for c in parsed.changes]
+                new_coop = has_coop_content(changes_dicts)
 
-                # Add URL
+                # Add URL from mapping
                 filename = html_path.stem
                 if filename in url_mapping:
-                    result["metadata"]["url"] = url_mapping[filename]
+                    parsed.url = url_mapping[filename]
 
                 # Save
-                output_path = patches_dir / f"{result['metadata']['version']}.json"
+                output_path = patches_dir / f"{parsed.version}.json"
                 with output_path.open("w") as f:
-                    json.dump(result, f, indent=2)
+                    json.dump(parsed.to_json_dict(), f, indent=2)
 
                 if new_coop:
                     console.print(f"[yellow]  ⚠ {version}: Still has {len(new_coop)} Co-op entries[/yellow]")
                 else:
-                    console.print(f"[green]  ✓ {version}: Clean ({len(result['changes'])} changes)[/green]")
+                    console.print(f"[green]  ✓ {version}: Clean ({len(parsed.changes)} changes)[/green]")
 
                 time.sleep(2.0)  # Rate limit
 

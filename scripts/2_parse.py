@@ -49,11 +49,11 @@ class ParseContext:
 def get_api_key() -> str:
     """Get OpenRouter API key from environment. Fails if not found."""
     api_key = os.getenv("OPENROUTER_API_KEY")
-    if not api_key:
-        console.print("[red]ERROR: OPENROUTER_API_KEY not found in environment[/red]")
-        console.print("Set it in .env file or export OPENROUTER_API_KEY=...")
-        sys.exit(1)
-    return api_key
+    if api_key:
+        return api_key
+    console.print("[red]ERROR: OPENROUTER_API_KEY not found in environment[/red]")
+    console.print("Set it in .env file or export OPENROUTER_API_KEY=...")
+    sys.exit(1)
 
 
 def load_patch_config(urls_path: Path) -> list[PatchConfig]:
@@ -128,65 +128,47 @@ def find_html_files_for_patch(html_dir: Path, version: str, url: str | None = No
 
 
 def process_single_patch(patch_config: PatchConfig, ctx: ParseContext) -> bool:
-    """Process a single patch configuration.
-
-    Returns:
-        True if processing should continue (success or skip), False otherwise
-    """
+    """Process a single patch configuration. Returns True to continue."""
     version = patch_config.version
     url = patch_config.url
-    parse_hint = patch_config.parse_hint
     output_path = ctx.output_dir / f"{version}.json"
 
-    # Check if output already exists
     if output_path.exists() and ctx.skip_existing:
         ctx.logger.log_skip(version, "already exists")
         console.print(f"[dim]  ⊘ {version}: already exists[/dim]")
         return True
 
-    # Find HTML files for this patch
     html_files = find_html_files_for_patch(ctx.html_dir, version, url)
     if not html_files:
         ctx.logger.log_skip(version, "no HTML files found")
         console.print(f"[dim]  ⊘ {version}: no HTML files[/dim]")
         return True
 
-    # Parse with appropriate method
+    # Parse HTML -> ParsedPatch
     if len(html_files) > 1:
         console.print(f"[cyan]  ↳ Parsing {len(html_files)} files together...[/cyan]")
-        result = parse_patches_combined(html_files, version, ctx.api_key, parse_hint)
+        parsed = parse_patches_combined(html_files, version, ctx.api_key, patch_config.parse_hint)
     else:
-        result = parse_patch(html_files[0], version, ctx.api_key, parse_hint)
+        parsed = parse_patch(html_files[0], version, ctx.api_key, patch_config.parse_hint)
 
-    # Validate parsed version matches config (single source of truth: patch_urls.json)
-    parsed_version = result["metadata"]["version"]
-    if parsed_version != version:
-        msg = f"Version mismatch: parsed '{parsed_version}' vs config '{version}'"
-        console.print(f"[yellow]  ⚠ {msg}[/yellow]")
-        ctx.logger.log_detail(f"  - WARNING: {msg}")
+    # Warn if LLM parsed different version
+    if parsed.version != version:
+        console.print(f"[yellow]  ⚠ Version mismatch: parsed '{parsed.version}' vs config '{version}'[/yellow]")
 
-    # Set metadata from config (source of truth)
-    result["metadata"]["version"] = version
-    result["metadata"]["url"] = url
-    for change in result["changes"]:
-        change["patch_version"] = version
+    # Override with config values (source of truth: patch_urls.json)
+    parsed.version = version
+    parsed.url = url
 
-    # Save to JSON
+    # Save JSON
+    output_dict = parsed.to_json_dict()
     with output_path.open("w") as f:
-        json.dump(result, f, indent=2)
+        json.dump(output_dict, f, indent=2)
 
-    entities = len({c["entity_id"] for c in result["changes"]})
-    changes = len(result["changes"])
+    entities = len({c.entity_id for c in parsed.changes})
     suffix = f" (merged {len(html_files)} files)" if len(html_files) > 1 else ""
 
-    ctx.logger.log_success(version, f"{entities} entities, {changes} changes → {output_path.name}")
-    console.print(f"[green]  ✓ {version}:[/green] {entities} entities, {changes} changes{suffix}")
-
-    # Add detail info
-    ctx.logger.log_detail(f"**{version}**")
-    ctx.logger.log_detail(f"  - HTML files: {[h.name for h in html_files]}")
-    ctx.logger.log_detail(f"  - Entities: {entities}, Changes: {changes}")
-    ctx.logger.log_detail("")
+    ctx.logger.log_success(version, f"{entities} entities, {len(parsed.changes)} changes → {output_path.name}")
+    console.print(f"[green]  ✓ {version}:[/green] {entities} entities, {len(parsed.changes)} changes{suffix}")
 
     return True
 

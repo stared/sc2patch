@@ -1,17 +1,14 @@
-"""Parse patch notes with LLM via OpenRouter."""
+"""Parse SC2 patch notes HTML with LLM via OpenRouter."""
 
 import json
 from pathlib import Path
-from typing import Literal
 
 import httpx
 from bs4 import BeautifulSoup
 from pydantic import BaseModel, Field
 
 from sc2patches.extraction import extract_body_html, extract_date_from_jsonld
-
-ChangeType = Literal["buff", "nerf", "mixed"]
-Race = Literal["terran", "zerg", "protoss", "neutral"]
+from sc2patches.models import ChangeType, ParsedChange, ParsedPatch, Race
 
 # Model to use for parsing
 OPENROUTER_MODEL = "google/gemini-3-pro-preview"
@@ -39,114 +36,52 @@ class ParseError(Exception):
     """Raised when parsing fails."""
 
 
-class Change(BaseModel):
-    """A single balance change with classification."""
-
+# LLM response models (Field descriptions are used in LLM prompt)
+class LLMChange(BaseModel):
     text: str = Field(description="Description of the change")
     change_type: ChangeType = Field(description="Type: buff, nerf, or mixed")
 
 
-class BalanceChange(BaseModel):
-    """A single balance change for an entity."""
-
-    entity_id: str = Field(description="Entity ID in format: race-unit_name (e.g., 'terran-marine')")
-    entity_name: str = Field(description="Display name of the entity (e.g., 'Marine')")
-    race: Race = Field(description="Race: 'terran', 'protoss', 'zerg', or 'neutral'")
-    changes: list[Change] = Field(description="List of specific changes with classification")
+class LLMEntityChanges(BaseModel):
+    entity_id: str = Field(description="Entity ID: race-unit_name (e.g., 'terran-marine')")
+    entity_name: str = Field(description="Display name (e.g., 'Marine')")
+    race: Race = Field(description="Race: terran, protoss, zerg, or neutral")
+    changes: list[LLMChange] = Field(description="List of changes with classification")
 
 
-class PatchChanges(BaseModel):
-    """All balance changes in a patch."""
-
-    version: str = Field(description="Patch version (e.g., '4.0', '3.8.0')")
-    date: str | None = Field(default=None, description="Patch date in ISO format YYYY-MM-DD (if available)")
-    changes: list[BalanceChange] = Field(description="List of all balance changes")
+class LLMPatchResponse(BaseModel):
+    version: str = Field(description="Patch version (e.g., '4.0')")
+    date: str | None = Field(default=None, description="Patch date YYYY-MM-DD")
+    changes: list[LLMEntityChanges] = Field(description="All balance changes")
 
 
-def flatten_changes(patch_data: PatchChanges) -> list[dict]:
-    """Flatten entity changes into list of change dicts.
-
-    Validation is handled by Pydantic models (ChangeType, Race are Literal types).
-
-    Args:
-        patch_data: Parsed patch data from LLM (already validated by Pydantic)
-
-    Returns:
-        List of flattened change dicts
-    """
-    changes = []
-    for entity in patch_data.changes:
-        for change in entity.changes:
-            changes.append(
-                {
-                    "id": f"{entity.entity_id}_{len(changes)}",
-                    "patch_version": patch_data.version,
-                    "entity_id": entity.entity_id,
-                    "raw_text": change.text,
-                    "change_type": change.change_type,
-                }
-            )
-    return changes
+def flatten_llm_response(llm_response: LLMPatchResponse) -> list[ParsedChange]:
+    """Flatten LLM grouped response to flat ParsedChange list."""
+    return [
+        ParsedChange(entity_id=entity.entity_id, raw_text=change.text, change_type=change.change_type)
+        for entity in llm_response.changes
+        for change in entity.changes
+    ]
 
 
 def extract_body_from_html(html_path: Path) -> str:
-    """Extract article body text from HTML.
-
-    Thin wrapper around extraction.extract_body_html.
-
-    Args:
-        html_path: Path to HTML file
-
-    Returns:
-        Body text content
-
-    Raises:
-        ExtractionError: If section.blog not found
-    """
-    html_content = html_path.read_text(encoding="utf-8")
-    body_html = extract_body_html(html_content)
-    soup = BeautifulSoup(body_html, "html.parser")
-    return soup.get_text(separator="\n", strip=True)
+    """Extract article body text from HTML file."""
+    body_html = extract_body_html(html_path.read_text(encoding="utf-8"))
+    return BeautifulSoup(body_html, "html.parser").get_text(separator="\n", strip=True)
 
 
 def extract_bodies_from_html_files(html_paths: list[Path]) -> str:
-    """Extract and combine article bodies from multiple HTML files.
-
-    This is used for parsing main patch + BU patch together.
-
-    Args:
-        html_paths: List of HTML file paths
-
-    Returns:
-        Combined body text with clear section markers
-
-    Raises:
-        ParseError: If any body cannot be extracted
-    """
+    """Combine bodies from multiple HTML files with section markers."""
     sections = []
     for i, path in enumerate(html_paths):
-        body = extract_body_from_html(path)
-        if i == 0:
-            sections.append(f"=== PRIMARY PATCH NOTES ===\n\n{body}")
-        else:
-            sections.append(f"=== ADDITIONAL PATCH NOTES (Balance Update) ===\n\n{body}")
-
+        header = "PRIMARY PATCH NOTES" if i == 0 else "ADDITIONAL PATCH NOTES (Balance Update)"
+        sections.append(f"=== {header} ===\n\n{extract_body_from_html(path)}")
     return "\n\n" + "=" * 50 + "\n\n".join(sections)
 
 
 def extract_date_from_html(html_path: Path) -> str | None:
-    """Extract date from HTML JSON-LD metadata.
-
-    Thin wrapper around extraction.extract_date_from_jsonld.
-
-    Args:
-        html_path: Path to HTML file
-
-    Returns:
-        Date string in YYYY-MM-DD format, or None if not found
-    """
-    html_content = html_path.read_text(encoding="utf-8")
-    return extract_date_from_jsonld(html_content)
+    """Extract date from HTML JSON-LD metadata."""
+    return extract_date_from_jsonld(html_path.read_text(encoding="utf-8"))
 
 
 def parse_with_llm(
@@ -155,23 +90,8 @@ def parse_with_llm(
     api_key: str,
     is_multi_source: bool = False,
     parse_hint: str | None = None,
-) -> PatchChanges:
-    """Extract balance changes using LLM via OpenRouter.
-
-    Args:
-        body_text: Text content to parse
-        version: Patch version (hint to model)
-        api_key: OpenRouter API key
-        is_multi_source: If True, content contains multiple sources (main + BU) to merge
-        parse_hint: Optional patch-specific instructions for the LLM
-
-    Returns:
-        Parsed patch changes
-
-    Raises:
-        ParseError: If parsing fails
-    """
-
+) -> LLMPatchResponse:
+    """Call OpenRouter LLM to extract balance changes from patch text."""
     # Load valid entity IDs and format for prompt
     valid_ids = load_valid_entity_ids()
     valid_ids_text = "\n".join(f"  {race.upper()}: {', '.join(ids)}" for race, ids in valid_ids.items())
@@ -336,108 +256,49 @@ Return ONLY valid JSON matching the example format. Include ALL required fields.
 
         # Parse JSON response
         parsed_data = json.loads(content)
-        return PatchChanges(**parsed_data)
+        return LLMPatchResponse(**parsed_data)
 
     except (KeyError, IndexError, json.JSONDecodeError) as e:
         raise ParseError(f"Failed to parse LLM response: {e}") from e
 
 
-def parse_patch(html_path: Path, version: str, api_key: str, parse_hint: str | None = None) -> dict:
-    """Parse a single patch file and return structured JSON.
-
-    Args:
-        html_path: Path to HTML file
-        version: Patch version from config
-        api_key: OpenRouter API key
-        parse_hint: Optional patch-specific instructions for the LLM
-
-    Returns:
-        Dictionary with metadata and changes
-
-    Raises:
-        ParseError: If parsing fails
-    """
-    # Extract body text
+def parse_patch(html_path: Path, version: str, api_key: str, parse_hint: str | None = None) -> ParsedPatch:
+    """Parse single HTML file, return ParsedPatch."""
     body_text = extract_body_from_html(html_path)
-
-    # Extract date from HTML metadata (authoritative source)
     html_date = extract_date_from_html(html_path)
-
-    # Parse with LLM
-    patch_data = parse_with_llm(body_text, version, api_key, parse_hint=parse_hint)
-
-    # Use HTML metadata date (authoritative), fallback to LLM date only if HTML has none
-    authoritative_date = html_date or patch_data.date or "unknown"
-
-    # Flatten changes (validation done by Pydantic)
-    changes = flatten_changes(patch_data)
+    llm_response = parse_with_llm(body_text, version, api_key, parse_hint=parse_hint)
+    changes = flatten_llm_response(llm_response)
 
     if not changes:
-        raise ParseError(
-            f"No balance changes extracted from {html_path.name}\nThis patch may have no balance changes, or the parser failed."
-        )
+        raise ParseError(f"No balance changes from {html_path.name}")
 
-    return {
-        "metadata": {
-            "version": patch_data.version,
-            "date": authoritative_date,
-            "title": f"StarCraft II Patch {patch_data.version}",
-            "url": "",  # Will be filled in by pipeline script
-        },
-        "changes": changes,
-    }
+    return ParsedPatch(
+        version=llm_response.version,
+        date=html_date or llm_response.date or "unknown",
+        url="",
+        changes=changes,
+    )
 
 
-def parse_patches_combined(html_paths: list[Path], version: str, api_key: str, parse_hint: str | None = None) -> dict:
-    """Parse multiple patch files together (main + BU) and return merged JSON.
-
-    This is used when a patch has both a main client update and a Balance Update.
-    The LLM sees both sources together and intelligently deduplicates.
-
-    Args:
-        html_paths: List of HTML files to parse together (main first, then additional)
-        version: Patch version from config
-        api_key: OpenRouter API key
-        parse_hint: Optional patch-specific instructions for the LLM
-
-    Returns:
-        Dictionary with metadata and merged changes
-
-    Raises:
-        ParseError: If parsing fails
-    """
+def parse_patches_combined(html_paths: list[Path], version: str, api_key: str, parse_hint: str | None = None) -> ParsedPatch:
+    """Parse multiple HTML files together (main + BU), return merged ParsedPatch."""
     if not html_paths:
-        raise ParseError("No HTML files provided to parse_patches_combined")
+        raise ParseError("No HTML files provided")
 
-    # Extract combined body text from all files
     body_text = extract_bodies_from_html_files(html_paths)
 
-    # Extract date from LAST file (Balance Update has the later date)
-    # This is when ALL changes were live
-    html_date = None
-    for path in reversed(html_paths):
-        html_date = extract_date_from_html(path)
-        if html_date:
-            break
+    # Use date from last file (Balance Update is later)
+    html_date = next((extract_date_from_html(p) for p in reversed(html_paths) if extract_date_from_html(p)), None)
 
-    # Parse with LLM in multi-source mode
-    patch_data = parse_with_llm(body_text, version, api_key, is_multi_source=True, parse_hint=parse_hint)
-
-    # Use HTML metadata date (authoritative), fallback to LLM date only if HTML has none
-    authoritative_date = html_date or patch_data.date or "unknown"
-
-    # Flatten changes (validation done by Pydantic)
-    changes = flatten_changes(patch_data)
+    llm_response = parse_with_llm(body_text, version, api_key, is_multi_source=True, parse_hint=parse_hint)
+    changes = flatten_llm_response(llm_response)
 
     if not changes:
-        raise ParseError(f"No balance changes extracted from combined patches: {[p.name for p in html_paths]}")
+        raise ParseError(f"No balance changes from {[p.name for p in html_paths]}")
 
-    return {
-        "metadata": {
-            "version": patch_data.version,
-            "date": authoritative_date,
-            "title": f"StarCraft II Patch {patch_data.version}",
-            "url": "",  # Will be filled in by pipeline script
-        },
-        "changes": changes,
-    }
+    return ParsedPatch(
+        version=llm_response.version,
+        date=html_date or llm_response.date or "unknown",
+        url="",
+        changes=changes,
+    )

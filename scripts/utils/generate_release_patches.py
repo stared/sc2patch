@@ -72,15 +72,9 @@ def get_expansion(unit_name: str) -> str:
     return "1.0.0"
 
 
-def create_change(entity_id: str, patch_version: str, index: int) -> dict:
+def create_change(entity_id: str) -> dict:
     """Create a change entry for unit introduction."""
-    return {
-        "id": f"{entity_id}_{index}",
-        "patch_version": patch_version,
-        "entity_id": entity_id,
-        "raw_text": "Unit introduced",
-        "change_type": "buff",
-    }
+    return {"entity_id": entity_id, "raw_text": "Unit introduced", "change_type": "buff"}
 
 
 def generate_release_patch(version: str, units: list[dict]) -> dict:
@@ -94,17 +88,11 @@ def generate_release_patch(version: str, units: list[dict]) -> dict:
     # Sort by race, then name for consistent ordering
     expansion_units.sort(key=lambda u: (u["race"], u["name"]))
 
-    for i, unit in enumerate(expansion_units):
-        changes.append(create_change(unit["id"], version, i))
+    for unit in expansion_units:
+        changes.append(create_change(unit["id"]))
 
     return {
-        "metadata": {
-            "version": version,
-            "date": release["date"],
-            "title": release["title"],
-            "url": release["url"],
-            "patch_type": "release",
-        },
+        "metadata": {"version": version, "date": release["date"], "url": release["url"]},
         "changes": changes,
     }
 

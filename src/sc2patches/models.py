@@ -1,9 +1,6 @@
-"""Unified data models for SC2 patches.
+"""Pydantic models for SC2 patches. TypeScript mirrors these with Zod schemas."""
 
-These Pydantic models define the schema for all patch data.
-The TypeScript side mirrors these with Zod schemas.
-"""
-
+from collections import defaultdict
 from datetime import datetime, timezone
 from typing import Literal
 
@@ -16,81 +13,118 @@ UnitType = Literal["unit", "building", "upgrade", "ability", "mechanic"]
 PatchType = Literal["balance", "release"]
 
 
-class PatchConfig(BaseModel):
-    """Configuration for a patch in patch_urls.json."""
+def _validate_url(v: str) -> str:
+    if not v or not v.startswith(("http://", "https://")):
+        raise ValueError(f"Invalid URL: {v}")
+    return v
 
-    version: str = Field(description="Patch version (e.g., '5.0.12')")
-    url: str = Field(description="Primary URL to patch notes")
-    liquipedia: str | None = Field(default=None, description="Liquipedia URL")
-    additional_urls: list[str] = Field(default_factory=list, description="BU patch URLs")
-    parse_hint: str | None = Field(default=None, description="Patch-specific parsing instructions")
-    note: str | None = Field(default=None, description="Human-readable note about this patch")
+
+class PatchConfig(BaseModel):
+    """Config entry from patch_urls.json."""
+
+    version: str
+    url: str
+    liquipedia: str | None = None
+    additional_urls: list[str] = Field(default_factory=list)
+    parse_hint: str | None = None
+    note: str | None = None
 
     @field_validator("url")
     @classmethod
-    def url_must_be_valid(cls, v: str) -> str:
-        """Ensure URL starts with http."""
-        if not v.startswith("http://") and not v.startswith("https://"):
-            raise ValueError(f"URL must start with http:// or https://, got: {v}")
-        return v
+    def validate_url(cls, v: str) -> str:
+        return _validate_url(v)
 
 
 class Unit(BaseModel):
-    """A game entity (unit, building, upgrade, etc.)."""
+    """Game entity (unit, building, upgrade, etc.)."""
 
-    id: str = Field(description="Unique ID: race-name (e.g., 'terran-marine')")
-    name: str = Field(description="Display name (e.g., 'Marine')")
+    id: str
+    name: str
     race: Race
     type: UnitType = "unit"
-    liquipedia_url: str = Field(description="Wiki URL (Liquipedia or Fandom)")
+    liquipedia_url: str
 
 
+# Intermediate format (flat changes, for storage)
+class ParsedChange(BaseModel):
+    entity_id: str
+    raw_text: str
+    change_type: ChangeType
+
+
+class ParsedPatch(BaseModel):
+    """Flat changes from LLM. Saved to data/processed/patches/*.json."""
+
+    version: str
+    date: str
+    url: str
+    changes: list[ParsedChange]
+
+    def to_patch(self, patch_type: PatchType = "balance") -> "Patch":
+        """Group changes by entity for visualization."""
+        by_entity: dict[str, list[Change]] = defaultdict(list)
+        for c in self.changes:
+            by_entity[c.entity_id].append(Change(raw_text=c.raw_text, change_type=c.change_type))
+        return Patch(
+            version=self.version,
+            date=self.date,
+            url=self.url,
+            patch_type=patch_type,
+            entities=[EntityChanges(entity_id=eid, changes=ch) for eid, ch in sorted(by_entity.items())],
+        )
+
+    @classmethod
+    def from_json_file(cls, data: dict) -> "ParsedPatch":
+        """Load from JSON file format with metadata wrapper."""
+        m = data["metadata"]
+        return cls(
+            version=m["version"],
+            date=m["date"],
+            url=m.get("url", ""),
+            changes=[ParsedChange(entity_id=c["entity_id"], raw_text=c["raw_text"], change_type=c["change_type"]) for c in data["changes"]],
+        )
+
+    def to_json_dict(self) -> dict:
+        """Convert to JSON file format with metadata wrapper."""
+        return {
+            "metadata": {"version": self.version, "date": self.date, "url": self.url},
+            "changes": [{"entity_id": c.entity_id, "raw_text": c.raw_text, "change_type": c.change_type} for c in self.changes],
+        }
+
+
+# Final format (grouped by entity, for visualization)
 class Change(BaseModel):
-    """A single balance change."""
-
-    raw_text: str = Field(description="Description of the change")
-    change_type: ChangeType = Field(description="buff, nerf, or mixed")
+    raw_text: str
+    change_type: ChangeType
 
 
 class EntityChanges(BaseModel):
-    """All changes for a single entity in a patch."""
-
-    entity_id: str = Field(description="Entity ID: race-name")
+    entity_id: str
     changes: list[Change]
 
 
 class Patch(BaseModel):
-    """A single patch with all its changes."""
+    """Grouped changes for visualization."""
 
-    version: str = Field(description="Patch version (e.g., '5.0.12')")
-    date: str = Field(description="ISO date YYYY-MM-DD")
-    url: str = Field(description="URL to patch notes - must be valid HTTP(S) URL")
-    patch_type: PatchType = Field(default="balance", description="'balance' for patches, 'release' for expansions")
+    version: str
+    date: str
+    url: str
+    patch_type: PatchType = "balance"
     entities: list[EntityChanges]
 
     @field_validator("url")
     @classmethod
-    def url_must_be_valid(cls, v: str) -> str:
-        """Ensure URL is not empty and starts with http."""
-        if not v or not v.strip():
-            raise ValueError("URL cannot be empty")
-        if not v.startswith("http://") and not v.startswith("https://"):
-            raise ValueError(f"URL must start with http:// or https://, got: {v}")
-        return v
+    def validate_url(cls, v: str) -> str:
+        return _validate_url(v)
 
 
 class PatchesData(BaseModel):
-    """Complete dataset: all patches and units."""
+    """Complete dataset for visualization."""
 
     patches: list[Patch]
     units: list[Unit]
-    generated_at: str = Field(description="ISO timestamp when data was generated")
+    generated_at: str
 
     @classmethod
     def create(cls, patches: list[Patch], units: list[Unit]) -> "PatchesData":
-        """Create PatchesData with current timestamp."""
-        return cls(
-            patches=patches,
-            units=units,
-            generated_at=datetime.now(tz=timezone.utc).isoformat(),
-        )
+        return cls(patches=patches, units=units, generated_at=datetime.now(tz=timezone.utc).isoformat())
