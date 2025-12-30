@@ -1019,16 +1019,13 @@ export class PatchGridRenderer {
     const linksMerge = linksEnter.merge(links);
 
     if (state.selectedEntityId) {
-      const unit = state.unitsMap.get(state.selectedEntityId);
-      const unitName = unit?.name || '';
-      const wikiUrl = `https://liquipedia.net/starcraft2/${unitName.replace(/ /g, '_')}_(Legacy_of_the_Void)`;
-
+      const unit = state.unitsMap.get(state.selectedEntityId)!;
       linksMerge
         .attr('class', 'unit-links wiki-link')
         .attr('x', this.svgWidth - 20).attr('y', 16).attr('text-anchor', 'end')
         .style('fill', '#666').style('font-size', '11px').style('cursor', 'pointer')
-        .text(`more info on ${unitName}`)
-        .on('click', () => window.open(wikiUrl, '_blank'));
+        .text(`wiki`)
+        .on('click', () => window.open(unit.liquipedia_url, '_blank'));
     }
 
     links.exit().remove();
