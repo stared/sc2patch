@@ -64,6 +64,47 @@ export class PatchGridRenderer {
   }
 
   // ==========================================================================
+  // SCROLL HELPERS
+  // ==========================================================================
+
+  /**
+   * Scroll to make the first instance of selected entity visible.
+   * Called after selection animation completes.
+   */
+  private scrollToSelectedEntity(entityId: string): void {
+    // Find the first entity-cell-group for this entity
+    const entityGroup = this.svg
+      .selectAll<SVGGElement, EntityItemWithAnimation>('.entity-cell-group')
+      .filter(d => d.entityId === entityId)
+      .node();
+
+    if (!entityGroup) return;
+
+    // Get viewport and element positions
+    const rect = entityGroup.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+
+    // Account for sticky header (approximate height)
+    const headerHeight = 200;
+    const visibleTop = headerHeight;
+    const visibleBottom = viewportHeight - 50; // Small bottom margin
+
+    // Check if element is already visible
+    const elementCenterY = rect.top + rect.height / 2;
+    const isVisible = elementCenterY > visibleTop && elementCenterY < visibleBottom;
+
+    if (!isVisible) {
+      // Scroll element to a comfortable position (roughly 1/3 from top, after header)
+      const targetScrollY = window.scrollY + rect.top - headerHeight - 50;
+
+      window.scrollTo({
+        top: Math.max(0, targetScrollY),
+        behavior: 'smooth'
+      });
+    }
+  }
+
+  // ==========================================================================
   // HEADER POSITION HELPERS - Single source of truth
   // ==========================================================================
 
@@ -648,6 +689,11 @@ export class PatchGridRenderer {
       .style('opacity', 1)
       .end()
       .catch(() => {});
+
+    // Phase 4: Scroll to make selected entity visible (if needed)
+    if (selectedEntityId) {
+      this.scrollToSelectedEntity(selectedEntityId);
+    }
   }
 
   private async applyDeselectAnimation(
