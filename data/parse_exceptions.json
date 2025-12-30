@@ -1,4 +1,5 @@
 {
   "3.8.0": "PATCH-SPECIFIC: In this patch, the 'Rocks now have 0 armor' change is in the Co-op Missions section (after the visual separator image following Ultralisk changes). Do NOT include this rocks change - it is Co-op only, not Versus.",
-  "1.4.3 BU": "PATCH-SPECIFIC: This Liquipedia page contains BOTH the main patch 1.4.3 changes (Phoenix, Ghost, MULE) AND the Balance Update changes (Observer, Overlord, Queen). ONLY extract the Balance Update section changes (dated May 10, 2012): Observer build time, Overlord speed, Queen range. Do NOT include the main patch changes (Phoenix Anion Pulse-Crystals, Ghost Snipe, MULE minerals)."
+  "1.4.3 BU": "PATCH-SPECIFIC: This Liquipedia page contains BOTH the main patch 1.4.3 changes (Phoenix, Ghost, MULE) AND the Balance Update changes (Observer, Overlord, Queen). ONLY extract the Balance Update section changes (dated May 10, 2012): Observer build time, Overlord speed, Queen range. Do NOT include the main patch changes (Phoenix Anion Pulse-Crystals, Ghost Snipe, MULE minerals).",
+  "5.0.13": "PATCH-SPECIFIC: EXCLUDE the Vespene Geyser footprint change ('Adjusted footprint size of Vespene Geysers'). This is NOT a balance change - it's a compensatory fix to maintain existing worker-geyser interactions after the worker inner radius was changed. The actual balance changes are on the workers (SCV, Drone, Probe)."
 }
