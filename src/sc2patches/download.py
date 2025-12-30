@@ -1,6 +1,5 @@
 """Download and convert StarCraft 2 patch notes."""
 
-import json
 import re
 from datetime import datetime, timezone
 from pathlib import Path
@@ -10,7 +9,10 @@ from bs4 import BeautifulSoup
 from markdownify import markdownify as md
 from pydantic import BaseModel
 
-from sc2patches.extraction import url_to_filename
+from sc2patches.extraction import ExtractionError, extract_jsonld, url_to_filename
+
+# Re-export ExtractionError for callers that catch it
+__all__ = ["DownloadError", "ExtractionError", "download_patch"]
 
 
 class DownloadError(Exception):
@@ -97,42 +99,6 @@ def validate_patch_html(html: str, url: str) -> None:
         )
 
 
-def extract_jsonld(html: str) -> dict:
-    """Extract JSON-LD NewsArticle data from HTML.
-
-    Args:
-        html: HTML content
-
-    Returns:
-        Parsed JSON-LD dict
-
-    Raises:
-        DownloadError: If JSON-LD not found or invalid
-    """
-    soup = BeautifulSoup(html, "html.parser")
-
-    # Find JSON-LD script tag
-    script = soup.find("script", type="application/ld+json")
-
-    if not script or not script.string:
-        raise DownloadError("No JSON-LD script found")
-
-    # Fix common JSON syntax error in Blizzard's JSON-LD
-    # Missing comma between author and publisher arrays
-    json_str = script.string
-    json_str = re.sub(r'(\])\s*("publisher")', r"\1,\2", json_str)
-
-    try:
-        data = json.loads(json_str)
-    except json.JSONDecodeError as e:
-        raise DownloadError(f"Failed to parse JSON-LD: {e}") from e
-
-    if not isinstance(data, dict) or data.get("@type") != "NewsArticle":
-        raise DownloadError("JSON-LD is not a NewsArticle")
-
-    return data
-
-
 def extract_url(html: str) -> str:
     """Extract source URL from HTML meta tags.
 
@@ -168,6 +134,7 @@ def extract_metadata(html: str, source_url: str, version_hint: str | None = None
         PatchMetadata object
 
     Raises:
+        ExtractionError: If JSON-LD extraction fails
         DownloadError: If required metadata cannot be extracted
     """
     jsonld = extract_jsonld(html)

@@ -1,13 +1,13 @@
 """Parse patch notes with LLM via OpenRouter."""
 
 import json
-import re
-from datetime import datetime
 from pathlib import Path
 
 import httpx
 from bs4 import BeautifulSoup
 from pydantic import BaseModel, Field
+
+from sc2patches.extraction import extract_date_from_jsonld
 
 # Model to use for parsing
 OPENROUTER_MODEL = "google/gemini-3-pro-preview"
@@ -145,7 +145,7 @@ def extract_bodies_from_html_files(html_paths: list[Path]) -> str:
 def extract_date_from_html(html_path: Path) -> str | None:
     """Extract date from HTML JSON-LD metadata.
 
-    This is the authoritative source for patch dates, not LLM extraction.
+    Thin wrapper around extraction.extract_date_from_jsonld.
 
     Args:
         html_path: Path to HTML file
@@ -153,38 +153,8 @@ def extract_date_from_html(html_path: Path) -> str | None:
     Returns:
         Date string in YYYY-MM-DD format, or None if not found
     """
-    with html_path.open(encoding="utf-8") as f:
-        html_content = f.read()
-
-    soup = BeautifulSoup(html_content, "html.parser")
-
-    # Find JSON-LD script tag
-    script = soup.find("script", type="application/ld+json")
-    if not script or not script.string:
-        return None
-
-    # Fix common JSON syntax error in Blizzard's JSON-LD
-    json_str = script.string
-    json_str = re.sub(r'(\])\s*("publisher")', r"\1,\2", json_str)
-
-    try:
-        data = json.loads(json_str)
-    except json.JSONDecodeError:
-        return None
-
-    if not isinstance(data, dict) or data.get("@type") != "NewsArticle":
-        return None
-
-    date_published = data.get("datePublished")
-    if not date_published:
-        return None
-
-    # Parse ISO datetime to date
-    try:
-        dt = datetime.fromisoformat(date_published.replace("Z", "+00:00"))
-        return dt.strftime("%Y-%m-%d")
-    except (ValueError, AttributeError):
-        return None
+    html_content = html_path.read_text(encoding="utf-8")
+    return extract_date_from_jsonld(html_content)
 
 
 def parse_with_llm(

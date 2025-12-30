@@ -6,7 +6,16 @@ Single source of truth for:
 - HTML body extraction
 """
 
+import json
+import re
+from datetime import datetime
 from urllib.parse import urlparse
+
+from bs4 import BeautifulSoup
+
+
+class ExtractionError(Exception):
+    """Raised when extraction fails."""
 
 
 def url_to_filename(url: str, remove_suffixes: bool = True) -> str:
@@ -27,3 +36,62 @@ def url_to_filename(url: str, remove_suffixes: bool = True) -> str:
         filename = filename.replace("-patch-notes", "").replace("_patch_notes", "")
 
     return filename
+
+
+def extract_jsonld(html: str) -> dict:
+    """Extract JSON-LD NewsArticle data from HTML.
+
+    Args:
+        html: HTML content
+
+    Returns:
+        Parsed JSON-LD dict
+
+    Raises:
+        ExtractionError: If JSON-LD not found or invalid
+    """
+    soup = BeautifulSoup(html, "html.parser")
+
+    script = soup.find("script", type="application/ld+json")
+    if not script or not script.string:
+        raise ExtractionError("No JSON-LD script found")
+
+    # Fix common JSON syntax error in Blizzard's JSON-LD
+    # Missing comma between author and publisher arrays
+    json_str = script.string
+    json_str = re.sub(r'(\])\s*("publisher")', r"\1,\2", json_str)
+
+    try:
+        data = json.loads(json_str)
+    except json.JSONDecodeError as e:
+        raise ExtractionError(f"Failed to parse JSON-LD: {e}") from e
+
+    if not isinstance(data, dict) or data.get("@type") != "NewsArticle":
+        raise ExtractionError("JSON-LD is not a NewsArticle")
+
+    return data
+
+
+def extract_date_from_jsonld(html: str) -> str | None:
+    """Extract publication date from JSON-LD metadata.
+
+    Args:
+        html: HTML content
+
+    Returns:
+        Date string in YYYY-MM-DD format, or None if not found
+    """
+    try:
+        data = extract_jsonld(html)
+    except ExtractionError:
+        return None
+
+    date_published = data.get("datePublished")
+    if not date_published:
+        return None
+
+    try:
+        dt = datetime.fromisoformat(date_published.replace("Z", "+00:00"))
+        return dt.strftime("%Y-%m-%d")
+    except (ValueError, AttributeError):
+        return None
