@@ -356,8 +356,21 @@ COMMONLY MISSED UNITS - check these explicitly:
 - zerg-viper (Parasitic Bomb, Abduct)
 - zerg-queen (Transfuse, Creep Tumor)
 
-VISUAL CHANGES: Only include if they affect player reaction or clarity
-(e.g., "targeting line more visible", "EMP radius indicator"). Ignore cosmetic-only changes.
+VISUAL/UI CHANGES - These ARE balance changes when they affect counterplay:
+
+INCLUDE as balance changes (these affect who wins):
+- Attack priority changes (what AI targets first) → affects combat outcomes
+- Targeting indicators more visible (e.g., Widow Mine line) → easier to micro against
+- Unit size changes (e.g., "Observer model larger") → easier to spot/click
+- Upgrade visibility (opponent can see upgrades) → affects strategic decisions
+- Range indicators, ability radius displays → affects positioning
+- Burrow/cloak visual effects → affects detection timing
+
+EXCLUDE (pure cosmetic, no gameplay impact):
+- Icon changes, portrait updates
+- Animation polish with same timing
+- Sound-only changes (unless new audio cue for ability)
+- Color/texture changes that don't affect visibility
 
 VALID ENTITY IDS - You MUST use ONLY these exact IDs:
 {valid_ids_text}

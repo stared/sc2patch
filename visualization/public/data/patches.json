@@ -3297,11 +3297,7 @@
           "entity_id": "protoss-disruptor",
           "changes": [
             {
-              "raw_text": "Purification Nova changed back to pre-4.0 state: deploys a ball of energy that will detonate after 2 seconds",
-              "change_type": "mixed"
-            },
-            {
-              "raw_text": "Purification Nova deals 155 damage and an additional 55 shield damage to all ground units in its radius",
+              "raw_text": "Purification Nova changed back to pre-4.0 state (detonates after 2 seconds)",
               "change_type": "mixed"
             },
             {
@@ -3309,8 +3305,8 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "Purification Nova now sends a threat signal to the opponent on detonation instead of during the launch phase",
-              "change_type": "nerf"
+              "raw_text": "Purification Nova sends a threat signal to the opponent on detonation instead of during the launch phase",
+              "change_type": "buff"
             }
           ]
         },
@@ -3318,7 +3314,7 @@
           "entity_id": "protoss-gateway",
           "changes": [
             {
-              "raw_text": "Transform to Warp Gate will now be an auto-cast ability",
+              "raw_text": "Transform to Warp Gate is now an auto-cast ability",
               "change_type": "buff"
             }
           ]
@@ -3327,7 +3323,7 @@
           "entity_id": "protoss-high_templar",
           "changes": [
             {
-              "raw_text": "Feedback now deals 0.5 damage per point of energy drained, down from 1 damage per point of energy drained",
+              "raw_text": "Feedback damage reduced from 1 per energy to 0.5 per energy",
               "change_type": "nerf"
             }
           ]
@@ -3335,6 +3331,10 @@
         {
           "entity_id": "protoss-mothership",
           "changes": [
+            {
+              "raw_text": "Strategic Recall name changed to Mass Recall",
+              "change_type": "mixed"
+            },
             {
               "raw_text": "Time Warp now also reduces unit and structure attack speed by 50%",
               "change_type": "buff"
@@ -3345,12 +3345,20 @@
           "entity_id": "protoss-nexus",
           "changes": [
             {
+              "raw_text": "Mass Recall renamed to Strategic Recall",
+              "change_type": "mixed"
+            },
+            {
               "raw_text": "Strategic Recall radius decreased from 6.5 to 2.5",
               "change_type": "nerf"
             },
             {
               "raw_text": "Strategic Recall cooldown decreased from 130 to 85 seconds",
               "change_type": "buff"
+            },
+            {
+              "raw_text": "Chrono Boost will now display a visual status on boosted structures",
+              "change_type": "nerf"
             }
           ]
         },
@@ -3469,15 +3477,15 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "Tornado Blaster weapon changed to the Typhoon Missile Pod weapon",
+              "raw_text": "Tornado Blaster weapon changed to Typhoon Missile Pod weapon",
               "change_type": "mixed"
             },
             {
-              "raw_text": "Damage changed from 3 (+2 vs Armored) to 18",
+              "raw_text": "Weapon damage changed from 3 (+2 vs Armored) to 18",
               "change_type": "buff"
             },
             {
-              "raw_text": "Can target air and ground units",
+              "raw_text": "Weapon can now target air and ground units",
               "change_type": "buff"
             },
             {
@@ -3485,7 +3493,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "Range decreased from 6 to 5",
+              "raw_text": "Weapon range decreased from 6 to 5",
               "change_type": "nerf"
             },
             {
@@ -3493,7 +3501,7 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "Lock On ability can auto cast",
+              "raw_text": "Lock On ability can now auto cast",
               "change_type": "buff"
             },
             {
@@ -3509,7 +3517,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "Added Mag-Field Accelerator upgrade: Lock On will deal 400 (+400 vs Armored) over 14 seconds",
+              "raw_text": "Added Mag-Field Accelerator upgrade: Lock On deals 400 (+400 vs Armored) over 14 seconds",
               "change_type": "buff"
             }
           ]
@@ -3518,7 +3526,7 @@
           "entity_id": "terran-engineering_bay",
           "changes": [
             {
-              "raw_text": "Neosteel Frame and Structure Armor upgrades merged into Neosteel Armor (Cost: 150/150, Time: 100s)",
+              "raw_text": "Neosteel Frame and Structure Armor upgrades merged into Neosteel Armor (Cost 150/150, 100s)",
               "change_type": "buff"
             }
           ]
@@ -3527,12 +3535,12 @@
           "entity_id": "terran-medivac",
           "changes": [
             {
-              "raw_text": "Rapid Reignition System upgrade no longer increases Ignite Afterburners duration from 4.29 seconds to 6.43 seconds",
-              "change_type": "nerf"
+              "raw_text": "High Capacity Fuel Tanks upgrade renamed to Rapid Reignition System",
+              "change_type": "mixed"
             },
             {
-              "raw_text": "Rapid Reignition System upgrade decreases Ignite Afterburners cooldown duration from 8.57 seconds to 6.43 seconds",
-              "change_type": "buff"
+              "raw_text": "Rapid Reignition System no longer increases Ignite Afterburners duration, now decreases cooldown from 8.57 to 6.43 seconds",
+              "change_type": "mixed"
             },
             {
               "raw_text": "Can now heal units Graviton'd by Phoenix",
@@ -3550,6 +3558,24 @@
             {
               "raw_text": "Anti-Armor Missile will also reduce Protoss shield armor by 3",
               "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-sensor_tower",
+          "changes": [
+            {
+              "raw_text": "Pre-placement selection display now shows a range indicator on the mini-map",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-tech_lab",
+          "changes": [
+            {
+              "raw_text": "Structures cannot be lifted while an upgrade is being researched in an attached Tech Lab",
+              "change_type": "nerf"
             }
           ]
         },
@@ -3582,8 +3608,12 @@
           "entity_id": "terran-widow_mine",
           "changes": [
             {
-              "raw_text": "The Drilling Claws upgrade now permanently cloaks Widow Mines when they're burrowed",
+              "raw_text": "Drilling Claws upgrade now permanently cloaks Widow Mines when they are burrowed",
               "change_type": "buff"
+            },
+            {
+              "raw_text": "Drilling Claws now adds a visual indicator to show the unit has the upgrade",
+              "change_type": "nerf"
             }
           ]
         },
@@ -3612,11 +3642,15 @@
               "change_type": "buff"
             },
             {
+              "raw_text": "Model scale decreased from 0.85 to 0.75",
+              "change_type": "buff"
+            },
+            {
               "raw_text": "Can now move through units while burrowed",
               "change_type": "buff"
             },
             {
-              "raw_text": "Fungal Growth no longer allows affected units to Blink, Tactical Jump, or load into transports and buildings",
+              "raw_text": "Fungal Growth no longer allows affected units to Blink, Tactical Jump, or load into transports",
               "change_type": "buff"
             },
             {
@@ -3650,7 +3684,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "Has 6 armor while emerging from the ground",
+              "raw_text": "Now has 6 armor while emerging from the ground",
               "change_type": "buff"
             }
           ]
@@ -3668,11 +3702,7 @@
           "entity_id": "zerg-queen",
           "changes": [
             {
-              "raw_text": "Transfusion no longer restores 125 health instantly",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Transfusion restores 75 health instantly plus an additional 50 health over the next 7.14 seconds",
+              "raw_text": "Transfusion no longer restores 125 health instantly, now restores 75 instantly plus 50 over 7.14 seconds",
               "change_type": "nerf"
             },
             {
@@ -3689,7 +3719,7 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "Tunneling Claws no longer increases the health regeneration rate from 7 HP/second to 14 HP/second",
+              "raw_text": "Tunneling Claws no longer increases health regeneration rate from 7 to 14 HP/second",
               "change_type": "nerf"
             }
           ]
@@ -3698,12 +3728,16 @@
           "entity_id": "zerg-ultralisk",
           "changes": [
             {
-              "raw_text": "New upgrade added: Evolve Anabolic Synthesis (Cost: 150/150/42.85s)",
+              "raw_text": "Added Evolve Anabolic Synthesis upgrade (Cost: 150/150, 42.85s)",
               "change_type": "buff"
             },
             {
-              "raw_text": "Anabolic Synthesis increases speed when off creep from 4.13 to 4.55",
+              "raw_text": "Anabolic Synthesis increases off creep speed from 4.13 to 4.55",
               "change_type": "buff"
+            },
+            {
+              "raw_text": "Anabolic Synthesis adds visual indicators to show the upgrade",
+              "change_type": "nerf"
             }
           ]
         },
@@ -7119,5 +7153,5 @@
       "liquipedia_url": "https://liquipedia.net/starcraft2/Zergling"
     }
   ],
-  "generated_at": "2025-12-30T13:21:58.998639+00:00"
+  "generated_at": "2025-12-30T13:41:25.126555+00:00"
 }
