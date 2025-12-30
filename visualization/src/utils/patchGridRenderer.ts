@@ -525,7 +525,7 @@ export class PatchGridRenderer {
 
           return cg;
         },
-        update => update,
+        update => update.attr('transform', d => `translate(${d.x}, ${d.y})`),
         exit => exit.transition().duration(timing.fade).style('opacity', 0).remove()
       );
 
