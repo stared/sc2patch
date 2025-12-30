@@ -19,17 +19,17 @@ RELEASES = {
     "1.0.0": {
         "date": "2010-07-27",
         "title": "Wings of Liberty",
-        "url": "https://starcraft2.blizzard.com/en-us/",
+        "url": "https://en.wikipedia.org/wiki/StarCraft_II:_Wings_of_Liberty",
     },
     "2.0.0": {
         "date": "2013-03-12",
         "title": "Heart of the Swarm",
-        "url": "https://starcraft2.blizzard.com/en-us/",
+        "url": "https://en.wikipedia.org/wiki/StarCraft_II:_Heart_of_the_Swarm",
     },
     "3.0.0": {
         "date": "2015-11-10",
         "title": "Legacy of the Void",
-        "url": "https://starcraft2.blizzard.com/en-us/",
+        "url": "https://en.wikipedia.org/wiki/StarCraft_II:_Legacy_of_the_Void",
     },
 }
 

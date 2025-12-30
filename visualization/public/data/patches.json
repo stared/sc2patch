@@ -3,7 +3,7 @@
     {
       "version": "1.0.0",
       "date": "2010-07-27",
-      "url": "https://starcraft2.blizzard.com/en-us/",
+      "url": "https://en.wikipedia.org/wiki/StarCraft_II:_Wings_of_Liberty",
       "patch_type": "release",
       "entities": [
         {
@@ -1220,7 +1220,7 @@
     {
       "version": "2.0.0",
       "date": "2013-03-12",
-      "url": "https://starcraft2.blizzard.com/en-us/",
+      "url": "https://en.wikipedia.org/wiki/StarCraft_II:_Heart_of_the_Swarm",
       "patch_type": "release",
       "entities": [
         {
@@ -1677,7 +1677,7 @@
     {
       "version": "3.0.0",
       "date": "2015-11-10",
-      "url": "https://starcraft2.blizzard.com/en-us/",
+      "url": "https://en.wikipedia.org/wiki/StarCraft_II:_Legacy_of_the_Void",
       "patch_type": "release",
       "entities": [
         {
@@ -7146,5 +7146,5 @@
       "liquipedia_url": "https://liquipedia.net/starcraft2/Zergling"
     }
   ],
-  "generated_at": "2025-12-30T12:54:16.162288+00:00"
+  "generated_at": "2025-12-30T12:59:42.200610+00:00"
 }
