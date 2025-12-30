@@ -24,6 +24,7 @@ from rich.progress import BarColumn, Progress, SpinnerColumn, TaskProgressColumn
 
 from sc2patches.extraction import url_to_filename
 from sc2patches.logger import PipelineLogger
+from sc2patches.models import PatchConfig
 from sc2patches.parse import ParseError, parse_patch, parse_patches_combined
 
 # Load environment variables from .env file
@@ -42,23 +43,23 @@ def get_api_key() -> str:
     return api_key
 
 
-def load_patch_config(urls_path: Path) -> list[dict]:
-    """Load patch configuration from patch_urls.json.
+def load_patch_config(urls_path: Path) -> list[PatchConfig]:
+    """Load and validate patch configuration from patch_urls.json.
 
     Returns:
-        List of patch config dicts with version, url, additional_urls
+        List of validated PatchConfig objects
+
+    Raises:
+        ValidationError: If any patch config is invalid
     """
     if not urls_path.exists():
-        return []
+        console.print(f"[red]ERROR: {urls_path} not found[/red]")
+        sys.exit(1)
 
     with urls_path.open() as f:
         data = json.load(f)
 
-    # New format: list of objects with version, url, optional additional_urls
-    if isinstance(data, list) and len(data) > 0 and isinstance(data[0], dict):
-        return data
-
-    return []
+    return [PatchConfig(**item) for item in data]
 
 
 def find_html_files_for_patch(html_dir: Path, version: str, url: str | None = None) -> list[Path]:
@@ -116,7 +117,7 @@ def find_html_files_for_patch(html_dir: Path, version: str, url: str | None = No
 
 
 def process_single_patch(
-    patch_config: dict,
+    patch_config: PatchConfig,
     html_dir: Path,
     output_dir: Path,
     skip_existing: bool,
@@ -128,9 +129,9 @@ def process_single_patch(
     Returns:
         True if processing should continue (success or skip), False otherwise
     """
-    version = patch_config["version"]
-    url = patch_config["url"]
-    parse_hint = patch_config.get("parse_hint")
+    version = patch_config.version
+    url = patch_config.url
+    parse_hint = patch_config.parse_hint
     output_path = output_dir / f"{version}.json"
 
     # Check if output already exists
@@ -153,10 +154,16 @@ def process_single_patch(
     else:
         result = parse_patch(html_files[0], version, api_key, parse_hint)
 
-    # Override version and URL from config (LLM might extract wrong version for BU patches)
+    # Validate parsed version matches config (single source of truth: patch_urls.json)
+    parsed_version = result["metadata"]["version"]
+    if parsed_version != version:
+        msg = f"Version mismatch: parsed '{parsed_version}' vs config '{version}'"
+        console.print(f"[yellow]  ⚠ {msg}[/yellow]")
+        logger.log_detail(f"  - WARNING: {msg}")
+
+    # Set metadata from config (source of truth)
     result["metadata"]["version"] = version
     result["metadata"]["url"] = url
-    # Also update patch_version in each change
     for change in result["changes"]:
         change["patch_version"] = version
 
@@ -195,14 +202,14 @@ def main() -> None:
     logger = PipelineLogger("parse")
 
     if specific_version:
-        configs_to_parse = [p for p in patch_configs if p["version"] == specific_version]
+        configs_to_parse = [p for p in patch_configs if p.version == specific_version]
         if not configs_to_parse:
             console.print(f"[red]No config found for version: {specific_version}[/red]")
             sys.exit(1)
     else:
         configs_to_parse = patch_configs
 
-    multi_html_count = sum(1 for p in configs_to_parse if p.get("additional_urls"))
+    multi_html_count = sum(1 for p in configs_to_parse if p.additional_urls)
 
     console.print("\n[bold]Stage 2: Parse Patches with Gemini 3 Pro[/bold]")
     console.print(f"Patches to parse: {len(configs_to_parse)}")
@@ -219,7 +226,7 @@ def main() -> None:
         task = progress.add_task("Parsing...", total=len(configs_to_parse))
 
         for patch_config in configs_to_parse:
-            progress.update(task, description=f"Processing {patch_config['version']}")
+            progress.update(task, description=f"Processing {patch_config.version}")
 
             try:
                 process_single_patch(
@@ -227,8 +234,8 @@ def main() -> None:
                 )
                 time.sleep(2.0)  # Be polite to API
             except ParseError as e:
-                logger.log_failure(patch_config["version"], str(e))
-                console.print(f"[red]  ✗ {patch_config['version']}:[/red] {str(e)[:100]}")
+                logger.log_failure(patch_config.version, str(e))
+                console.print(f"[red]  ✗ {patch_config.version}:[/red] {str(e)[:100]}")
 
             progress.advance(task)
 

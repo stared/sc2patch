@@ -16,6 +16,25 @@ UnitType = Literal["unit", "building", "upgrade", "ability", "mechanic"]
 PatchType = Literal["balance", "release"]
 
 
+class PatchConfig(BaseModel):
+    """Configuration for a patch in patch_urls.json."""
+
+    version: str = Field(description="Patch version (e.g., '5.0.12')")
+    url: str = Field(description="Primary URL to patch notes")
+    liquipedia: str | None = Field(default=None, description="Liquipedia URL")
+    additional_urls: list[str] = Field(default_factory=list, description="BU patch URLs")
+    parse_hint: str | None = Field(default=None, description="Patch-specific parsing instructions")
+    note: str | None = Field(default=None, description="Human-readable note about this patch")
+
+    @field_validator("url")
+    @classmethod
+    def url_must_be_valid(cls, v: str) -> str:
+        """Ensure URL starts with http."""
+        if not v.startswith("http://") and not v.startswith("https://"):
+            raise ValueError(f"URL must start with http:// or https://, got: {v}")
+        return v
+
+
 class Unit(BaseModel):
     """A game entity (unit, building, upgrade, etc.)."""
 
