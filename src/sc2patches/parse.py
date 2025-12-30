@@ -19,20 +19,6 @@ OPENROUTER_MODEL = "google/gemini-3-pro-preview"
 # Path to units database
 UNITS_JSON_PATH = Path(__file__).parent.parent.parent / "data" / "units.json"
 
-# Path to parse exceptions (patch-specific prompt additions)
-PARSE_EXCEPTIONS_PATH = Path(__file__).parent.parent.parent / "data" / "parse_exceptions.json"
-
-
-def load_parse_exceptions() -> dict[str, str]:
-    """Load patch-specific parsing exceptions.
-
-    Returns a dict mapping patch version to additional prompt text.
-    """
-    if not PARSE_EXCEPTIONS_PATH.exists():
-        return {}
-    with PARSE_EXCEPTIONS_PATH.open() as f:
-        return json.load(f)
-
 
 def load_valid_entity_ids() -> dict[str, list[str]]:
     """Load valid entity_ids from units.json, grouped by race."""
@@ -172,14 +158,16 @@ def parse_with_llm(
     version: str,
     api_key: str,
     is_multi_source: bool = False,
+    parse_hint: str | None = None,
 ) -> PatchChanges:
     """Extract balance changes using LLM via OpenRouter.
 
     Args:
         body_text: Text content to parse
-        version: Patch version (used for exception lookup and as hint to model)
+        version: Patch version (hint to model)
         api_key: OpenRouter API key
         is_multi_source: If True, content contains multiple sources (main + BU) to merge
+        parse_hint: Optional patch-specific instructions for the LLM
 
     Returns:
         Parsed patch changes
@@ -194,11 +182,8 @@ def parse_with_llm(
         f"  {race.upper()}: {', '.join(ids)}" for race, ids in valid_ids.items()
     )
 
-    # Load patch-specific exceptions
-    exceptions = load_parse_exceptions()
-    patch_exception = ""
-    if version in exceptions:
-        patch_exception = f"\n\n{exceptions[version]}\n"
+    # Format patch-specific hint if provided
+    patch_exception = f"\n\nPATCH-SPECIFIC: {parse_hint}\n" if parse_hint else ""
 
     # Add multi-source instructions if combining multiple HTML files
     multi_source_header = ""
@@ -363,13 +348,16 @@ Return ONLY valid JSON matching the example format. Include ALL required fields.
         raise ParseError(f"Failed to parse LLM response: {e}") from e
 
 
-def parse_patch(html_path: Path, version: str, api_key: str) -> dict:
+def parse_patch(
+    html_path: Path, version: str, api_key: str, parse_hint: str | None = None
+) -> dict:
     """Parse a single patch file and return structured JSON.
 
     Args:
         html_path: Path to HTML file
-        version: Patch version from config (authoritative, used for exception lookup)
+        version: Patch version from config
         api_key: OpenRouter API key
+        parse_hint: Optional patch-specific instructions for the LLM
 
     Returns:
         Dictionary with metadata and changes
@@ -384,7 +372,7 @@ def parse_patch(html_path: Path, version: str, api_key: str) -> dict:
     html_date = extract_date_from_html(html_path)
 
     # Parse with LLM
-    patch_data = parse_with_llm(body_text, version, api_key)
+    patch_data = parse_with_llm(body_text, version, api_key, parse_hint=parse_hint)
 
     # Use HTML metadata date (authoritative), fallback to LLM date only if HTML has none
     authoritative_date = html_date or patch_data.date or "unknown"
@@ -409,7 +397,9 @@ def parse_patch(html_path: Path, version: str, api_key: str) -> dict:
     }
 
 
-def parse_patches_combined(html_paths: list[Path], version: str, api_key: str) -> dict:
+def parse_patches_combined(
+    html_paths: list[Path], version: str, api_key: str, parse_hint: str | None = None
+) -> dict:
     """Parse multiple patch files together (main + BU) and return merged JSON.
 
     This is used when a patch has both a main client update and a Balance Update.
@@ -417,8 +407,9 @@ def parse_patches_combined(html_paths: list[Path], version: str, api_key: str) -
 
     Args:
         html_paths: List of HTML files to parse together (main first, then additional)
-        version: Patch version from config (authoritative, used for exception lookup)
+        version: Patch version from config
         api_key: OpenRouter API key
+        parse_hint: Optional patch-specific instructions for the LLM
 
     Returns:
         Dictionary with metadata and merged changes
@@ -441,7 +432,9 @@ def parse_patches_combined(html_paths: list[Path], version: str, api_key: str) -
             break
 
     # Parse with LLM in multi-source mode
-    patch_data = parse_with_llm(body_text, version, api_key, is_multi_source=True)
+    patch_data = parse_with_llm(
+        body_text, version, api_key, is_multi_source=True, parse_hint=parse_hint
+    )
 
     # Use HTML metadata date (authoritative), fallback to LLM date only if HTML has none
     authoritative_date = html_date or patch_data.date or "unknown"

@@ -8,7 +8,6 @@ Usage:
 """
 
 import json
-import shutil
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -53,7 +52,7 @@ def load_patch(patch_file: Path, logger: PipelineLogger) -> Patch | None:
         # Validate version format
         if not is_valid_version(version):
             console.print(f"[yellow]Skipping {patch_file.name}: invalid version '{version}'[/yellow]")
-            logger.log_skip(version, f"invalid version format (must start with 1-5)")
+            logger.log_skip(version, "invalid version format (must start with 1-5)")
             return None
 
         changes = data["changes"]
@@ -105,17 +104,6 @@ def main() -> None:
 
     # Create destination directory
     dest_dir.mkdir(parents=True, exist_ok=True)
-
-    # Clean old data
-    old_patches_dir = dest_dir / "processed" / "patches"
-    if old_patches_dir.exists():
-        shutil.rmtree(old_patches_dir)
-        console.print("[dim]Removed old processed/patches/ directory[/dim]")
-
-    old_manifest = dest_dir / "patches_manifest.json"
-    if old_manifest.exists():
-        old_manifest.unlink()
-        console.print("[dim]Removed old patches_manifest.json[/dim]")
 
     # Load units
     units = load_units(source_units_file)

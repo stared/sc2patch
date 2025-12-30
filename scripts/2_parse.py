@@ -130,6 +130,7 @@ def process_single_patch(
     """
     version = patch_config["version"]
     url = patch_config["url"]
+    parse_hint = patch_config.get("parse_hint")
     output_path = output_dir / f"{version}.json"
 
     # Check if output already exists
@@ -148,9 +149,9 @@ def process_single_patch(
     # Parse with appropriate method
     if len(html_files) > 1:
         console.print(f"[cyan]  ↳ Parsing {len(html_files)} files together...[/cyan]")
-        result = parse_patches_combined(html_files, version, api_key)
+        result = parse_patches_combined(html_files, version, api_key, parse_hint)
     else:
-        result = parse_patch(html_files[0], version, api_key)
+        result = parse_patch(html_files[0], version, api_key, parse_hint)
 
     # Override version and URL from config (LLM might extract wrong version for BU patches)
     result["metadata"]["version"] = version
