@@ -5639,794 +5639,926 @@
       "id": "neutral-acceleration_zone_generator",
       "name": "Acceleration Zone Generator",
       "race": "neutral",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://starcraft.fandom.com/wiki/Acceleration_zone_generator"
     },
     {
       "id": "neutral-collapsible_rock_tower",
       "name": "Collapsible Rock Tower",
       "race": "neutral",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Destructible_Towers"
     },
     {
       "id": "neutral-inhibitor_zone_generator",
       "name": "Inhibitor Zone Generator",
       "race": "neutral",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://starcraft.fandom.com/wiki/Inhibitor_zone_generator"
     },
     {
       "id": "neutral-mineral_field",
       "name": "Mineral Field",
       "race": "neutral",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Minerals"
     },
     {
       "id": "neutral-minerals",
       "name": "Minerals",
       "race": "neutral",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Minerals"
     },
     {
       "id": "neutral-ramp",
       "name": "Ramp",
       "race": "neutral",
-      "type": "mechanic"
+      "type": "mechanic",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Terrain_Features"
     },
     {
       "id": "neutral-rocks",
       "name": "Rocks",
       "race": "neutral",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Destructible_Rocks"
     },
     {
       "id": "neutral-vespene_gas",
       "name": "Vespene Gas",
       "race": "neutral",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Vespene_Gas"
     },
     {
       "id": "neutral-vespene_geyser",
       "name": "Vespene Geyser",
       "race": "neutral",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Vespene_Geyser"
     },
     {
       "id": "neutral-xelnaga_tower",
       "name": "Xel'Naga Tower",
       "race": "neutral",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Xel%27Naga_Tower"
     },
     {
       "id": "neutral-zerg_rocks",
       "name": "Zerg Rocks",
       "race": "neutral",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Destructible_Rocks"
     },
     {
       "id": "protoss-adept",
       "name": "Adept",
       "race": "protoss",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Adept"
     },
     {
       "id": "protoss-all_units",
       "name": "All Units",
       "race": "protoss",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Protoss_Units_(Legacy_of_the_Void)"
     },
     {
       "id": "protoss-archon",
       "name": "Archon",
       "race": "protoss",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Archon"
     },
     {
       "id": "protoss-assimilator",
       "name": "Assimilator",
       "race": "protoss",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Assimilator"
     },
     {
       "id": "protoss-carrier",
       "name": "Carrier",
       "race": "protoss",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Carrier"
     },
     {
       "id": "protoss-colossus",
       "name": "Colossus",
       "race": "protoss",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Colossus"
     },
     {
       "id": "protoss-cybernetics_core",
       "name": "Cybernetics Core",
       "race": "protoss",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Cybernetics_Core"
     },
     {
       "id": "protoss-dark_shrine",
       "name": "Dark Shrine",
       "race": "protoss",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Dark_Shrine"
     },
     {
       "id": "protoss-dark_templar",
       "name": "Dark Templar",
       "race": "protoss",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Dark_Templar"
     },
     {
       "id": "protoss-disruptor",
       "name": "Disruptor",
       "race": "protoss",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Disruptor"
     },
     {
       "id": "protoss-fleet_beacon",
       "name": "Fleet Beacon",
       "race": "protoss",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Fleet_Beacon"
     },
     {
       "id": "protoss-forge",
       "name": "Forge",
       "race": "protoss",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Forge"
     },
     {
       "id": "protoss-gateway",
       "name": "Gateway",
       "race": "protoss",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Gateway"
     },
     {
       "id": "protoss-high_templar",
       "name": "High Templar",
       "race": "protoss",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/High_Templar"
     },
     {
       "id": "protoss-immortal",
       "name": "Immortal",
       "race": "protoss",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Immortal"
     },
     {
       "id": "protoss-mothership",
       "name": "Mothership",
       "race": "protoss",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Mothership"
     },
     {
       "id": "protoss-mothership_core",
       "name": "Mothership Core",
       "race": "protoss",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Mothership_Core"
     },
     {
       "id": "protoss-nexus",
       "name": "Nexus",
       "race": "protoss",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Nexus"
     },
     {
       "id": "protoss-observer",
       "name": "Observer",
       "race": "protoss",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Observer"
     },
     {
       "id": "protoss-oracle",
       "name": "Oracle",
       "race": "protoss",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Oracle"
     },
     {
       "id": "protoss-phoenix",
       "name": "Phoenix",
       "race": "protoss",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Phoenix"
     },
     {
       "id": "protoss-photon_cannon",
       "name": "Photon Cannon",
       "race": "protoss",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Photon_Cannon"
     },
     {
       "id": "protoss-probe",
       "name": "Probe",
       "race": "protoss",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Probe"
     },
     {
       "id": "protoss-pylon",
       "name": "Pylon",
       "race": "protoss",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Pylon"
     },
     {
       "id": "protoss-robotics_bay",
       "name": "Robotics Bay",
       "race": "protoss",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Robotics_Bay"
     },
     {
       "id": "protoss-robotics_facility",
       "name": "Robotics Facility",
       "race": "protoss",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Robotics_Facility"
     },
     {
       "id": "protoss-sentry",
       "name": "Sentry",
       "race": "protoss",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Sentry"
     },
     {
       "id": "protoss-shield_battery",
       "name": "Shield Battery",
       "race": "protoss",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Shield_Battery"
     },
     {
       "id": "protoss-stalker",
       "name": "Stalker",
       "race": "protoss",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Stalker"
     },
     {
       "id": "protoss-stargate",
       "name": "Stargate",
       "race": "protoss",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Stargate"
     },
     {
       "id": "protoss-tempest",
       "name": "Tempest",
       "race": "protoss",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Tempest"
     },
     {
       "id": "protoss-templar_archives",
       "name": "Templar Archives",
       "race": "protoss",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Templar_Archives"
     },
     {
       "id": "protoss-twilight_council",
       "name": "Twilight Council",
       "race": "protoss",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Twilight_Council"
     },
     {
       "id": "protoss-void_ray",
       "name": "Void Ray",
       "race": "protoss",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Void_Ray"
     },
     {
       "id": "protoss-warp_prism",
       "name": "Warp Prism",
       "race": "protoss",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Warp_Prism"
     },
     {
       "id": "protoss-zealot",
       "name": "Zealot",
       "race": "protoss",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Zealot"
     },
     {
       "id": "terran-all_units",
       "name": "All Units",
       "race": "terran",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Terran_Units_(Legacy_of_the_Void)"
     },
     {
       "id": "terran-armory",
       "name": "Armory",
       "race": "terran",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Armory"
     },
     {
       "id": "terran-banshee",
       "name": "Banshee",
       "race": "terran",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Banshee"
     },
     {
       "id": "terran-barracks",
       "name": "Barracks",
       "race": "terran",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Barracks"
     },
     {
       "id": "terran-battlecruiser",
       "name": "Battlecruiser",
       "race": "terran",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Battlecruiser"
     },
     {
       "id": "terran-bunker",
       "name": "Bunker",
       "race": "terran",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Bunker"
     },
     {
       "id": "terran-cloaking_field",
       "name": "Cloaking Field",
       "race": "terran",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Cloaking_Field"
     },
     {
       "id": "terran-command_center",
       "name": "Command Center",
       "race": "terran",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Command_Center"
     },
     {
       "id": "terran-cyclone",
       "name": "Cyclone",
       "race": "terran",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Cyclone"
     },
     {
       "id": "terran-engineering_bay",
       "name": "Engineering Bay",
       "race": "terran",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Engineering_Bay"
     },
     {
       "id": "terran-enhanced_munitions",
       "name": "Enhanced Munitions",
       "race": "terran",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/SCUpgrade/Enhanced_Munitions"
     },
     {
       "id": "terran-factory",
       "name": "Factory",
       "race": "terran",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Factory"
     },
     {
       "id": "terran-fusion_core",
       "name": "Fusion Core",
       "race": "terran",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Fusion_Core"
     },
     {
       "id": "terran-ghost",
       "name": "Ghost",
       "race": "terran",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Ghost"
     },
     {
       "id": "terran-ghost_academy",
       "name": "Ghost Academy",
       "race": "terran",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Ghost_Academy"
     },
     {
       "id": "terran-hellbat",
       "name": "Hellbat",
       "race": "terran",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Hellbat"
     },
     {
       "id": "terran-hellion",
       "name": "Hellion",
       "race": "terran",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Hellion"
     },
     {
       "id": "terran-liberator",
       "name": "Liberator",
       "race": "terran",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Liberator"
     },
     {
       "id": "terran-mag_field_launchers",
       "name": "Mag Field Launchers",
       "race": "terran",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/SCUpgrade/Mag-Field_Launchers"
     },
     {
       "id": "terran-marauder",
       "name": "Marauder",
       "race": "terran",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Marauder"
     },
     {
       "id": "terran-marine",
       "name": "Marine",
       "race": "terran",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Marine"
     },
     {
       "id": "terran-medivac",
       "name": "Medivac",
       "race": "terran",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Medivac"
     },
     {
       "id": "terran-missile_turret",
       "name": "Missile Turret",
       "race": "terran",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Missile_Turret"
     },
     {
       "id": "terran-moebius_reactor",
       "name": "Moebius Reactor",
       "race": "terran",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Moebius_Reactor"
     },
     {
       "id": "terran-mule",
       "name": "M.U.L.E.",
       "race": "terran",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/M.U.L.E."
     },
     {
       "id": "terran-orbital_command",
       "name": "Orbital Command",
       "race": "terran",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Orbital_Command"
     },
     {
       "id": "terran-orbital_command_center",
       "name": "Orbital Command Center",
       "race": "terran",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Orbital_Command"
     },
     {
       "id": "terran-planetary_fortress",
       "name": "Planetary Fortress",
       "race": "terran",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Planetary_Fortress"
     },
     {
       "id": "terran-rapid_fire_launchers",
       "name": "Rapid Fire Launchers",
       "race": "terran",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/SCUpgrade/Rapid_Fire_Launchers"
     },
     {
       "id": "terran-raven",
       "name": "Raven",
       "race": "terran",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Raven"
     },
     {
       "id": "terran-reactor",
       "name": "Reactor",
       "race": "terran",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Reactor"
     },
     {
       "id": "terran-reaper",
       "name": "Reaper",
       "race": "terran",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Reaper"
     },
     {
       "id": "terran-refinery",
       "name": "Refinery",
       "race": "terran",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Refinery"
     },
     {
       "id": "terran-scv",
       "name": "SCV",
       "race": "terran",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/SCV"
     },
     {
       "id": "terran-sensor_tower",
       "name": "Sensor Tower",
       "race": "terran",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Sensor_Tower"
     },
     {
       "id": "terran-siege_tank",
       "name": "Siege Tank",
       "race": "terran",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Siege_Tank"
     },
     {
       "id": "terran-starport",
       "name": "Starport",
       "race": "terran",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Starport"
     },
     {
       "id": "terran-supply_depot",
       "name": "Supply Depot",
       "race": "terran",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Supply_Depot"
     },
     {
       "id": "terran-tech_lab",
       "name": "Tech Lab",
       "race": "terran",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Tech_Lab"
     },
     {
       "id": "terran-thor",
       "name": "Thor",
       "race": "terran",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Thor"
     },
     {
       "id": "terran-viking",
       "name": "Viking",
       "race": "terran",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Viking"
     },
     {
       "id": "terran-widow_mine",
       "name": "Widow Mine",
       "race": "terran",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Widow_Mine"
     },
     {
       "id": "unknown",
       "name": "Unknown Entity",
       "race": "neutral",
-      "type": "mechanic"
+      "type": "mechanic",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Main_Page"
     },
     {
       "id": "zerg-all_units",
       "name": "All Units",
       "race": "zerg",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Zerg_Units_(Legacy_of_the_Void)"
     },
     {
       "id": "zerg-baneling",
       "name": "Baneling",
       "race": "zerg",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Baneling"
     },
     {
       "id": "zerg-baneling_nest",
       "name": "Baneling Nest",
       "race": "zerg",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Baneling_Nest"
     },
     {
       "id": "zerg-brood_lord",
       "name": "Brood Lord",
       "race": "zerg",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Brood_Lord"
     },
     {
       "id": "zerg-broodling",
       "name": "Broodling",
       "race": "zerg",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Broodling"
     },
     {
       "id": "zerg-corruptor",
       "name": "Corruptor",
       "race": "zerg",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Corruptor"
     },
     {
       "id": "zerg-drone",
       "name": "Drone",
       "race": "zerg",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Drone"
     },
     {
       "id": "zerg-enduring_locusts",
       "name": "Enduring Locusts",
       "race": "zerg",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Enduring_Locusts"
     },
     {
       "id": "zerg-evolution_chamber",
       "name": "Evolution Chamber",
       "race": "zerg",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Evolution_Chamber"
     },
     {
       "id": "zerg-extractor",
       "name": "Extractor",
       "race": "zerg",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Extractor"
     },
     {
       "id": "zerg-flying_locusts",
       "name": "Flying Locusts",
       "race": "zerg",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/SCUpgrade/Flying_Locusts"
     },
     {
       "id": "zerg-greater_spire",
       "name": "Greater Spire",
       "race": "zerg",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Greater_Spire"
     },
     {
       "id": "zerg-hatchery",
       "name": "Hatchery",
       "race": "zerg",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Hatchery"
     },
     {
       "id": "zerg-hive",
       "name": "Hive",
       "race": "zerg",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Hive"
     },
     {
       "id": "zerg-hydralisk",
       "name": "Hydralisk",
       "race": "zerg",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Hydralisk"
     },
     {
       "id": "zerg-hydralisk_den",
       "name": "Hydralisk Den",
       "race": "zerg",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Hydralisk_Den"
     },
     {
       "id": "zerg-infestation_pit",
       "name": "Infestation Pit",
       "race": "zerg",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Infestation_Pit"
     },
     {
       "id": "zerg-infestor",
       "name": "Infestor",
       "race": "zerg",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Infestor"
     },
     {
       "id": "zerg-lair",
       "name": "Lair",
       "race": "zerg",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Lair"
     },
     {
       "id": "zerg-locust",
       "name": "Locust",
       "race": "zerg",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Locust"
     },
     {
       "id": "zerg-lurker",
       "name": "Lurker",
       "race": "zerg",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Lurker"
     },
     {
       "id": "zerg-lurker_den",
       "name": "Lurker Den",
       "race": "zerg",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Lurker_Den"
     },
     {
       "id": "zerg-mutalisk",
       "name": "Mutalisk",
       "race": "zerg",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Mutalisk"
     },
     {
       "id": "zerg-mutate_ventral_sacs",
       "name": "Mutate Ventral Sacs",
       "race": "zerg",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Mutate_Ventral_Sacs"
     },
     {
       "id": "zerg-nydus_network",
       "name": "Nydus Network",
       "race": "zerg",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Nydus_Network"
     },
     {
       "id": "zerg-nydus_worm",
       "name": "Nydus Worm",
       "race": "zerg",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Nydus_Worm"
     },
     {
       "id": "zerg-overlord",
       "name": "Overlord",
       "race": "zerg",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Overlord"
     },
     {
       "id": "zerg-overseer",
       "name": "Overseer",
       "race": "zerg",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Overseer"
     },
     {
       "id": "zerg-queen",
       "name": "Queen",
       "race": "zerg",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Queen"
     },
     {
       "id": "zerg-ravager",
       "name": "Ravager",
       "race": "zerg",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Ravager"
     },
     {
       "id": "zerg-roach",
       "name": "Roach",
       "race": "zerg",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Roach"
     },
     {
       "id": "zerg-roach_warren",
       "name": "Roach Warren",
       "race": "zerg",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Roach_Warren"
     },
     {
       "id": "zerg-spawn_locusts",
       "name": "Spawn Locusts",
       "race": "zerg",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/SCAbility/Spawn_Locusts"
     },
     {
       "id": "zerg-spawning_pool",
       "name": "Spawning Pool",
       "race": "zerg",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Spawning_Pool"
     },
     {
       "id": "zerg-spine_crawler",
       "name": "Spine Crawler",
       "race": "zerg",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Spine_Crawler"
     },
     {
       "id": "zerg-spire",
       "name": "Spire",
       "race": "zerg",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Spire"
     },
     {
       "id": "zerg-spore_crawler",
       "name": "Spore Crawler",
       "race": "zerg",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Spore_Crawler"
     },
     {
       "id": "zerg-swarm_host",
       "name": "Swarm Host",
       "race": "zerg",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Swarm_Host"
     },
     {
       "id": "zerg-ultralisk",
       "name": "Ultralisk",
       "race": "zerg",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Ultralisk"
     },
     {
       "id": "zerg-ultralisk_cavern",
       "name": "Ultralisk Cavern",
       "race": "zerg",
-      "type": "building"
+      "type": "building",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Ultralisk_Cavern"
     },
     {
       "id": "zerg-viper",
       "name": "Viper",
       "race": "zerg",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Viper"
     },
     {
       "id": "zerg-zergling",
       "name": "Zergling",
       "race": "zerg",
-      "type": "unit"
+      "type": "unit",
+      "liquipedia_url": "https://liquipedia.net/starcraft2/Zergling"
     }
   ],
-  "generated_at": "2025-12-30T09:34:41.958918+00:00"
+  "generated_at": "2025-12-30T09:47:29.286814+00:00"
 }

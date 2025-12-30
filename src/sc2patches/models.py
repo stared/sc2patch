@@ -22,6 +22,7 @@ class Unit(BaseModel):
     name: str = Field(description="Display name (e.g., 'Marine')")
     race: Race
     type: UnitType = "unit"
+    liquipedia_url: str = Field(description="Wiki URL (Liquipedia or Fandom)")
 
 
 class Change(BaseModel):
