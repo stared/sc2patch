@@ -2,12 +2,16 @@
 
 import json
 from pathlib import Path
+from typing import Literal
 
 import httpx
 from bs4 import BeautifulSoup
 from pydantic import BaseModel, Field
 
 from sc2patches.extraction import extract_body_html, extract_date_from_jsonld
+
+ChangeType = Literal["buff", "nerf", "mixed"]
+Race = Literal["terran", "zerg", "protoss", "neutral"]
 
 # Model to use for parsing
 OPENROUTER_MODEL = "google/gemini-3-pro-preview"
@@ -53,7 +57,7 @@ class Change(BaseModel):
     """A single balance change with classification."""
 
     text: str = Field(description="Description of the change")
-    change_type: str = Field(description="Type: buff, nerf, or mixed")
+    change_type: ChangeType = Field(description="Type: buff, nerf, or mixed")
 
 
 class BalanceChange(BaseModel):
@@ -63,7 +67,7 @@ class BalanceChange(BaseModel):
         description="Entity ID in format: race-unit_name (e.g., 'terran-marine')"
     )
     entity_name: str = Field(description="Display name of the entity (e.g., 'Marine')")
-    race: str = Field(description="Race: 'terran', 'protoss', 'zerg', or 'neutral'")
+    race: Race = Field(description="Race: 'terran', 'protoss', 'zerg', or 'neutral'")
     changes: list[Change] = Field(description="List of specific changes with classification")
 
 
@@ -75,6 +79,32 @@ class PatchChanges(BaseModel):
         default=None, description="Patch date in ISO format YYYY-MM-DD (if available)"
     )
     changes: list[BalanceChange] = Field(description="List of all balance changes")
+
+
+def flatten_changes(patch_data: PatchChanges) -> list[dict]:
+    """Flatten entity changes into list of change dicts.
+
+    Validation is handled by Pydantic models (ChangeType, Race are Literal types).
+
+    Args:
+        patch_data: Parsed patch data from LLM (already validated by Pydantic)
+
+    Returns:
+        List of flattened change dicts
+    """
+    changes = []
+    for entity in patch_data.changes:
+        for change in entity.changes:
+            changes.append(
+                {
+                    "id": f"{entity.entity_id}_{len(changes)}",
+                    "patch_version": patch_data.version,
+                    "entity_id": entity.entity_id,
+                    "raw_text": change.text,
+                    "change_type": change.change_type,
+                }
+            )
+    return changes
 
 
 def extract_body_from_html(html_path: Path) -> str:
@@ -359,57 +389,24 @@ def parse_patch(html_path: Path, version: str, api_key: str) -> dict:
     # Use HTML metadata date (authoritative), fallback to LLM date only if HTML has none
     authoritative_date = html_date or patch_data.date or "unknown"
 
-    # Convert to output format
-    result = {
+    # Flatten changes (validation done by Pydantic)
+    changes = flatten_changes(patch_data)
+
+    if not changes:
+        raise ParseError(
+            f"No balance changes extracted from {html_path.name}\n"
+            "This patch may have no balance changes, or the parser failed."
+        )
+
+    return {
         "metadata": {
             "version": patch_data.version,
             "date": authoritative_date,
             "title": f"StarCraft II Patch {patch_data.version}",
             "url": "",  # Will be filled in by pipeline script
         },
-        "changes": [],
+        "changes": changes,
     }
-
-    # Flatten changes
-    for entity in patch_data.changes:
-        for change in entity.changes:
-            # VALIDATE: Every change MUST have change_type
-            if not change.change_type:
-                raise ParseError(
-                    f"CRITICAL ERROR in {html_path.name}: Change missing change_type!\n"
-                    f"Entity: {entity.entity_id}\n"
-                    f"Text: {change.text}\n"
-                    "Parser MUST classify every change."
-                )
-
-            # VALIDATE: change_type must be valid
-            if change.change_type not in ["buff", "nerf", "mixed"]:
-                raise ParseError(
-                    f"CRITICAL ERROR in {html_path.name}: Invalid change_type '{change.change_type}'\n"
-                    f"Entity: {entity.entity_id}\n"
-                    f"Text: {change.text}\n"
-                    f"Must be one of: buff, nerf, mixed"
-                )
-
-            change_id = f"{entity.entity_id}_{len(result['changes'])}"
-            result["changes"].append(
-                {
-                    "id": change_id,
-                    "patch_version": patch_data.version,
-                    "entity_id": entity.entity_id,
-                    "raw_text": change.text,
-                    "change_type": change.change_type,
-                }
-            )
-
-    # FAIL LOUDLY if no changes found
-    if len(result["changes"]) == 0:
-        raise ParseError(
-            f"No balance changes extracted from {html_path.name}\n"
-            "This patch may have no balance changes, or the parser failed."
-        )
-
-    return result
 
 
 def parse_patches_combined(html_paths: list[Path], version: str, api_key: str) -> dict:
@@ -449,54 +446,20 @@ def parse_patches_combined(html_paths: list[Path], version: str, api_key: str) -
     # Use HTML metadata date (authoritative), fallback to LLM date only if HTML has none
     authoritative_date = html_date or patch_data.date or "unknown"
 
-    # Convert to output format (same as parse_patch)
-    result = {
+    # Flatten changes (validation done by Pydantic)
+    changes = flatten_changes(patch_data)
+
+    if not changes:
+        raise ParseError(
+            f"No balance changes extracted from combined patches: {[p.name for p in html_paths]}"
+        )
+
+    return {
         "metadata": {
             "version": patch_data.version,
             "date": authoritative_date,
             "title": f"StarCraft II Patch {patch_data.version}",
             "url": "",  # Will be filled in by pipeline script
         },
-        "changes": [],
+        "changes": changes,
     }
-
-    # Flatten changes
-    for entity in patch_data.changes:
-        for change in entity.changes:
-            # VALIDATE: Every change MUST have change_type
-            if not change.change_type:
-                raise ParseError(
-                    f"CRITICAL ERROR: Change missing change_type!\n"
-                    f"Entity: {entity.entity_id}\n"
-                    f"Text: {change.text}\n"
-                    "Parser MUST classify every change."
-                )
-
-            # VALIDATE: change_type must be valid
-            if change.change_type not in ["buff", "nerf", "mixed"]:
-                raise ParseError(
-                    f"CRITICAL ERROR: Invalid change_type '{change.change_type}'\n"
-                    f"Entity: {entity.entity_id}\n"
-                    f"Text: {change.text}\n"
-                    f"Must be one of: buff, nerf, mixed"
-                )
-
-            change_id = f"{entity.entity_id}_{len(result['changes'])}"
-            result["changes"].append(
-                {
-                    "id": change_id,
-                    "patch_version": patch_data.version,
-                    "entity_id": entity.entity_id,
-                    "raw_text": change.text,
-                    "change_type": change.change_type,
-                }
-            )
-
-    # FAIL LOUDLY if no changes found
-    if len(result["changes"]) == 0:
-        raise ParseError(
-            f"No balance changes extracted from combined patches.\n"
-            f"Files: {[p.name for p in html_paths]}"
-        )
-
-    return result
