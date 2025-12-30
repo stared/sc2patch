@@ -323,12 +323,15 @@ UPGRADE PLACEMENT RULES:
    - Metabolic Boost → zerg-zergling
    - Anabolic Synthesis → zerg-ultralisk
 
-3. SUMMONED UNITS → attribute to the CASTER:
+3. SUMMONED/SPAWNED UNITS → attribute to the PARENT (CRITICAL!):
+   These units are NOT buildable - changes go to their spawning parent:
+   - M.U.L.E. stats/behavior → terran-orbital_command
    - Interceptor stats/build time → protoss-carrier
    - Locust stats → zerg-swarm_host
    - Auto-Turret stats → terran-raven
    - Broodling stats → zerg-brood_lord
    - Creep Tumor stats → zerg-queen
+   NEVER use entity_id: terran-mule, zerg-locust, zerg-broodling (they don't exist)
 
 NEUTRAL ENTITIES - Map objects and mechanics:
 - neutral-ramp (vision up/down ramps, ramp blocking rules, ramp width)

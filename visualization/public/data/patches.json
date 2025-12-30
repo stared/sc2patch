@@ -205,15 +205,6 @@
           ]
         },
         {
-          "entity_id": "terran-mule",
-          "changes": [
-            {
-              "raw_text": "Unit introduced",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
           "entity_id": "terran-raven",
           "changes": [
             {
@@ -286,15 +277,6 @@
           ]
         },
         {
-          "entity_id": "zerg-broodling",
-          "changes": [
-            {
-              "raw_text": "Unit introduced",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
           "entity_id": "zerg-corruptor",
           "changes": [
             {
@@ -323,15 +305,6 @@
         },
         {
           "entity_id": "zerg-infestor",
-          "changes": [
-            {
-              "raw_text": "Unit introduced",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-locust",
           "changes": [
             {
               "raw_text": "Unit introduced",
@@ -4064,11 +4037,11 @@
           "entity_id": "neutral-acceleration_zone_generator",
           "changes": [
             {
-              "raw_text": "New map mechanic: Increases movement speed of ground and air units within the generated field by 35%",
+              "raw_text": "New map mechanic: Acceleration Zone Generators increase movement speed by 35%",
               "change_type": "buff"
             },
             {
-              "raw_text": "The center of Acceleration Zone Generators is now pathable",
+              "raw_text": "Center of Acceleration Zone Generators is now pathable",
               "change_type": "buff"
             }
           ]
@@ -4077,7 +4050,7 @@
           "entity_id": "neutral-inhibitor_zone_generator",
           "changes": [
             {
-              "raw_text": "The center of Inhibitor Zone Generators is now pathable",
+              "raw_text": "Center of Inhibitor Zone Generators is now pathable",
               "change_type": "buff"
             }
           ]
@@ -4086,7 +4059,7 @@
           "entity_id": "protoss-adept",
           "changes": [
             {
-              "raw_text": "Resonating Glaives reworked: Instead of increasing attack speed by 45%, it increases attack speed by 60% for 6 seconds after a completed Psionic Transfer",
+              "raw_text": "Resonating Glaives reworked: increases attack speed by 60% for 6 seconds after Psionic Transfer instead of constant 45%",
               "change_type": "mixed"
             }
           ]
@@ -4095,7 +4068,7 @@
           "entity_id": "protoss-mothership",
           "changes": [
             {
-              "raw_text": "Time Warp now affects air units in addition to ground units and buildings",
+              "raw_text": "Time Warp now affects air units",
               "change_type": "buff"
             },
             {
@@ -4103,7 +4076,7 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "Gains the Heroic Tag (Neural Parasite can no longer target it)",
+              "raw_text": "Gains the Heroic Tag",
               "change_type": "buff"
             }
           ]
@@ -4116,7 +4089,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "Gravitic Boosters upgrade now increases movement speed by 1.31, down from 1.51",
+              "raw_text": "Gravitic Boosters upgrade speed increase reduced from 1.51 to 1.31",
               "change_type": "nerf"
             }
           ]
@@ -4125,7 +4098,7 @@
           "entity_id": "protoss-tempest",
           "changes": [
             {
-              "raw_text": "Kinetic Overload (anti-air) range decreased from 15 to 14",
+              "raw_text": "Kinetic Overload range decreased from 15 to 14",
               "change_type": "nerf"
             },
             {
@@ -4142,7 +4115,7 @@
           "entity_id": "protoss-void_ray",
           "changes": [
             {
-              "raw_text": "New upgrade: Flux Vanes (Increases movement speed from 3.5 to 4.65, acceleration from 2.8 to 3.76, Cost 100/100, Duration 57s)",
+              "raw_text": "New upgrade: Flux Vanes added to Fleet Beacon (Increases movement speed from 3.5 to 4.65 and acceleration from 2.8 to 3.76)",
               "change_type": "buff"
             }
           ]
@@ -4155,7 +4128,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "Charge upgrade increases movement speed from 3.15 to 4.72 (up from 4.13)",
+              "raw_text": "Charge upgrade increases movement speed from 3.15 to 4.72 (previously 4.13)",
               "change_type": "buff"
             }
           ]
@@ -4172,8 +4145,17 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "Yamato Cannon will no longer cancel itself if a target enters a transport or becomes cloaked/burrowed (it will miss and go on cooldown instead)",
+              "raw_text": "Yamato Cannon will no longer cancel itself if a target enters a transport or becomes cloaked/burrowed, instead missing and going on cooldown",
               "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-hellbat",
+          "changes": [
+            {
+              "raw_text": "Infernal Pre-Igniter research cost decreased from 150/150 to 100/100",
+              "change_type": "buff"
             }
           ]
         },
@@ -4194,7 +4176,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "Advanced Ballistics upgrade now increases the range of Liberators in Defender Mode by 3, down from 4",
+              "raw_text": "Advanced Ballistics upgrade range bonus in Defender Mode decreased from 4 to 3",
               "change_type": "nerf"
             }
           ]
@@ -4213,7 +4195,7 @@
           ]
         },
         {
-          "entity_id": "terran-mule",
+          "entity_id": "terran-orbital_command",
           "changes": [
             {
               "raw_text": "M.U.L.E.s now always attempt to spawn on the side of minerals closest to a town hall",
@@ -4268,12 +4250,12 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "New Ability: Microbial Shroud (Reduces damage taken from air units by 50% for ground units in radius 3, lasts 11s, cost 100 energy)",
+              "raw_text": "New Ability: Microbial Shroud (Reduces damage taken from air units by 50% for 11 seconds)",
               "change_type": "buff"
             },
             {
-              "raw_text": "New upgrade: Evolve Microbial Shroud (Requires Hive, Cost 150/150, Duration 79s)",
-              "change_type": "mixed"
+              "raw_text": "New upgrade: Evolve Microbial Shroud added to Infestation Pit (Cost: 150/150, Duration: 79s)",
+              "change_type": "buff"
             },
             {
               "raw_text": "Neural Parasite range decreased from 9 to 8",
@@ -4293,7 +4275,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "New Upgrade: Seismic Spines (Increases range from 8 to 10, Requires Hive, Cost 150/150, Duration 57s)",
+              "raw_text": "New Upgrade: Seismic Spines added (Increases range from 8 to 10)",
               "change_type": "buff"
             },
             {
@@ -5078,7 +5060,7 @@
           "entity_id": "protoss-cybernetics_core",
           "changes": [
             {
-              "raw_text": "Air Armor upgrade cost reduced from 150/150, 225/225, 300/300 to 100/100, 175/175, 250/250",
+              "raw_text": "Air Armor upgrade cost reduced",
               "change_type": "buff"
             }
           ]
@@ -5091,6 +5073,10 @@
               "change_type": "nerf"
             },
             {
+              "raw_text": "Model scale reduced by 9%",
+              "change_type": "buff"
+            },
+            {
               "raw_text": "Radius increased from 0.5 to 0.625",
               "change_type": "nerf"
             }
@@ -5100,7 +5086,7 @@
           "entity_id": "protoss-forge",
           "changes": [
             {
-              "raw_text": "Shield upgrade cost reduced from 150/150, 225/225, 300/300 to 150/150, 200/200, 250/250",
+              "raw_text": "Shield upgrade cost reduced",
               "change_type": "buff"
             }
           ]
@@ -5147,11 +5133,11 @@
             },
             {
               "raw_text": "No longer has energy (Spells are now cooldown based)",
-              "change_type": "buff"
+              "change_type": "mixed"
             },
             {
               "raw_text": "Recall now has a 89 second cooldown",
-              "change_type": "nerf"
+              "change_type": "mixed"
             },
             {
               "raw_text": "Recall radius reduced from 6.5 to 5",
@@ -5159,7 +5145,7 @@
             },
             {
               "raw_text": "Time Warp now has a 60 second cooldown",
-              "change_type": "nerf"
+              "change_type": "mixed"
             },
             {
               "raw_text": "Time Warp slow reduced from 50% to 40%",
@@ -5174,7 +5160,7 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "Cloak Field is no longer passive. It is now an activated ability which lasts for 20 seconds, with a 50 second cooldown",
+              "raw_text": "Cloak Field is no longer passive, now lasts 20 seconds with 50 second cooldown",
               "change_type": "nerf"
             }
           ]
@@ -5256,11 +5242,11 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "Lock On now uses the Cyclone's auto attack damage, and no longer ignores armor",
-              "change_type": "nerf"
+              "raw_text": "Lock On now uses the Cyclone's auto attack damage and no longer ignores armor",
+              "change_type": "mixed"
             },
             {
-              "raw_text": "Auto attack damage/attack speed changed to 11 (+3 vs mechanical), 0.481 cooldown, +1 damage per upgrade",
+              "raw_text": "Auto attack damage changed to 11 (+3 vs mechanical), cooldown 0.481",
               "change_type": "mixed"
             },
             {
@@ -5268,7 +5254,7 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "Lock On no longer has a delay before first shot, and maintains weapon cooldown between lock ons",
+              "raw_text": "Lock On no longer has a delay before first shot and maintains weapon cooldown",
               "change_type": "buff"
             },
             {
@@ -5292,7 +5278,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "New upgrade added to increase move speed to 4.73 (Cost: 100/100, 100 seconds)",
+              "raw_text": "New upgrade added increasing move speed to 4.73",
               "change_type": "buff"
             }
           ]
@@ -5323,12 +5309,8 @@
           "entity_id": "terran-medivac",
           "changes": [
             {
-              "raw_text": "Speed upgrade removed",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Caduceus Reactor upgrade added (Increases energy regeneration rate by 100%)",
-              "change_type": "buff"
+              "raw_text": "Speed upgrade replaced with Caduceus Reactor (Increases energy regeneration rate by 100%)",
+              "change_type": "mixed"
             },
             {
               "raw_text": "Minimap radius increased from 0.75 to 1",
@@ -5381,22 +5363,17 @@
             {
               "raw_text": "Move speed increased from 2.24 to 2.62",
               "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-broodling",
-          "changes": [
+            },
             {
-              "raw_text": "Move speed reduced from 5.37 to 4.13",
+              "raw_text": "Broodling move speed reduced from 5.37 to 4.13",
               "change_type": "nerf"
             },
             {
-              "raw_text": "Health reduced from 30 to 20",
+              "raw_text": "Broodling health reduced from 30 to 20",
               "change_type": "nerf"
             },
             {
-              "raw_text": "Attack speed reduced from 0.46 to 0.57",
+              "raw_text": "Broodling attack speed reduced from 0.46 to 0.57",
               "change_type": "nerf"
             }
           ]
@@ -5405,7 +5382,7 @@
           "entity_id": "zerg-evolution_chamber",
           "changes": [
             {
-              "raw_text": "Armor upgrade cost reduced from 150/150, 225/225, 300/300 to 150/150, 200/200, 250/250",
+              "raw_text": "Armor upgrade cost reduced",
               "change_type": "buff"
             }
           ]
@@ -5414,15 +5391,11 @@
           "entity_id": "zerg-hydralisk",
           "changes": [
             {
-              "raw_text": "Muscular Augments research time reduced from 71 to 64 seconds",
+              "raw_text": "Speed upgrade research time reduced from 71 to 64 seconds",
               "change_type": "buff"
             },
             {
-              "raw_text": "Grooved Spines research cost reduced from 100/100 to 75/75",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Grooved Spines research time reduced from 71 to 50 seconds",
+              "raw_text": "Range upgrade research cost / time reduced from 100/100 / 71 seconds to 75/75 / 50 seconds",
               "change_type": "buff"
             }
           ]
@@ -5473,11 +5446,11 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "Transport mode move speed increased from 0.9023 to 1.099",
+              "raw_text": "Transport Upgraded move speed increased from 0.9023 to 1.099",
               "change_type": "buff"
             },
             {
-              "raw_text": "Transport mode move speed with Pneumatized Carapace increased from 2.62 to 2.83",
+              "raw_text": "Transport Upgraded move speed with Pneumatized Carapace increased from 2.62 to 2.83",
               "change_type": "buff"
             }
           ]
@@ -5486,7 +5459,7 @@
           "entity_id": "zerg-spire",
           "changes": [
             {
-              "raw_text": "Air Armor upgrade cost reduced from 150/150, 225/225, 300/300 to 100/100, 175/175, 250/250",
+              "raw_text": "Air Armor upgrade cost reduced",
               "change_type": "buff"
             }
           ]
@@ -6722,7 +6695,7 @@
       "id": "terran-mule",
       "name": "M.U.L.E.",
       "race": "terran",
-      "type": "unit",
+      "type": "mechanic",
       "liquipedia_url": "https://liquipedia.net/starcraft2/M.U.L.E."
     },
     {
@@ -6883,7 +6856,7 @@
       "id": "zerg-broodling",
       "name": "Broodling",
       "race": "zerg",
-      "type": "unit",
+      "type": "mechanic",
       "liquipedia_url": "https://liquipedia.net/starcraft2/Broodling"
     },
     {
@@ -6988,7 +6961,7 @@
       "id": "zerg-locust",
       "name": "Locust",
       "race": "zerg",
-      "type": "unit",
+      "type": "mechanic",
       "liquipedia_url": "https://liquipedia.net/starcraft2/Locust"
     },
     {
@@ -7146,5 +7119,5 @@
       "liquipedia_url": "https://liquipedia.net/starcraft2/Zergling"
     }
   ],
-  "generated_at": "2025-12-30T12:59:42.200610+00:00"
+  "generated_at": "2025-12-30T13:21:58.998639+00:00"
 }
