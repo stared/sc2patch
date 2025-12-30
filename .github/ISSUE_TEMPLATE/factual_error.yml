@@ -1,0 +1,65 @@
+name: Factual Error Report
+description: Report missing, incorrect, or outdated patch/unit information
+title: "[Data] "
+labels: ["data-error"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve the SC2 Balance Timeline! Please provide details about the factual error you found.
+
+  - type: dropdown
+    id: error-type
+    attributes:
+      label: Type of error
+      options:
+        - Missing patch
+        - Missing unit change in a patch
+        - Incorrect change type (buff/nerf/mixed)
+        - Incorrect change description
+        - Wrong patch date or version
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: patch-version
+    attributes:
+      label: Patch version
+      description: Which patch is affected?
+      placeholder: "e.g., 5.0.15 or 4.11.0"
+    validations:
+      required: true
+
+  - type: input
+    id: unit-name
+    attributes:
+      label: Unit/Building/Upgrade name
+      description: Which entity is affected (if applicable)?
+      placeholder: "e.g., Banshee, Siege Tank, Blink"
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What is wrong?
+      description: Describe the error and what the correct information should be
+      placeholder: |
+        Current: "Damage increased from 10 to 12"
+        Should be: "Damage increased from 8 to 10"
+    validations:
+      required: true
+
+  - type: input
+    id: source-link
+    attributes:
+      label: Source link
+      description: Please provide a link to official patch notes or Liquipedia that confirms the correct information
+      placeholder: "https://liquipedia.net/starcraft2/Patch_5.0.15 or https://news.blizzard.com/..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Any other information that might help

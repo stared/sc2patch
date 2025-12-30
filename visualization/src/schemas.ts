@@ -16,6 +16,7 @@ export const UnitSchema = z.object({
   name: z.string(),
   race: RaceSchema,
   type: UnitTypeSchema.default('unit'),
+  liquipedia_url: z.string().url(),
 });
 
 // Change schema

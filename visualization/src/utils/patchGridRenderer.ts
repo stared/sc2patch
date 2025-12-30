@@ -64,6 +64,30 @@ export class PatchGridRenderer {
   }
 
   // ==========================================================================
+  // HEADER POSITION HELPERS - Single source of truth
+  // ==========================================================================
+
+  /** Header X position in a column (centered over content) */
+  private getHeaderX(columnWidth: number, columnIndex: number = 0): number {
+    const cellsPerRow = Math.max(1, Math.floor(columnWidth / (layout.cellSize + layout.cellGap)));
+    const contentWidth = cellsPerRow * layout.cellSize + (cellsPerRow - 1) * layout.cellGap;
+    return layout.patchLabelWidth + columnIndex * columnWidth + contentWidth / 2;
+  }
+
+  /** Header X position when race OR unit selected (centered over full width) */
+  private getHeaderCenterX(): number {
+    const availableWidth = this.svgWidth - layout.patchLabelWidth;
+    return this.getHeaderX(availableWidth, 0);
+  }
+
+  /** Header X position in grid layout (4 columns, centered per column) */
+  private getHeaderGridX(raceIndex: number): number {
+    const availableWidth = this.svgWidth - layout.patchLabelWidth;
+    const columnWidth = Math.floor(availableWidth / RACES.length);
+    return this.getHeaderX(columnWidth, raceIndex);
+  }
+
+  // ==========================================================================
   // PUBLIC API
   // ==========================================================================
 
@@ -243,9 +267,9 @@ export class PatchGridRenderer {
             entityId: state.selectedEntityId,
             patchVersion: patch.version,
             entity,
-            x: layout.patchLabelWidth + 40,
+            x: layout.patchLabelWidth + layout.filteredEntityOffset,
             y: filteredY,
-            targetX: layout.patchLabelWidth + 40,
+            targetX: layout.patchLabelWidth + layout.filteredEntityOffset,
             targetY: filteredY,
             visible: true,
             animationGroup: 'SELECTED'
@@ -285,7 +309,7 @@ export class PatchGridRenderer {
               // Mark selected entities during selection animation
               animationGroup = 'SELECTED';
               // Set target position for animation (filtered view position with dynamic spacing)
-              targetX = layout.patchLabelWidth + 40;
+              targetX = layout.patchLabelWidth + layout.filteredEntityOffset;
               targetY = filteredPositions.get(patch.version) || patchY;
             } else if (isDeselectingRace && wasHiddenByRaceFilter) {
               // Entity was hidden by race filter, should fade in after movement
@@ -374,18 +398,20 @@ export class PatchGridRenderer {
         state.onEntitySelect(state.selectedEntityId === d.entityId ? null : d.entityId);
       })
       .on('mouseenter', (event, d) => {
-        if (!state.selectedEntityId) {
-          const rect = (event.target as SVGElement).getBoundingClientRect();
-          state.setTooltip({
-            entity: {
-              ...d.entity,
-              name: state.unitsMap.get(d.entityId)?.name || d.entity.name || d.entityId,
-              x: rect.left + rect.width / 2 + window.scrollX,
-              y: rect.top + window.scrollY
-            },
-            visible: true
-          });
-        }
+        // No tooltip when a unit is already selected
+        if (state.selectedEntityId) return;
+        // Use currentTarget (the group), not target (could be child image/rect)
+        const group = event.currentTarget as SVGGElement;
+        const rect = group.getBoundingClientRect();
+        state.setTooltip({
+          entity: {
+            ...d.entity,
+            name: state.unitsMap.get(d.entityId)?.name || d.entity.name || d.entityId,
+            x: rect.left + rect.width / 2,
+            y: rect.top + rect.height / 2
+          },
+          visible: true
+        });
       })
       .on('mouseleave', () => state.setTooltip({ entity: null, visible: false }));
 
@@ -411,25 +437,29 @@ export class PatchGridRenderer {
             .attr('transform', d => `translate(0, ${d.y})`)
             .style('opacity', d => d.visible ? 1 : 0);
 
-          // Render patch label
+          // Render patch label - date prominent, version smaller
           const label = pg.append('g')
             .attr('class', 'patch-label')
             .attr('transform', 'translate(0, 20)');
 
+          // Date first (prominent)
           label.append('text')
             .attr('x', 10).attr('y', 0)
             .style('fill', d => eraColors[getEraFromVersion(d.patch.version)])
-            .style('font-size', '14px')
+            .style('font-size', '13px')
             .style('font-weight', '600')
+            .style('cursor', 'pointer')
+            .text(d => d.patch.date.split('-').slice(0, 2).join('-'))
+            .on('click', (_e, d) => window.open(d.patch.url, '_blank'));
+
+          // Version below (smaller)
+          label.append('text')
+            .attr('x', 10).attr('y', 14)
+            .style('fill', '#777')
+            .style('font-size', '11px')
             .style('cursor', 'pointer')
             .text(d => d.patch.version)
             .on('click', (_e, d) => window.open(d.patch.url, '_blank'));
-
-          label.append('text')
-            .attr('x', 10).attr('y', 16)
-            .style('fill', '#666')
-            .style('font-size', '11px')
-            .text(d => d.patch.date.split('-').slice(0, 2).join('-'));
 
           return pg;
         },
@@ -532,10 +562,16 @@ export class PatchGridRenderer {
     // Get selected entity ID from entities data
     const selectedEntity = entities.data().find(d => d.animationGroup === 'SELECTED');
     const selectedEntityId = selectedEntity?.entityId;
+    const headerTargetX = this.getHeaderCenterX();
 
-    // Calculate header target position (single column when selected)
-    const availableWidth = this.svgWidth - layout.patchLabelWidth;
-    const headerTargetX = layout.patchLabelWidth + availableWidth / 2;
+    // Change header text to unit name IMMEDIATELY (before animation starts)
+    const unit = state.unitsMap.get(selectedEntityId || '');
+    const unitName = unit?.name || '';
+    const selectedRace = unit?.race;
+    this.svg.selectAll('.race-header')
+      .filter(function() { return select(this).datum() === selectedRace; })
+      .select('.race-text')
+      .text(unitName);
 
     // Phase 1 (0-600ms): Fade non-selected entities and irrelevant patch labels
     await Promise.all([
@@ -572,6 +608,9 @@ export class PatchGridRenderer {
     ]);
 
     // Phase 2 (600-1400ms): Move selected entities, patches, and headers together
+    const selectedHeader = this.svg.selectAll('.race-header')
+      .filter(function() { return select(this).datum() === selectedRace; });
+
     await Promise.all([
       entities
         .filter(d => d.animationGroup === 'SELECTED')
@@ -591,17 +630,13 @@ export class PatchGridRenderer {
         .end()
         .catch(() => {}),
 
-      // Move remaining header to center
-      this.svg.selectAll('.race-header')
-        .filter(function() {
-          const race = select(this).datum() as Race;
-          const selectedRace = state.unitsMap.get(selectedEntityId || '')?.race;
-          return race === selectedRace;
-        })
+      // Move remaining header to center and ensure it's visible
+      selectedHeader
         .transition('select-move-headers')
         .duration(timing.move)
         .ease(easeCubicOut)
         .attr('transform', `translate(${headerTargetX}, 0)`)
+        .style('opacity', 1)
         .end()
         .catch(() => {})
     ]);
@@ -618,13 +653,21 @@ export class PatchGridRenderer {
   private async applyDeselectAnimation(
     entities: Selection<SVGGElement, EntityItemWithAnimation, SVGGElement, unknown>,
     patches: Selection<SVGGElement, PatchRow, SVGGElement, unknown>,
-    _state: RenderState
+    state: RenderState
   ): Promise<void> {
-    // Calculate header positions for grid layout (4 columns)
-    const availableWidth = this.svgWidth - layout.patchLabelWidth;
-    const raceColumnWidth = Math.floor(availableWidth / RACES.length);
+    // Change header text back to race names IMMEDIATELY (before animation starts)
+    RACES.forEach(race => {
+      this.svg.selectAll('.race-header')
+        .filter(function() { return select(this).datum() === race; })
+        .select('.race-text')
+        .text(race.charAt(0).toUpperCase() + race.slice(1));
+    });
 
-    // Phase 1 (0-800ms): Move entities, patches, and headers back to grid
+    // Target position depends on whether a race is still selected
+    const getTargetX = (race: Race, i: number) =>
+      state.selectedRace === race ? this.getHeaderCenterX() : this.getHeaderGridX(i);
+
+    // Phase 1: Move entities, patches, and headers to target positions
     await Promise.all([
       entities
         .filter(d => d.animationGroup === 'MOVE_BACK')
@@ -635,7 +678,6 @@ export class PatchGridRenderer {
         .end()
         .catch(() => {}),
 
-      // Move patches
       ...patches.data().map(d => {
         const patch = patches.filter(pd => pd.patch.version === d.patch.version);
         return patch
@@ -647,22 +689,19 @@ export class PatchGridRenderer {
           .catch(() => {});
       }),
 
-      // Move headers back to grid positions
       ...RACES.map((race, i) => {
-        const x = layout.patchLabelWidth + i * raceColumnWidth + raceColumnWidth / 2;
         return this.svg.selectAll('.race-header')
           .filter(function() { return select(this).datum() === race; })
           .transition('deselect-move-headers')
           .duration(timing.move)
           .ease(easeCubicOut)
-          .attr('transform', `translate(${x}, 0)`)
-          .style('opacity', 1)
+          .attr('transform', `translate(${getTargetX(race, i)}, 0)`)
           .end()
           .catch(() => {});
       })
     ]);
 
-    // Phase 2 (800-1400ms): Fade in newly appearing entities, patch labels, and headers
+    // Phase 2: Fade in newly appearing entities, patch labels, and headers
     await Promise.all([
       entities
         .filter(d => d.animationGroup === 'FADE_IN')
@@ -680,8 +719,12 @@ export class PatchGridRenderer {
         .end()
         .catch(() => {}),
 
-      // Fade in all headers (some may have been hidden during selection)
+      // Fade in headers that should be visible (all if no race selected, just selected race otherwise)
       this.svg.selectAll('.race-header')
+        .filter(function() {
+          const race = select(this).datum() as Race;
+          return !state.selectedRace || race === state.selectedRace;
+        })
         .transition('deselect-fade-headers')
         .duration(timing.fade)
         .style('opacity', 1)
@@ -702,10 +745,6 @@ export class PatchGridRenderer {
     const isSelectingRace = state.prevSelectedRace === null && state.selectedRace !== null;
     const isDeselectingRace = state.prevSelectedRace !== null && state.selectedRace === null;
 
-    // Calculate header positions
-    const availableWidth = this.svgWidth - layout.patchLabelWidth;
-    const gridColumnWidth = Math.floor(availableWidth / RACES.length);
-
     if (raceChanging) {
       // When selecting race: fade out first, then move
       if (isSelectingRace && state.selectedRace) {
@@ -719,18 +758,14 @@ export class PatchGridRenderer {
             .end()
             .catch(() => {}),
 
-          // Fade out non-selected race headers
+          // Hide non-selected race headers immediately (no fade - instant)
           this.svg.selectAll('.race-header')
             .filter(function() { return select(this).datum() !== state.selectedRace; })
-            .transition('race-fade-out-headers')
-            .duration(timing.fade)
             .style('opacity', 0)
-            .end()
-            .catch(() => {})
         ]);
 
         // Phase 2: Move remaining entities, patches, and header together
-        const headerTargetX = layout.patchLabelWidth + availableWidth / 2;
+        const headerTargetX = this.getHeaderCenterX();
         await Promise.all([
           entities
             .filter(d => d.visible)
@@ -753,6 +788,7 @@ export class PatchGridRenderer {
           // Move remaining header to center
           this.svg.selectAll('.race-header')
             .filter(function() { return select(this).datum() === state.selectedRace; })
+            .interrupt()
             .transition('race-move-headers')
             .duration(timing.move)
             .ease(easeCubicOut)
@@ -784,13 +820,12 @@ export class PatchGridRenderer {
 
           // Move headers back to grid positions
           ...RACES.map((race, i) => {
-            const x = layout.patchLabelWidth + i * gridColumnWidth + gridColumnWidth / 2;
             return this.svg.selectAll('.race-header')
               .filter(function() { return select(this).datum() === race; })
               .transition('race-move-headers')
               .duration(timing.move)
               .ease(easeCubicOut)
-              .attr('transform', `translate(${x}, 0)`)
+              .attr('transform', `translate(${this.getHeaderGridX(i)}, 0)`)
               .end()
               .catch(() => {});
           })
@@ -823,13 +858,46 @@ export class PatchGridRenderer {
         .style('opacity', d => d.visible ? 1 : 0)
         .attr('transform', d => `translate(0, ${d.y})`);
 
-      // Set header positions immediately
+      // Set header positions and visibility immediately based on mode
+      // Headers stay in DOM always, opacity controls visibility
+      const selectedUnitRace = state.selectedEntityId
+        ? state.unitsMap.get(state.selectedEntityId)?.race
+        : undefined;
+
       RACES.forEach((race, i) => {
-        const x = layout.patchLabelWidth + i * gridColumnWidth + gridColumnWidth / 2;
-        this.svg.selectAll('.race-header')
-          .filter(function() { return select(this).datum() === race; })
-          .style('opacity', 1)
+        const header = this.svg.selectAll('.race-header')
+          .filter(function() { return select(this).datum() === race; });
+
+        // Determine visibility
+        let visible = true;
+        if (state.selectedEntityId) {
+          visible = race === selectedUnitRace;
+        } else if (state.selectedRace) {
+          visible = race === state.selectedRace;
+        }
+
+        // Determine position based on mode (text always centered, rect always fixed)
+        let x: number;
+        let textContent: string;
+
+        if (state.selectedEntityId && race === selectedUnitRace) {
+          x = this.getHeaderCenterX();
+          const unit = state.unitsMap.get(state.selectedEntityId);
+          textContent = unit?.name || race.charAt(0).toUpperCase() + race.slice(1);
+        } else if (state.selectedRace && race === state.selectedRace) {
+          x = this.getHeaderCenterX();
+          textContent = race.charAt(0).toUpperCase() + race.slice(1);
+        } else {
+          x = this.getHeaderGridX(i);
+          textContent = race.charAt(0).toUpperCase() + race.slice(1);
+        }
+
+        header
+          .style('opacity', visible ? 1 : 0)
+          .style('pointer-events', visible ? 'all' : 'none')
           .attr('transform', `translate(${x}, 0)`);
+
+        header.select('.race-text').text(textContent);
       });
     }
   }
@@ -846,35 +914,33 @@ export class PatchGridRenderer {
     // Position the entire header group - children use Y=0 relative to this
     headersContainer.attr('transform', `translate(0, ${layout.headerY})`);
 
-    const availableWidth = this.svgWidth - layout.patchLabelWidth;
-
-    // Show only the relevant race: selected race, or race of selected entity, or all races
+    // Determine which race should be visible (for opacity/pointer-events)
     const selectedUnitRace = state.selectedEntityId ? state.unitsMap.get(state.selectedEntityId)?.race as Race | undefined : undefined;
-    const racesToShow = state.selectedRace
-      ? [state.selectedRace]
-      : selectedUnitRace
-        ? [selectedUnitRace]
-        : RACES;
 
-    const raceColumnWidth = (state.selectedRace || state.selectedEntityId) ? availableWidth : Math.floor(availableWidth / RACES.length);
+    // Helper: is this race header currently visible?
+    const isHeaderVisible = (race: Race): boolean => {
+      if (state.selectedEntityId) return race === selectedUnitRace;
+      if (state.selectedRace) return race === state.selectedRace;
+      return true; // All visible in grid mode
+    };
 
-    // Sort control
+    // Sort control - minimal arrow only
     const sortGroup = headersContainer.selectAll<SVGGElement, SortOrder>('.sort-control').data([state.sortOrder]);
     const sortEnter = sortGroup.enter().append('g').attr('class', 'sort-control');
     const sortMerge = sortEnter.merge(sortGroup);
 
     type SortOrder = 'newest' | 'oldest';
 
-    sortMerge.attr('transform', 'translate(10, 0)');
+    sortMerge.attr('transform', 'translate(30, 0)');
 
-    sortEnter.append('rect').attr('class', 'sort-bg');
     sortEnter.append('text').attr('class', 'sort-text');
 
-    sortMerge.select('.sort-bg')
-      .attr('width', 90).attr('height', 24).attr('rx', 4)
-      .style('fill', 'rgba(255, 255, 255, 0.03)')
-      .style('stroke', 'rgba(255, 255, 255, 0.08)').style('stroke-width', 1)
+    // Arrow: ↑ for newest (time flows up), ↓ for oldest
+    sortMerge.select('.sort-text')
+      .attr('x', 0).attr('y', 16).attr('text-anchor', 'middle')
+      .style('fill', '#666').style('font-size', '16px').style('font-weight', '400')
       .style('cursor', 'pointer')
+      .text(state.sortOrder === 'newest' ? '↑' : '↓')
       .on('click', () => {
         if (this.isAnimating) return; // Block clicks during animation
         if (state.setSortOrder) {
@@ -882,38 +948,39 @@ export class PatchGridRenderer {
         }
       });
 
-    sortMerge.select('.sort-text')
-      .attr('x', 45).attr('y', 16).attr('text-anchor', 'middle')
-      .style('fill', '#888').style('font-size', '12px').style('font-weight', '600')
-      .style('cursor', 'pointer').style('pointer-events', 'none')
-      .text(state.sortOrder === 'newest' ? '↓ Newest' : '↑ Oldest');
-
-    // Race headers - structure only, no transitions (animations handled in applyAnimation)
+    // Race headers - always keep ALL 4 in DOM, use opacity to show/hide
     const raceHeaders = headersContainer.selectAll<SVGGElement, Race>('.race-header')
-      .data(racesToShow, d => d);
+      .data(RACES, d => d);  // Always all 4 races
 
     const raceEnter = raceHeaders.enter().append('g').attr('class', 'race-header');
 
-    // Position entering headers at their grid location (Y=0 since container has the offset)
+    // Position entering headers: unit=left-aligned, race=centered, grid=per-column
     raceEnter.attr('transform', (race: Race) => {
-      const i = RACES.indexOf(race);
-      const x = layout.patchLabelWidth + i * raceColumnWidth + raceColumnWidth / 2;
+      const x = state.selectedEntityId
+        ? this.getHeaderCenterX()
+        : state.selectedRace
+          ? this.getHeaderCenterX()
+          : this.getHeaderGridX(RACES.indexOf(race));
       return `translate(${x}, 0)`;
     });
 
     raceEnter.append('rect').attr('class', 'race-bg');
     raceEnter.append('text').attr('class', 'race-text');
-    raceEnter.style('opacity', 1);
+    raceEnter.style('opacity', 0); // Group starts invisible, fade in via animation
 
     const raceMerge = raceEnter.merge(raceHeaders);
 
     // Set race color variable and active class for CSS hover effects
+    // Position and opacity transitions are handled by animation code
     raceMerge
       .style('--race-color', (race: Race) => raceColors[race])
+      .style('pointer-events', (race: Race) => isHeaderVisible(race) ? 'all' : 'none')
       .classed('active', (race: Race) => state.selectedRace === race || selectedUnitRace === race);
 
+    // Background rect - always centered, fixed size (no mode-specific changes)
     raceMerge.select('.race-bg')
-      .attr('x', -40).attr('width', 80).attr('height', 24).attr('rx', 4)
+      .attr('x', -40).attr('width', 80)
+      .attr('height', 24).attr('rx', 4)
       .style('fill', (race) => {
         const isActive = state.selectedRace === race || selectedUnitRace === race;
         return isActive ? 'rgba(255, 255, 255, 0.08)' : 'rgba(255, 255, 255, 0.03)';
@@ -925,30 +992,42 @@ export class PatchGridRenderer {
       .style('stroke-width', 1).style('cursor', 'pointer')
       .on('click', (_event, race) => {
         if (this.isAnimating) return; // Block clicks during animation
-        // If a unit is selected, deselect it and select this race
         if (state.selectedEntityId) {
+          // Unit selected: just deselect it, keep race selection as-is
           state.onEntitySelect(null);
-          if (state.setSelectedRace) {
-            state.setSelectedRace(race);
-          }
         } else if (state.setSelectedRace) {
-          // Toggle race selection when no unit is selected
+          // No unit selected: toggle race selection
           state.setSelectedRace(state.selectedRace === race ? null : race);
         }
       });
 
+    // Header text - always centered (text content set by animation code)
     raceMerge.select('.race-text')
-      .attr('text-anchor', 'middle').attr('y', 16)
-      .style('fill', (race) => raceColors[race])
-      .style('font-size', '12px')
-      .style('font-weight', (race) => {
-        const isActive = state.selectedRace === race || selectedUnitRace === race;
-        return isActive ? '600' : '500';
-      })
-      .style('cursor', 'pointer').style('pointer-events', 'none')
-      .text((race) => race.charAt(0).toUpperCase() + race.slice(1));
+      .classed('active', (race: Race) => state.selectedRace === race || selectedUnitRace === race)
+      .attr('text-anchor', 'middle')
+      .attr('x', 0)
+      .attr('y', 16)
+      .style('fill', (race) => raceColors[race]);
 
-    // Exit handled in animation functions
-    raceHeaders.exit().remove();
+    // No exit().remove() - headers stay in DOM, visibility controlled by opacity
+
+    // Liquipedia link to the right of unit name (only when unit selected)
+    const linksData = state.selectedEntityId ? [state.selectedEntityId] : [];
+    const links = this.svg.select('.headers-container').selectAll<SVGTextElement, string>('.unit-links').data(linksData);
+
+    const linksEnter = links.enter().append('text').attr('class', 'unit-links');
+    const linksMerge = linksEnter.merge(links);
+
+    if (state.selectedEntityId) {
+      const unit = state.unitsMap.get(state.selectedEntityId)!;
+      linksMerge
+        .attr('class', 'unit-links wiki-link')
+        .attr('x', this.svgWidth - 20).attr('y', 16).attr('text-anchor', 'end')
+        .style('fill', '#666').style('font-size', '11px').style('cursor', 'pointer')
+        .text(`wiki`)
+        .on('click', () => window.open(unit.liquipedia_url, '_blank'));
+    }
+
+    links.exit().remove();
   }
 }

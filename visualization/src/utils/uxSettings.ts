@@ -88,11 +88,13 @@ export const changeTypeOrder: ChangeType[] = ['buff', 'nerf', 'mixed'];
 export const layout = {
   cellSize: 48,
   cellGap: 6,
-  patchLabelWidth: 120,
+  patchLabelWidth: 90,  // Reduced from 120 - sort arrow is minimal
   raceColumnWidth: 250,
   // Header positioning
   headerY: 12,        // Y position of header row (sort button + race labels)
   gridStartY: 55,     // Y position where first patch row starts
+  // Filtered view (single unit selected)
+  filteredEntityOffset: 40, // X offset from patchLabelWidth for entity in filtered view
   // Change notes layout (for filtered view)
   changeNoteLineHeight: 18,
   changeNotePadding: 16
@@ -101,7 +103,14 @@ export const layout = {
 // Animation timing (milliseconds)
 export const timing = {
   fade: 600,
-  move: 800
+  move: 800,
+  textCrossFade: 200  // Race/unit text cross-fade duration
+} as const;
+
+// Header text layout
+export const headerText = {
+  unitTextX: 8,  // X offset for left-aligned unit text
+  raceTextX: 0   // X offset for centered race text (text-anchor: middle)
 } as const;
 
 // Helper functions

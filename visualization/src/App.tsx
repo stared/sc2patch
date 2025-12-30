@@ -13,7 +13,7 @@ import {
   raceColors,
   changeTypeConfig,
   changeTypeOrder,
-  type Era
+  type Era,
 } from './utils/uxSettings';
 
 type SortOrder = 'newest' | 'oldest';
@@ -36,7 +36,42 @@ function App() {
   const rendererRef = useRef<PatchGridRenderer | null>(null);
   const prevSelectedIdRef = useRef<string | null>(null);
   const prevSelectedRaceRef = useRef<Race | null>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [tooltipPosition, setTooltipPosition] = useState<{ left: number; top: number; flipped: boolean }>({ left: 0, top: 0, flipped: false });
+
+  // Calculate tooltip position - left or right of icon, FIXED distance
+  useEffect(() => {
+    if (!tooltip.visible || !tooltip.entity || !tooltipRef.current) return;
+
+    const ICON_SIZE = 48;
+    const GAP = ICON_SIZE / 2; // exactly 24px, NEVER more
+    const EDGE_PADDING = 8;
+    const tooltipRect = tooltipRef.current.getBoundingClientRect();
+    const { x: iconCenterX, y: iconCenterY } = tooltip.entity;
+    const iconLeft = iconCenterX - ICON_SIZE / 2;
+    const iconRight = iconCenterX + ICON_SIZE / 2;
+
+    // Decide: left or right based on which side has room for tooltip
+    const spaceOnRight = window.innerWidth - iconRight - GAP;
+    const spaceOnLeft = iconLeft - GAP;
+    const fitsOnRight = spaceOnRight >= tooltipRect.width + EDGE_PADDING;
+    const fitsOnLeft = spaceOnLeft >= tooltipRect.width + EDGE_PADDING;
+
+    // Prefer right, but use left if right doesn't fit and left does
+    const placeOnRight = fitsOnRight || (!fitsOnLeft && spaceOnRight >= spaceOnLeft);
+
+    // Position with FIXED gap - no clamping that would increase gap
+    const left = placeOnRight
+      ? iconRight + GAP
+      : iconLeft - GAP - tooltipRect.width;
+
+    // Vertical: center tooltip with icon center, clamp to viewport
+    let top = iconCenterY - tooltipRect.height / 2;
+    top = Math.max(EDGE_PADDING, Math.min(top, window.innerHeight - tooltipRect.height - EDGE_PADDING));
+
+    setTooltipPosition({ left, top, flipped: !placeOnRight });
+  }, [tooltip.visible, tooltip.entity]);
 
   // Read URL on mount
   useEffect(() => {
@@ -296,32 +331,43 @@ function App() {
               height: 'auto'
             }}
           />
+        </div>
 
-          {!selectedEntityId && tooltip.visible && tooltip.entity && (
-            <div
-              className="tooltip"
-              style={{
-                left: `${tooltip.entity.x}px`,
-                top: `${tooltip.entity.y}px`,
-                transform: 'translate(-50%, -100%)',
-                marginTop: '-10px'
-              }}
-            >
-              <h4>{tooltip.entity.name || 'Unknown'}</h4>
-              <ul>
-                {tooltip.entity.changes.map((change: ProcessedChange, i: number) => (
-                  <li key={i}>
-                    <span style={{ color: getChangeColor(change.change_type as ChangeType), fontWeight: 'bold' }}>
-                      {getChangeIndicator(change.change_type as ChangeType)}
-                    </span>
-                    {change.text}
-                  </li>
-                ))}
-              </ul>
-            </div>
+        <footer className="app-footer" style={{ '--wol-color': eraColors.wol } as React.CSSProperties}>
+          <p>
+            <span className="footer-wol">StarCraft II: Wings of Liberty</span> was released worldwide on July 27, 2010.
+            See its <a href="https://www.youtube.com/watch?v=VSGmPpidDvo" target="_blank" rel="noopener noreferrer">epic cinematic teaser</a>, showcasing Blizzard's legendary animation craft.
+          </p>
+        </footer>
+      </main>
+
+      {/* Tooltip at root level for correct position:fixed behavior */}
+      {tooltip.entity && (
+        <div
+          ref={tooltipRef}
+          className={`tooltip ${tooltip.visible ? 'visible' : ''}`}
+          style={{
+            '--race-color': raceColors[(tooltip.entity.race as Race) || 'neutral'],
+            '--change-color': tooltip.entity.status ? changeTypeConfig[tooltip.entity.status as ChangeType].color : '#888',
+            left: `${tooltipPosition.left}px`,
+            top: `${tooltipPosition.top}px`,
+          } as React.CSSProperties}
+        >
+          <h4>{tooltip.entity.name || 'Unknown'}</h4>
+          {!selectedEntityId && (
+            <ul>
+              {tooltip.entity.changes.map((change: ProcessedChange, i: number) => (
+                <li key={i}>
+                  <span style={{ color: getChangeColor(change.change_type as ChangeType), fontWeight: 'bold' }}>
+                    {getChangeIndicator(change.change_type as ChangeType)}
+                  </span>
+                  {change.text}
+                </li>
+              ))}
+            </ul>
           )}
         </div>
-      </main>
+      )}
     </div>
   );
 }
