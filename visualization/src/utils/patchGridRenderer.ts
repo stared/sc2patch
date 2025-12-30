@@ -68,34 +68,30 @@ export class PatchGridRenderer {
   // ==========================================================================
 
   /**
-   * Scroll to make the first instance of selected entity visible.
-   * Called after selection animation completes.
+   * Scroll to make selected entity visible at its TARGET position.
+   * Called during animation so scroll happens concurrently with movement.
+   * @param targetY - The Y coordinate in SVG space where the entity will end up
    */
-  private scrollToSelectedEntity(entityId: string): void {
-    // Find the first entity-cell-group for this entity
-    const entityGroup = this.svg
-      .selectAll<SVGGElement, EntityItemWithAnimation>('.entity-cell-group')
-      .filter(d => d.entityId === entityId)
-      .node();
+  private scrollToTargetPosition(targetY: number): void {
+    const svgElement = this.svg.node();
+    if (!svgElement) return;
 
-    if (!entityGroup) return;
+    // Convert SVG Y to page Y
+    const svgRect = svgElement.getBoundingClientRect();
+    const pageY = svgRect.top + window.scrollY + targetY;
 
-    // Get viewport and element positions
-    const rect = entityGroup.getBoundingClientRect();
-    const viewportHeight = window.innerHeight;
-
-    // Account for sticky header (approximate height)
+    // Account for sticky header
     const headerHeight = 200;
-    const visibleTop = headerHeight;
-    const visibleBottom = viewportHeight - 50; // Small bottom margin
+    const viewportHeight = window.innerHeight;
+    const visibleTop = window.scrollY + headerHeight;
+    const visibleBottom = window.scrollY + viewportHeight - 50;
 
-    // Check if element is already visible
-    const elementCenterY = rect.top + rect.height / 2;
-    const isVisible = elementCenterY > visibleTop && elementCenterY < visibleBottom;
+    // Check if target will be visible
+    const isVisible = pageY > visibleTop && pageY < visibleBottom;
 
     if (!isVisible) {
-      // Scroll element to a comfortable position (roughly 1/3 from top, after header)
-      const targetScrollY = window.scrollY + rect.top - headerHeight - 50;
+      // Scroll to position element comfortably below header
+      const targetScrollY = pageY - headerHeight - 50;
 
       window.scrollTo({
         top: Math.max(0, targetScrollY),
@@ -649,8 +645,15 @@ export class PatchGridRenderer {
     ]);
 
     // Phase 2 (600-1400ms): Move selected entities, patches, and headers together
+    // Also start scrolling concurrently so user sees the destination
     const selectedHeader = this.svg.selectAll('.race-header')
       .filter(function() { return select(this).datum() === selectedRace; });
+
+    // Get first selected entity's target position and start scroll immediately
+    const firstSelected = entities.data().find(d => d.animationGroup === 'SELECTED');
+    if (firstSelected?.targetY !== undefined) {
+      this.scrollToTargetPosition(firstSelected.targetY);
+    }
 
     await Promise.all([
       entities
@@ -689,11 +692,6 @@ export class PatchGridRenderer {
       .style('opacity', 1)
       .end()
       .catch(() => {});
-
-    // Phase 4: Scroll to make selected entity visible (if needed)
-    if (selectedEntityId) {
-      this.scrollToSelectedEntity(selectedEntityId);
-    }
   }
 
   private async applyDeselectAnimation(
