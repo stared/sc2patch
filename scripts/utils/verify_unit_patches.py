@@ -9,6 +9,7 @@ Usage:
     uv run scripts/verify_unit_patches.py --all
     uv run scripts/verify_unit_patches.py --all --limit 10  # Test with first 10 units
 """
+
 import argparse
 import asyncio
 import json
@@ -30,7 +31,7 @@ client = genai.Client()
 
 def load_units() -> list[dict]:
     """Load units from data/units.json, filter to actual units only."""
-    with open("data/units.json") as f:
+    with Path("data/units.json").open() as f:
         units = json.load(f)
     # Filter to units only (not upgrades, abilities, mechanics)
     return [u for u in units if u.get("type", "unit") == "unit"]
@@ -42,16 +43,14 @@ def load_unit_patches(unit_id: str) -> list[dict]:
     unit_patches = []
 
     for patch_file in sorted(patches_dir.glob("*.json")):
-        with open(patch_file) as f:
+        with patch_file.open() as f:
             data = json.load(f)
 
         changes = [c for c in data["changes"] if c["entity_id"] == unit_id]
         if changes:
-            unit_patches.append({
-                "version": data["metadata"]["version"],
-                "date": data["metadata"]["date"],
-                "changes": [c["raw_text"] for c in changes]
-            })
+            unit_patches.append(
+                {"version": data["metadata"]["version"], "date": data["metadata"]["date"], "changes": [c["raw_text"] for c in changes]}
+            )
 
     return unit_patches
 
@@ -62,18 +61,12 @@ def query_gemini_sync(prompt: str) -> str:
         response = client.models.generate_content(
             model="gemini-3-pro-preview",
             contents=[prompt],
-            config=types.GenerateContentConfig(
-                tools=[{"google_search": {}}],
-                thinking_config=types.ThinkingConfig(thinking_level="high")
-            ),
+            config=types.GenerateContentConfig(tools=[{"google_search": {}}], thinking_config=types.ThinkingConfig(thinking_level="high")),
         )
 
         # Extract text from response
         if response.candidates and response.candidates[0].content.parts:
-            return "".join(
-                part.text for part in response.candidates[0].content.parts
-                if hasattr(part, "text") and part.text
-            )
+            return "".join(part.text for part in response.candidates[0].content.parts if hasattr(part, "text") and part.text)
         return "No response"
     except Exception as e:
         return f"Error: {e}"
@@ -101,11 +94,7 @@ async def verify_unit(unit: dict, progress: dict) -> dict:
     our_versions = [p["version"] for p in our_patches]
 
     if not our_patches:
-        return {
-            "unit": unit_name,
-            "our_patches": 0,
-            "result": "No patches in our data"
-        }
+        return {"unit": unit_name, "our_patches": 0, "result": "No patches in our data"}
 
     # Build prompt for Gemini
     prompt = f"""Compare patch history for SC2 unit "{unit_name}".
@@ -127,11 +116,7 @@ NOTES: [one sentence if relevant]"""
 
     result = await query_gemini(prompt)
 
-    return {
-        "unit": unit_name,
-        "our_patches": len(our_patches),
-        "result": result.strip()
-    }
+    return {"unit": unit_name, "our_patches": len(our_patches), "result": result.strip()}
 
 
 async def main():
@@ -154,7 +139,7 @@ async def main():
 
     # Apply limit if specified
     if args.limit:
-        units = units[:args.limit]
+        units = units[: args.limit]
 
     console.print(f"\nVerifying {len(units)} unit(s) against Liquipedia...\n")
 

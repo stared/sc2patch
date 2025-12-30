@@ -114,9 +114,7 @@ Page content (markdown):
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="List SC2 patches with balance changes from Liquipedia"
-    )
+    parser = argparse.ArgumentParser(description="List SC2 patches with balance changes from Liquipedia")
     parser.add_argument("--output", "-o", type=Path, help="Output JSON file path")
     args = parser.parse_args()
 

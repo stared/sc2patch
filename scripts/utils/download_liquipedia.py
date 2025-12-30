@@ -91,8 +91,7 @@ def url_to_filename(url: str) -> str:
     parsed = urlparse(url)
     path_parts = parsed.path.strip("/").split("/")
     # Last part is like "Patch_2.1" or "Patch_2.1.2"
-    filename = path_parts[-1] if path_parts else "unknown"
-    return filename
+    return path_parts[-1] if path_parts else "unknown"
 
 
 def load_liquipedia_patches(urls_path: Path) -> list[dict]:
@@ -147,7 +146,7 @@ def main() -> None:
             logger.log_detail(f"**{version}** (Liquipedia)")
             logger.log_detail(f"  - URL: {url}")
             logger.log_detail(f"  - HTML: {html_path.name}")
-            logger.log_detail(f"  - NOTE: Original Blizzard URL is broken/unavailable")
+            logger.log_detail("  - NOTE: Original Blizzard URL is broken/unavailable")
             logger.log_detail("")
 
         except Exception as e:

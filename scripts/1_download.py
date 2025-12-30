@@ -53,9 +53,7 @@ def load_patch_urls(urls_path: Path) -> list[dict]:
     sys.exit(1)
 
 
-def download_additional_url(
-    url: str, html_dir: Path, version: str, index: int, skip_existing: bool
-) -> Path | None:
+def download_additional_url(url: str, html_dir: Path, version: str, index: int, skip_existing: bool) -> Path | None:
     """Download an additional URL for BU merging.
 
     Args:
@@ -102,9 +100,7 @@ def process_patch(
     additional_urls = patch_info.get("additional_urls", [])
     additional_count = 0
 
-    html_path, md_path, metadata = download_patch(
-        url, html_dir, markdown_dir, skip_existing=skip_existing, version_hint=version
-    )
+    html_path, md_path, metadata = download_patch(url, html_dir, markdown_dir, skip_existing=skip_existing, version_hint=version)
 
     # Determine if it was skipped or downloaded
     if skip_existing and html_path.exists():
@@ -170,9 +166,7 @@ def main() -> None:
             progress.update(task, description=f"Processing {version}")
 
             try:
-                additional_downloaded += process_patch(
-                    patch_info, html_dir, markdown_dir, skip_existing, logger
-                )
+                additional_downloaded += process_patch(patch_info, html_dir, markdown_dir, skip_existing, logger)
             except DownloadError as e:
                 logger.log_failure(version, str(e))
                 console.print(f"[red]  ✗ {version}:[/red] {str(e)[:80]}")

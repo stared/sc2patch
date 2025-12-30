@@ -20,7 +20,8 @@ if not OPENROUTER_API_KEY:
     console.print("[red]Error: OPENROUTER_API_KEY not found in .env file[/red]")
     raise SystemExit(1)
 
-TECH_TREE_PROMPT = """You are a data extraction assistant. Parse the provided Liquipedia HTML page for StarCraft II Legacy of the Void units and extract a complete tech tree.
+TECH_TREE_PROMPT = """You are a data extraction assistant. Parse the provided Liquipedia HTML page for \
+StarCraft II Legacy of the Void units and extract a complete tech tree.
 
 Extract ALL of the following for each race (Terran, Protoss, Zerg):
 1. **Buildings** - all structures
@@ -139,10 +140,10 @@ def parse_tech_tree_with_gpt5(html_content: str) -> list[dict]:
             # Debug: print response if not JSON
             try:
                 result = response.json()
-            except json.JSONDecodeError as e:
-                console.print(f"[red]Failed to parse JSON response[/red]")
+            except json.JSONDecodeError:
+                console.print("[red]Failed to parse JSON response[/red]")
                 console.print(f"[yellow]Response status: {response.status_code}[/yellow]")
-                console.print(f"[yellow]Response body (first 1000 chars):[/yellow]")
+                console.print("[yellow]Response body (first 1000 chars):[/yellow]")
                 console.print(response.text[:1000])
                 raise
             content = result["choices"][0]["message"]["content"]
@@ -217,9 +218,7 @@ def verify_completeness(tech_tree: list[dict]) -> None:
         if not entry.get("built_from"):
             missing_fields.append(f"Entry {i} ({entry.get('name', 'unknown')}) missing 'built_from'")
         if "requirements" not in entry:
-            missing_fields.append(
-                f"Entry {i} ({entry.get('name', 'unknown')}) missing 'requirements'"
-            )
+            missing_fields.append(f"Entry {i} ({entry.get('name', 'unknown')}) missing 'requirements'")
 
     if missing_fields:
         console.print("[red]Issues found:[/red]")
@@ -247,7 +246,7 @@ def main() -> None:
     # Verify
     verify_completeness(tech_tree)
 
-    console.print(f"\n[green]✓ Tech tree parsing complete![/green]")
+    console.print("\n[green]✓ Tech tree parsing complete![/green]")
     console.print(f"  Total entries: {len(tech_tree)}")
     console.print(f"  JSON: {output_json}")
 

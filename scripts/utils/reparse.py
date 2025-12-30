@@ -215,7 +215,7 @@ def main() -> None:
     if fix_mode:
         console.print("\n[bold]Re-parsing with updated prompt...[/bold]\n")
 
-        for json_path, data, coop in patches_with_coop:
+        for _json_path, data, _coop in patches_with_coop:
             version = data["metadata"]["version"]
             html_path = find_html_for_version(version, html_dir)
 
@@ -240,13 +240,9 @@ def main() -> None:
                     json.dump(result, f, indent=2)
 
                 if new_coop:
-                    console.print(
-                        f"[yellow]  ⚠ {version}: Still has {len(new_coop)} Co-op entries[/yellow]"
-                    )
+                    console.print(f"[yellow]  ⚠ {version}: Still has {len(new_coop)} Co-op entries[/yellow]")
                 else:
-                    console.print(
-                        f"[green]  ✓ {version}: Clean ({len(result['changes'])} changes)[/green]"
-                    )
+                    console.print(f"[green]  ✓ {version}: Clean ({len(result['changes'])} changes)[/green]")
 
                 time.sleep(2.0)  # Rate limit
 

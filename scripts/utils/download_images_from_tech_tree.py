@@ -7,7 +7,7 @@ from pathlib import Path
 
 import httpx
 from rich.console import Console
-from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
+from rich.progress import BarColumn, Progress, SpinnerColumn, TextColumn
 
 console = Console()
 
@@ -45,7 +45,7 @@ def main(test_mode: bool = False, test_limit: int = 10) -> None:
     console.print(f"[yellow]Entities without icons: {len(entities_without_icons)}[/yellow]")
 
     if entities_without_icons:
-        console.print(f"\n[yellow]Entities without icon URLs:[/yellow]")
+        console.print("\n[yellow]Entities without icon URLs:[/yellow]")
         for entity in entities_without_icons[:5]:
             console.print(f"  - {entity['entity_id']} ({entity['name']})")
         if len(entities_without_icons) > 5:
@@ -94,9 +94,7 @@ def main(test_mode: bool = False, test_limit: int = 10) -> None:
                     progress.update(task, advance=1)
                     continue
 
-            progress.update(
-                task, description=f"Downloading {entity_type}: {entity_name} ({entity_id})"
-            )
+            progress.update(task, description=f"Downloading {entity_type}: {entity_name} ({entity_id})")
 
             if download_image(icon_url, output_path):
                 success_count += 1
@@ -108,7 +106,7 @@ def main(test_mode: bool = False, test_limit: int = 10) -> None:
             # Be nice to Liquipedia servers
             time.sleep(0.1)
 
-    console.print(f"\n[green]✓ Download complete![/green]")
+    console.print("\n[green]✓ Download complete![/green]")
     console.print(f"  Success: {success_count}")
     console.print(f"  Failed: {failed_count}")
     console.print(f"  Skipped (already exist): {skipped_count}")

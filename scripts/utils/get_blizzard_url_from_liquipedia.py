@@ -43,9 +43,7 @@ def fetch_page(url: str) -> str:
     return response.text
 
 
-def extract_blizzard_urls(
-    html_content: str, patch_version: str, model: str = DEFAULT_MODEL
-) -> dict:
+def extract_blizzard_urls(html_content: str, patch_version: str, model: str = DEFAULT_MODEL) -> dict:
     """Use LLM to extract Blizzard URLs from Liquipedia page."""
     if not OPENROUTER_API_KEY:
         console.print("[red]Error: OPENROUTER_API_KEY not set[/red]")

@@ -65,9 +65,7 @@ class Patch(BaseModel):
     version: str = Field(description="Patch version (e.g., '5.0.12')")
     date: str = Field(description="ISO date YYYY-MM-DD")
     url: str = Field(description="URL to patch notes - must be valid HTTP(S) URL")
-    patch_type: PatchType = Field(
-        default="balance", description="'balance' for patches, 'release' for expansions"
-    )
+    patch_type: PatchType = Field(default="balance", description="'balance' for patches, 'release' for expansions")
     entities: list[EntityChanges]
 
     @field_validator("url")

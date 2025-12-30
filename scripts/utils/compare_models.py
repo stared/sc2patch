@@ -13,6 +13,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from dotenv import load_dotenv
 
+import sc2patches.parse as parse_module
 from sc2patches.parse import extract_body_from_html, parse_with_llm
 
 load_dotenv()
@@ -54,12 +55,11 @@ def main() -> None:
     results = {}
 
     for model in MODELS:
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"Model: {model}")
-        print('='*60)
+        print("=" * 60)
 
         # Temporarily override the model
-        import sc2patches.parse as parse_module
         original_model = parse_module.OPENROUTER_MODEL
         parse_module.OPENROUTER_MODEL = model
 
@@ -79,14 +79,14 @@ def main() -> None:
                         "entity_id": e.entity_id,
                         "entity_name": e.entity_name,
                         "race": e.race,
-                        "changes": [{"text": c.text, "change_type": c.change_type} for c in e.changes]
+                        "changes": [{"text": c.text, "change_type": c.change_type} for c in e.changes],
                     }
                     for e in patch_data.changes
-                ]
+                ],
             }
             results[model] = result
 
-            with open(output_file, "w") as f:
+            with output_file.open("w") as f:
                 json.dump(result, f, indent=2)
 
             print(f"  Entities: {result['entity_count']}")
@@ -101,9 +101,9 @@ def main() -> None:
             parse_module.OPENROUTER_MODEL = original_model
 
     # Summary
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("SUMMARY")
-    print('='*60)
+    print("=" * 60)
     for model, result in results.items():
         if "error" in result:
             print(f"{model}: ERROR - {result['error'][:50]}")
@@ -112,7 +112,7 @@ def main() -> None:
 
     # Save summary
     summary_file = OUTPUT_DIR / f"{version_hint}_summary.json"
-    with open(summary_file, "w") as f:
+    with summary_file.open("w") as f:
         json.dump(results, f, indent=2)
     print(f"\nSummary saved to: {summary_file}")
 

@@ -49,9 +49,7 @@ class Change(BaseModel):
 class BalanceChange(BaseModel):
     """A single balance change for an entity."""
 
-    entity_id: str = Field(
-        description="Entity ID in format: race-unit_name (e.g., 'terran-marine')"
-    )
+    entity_id: str = Field(description="Entity ID in format: race-unit_name (e.g., 'terran-marine')")
     entity_name: str = Field(description="Display name of the entity (e.g., 'Marine')")
     race: Race = Field(description="Race: 'terran', 'protoss', 'zerg', or 'neutral'")
     changes: list[Change] = Field(description="List of specific changes with classification")
@@ -61,9 +59,7 @@ class PatchChanges(BaseModel):
     """All balance changes in a patch."""
 
     version: str = Field(description="Patch version (e.g., '4.0', '3.8.0')")
-    date: str | None = Field(
-        default=None, description="Patch date in ISO format YYYY-MM-DD (if available)"
-    )
+    date: str | None = Field(default=None, description="Patch date in ISO format YYYY-MM-DD (if available)")
     changes: list[BalanceChange] = Field(description="List of all balance changes")
 
 
@@ -178,9 +174,7 @@ def parse_with_llm(
 
     # Load valid entity IDs and format for prompt
     valid_ids = load_valid_entity_ids()
-    valid_ids_text = "\n".join(
-        f"  {race.upper()}: {', '.join(ids)}" for race, ids in valid_ids.items()
-    )
+    valid_ids_text = "\n".join(f"  {race.upper()}: {', '.join(ids)}" for race, ids in valid_ids.items())
 
     # Format patch-specific hint if provided
     patch_exception = f"\n\nPATCH-SPECIFIC: {parse_hint}\n" if parse_hint else ""
@@ -348,9 +342,7 @@ Return ONLY valid JSON matching the example format. Include ALL required fields.
         raise ParseError(f"Failed to parse LLM response: {e}") from e
 
 
-def parse_patch(
-    html_path: Path, version: str, api_key: str, parse_hint: str | None = None
-) -> dict:
+def parse_patch(html_path: Path, version: str, api_key: str, parse_hint: str | None = None) -> dict:
     """Parse a single patch file and return structured JSON.
 
     Args:
@@ -382,8 +374,7 @@ def parse_patch(
 
     if not changes:
         raise ParseError(
-            f"No balance changes extracted from {html_path.name}\n"
-            "This patch may have no balance changes, or the parser failed."
+            f"No balance changes extracted from {html_path.name}\nThis patch may have no balance changes, or the parser failed."
         )
 
     return {
@@ -397,9 +388,7 @@ def parse_patch(
     }
 
 
-def parse_patches_combined(
-    html_paths: list[Path], version: str, api_key: str, parse_hint: str | None = None
-) -> dict:
+def parse_patches_combined(html_paths: list[Path], version: str, api_key: str, parse_hint: str | None = None) -> dict:
     """Parse multiple patch files together (main + BU) and return merged JSON.
 
     This is used when a patch has both a main client update and a Balance Update.
@@ -432,9 +421,7 @@ def parse_patches_combined(
             break
 
     # Parse with LLM in multi-source mode
-    patch_data = parse_with_llm(
-        body_text, version, api_key, is_multi_source=True, parse_hint=parse_hint
-    )
+    patch_data = parse_with_llm(body_text, version, api_key, is_multi_source=True, parse_hint=parse_hint)
 
     # Use HTML metadata date (authoritative), fallback to LLM date only if HTML has none
     authoritative_date = html_date or patch_data.date or "unknown"
@@ -443,9 +430,7 @@ def parse_patches_combined(
     changes = flatten_changes(patch_data)
 
     if not changes:
-        raise ParseError(
-            f"No balance changes extracted from combined patches: {[p.name for p in html_paths]}"
-        )
+        raise ParseError(f"No balance changes extracted from combined patches: {[p.name for p in html_paths]}")
 
     return {
         "metadata": {

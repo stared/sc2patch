@@ -8,6 +8,7 @@ Usage:
 """
 
 import json
+import re
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -27,7 +28,6 @@ VALID_VERSION_PATTERN = r"^[1-5]\."
 
 def is_valid_version(version: str) -> bool:
     """Check if version starts with valid era prefix (1-5)."""
-    import re
     return bool(re.match(VALID_VERSION_PATTERN, version))
 
 
@@ -60,15 +60,10 @@ def load_patch(patch_file: Path, logger: PipelineLogger) -> Patch | None:
         # Group changes by entity_id
         entity_changes: dict[str, list[Change]] = defaultdict(list)
         for c in changes:
-            entity_changes[c["entity_id"]].append(
-                Change(raw_text=c["raw_text"], change_type=c["change_type"])
-            )
+            entity_changes[c["entity_id"]].append(Change(raw_text=c["raw_text"], change_type=c["change_type"]))
 
         # Convert to EntityChanges
-        entities = [
-            EntityChanges(entity_id=eid, changes=changes)
-            for eid, changes in sorted(entity_changes.items())
-        ]
+        entities = [EntityChanges(entity_id=eid, changes=changes) for eid, changes in sorted(entity_changes.items())]
 
         return Patch(
             version=metadata["version"],
@@ -145,9 +140,7 @@ def main() -> None:
         f.write(data.model_dump_json(indent=2))
 
     # Stats
-    total_changes = sum(
-        len(e.changes) for p in patches for e in p.entities
-    )
+    total_changes = sum(len(e.changes) for p in patches for e in p.entities)
 
     console.print(f"\n[green]✓ Exported {len(patches)} patches ({total_changes} changes)[/green]")
     console.print(f"[green]✓ Saved to {dest_file}[/green]")

@@ -12,8 +12,10 @@ The LLM parses main + BU HTML files together for intelligent deduplication.
 
 import json
 import os
+import re
 import sys
 import time
+from dataclasses import dataclass
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
@@ -31,6 +33,17 @@ from sc2patches.parse import ParseError, parse_patch, parse_patches_combined
 load_dotenv()
 
 console = Console()
+
+
+@dataclass
+class ParseContext:
+    """Context for parsing operations."""
+
+    html_dir: Path
+    output_dir: Path
+    skip_existing: bool
+    logger: PipelineLogger
+    api_key: str
 
 
 def get_api_key() -> str:
@@ -72,8 +85,6 @@ def find_html_files_for_patch(html_dir: Path, version: str, url: str | None = No
     Returns:
         List of HTML paths, main file first
     """
-    import re
-
     url_matched_files = []
     version_matched_files = []
     additional_files = []
@@ -116,14 +127,7 @@ def find_html_files_for_patch(html_dir: Path, version: str, url: str | None = No
     return additional_files
 
 
-def process_single_patch(
-    patch_config: PatchConfig,
-    html_dir: Path,
-    output_dir: Path,
-    skip_existing: bool,
-    logger: PipelineLogger,
-    api_key: str,
-) -> bool:
+def process_single_patch(patch_config: PatchConfig, ctx: ParseContext) -> bool:
     """Process a single patch configuration.
 
     Returns:
@@ -132,34 +136,34 @@ def process_single_patch(
     version = patch_config.version
     url = patch_config.url
     parse_hint = patch_config.parse_hint
-    output_path = output_dir / f"{version}.json"
+    output_path = ctx.output_dir / f"{version}.json"
 
     # Check if output already exists
-    if output_path.exists() and skip_existing:
-        logger.log_skip(version, "already exists")
+    if output_path.exists() and ctx.skip_existing:
+        ctx.logger.log_skip(version, "already exists")
         console.print(f"[dim]  ⊘ {version}: already exists[/dim]")
         return True
 
     # Find HTML files for this patch
-    html_files = find_html_files_for_patch(html_dir, version, url)
+    html_files = find_html_files_for_patch(ctx.html_dir, version, url)
     if not html_files:
-        logger.log_skip(version, "no HTML files found")
+        ctx.logger.log_skip(version, "no HTML files found")
         console.print(f"[dim]  ⊘ {version}: no HTML files[/dim]")
         return True
 
     # Parse with appropriate method
     if len(html_files) > 1:
         console.print(f"[cyan]  ↳ Parsing {len(html_files)} files together...[/cyan]")
-        result = parse_patches_combined(html_files, version, api_key, parse_hint)
+        result = parse_patches_combined(html_files, version, ctx.api_key, parse_hint)
     else:
-        result = parse_patch(html_files[0], version, api_key, parse_hint)
+        result = parse_patch(html_files[0], version, ctx.api_key, parse_hint)
 
     # Validate parsed version matches config (single source of truth: patch_urls.json)
     parsed_version = result["metadata"]["version"]
     if parsed_version != version:
         msg = f"Version mismatch: parsed '{parsed_version}' vs config '{version}'"
         console.print(f"[yellow]  ⚠ {msg}[/yellow]")
-        logger.log_detail(f"  - WARNING: {msg}")
+        ctx.logger.log_detail(f"  - WARNING: {msg}")
 
     # Set metadata from config (source of truth)
     result["metadata"]["version"] = version
@@ -175,14 +179,14 @@ def process_single_patch(
     changes = len(result["changes"])
     suffix = f" (merged {len(html_files)} files)" if len(html_files) > 1 else ""
 
-    logger.log_success(version, f"{entities} entities, {changes} changes → {output_path.name}")
+    ctx.logger.log_success(version, f"{entities} entities, {changes} changes → {output_path.name}")
     console.print(f"[green]  ✓ {version}:[/green] {entities} entities, {changes} changes{suffix}")
 
     # Add detail info
-    logger.log_detail(f"**{version}**")
-    logger.log_detail(f"  - HTML files: {[h.name for h in html_files]}")
-    logger.log_detail(f"  - Entities: {entities}, Changes: {changes}")
-    logger.log_detail("")
+    ctx.logger.log_detail(f"**{version}**")
+    ctx.logger.log_detail(f"  - HTML files: {[h.name for h in html_files]}")
+    ctx.logger.log_detail(f"  - Entities: {entities}, Changes: {changes}")
+    ctx.logger.log_detail("")
 
     return True
 
@@ -200,6 +204,13 @@ def main() -> None:
 
     patch_configs = load_patch_config(urls_path)
     logger = PipelineLogger("parse")
+    ctx = ParseContext(
+        html_dir=html_dir,
+        output_dir=output_dir,
+        skip_existing=skip_existing,
+        logger=logger,
+        api_key=api_key,
+    )
 
     if specific_version:
         configs_to_parse = [p for p in patch_configs if p.version == specific_version]
@@ -229,17 +240,15 @@ def main() -> None:
             progress.update(task, description=f"Processing {patch_config.version}")
 
             try:
-                process_single_patch(
-                    patch_config, html_dir, output_dir, skip_existing, logger, api_key
-                )
+                process_single_patch(patch_config, ctx)
                 time.sleep(2.0)  # Be polite to API
             except ParseError as e:
-                logger.log_failure(patch_config.version, str(e))
+                ctx.logger.log_failure(patch_config.version, str(e))
                 console.print(f"[red]  ✗ {patch_config.version}:[/red] {str(e)[:100]}")
 
             progress.advance(task)
 
-    log_path = logger.write(
+    log_path = ctx.logger.write(
         additional_summary={
             "Total patches": len(configs_to_parse),
             "Multi-HTML patches": multi_html_count,
@@ -248,13 +257,13 @@ def main() -> None:
     )
 
     console.print("\n[bold]Summary:[/bold]")
-    console.print(f"  ✅ Successful: {len(logger.successful)}")
-    console.print(f"  ❌ Failed: {len(logger.failed)}")
-    console.print(f"  ⊘ Skipped: {len(logger.skipped)}")
+    console.print(f"  ✅ Successful: {len(ctx.logger.successful)}")
+    console.print(f"  ❌ Failed: {len(ctx.logger.failed)}")
+    console.print(f"  ⊘ Skipped: {len(ctx.logger.skipped)}")
     console.print(f"\n[dim]Log saved to: {log_path}[/dim]")
 
-    if logger.failed:
-        console.print(f"\n[red]Parse failed for {len(logger.failed)} patches[/red]")
+    if ctx.logger.failed:
+        console.print(f"\n[red]Parse failed for {len(ctx.logger.failed)} patches[/red]")
         sys.exit(1)
 
     console.print("\n[green]✓ Parse stage complete[/green]")

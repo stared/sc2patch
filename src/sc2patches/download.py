@@ -91,16 +91,12 @@ def validate_patch_html(html: str, url: str) -> None:
 
     # If it has homepage text but no patch text, it's a homepage
     if has_homepage_text and not has_patch_text:
-        raise DownloadError(
-            f"URL returned homepage instead of patch notes: {url}\n"
-            "This URL is likely dead or redirected."
-        )
+        raise DownloadError(f"URL returned homepage instead of patch notes: {url}\nThis URL is likely dead or redirected.")
 
     # If it has neither, it's probably an error page
     if not has_patch_text:
         raise DownloadError(
-            f"HTML from {url} doesn't appear to contain patch notes\n"
-            "Expected to find: 'Patch Notes', 'Balance Update', etc."
+            f"HTML from {url} doesn't appear to contain patch notes\nExpected to find: 'Patch Notes', 'Balance Update', etc."
         )
 
 

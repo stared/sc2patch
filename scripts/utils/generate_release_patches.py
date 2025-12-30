@@ -54,9 +54,10 @@ LOTV_UNITS = {
     "Disruptor",
 }
 
+
 def load_units() -> list[dict]:
     """Load units from data/units.json, filter to actual units only."""
-    with open("data/units.json") as f:
+    with Path("data/units.json").open() as f:
         units = json.load(f)
     # Only include actual units (not upgrades, abilities, mechanics)
     return [u for u in units if u.get("type", "unit") == "unit"]
@@ -118,7 +119,7 @@ def main() -> None:
         patch = generate_release_patch(version, units)
         output_file = output_dir / f"{version}.json"
 
-        with open(output_file, "w") as f:
+        with output_file.open("w") as f:
             json.dump(patch, f, indent=2)
 
         unit_count = len(patch["changes"])

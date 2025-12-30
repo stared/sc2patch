@@ -35,7 +35,7 @@ def load_patches() -> list[dict]:
         console.print("[red]Error: patches.json not found. Run export first.[/red]")
         sys.exit(1)
 
-    with open(patches_file) as f:
+    with patches_file.open() as f:
         data = json.load(f)
 
     return sorted(data["patches"], key=lambda p: p["date"])
@@ -49,12 +49,11 @@ def format_patch_summary(patch: dict) -> str:
         for c in e["changes"]:
             changes.append(f"  - {e['entity_id']}: {c['raw_text']}")
 
-    summary = f"""Version: {patch['version']}
-Date: {patch['date']}
-Entities ({len(entities)}): {', '.join(entities[:15])}{'...' if len(entities) > 15 else ''}
+    return f"""Version: {patch["version"]}
+Date: {patch["date"]}
+Entities ({len(entities)}): {", ".join(entities)}
 Changes:
-{chr(10).join(changes[:25])}{'...' if len(changes) > 25 else ''}"""
-    return summary
+{chr(10).join(changes)}"""
 
 
 def compare_patches(patch_a: dict, patch_b: dict) -> dict:
@@ -124,10 +123,7 @@ def main() -> None:
         patch_a = patches[i]
         patch_b = patches[i + 1]
 
-        console.print(
-            f"[dim]Comparing {patch_a['version']} ({patch_a['date']}) → "
-            f"{patch_b['version']} ({patch_b['date']})...[/dim]"
-        )
+        console.print(f"[dim]Comparing {patch_a['version']} ({patch_a['date']}) → {patch_b['version']} ({patch_b['date']})...[/dim]")
 
         result = compare_patches(patch_a, patch_b)
         result["patch_a"] = patch_a["version"]
@@ -145,7 +141,7 @@ def main() -> None:
         elif result.get("relationship") == "ERROR":
             console.print(f"  [red]ERROR[/red]: {result.get('reason', 'Unknown')}")
         else:
-            console.print(f"  [green]INDEPENDENT[/green]")
+            console.print("  [green]INDEPENDENT[/green]")
 
     # Summary
     console.print("\n" + "=" * 60)
@@ -163,22 +159,18 @@ def main() -> None:
                 f"{pair['patch_a']} ({pair['date_a']})",
                 f"{pair['patch_b']} ({pair['date_b']})",
                 pair.get("confidence", "?"),
-                pair.get("reason", "")[:50] + "..."
-                if len(pair.get("reason", "")) > 50
-                else pair.get("reason", ""),
+                pair.get("reason", ""),
             )
 
         console.print(table)
-        console.print(
-            f"\n[yellow]Found {len(dependent_pairs)} potentially dependent pairs[/yellow]"
-        )
+        console.print(f"\n[yellow]Found {len(dependent_pairs)} potentially dependent pairs[/yellow]")
     else:
         console.print("[green]All consecutive patches appear to be independent[/green]")
 
     # Save results
     output_file = Path("data/logs/patch_comparison_results.json")
     output_file.parent.mkdir(parents=True, exist_ok=True)
-    with open(output_file, "w") as f:
+    with output_file.open("w") as f:
         json.dump(results, f, indent=2)
     console.print(f"\n[dim]Full results saved to: {output_file}[/dim]")
 

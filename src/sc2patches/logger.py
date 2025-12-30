@@ -78,9 +78,7 @@ class PipelineLogger:
         """
         end_time = datetime.now(tz=timezone.utc)
         duration = end_time - self.start_time
-        duration_str = (
-            f"{int(duration.total_seconds() // 60)}m {int(duration.total_seconds() % 60)}s"
-        )
+        duration_str = f"{int(duration.total_seconds() // 60)}m {int(duration.total_seconds() % 60)}s"
 
         # Build markdown content
         lines = [
