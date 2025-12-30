@@ -4,12 +4,13 @@ import json
 import re
 from datetime import datetime, timezone
 from pathlib import Path
-from urllib.parse import urlparse
 
 import httpx
 from bs4 import BeautifulSoup
 from markdownify import markdownify as md
 from pydantic import BaseModel
+
+from sc2patches.extraction import url_to_filename
 
 
 class DownloadError(Exception):
@@ -260,24 +261,6 @@ processed: {processed_date}
 
 """
     return frontmatter + markdown
-
-
-def url_to_filename(url: str) -> str:
-    """Convert URL to safe filename.
-
-    Args:
-        url: URL to convert
-
-    Returns:
-        Filename (without extension)
-    """
-    parsed = urlparse(url)
-    # Get last part of path
-    path_parts = parsed.path.strip("/").split("/")
-    filename = path_parts[-1] if path_parts else "index"
-
-    # Remove common suffixes
-    return filename.replace("-patch-notes", "").replace("_patch_notes", "")
 
 
 def download_patch(

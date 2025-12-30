@@ -15,7 +15,6 @@ import os
 import sys
 import time
 from pathlib import Path
-from urllib.parse import urlparse
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
@@ -23,6 +22,7 @@ from dotenv import load_dotenv
 from rich.console import Console
 from rich.progress import BarColumn, Progress, SpinnerColumn, TaskProgressColumn, TextColumn
 
+from sc2patches.extraction import url_to_filename
 from sc2patches.logger import PipelineLogger
 from sc2patches.parse import ParseError, parse_patch, parse_patches_combined
 
@@ -59,14 +59,6 @@ def load_patch_config(urls_path: Path) -> list[dict]:
         return data
 
     return []
-
-
-def url_to_filename(url: str) -> str:
-    """Convert URL to expected filename (without extension)."""
-    parsed = urlparse(url)
-    path_parts = parsed.path.strip("/").split("/")
-    filename = path_parts[-1] if path_parts else "index"
-    return filename.replace("-patch-notes", "").replace("_patch_notes", "")
 
 
 def find_html_files_for_patch(html_dir: Path, version: str, url: str | None = None) -> list[Path]:
