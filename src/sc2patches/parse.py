@@ -235,141 +235,76 @@ Combine ALL balance changes into ONE unified list. DEDUPLICATE:
 
 """
 
-    system_prompt = f"""You are a StarCraft II balance patch expert. Extract balance changes from patch notes.
+    system_prompt = f"""You are a StarCraft II Balance Patch Analyst. Extract and classify VERSUS (multiplayer) balance changes.
 {multi_source_header}{patch_exception}
-CRITICAL: ONLY extract VERSUS (MULTIPLAYER) balance changes!
+=== 1. SCOPE: VERSUS ONLY ===
 
-SECTION DETECTION - Patch notes have distinct sections separated by images/headers:
-- MULTIPLAYER / VERSUS / BALANCE sections → INCLUDE these
-- CO-OP MISSIONS / CO-OP COMMANDERS sections → EXCLUDE entirely
-- CAMPAIGN / NOVA COVERT OPS sections → EXCLUDE entirely
-- BUG FIXES / EDITOR sections → EXCLUDE entirely
+INCLUDE sections labeled: "Versus", "Multiplayer", "Balance", or race headers (Terran/Zerg/Protoss).
 
-HOW TO IDENTIFY VERSUS BALANCE CHANGES:
-- Versus balance is usually under sections with race headers: "Terran", "Protoss", "Zerg"
-- Changes listed directly under units (Marine, Stalker, Roach, etc.) are versus balance
-- "General" subsections within race sections are versus balance
+EXCLUDE completely:
+- Co-op Missions: Commanders, Mutators, Prestige, Mastery, hero units (Alarak, Nova, Zagara, etc.)
+- Co-op units: Infested Terrans, Mecha Zerg, Hercules, War Prism, etc.
+- Campaign/Nova Covert Ops content
+- Bug fixes (unless explicitly a balance adjustment)
+- Map-specific changes (e.g., "Rocks added to [Map Name]")
 
-HOW TO IDENTIFY CO-OP CHANGES (EXCLUDE THESE):
-- Sections followed by "Commanders", "Nova Covert Ops", "Campaign" are Co-op
-- "General" sections NOT within the Multiplayer/Versus section are likely Co-op
-- IMPORTANT: In patch notes, sections are separated by image tags (![...]). After the Zerg race
-  section ends and before "Commanders"/"Campaign" sections, any changes are likely Co-op.
-- If a "General" section appears AFTER all race-specific unit changes and BEFORE campaign/commander
-  sections, those changes are Co-op, not versus
+=== 2. ENTITY IDENTIFICATION ===
 
-EXCLUDE these completely - DO NOT include them:
-1. CO-OP COMMANDERS and their units/abilities:
-   - Protoss: Alarak, Karax, Zeratul, Fenix, Artanis (commander abilities)
-   - Terran: Swann, Mengsk, Nova, Tychus (and outlaws: Blaze, Nikara, Rattlesnake, Vega, etc.)
-   - Zerg: Zagara, Stukov, Abathur, Dehaka, Stetmann (Gary, Mecha units), Kerrigan
-   - Any mention of "Commander", "Mastery", "Talent", "Level unlock", "Prestige"
+Format: `race-unit_name` (lowercase, underscores). Example: `terran-marine`, `protoss-stalker`
 
-2. CO-OP SPECIFIC UNITS (not in Versus):
-   - Infested units (Infested Marine, Infested Siege Tank, Infested Liberator, etc.)
-   - Mecha units (Mecha Battlecarrier Lord, Mecha Infestor, etc.)
-   - Hercules, Galleon, Sky Fury, Strike Fighter, Laser Drill
-   - Aberration, Vile Roach, Bile Launcher
-   - Automated Refinery, War Prism, etc.
+ASSIGNMENT RULES:
+1. MORPHS/MODES → assign to BASE unit:
+   - Siege Tank (Sieged) → terran-siege_tank
+   - Lurker (Burrowed) → zerg-lurker
+   - Viking modes → terran-viking
+   - EXCEPTION: Hellion/Hellbat are separate units
 
-3. CO-OP MUTATORS: Any mention of mutator names (e.g., "We Move Unseen")
+2. SUMMONED UNITS → assign to PARENT:
+   - Interceptor → protoss-carrier
+   - M.U.L.E. → terran-orbital_command
+   - Broodling → zerg-brood_lord
+   - Locust → zerg-swarm_host
+   - Auto-Turret → terran-raven
 
-4. CAMPAIGN-ONLY content
+3. UPGRADES:
+   - Affects 1-2 units → assign to the UNIT (Stimpack → terran-marine)
+   - General/shared (3+ units) → assign to RESEARCH BUILDING (terran-engineering_bay)
 
-5. MAP-SPECIFIC changes (e.g., "Destructible Rocks added to Desert Oasis")
+4. NEUTRAL ENTITIES: neutral-rocks, neutral-ramp, neutral-mineral_field, etc.
+   Global changes (e.g., "vision up ramps") → ONE neutral entry, not per-race duplicates.
 
-ONLY INCLUDE: Standard Versus/Multiplayer units, buildings, and upgrades!
-
-For each changed entity (unit, building, upgrade, ability):
-1. Create entity_id in format: race-entity_name (e.g., "terran-marine", "protoss-stalker")
-2. Use lowercase with underscores for entity_id
-3. Extract all specific changes as separate list items
-4. Focus ONLY on balance changes (damage, cost, build time, etc.)
-5. Ignore bug fixes, UI changes, and editor changes
-6. Classify EACH change as (from the perspective of the ENTITY itself - stronger or weaker):
-   - "buff": Entity becomes stronger (increased damage/health/armor, reduced cost, faster build time, etc.)
-   - "nerf": Entity becomes weaker (decreased damage/health/armor, increased cost, slower build time, etc.)
-   - "mixed": Has both positive and negative aspects
-
-   IMPORTANT CLASSIFICATION EXAMPLES:
-   - Rocks armor INCREASED → "buff" (rocks are stronger)
-   - Rocks armor DECREASED → "nerf" (rocks are weaker)
-   - Unit cost INCREASED → "nerf" (harder to build)
-   - Unit cost DECREASED → "buff" (easier to build)
-
-   DAMAGE TYPE RESTRICTION IS A NERF:
-   - "Damage changed from 50 to 35 (+15 armored)" → "nerf" (NOT mixed!)
-     Before: 50 to all. After: 50 to armored, 35 to non-armored = worse overall
-   - "Upgrade damage changed from +5 to +3 (+2 armored)" → "nerf" (NOT mixed!)
-     Before: +5 to all. After: +5 to armored, +3 to non-armored = worse overall
-   - Adding a bonus type while reducing base is a NERF because effectiveness is restricted
-
-UPGRADE PLACEMENT RULES:
-
-1. GENERAL Upgrades (affects 3+ unit types) → attribute to RESEARCH BUILDING:
-   - Infantry Weapons/Armor → terran-engineering_bay
-   - Vehicle/Ship Weapons/Armor → terran-armory
-   - Ground Weapons/Armor/Shields → protoss-forge
-   - Air Weapons/Armor → protoss-cybernetics_core
-   - Melee/Missile/Carapace → zerg-evolution_chamber
-   - Flyer Attack/Carapace → zerg-spire
-
-2. SPECIFIC Upgrades (affects 1-2 units) → attribute to the UNIT:
-   Include both STAT changes AND RESEARCH cost/time changes on the unit.
-   - Stimpack → terran-marine AND terran-marauder
-   - Charge → protoss-zealot
-   - Blink → protoss-stalker
-   - Grooved Spines → zerg-hydralisk
-   - Metabolic Boost → zerg-zergling
-   - Anabolic Synthesis → zerg-ultralisk
-
-3. SUMMONED UNITS → attribute to the CASTER:
-   - Interceptor stats/build time → protoss-carrier
-   - Locust stats → zerg-swarm_host
-   - Auto-Turret stats → terran-raven
-   - Broodling stats → zerg-brood_lord
-   - Creep Tumor stats → zerg-queen
-
-NEUTRAL ENTITIES - Map objects and mechanics:
-- neutral-ramp (vision up/down ramps, ramp blocking rules, ramp width)
-- neutral-vespene_geyser (footprint, visibility, yield changes)
-- neutral-mineral_field (health, collision, harvest rate)
-- neutral-rocks (armor, health changes) - ONLY IN VERSUS, ignore Co-op rocks
-- neutral-collapsible_rock_tower
-- neutral-inhibitor_zone_generator
-- neutral-acceleration_zone_generator
-- neutral-xelnaga_tower
-
-GLOBAL MECHANIC CHANGES - Use neutral entity, NOT per-race duplicates:
-- "Vision up ramps reduced" → ONE entry for neutral-ramp (NOT 3 entries per race!)
-- "Ramp blocking rules changed" → ONE entry for neutral-ramp
-- "Building placement on ramps" → ONE entry for neutral-ramp
-These are map mechanics, not race-specific unit changes.
-
-COMMONLY MISSED UNITS - check these explicitly:
-- protoss-tempest (Tectonic Destabilizers upgrade)
-- protoss-mothership (Strategic Recall, Mass Recall, Time Warp)
-- terran-battlecruiser (Tactical Jump, Yamato Cannon)
-- zerg-viper (Parasitic Bomb, Abduct)
-- zerg-queen (Transfuse, Creep Tumor)
-
-VISUAL CHANGES: Only include if they affect player reaction or clarity
-(e.g., "targeting line more visible", "EMP radius indicator"). Ignore cosmetic-only changes.
-
-VALID ENTITY IDS - You MUST use ONLY these exact IDs:
+VALID ENTITY IDS (use ONLY these):
 {valid_ids_text}
 
-If an entity cannot be mapped to any ID above (e.g., new terrain element, new unit), use "unknown" as entity_id.
+=== 3. CLASSIFICATION LOGIC ===
 
-MORPHED/TOGGLE MODES - use the BASE unit ID (modes are NOT separate entities):
-- Transport Overlord → zerg-overlord
-- Siege Tank (Sieged mode) → terran-siege_tank
-- Viking (Assault/Fighter modes) → terran-viking
-- Lurker (Burrowed) → zerg-lurker
-- Liberator (AG mode) → terran-liberator
-- Warp Prism (Phasing mode) → protoss-warp_prism
+Classify from the ENTITY's perspective: does this make it stronger or weaker?
+- "buff": Entity stronger, cheaper, faster, more reliable
+- "nerf": Entity weaker, more expensive, slower, easier to counter
+- "mixed": Both positive and negative mathematical impacts
 
-NOTE: Hellion and Hellbat ARE separate units (use terran-hellion or terran-hellbat as appropriate)
+SPECIFIC RULES:
+
+A) DAMAGE SPECIALIZATION = NERF:
+   "Damage 50 → 35 (+15 vs Armored)" = NERF (reduced effectiveness vs non-armored)
+
+B) RELIABILITY IMPROVEMENTS = BUFF:
+   - "No longer detonates on contact" = BUFF (enemy can't trigger early with cheap unit)
+   - "Won't trigger on structures/changelings" = BUFF (prevents wasting on low-value targets)
+   - "Removed random delay" = BUFF (more consistent)
+
+C) NEUTRAL ENTITIES (Rocks/Debris):
+   - Armor/HP increased → BUFF (rock is stronger)
+   - Armor/HP decreased → NERF (rock is weaker)
+
+D) VISUAL/UI CHANGES - "Who Sees It?" Rule:
+   - OPPONENT sees it → NERF (reveals info to enemy)
+     Examples: upgrade indicators visible to enemy, larger model easier to spot, targeting lines
+   - ONLY YOU see it → BUFF (helps your play)
+     Examples: placement range helpers, your own ability radius displays
+   - Pure cosmetic (icons, portraits, textures) → EXCLUDE
+
+=== 4. OUTPUT FORMAT ===
 
 Return JSON in this EXACT format:
 {{
@@ -388,7 +323,7 @@ Return JSON in this EXACT format:
   ]
 }}
 
-CRITICAL: ALL fields (entity_id, entity_name, race, changes with text and change_type) are REQUIRED."""
+ALL fields (entity_id, entity_name, race, changes with text and change_type) are REQUIRED."""
 
     user_prompt = f"""Extract all balance changes from this StarCraft II patch:
 

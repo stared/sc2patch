@@ -3,35 +3,35 @@
     "id": "neutral-acceleration_zone_generator",
     "name": "Acceleration Zone Generator",
     "race": "neutral",
-    "type": "unit",
+    "type": "mechanic",
     "liquipedia_url": "https://starcraft.fandom.com/wiki/Acceleration_zone_generator"
   },
   {
     "id": "neutral-collapsible_rock_tower",
     "name": "Collapsible Rock Tower",
     "race": "neutral",
-    "type": "unit",
+    "type": "mechanic",
     "liquipedia_url": "https://liquipedia.net/starcraft2/Destructible_Towers"
   },
   {
     "id": "neutral-inhibitor_zone_generator",
     "name": "Inhibitor Zone Generator",
     "race": "neutral",
-    "type": "unit",
+    "type": "mechanic",
     "liquipedia_url": "https://starcraft.fandom.com/wiki/Inhibitor_zone_generator"
   },
   {
     "id": "neutral-mineral_field",
     "name": "Mineral Field",
     "race": "neutral",
-    "type": "unit",
+    "type": "mechanic",
     "liquipedia_url": "https://liquipedia.net/starcraft2/Minerals"
   },
   {
     "id": "neutral-minerals",
     "name": "Minerals",
     "race": "neutral",
-    "type": "unit",
+    "type": "mechanic",
     "liquipedia_url": "https://liquipedia.net/starcraft2/Minerals"
   },
   {
@@ -45,21 +45,21 @@
     "id": "neutral-rocks",
     "name": "Rocks",
     "race": "neutral",
-    "type": "unit",
+    "type": "mechanic",
     "liquipedia_url": "https://liquipedia.net/starcraft2/Destructible_Rocks"
   },
   {
     "id": "neutral-vespene_gas",
     "name": "Vespene Gas",
     "race": "neutral",
-    "type": "unit",
+    "type": "mechanic",
     "liquipedia_url": "https://liquipedia.net/starcraft2/Vespene_Gas"
   },
   {
     "id": "neutral-vespene_geyser",
     "name": "Vespene Geyser",
     "race": "neutral",
-    "type": "unit",
+    "type": "mechanic",
     "liquipedia_url": "https://liquipedia.net/starcraft2/Vespene_Geyser"
   },
   {
@@ -73,7 +73,7 @@
     "id": "neutral-zerg_rocks",
     "name": "Zerg Rocks",
     "race": "neutral",
-    "type": "unit",
+    "type": "mechanic",
     "liquipedia_url": "https://liquipedia.net/starcraft2/Destructible_Rocks"
   },
   {
@@ -87,7 +87,7 @@
     "id": "protoss-all_units",
     "name": "All Units",
     "race": "protoss",
-    "type": "unit",
+    "type": "mechanic",
     "liquipedia_url": "https://liquipedia.net/starcraft2/Protoss_Units_(Legacy_of_the_Void)"
   },
   {
@@ -332,7 +332,7 @@
     "id": "terran-all_units",
     "name": "All Units",
     "race": "terran",
-    "type": "unit",
+    "type": "mechanic",
     "liquipedia_url": "https://liquipedia.net/starcraft2/Terran_Units_(Legacy_of_the_Void)"
   },
   {
@@ -374,7 +374,7 @@
     "id": "terran-cloaking_field",
     "name": "Cloaking Field",
     "race": "terran",
-    "type": "unit",
+    "type": "ability",
     "liquipedia_url": "https://liquipedia.net/starcraft2/Cloaking_Field"
   },
   {
@@ -402,7 +402,7 @@
     "id": "terran-enhanced_munitions",
     "name": "Enhanced Munitions",
     "race": "terran",
-    "type": "unit",
+    "type": "upgrade",
     "liquipedia_url": "https://liquipedia.net/starcraft2/SCUpgrade/Enhanced_Munitions"
   },
   {
@@ -458,7 +458,7 @@
     "id": "terran-mag_field_launchers",
     "name": "Mag Field Launchers",
     "race": "terran",
-    "type": "unit",
+    "type": "upgrade",
     "liquipedia_url": "https://liquipedia.net/starcraft2/SCUpgrade/Mag-Field_Launchers"
   },
   {
@@ -500,7 +500,7 @@
     "id": "terran-mule",
     "name": "M.U.L.E.",
     "race": "terran",
-    "type": "unit",
+    "type": "mechanic",
     "liquipedia_url": "https://liquipedia.net/starcraft2/M.U.L.E."
   },
   {
@@ -528,7 +528,7 @@
     "id": "terran-rapid_fire_launchers",
     "name": "Rapid Fire Launchers",
     "race": "terran",
-    "type": "unit",
+    "type": "upgrade",
     "liquipedia_url": "https://liquipedia.net/starcraft2/SCUpgrade/Rapid_Fire_Launchers"
   },
   {
@@ -633,7 +633,7 @@
     "id": "zerg-all_units",
     "name": "All Units",
     "race": "zerg",
-    "type": "unit",
+    "type": "mechanic",
     "liquipedia_url": "https://liquipedia.net/starcraft2/Zerg_Units_(Legacy_of_the_Void)"
   },
   {
@@ -661,7 +661,7 @@
     "id": "zerg-broodling",
     "name": "Broodling",
     "race": "zerg",
-    "type": "unit",
+    "type": "mechanic",
     "liquipedia_url": "https://liquipedia.net/starcraft2/Broodling"
   },
   {
@@ -682,7 +682,7 @@
     "id": "zerg-enduring_locusts",
     "name": "Enduring Locusts",
     "race": "zerg",
-    "type": "unit",
+    "type": "upgrade",
     "liquipedia_url": "https://liquipedia.net/starcraft2/Enduring_Locusts"
   },
   {
@@ -703,7 +703,7 @@
     "id": "zerg-flying_locusts",
     "name": "Flying Locusts",
     "race": "zerg",
-    "type": "unit",
+    "type": "upgrade",
     "liquipedia_url": "https://liquipedia.net/starcraft2/SCUpgrade/Flying_Locusts"
   },
   {
@@ -766,7 +766,7 @@
     "id": "zerg-locust",
     "name": "Locust",
     "race": "zerg",
-    "type": "unit",
+    "type": "mechanic",
     "liquipedia_url": "https://liquipedia.net/starcraft2/Locust"
   },
   {
@@ -794,7 +794,7 @@
     "id": "zerg-mutate_ventral_sacs",
     "name": "Mutate Ventral Sacs",
     "race": "zerg",
-    "type": "unit",
+    "type": "upgrade",
     "liquipedia_url": "https://liquipedia.net/starcraft2/Mutate_Ventral_Sacs"
   },
   {
@@ -857,7 +857,7 @@
     "id": "zerg-spawn_locusts",
     "name": "Spawn Locusts",
     "race": "zerg",
-    "type": "unit",
+    "type": "ability",
     "liquipedia_url": "https://liquipedia.net/starcraft2/SCAbility/Spawn_Locusts"
   },
   {
