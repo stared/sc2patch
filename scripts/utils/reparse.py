@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Stage 5: Re-parse specific patches with different model or validate for Co-op content.
+"""Re-parse specific patches with different model or validate for Co-op content.
 
 Usage:
-    uv run python scripts/5_reparse.py                           # Check all for Co-op
-    uv run python scripts/5_reparse.py --fix                     # Re-parse patches with Co-op
-    uv run python scripts/5_reparse.py --model google/gemini-3-pro-preview --fix
-    uv run python scripts/5_reparse.py 4.11.4                    # Re-parse specific version
+    uv run python scripts/utils/reparse.py                           # Check all for Co-op
+    uv run python scripts/utils/reparse.py --fix                     # Re-parse patches with Co-op
+    uv run python scripts/utils/reparse.py --model google/gemini-3-pro-preview --fix
+    uv run python scripts/utils/reparse.py 4.11.4                    # Re-parse specific version
 """
 
 import json
@@ -14,7 +14,7 @@ import sys
 import time
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 
 from dotenv import load_dotenv
 from rich.console import Console
@@ -26,20 +26,55 @@ load_dotenv()
 
 console = Console()
 
+
+def get_api_key() -> str:
+    """Get OpenRouter API key from environment."""
+    api_key = os.getenv("OPENROUTER_API_KEY")
+    if not api_key:
+        console.print("[red]OPENROUTER_API_KEY not set in environment[/red]")
+        sys.exit(1)
+    return api_key
+
+
 # Co-op keywords to detect
 COOP_KEYWORDS = [
-    'alarak', 'karax', 'zeratul', 'fenix', 'artanis',
-    'swann', 'mengsk', 'nova', 'tychus', 'blaze', 'nikara', 'rattlesnake', 'vega',
-    'zagara', 'stukov', 'abathur', 'dehaka', 'stetmann', 'kerrigan',
-    'mecha', 'infested', 'hercules', 'galleon', 'aberration', 'gary',
-    'bile_launcher', 'sky_fury', 'strike_fighter', 'laser_drill',
-    'automated_refinery', 'war_prism'
+    "alarak",
+    "karax",
+    "zeratul",
+    "fenix",
+    "artanis",
+    "swann",
+    "mengsk",
+    "nova",
+    "tychus",
+    "blaze",
+    "nikara",
+    "rattlesnake",
+    "vega",
+    "zagara",
+    "stukov",
+    "abathur",
+    "dehaka",
+    "stetmann",
+    "kerrigan",
+    "mecha",
+    "infested",
+    "hercules",
+    "galleon",
+    "aberration",
+    "gary",
+    "bile_launcher",
+    "sky_fury",
+    "strike_fighter",
+    "laser_drill",
+    "automated_refinery",
+    "war_prism",
 ]
 
 
 def has_coop_content(changes: list) -> list:
     """Check if changes contain Co-op content."""
-    return [c for c in changes if any(kw in c['entity_id'] for kw in COOP_KEYWORDS)]
+    return [c for c in changes if any(kw in c["entity_id"] for kw in COOP_KEYWORDS)]
 
 
 def load_patch_urls_mapping(urls_path: Path) -> dict[str, str]:
@@ -100,16 +135,19 @@ def main() -> None:
 
     # Set model
     os.environ["OPENROUTER_MODEL"] = model
-    
+
     # Setup paths
     html_dir = Path("data/raw_html")
     patches_dir = Path("data/processed/patches")
     urls_path = Path("data/patch_urls.json")
     url_mapping = load_patch_urls_mapping(urls_path)
 
-    console.print(f"\n[bold]Stage 5: Re-parse/Validate Patches[/bold]")
+    console.print("\n[bold]Re-parse/Validate Patches[/bold]")
     console.print(f"Model: {model}")
     console.print(f"Fix mode: {fix_mode}\n")
+
+    # Get API key for parsing
+    api_key = get_api_key()
 
     if specific_versions:
         # Re-parse specific versions
@@ -125,7 +163,7 @@ def main() -> None:
 
             console.print(f"Re-parsing {html_path.name}...")
             try:
-                result = parse_patch(html_path)
+                result = parse_patch(html_path, version=spec, api_key=api_key)
                 version = result["metadata"]["version"]
                 coop = has_coop_content(result["changes"])
 
@@ -155,64 +193,67 @@ def main() -> None:
                 console.print(f"[yellow]  ⚠ {spec}: {str(e)[:80]}[/yellow]")
 
         return
+    # Scan all patches for Co-op content
+    patches_with_coop = []
+
+    for json_path in sorted(patches_dir.glob("*.json")):
+        with json_path.open() as f:
+            data = json.load(f)
+        coop = has_coop_content(data.get("changes", []))
+        if coop:
+            patches_with_coop.append((json_path, data, coop))
+            console.print(f"[yellow]⚠ {json_path.name}:[/yellow] {len(coop)} Co-op entries")
+            for c in coop:
+                console.print(f"    - {c['entity_id']}: {c['raw_text'][:50]}...")
+
+    if not patches_with_coop:
+        console.print("[green]✓ No Co-op content found in any patches![/green]")
+        return
+
+    console.print(f"\n[bold]Found {len(patches_with_coop)} patches with Co-op content[/bold]")
+
+    if fix_mode:
+        console.print("\n[bold]Re-parsing with updated prompt...[/bold]\n")
+
+        for json_path, data, coop in patches_with_coop:
+            version = data["metadata"]["version"]
+            html_path = find_html_for_version(version, html_dir)
+
+            if not html_path:
+                # Try filename from the json
+                console.print(f"[red]  ✗ {version}: No HTML file found[/red]")
+                continue
+
+            console.print(f"Re-parsing {version} ({html_path.name})...")
+            try:
+                result = parse_patch(html_path, version=version, api_key=api_key)
+                new_coop = has_coop_content(result["changes"])
+
+                # Add URL
+                filename = html_path.stem
+                if filename in url_mapping:
+                    result["metadata"]["url"] = url_mapping[filename]
+
+                # Save
+                output_path = patches_dir / f"{result['metadata']['version']}.json"
+                with output_path.open("w") as f:
+                    json.dump(result, f, indent=2)
+
+                if new_coop:
+                    console.print(
+                        f"[yellow]  ⚠ {version}: Still has {len(new_coop)} Co-op entries[/yellow]"
+                    )
+                else:
+                    console.print(
+                        f"[green]  ✓ {version}: Clean ({len(result['changes'])} changes)[/green]"
+                    )
+
+                time.sleep(2.0)  # Rate limit
+
+            except ParseError as e:
+                console.print(f"[red]  ✗ {version}: {e}[/red]")
     else:
-        # Scan all patches for Co-op content
-        patches_with_coop = []
-        
-        for json_path in sorted(patches_dir.glob("*.json")):
-            with json_path.open() as f:
-                data = json.load(f)
-            coop = has_coop_content(data.get("changes", []))
-            if coop:
-                patches_with_coop.append((json_path, data, coop))
-                console.print(f"[yellow]⚠ {json_path.name}:[/yellow] {len(coop)} Co-op entries")
-                for c in coop:
-                    console.print(f"    - {c['entity_id']}: {c['raw_text'][:50]}...")
-        
-        if not patches_with_coop:
-            console.print("[green]✓ No Co-op content found in any patches![/green]")
-            return
-        
-        console.print(f"\n[bold]Found {len(patches_with_coop)} patches with Co-op content[/bold]")
-        
-        if fix_mode:
-            console.print("\n[bold]Re-parsing with updated prompt...[/bold]\n")
-            
-            for json_path, data, coop in patches_with_coop:
-                version = data["metadata"]["version"]
-                html_path = find_html_for_version(version, html_dir)
-                
-                if not html_path:
-                    # Try filename from the json
-                    console.print(f"[red]  ✗ {version}: No HTML file found[/red]")
-                    continue
-                
-                console.print(f"Re-parsing {version} ({html_path.name})...")
-                try:
-                    result = parse_patch(html_path)
-                    new_coop = has_coop_content(result["changes"])
-                    
-                    # Add URL
-                    filename = html_path.stem
-                    if filename in url_mapping:
-                        result["metadata"]["url"] = url_mapping[filename]
-                    
-                    # Save
-                    output_path = patches_dir / f"{result['metadata']['version']}.json"
-                    with output_path.open("w") as f:
-                        json.dump(result, f, indent=2)
-                    
-                    if new_coop:
-                        console.print(f"[yellow]  ⚠ {version}: Still has {len(new_coop)} Co-op entries[/yellow]")
-                    else:
-                        console.print(f"[green]  ✓ {version}: Clean ({len(result['changes'])} changes)[/green]")
-                    
-                    time.sleep(2.0)  # Rate limit
-                    
-                except ParseError as e:
-                    console.print(f"[red]  ✗ {version}: {e}[/red]")
-        else:
-            console.print("\n[dim]Run with --fix to re-parse these patches[/dim]")
+        console.print("\n[dim]Run with --fix to re-parse these patches[/dim]")
 
 
 if __name__ == "__main__":
