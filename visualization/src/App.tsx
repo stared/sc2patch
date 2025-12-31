@@ -3,11 +3,11 @@ import { loadPatchesData, createUnitsMap, processPatches } from './utils/dataLoa
 import { ProcessedPatchData, Unit, EntityWithPosition, Race } from './types';
 import { PatchGridRenderer } from './utils/patchGridRenderer';
 import { Tooltip } from './components/Tooltip';
+import { Header } from './components/Header';
 import {
   getEraFromVersion,
   eraData,
   eraColors,
-  eraOrder,
   raceColors,
   changeTypeConfig,
   changeTypeOrder,
@@ -222,37 +222,7 @@ function App() {
     <div className="app-container">
       <header className="app-header">
         <div className="header-content">
-          {/* Top row: Title + Attribution */}
-          <div className="header-top">
-            <div className="header-title-group">
-              <h1 className="header-title">
-                15 Years of StarCraft II <span style={{ color: changeTypeConfig.mixed.color }}>Balance Changes</span> Visualized
-              </h1>
-            </div>
-            <div className="attribution">
-              <span className="attribution-author">by <a href="https://p.migdal.pl" target="_blank" rel="noopener noreferrer">Piotr Migdał</a></span>
-              <a href="https://github.com/stared/sc2-balance-timeline" target="_blank" rel="noopener noreferrer" className="attribution-source">source code</a>
-            </div>
-          </div>
-
-          {/* Era Timeline */}
-          <div className="era-timeline">
-            {eraOrder.map((era, i) => (
-              <button
-                key={era}
-                className={`timeline-segment ${selectedEra === era ? 'active' : ''} ${selectedEra && selectedEra !== era ? 'inactive' : ''}`}
-                style={{ '--segment-color': eraColors[era] } as React.CSSProperties}
-                onClick={() => setSelectedEra(selectedEra === era ? null : era)}
-                title={`${eraData[era].name} (${eraData[era].version})`}
-              >
-                <div className="segment-label">{eraData[era].short}</div>
-                <div className="segment-track">
-                  <div className="segment-line" />
-                </div>
-                <div className="segment-date">{eraData[era].releaseDate}{i === eraOrder.length - 1 && <span className="segment-date-now">now</span>}</div>
-              </button>
-            ))}
-          </div>
+          <Header selectedEra={selectedEra} setSelectedEra={setSelectedEra} />
 
           {/* Filter Status */}
           <div className="filter-status">
