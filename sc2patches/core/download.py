@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 from markdownify import markdownify as md
 from pydantic import BaseModel
 
-from sc2patches.extraction import (
+from sc2patches.core.extraction import (
     ExtractionError,
     extract_body_html,
     extract_jsonld,

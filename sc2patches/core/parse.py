@@ -7,9 +7,9 @@ import httpx
 from bs4 import BeautifulSoup
 from pydantic import BaseModel, Field
 
-from sc2patches.extraction import extract_body_html, extract_date_from_jsonld
-from sc2patches.llm_config import DEFAULT_MODEL
-from sc2patches.models import ChangeType, ParsedChange, ParsedPatch, Race
+from sc2patches.core.extraction import extract_body_html, extract_date_from_jsonld
+from sc2patches.core.llm_config import DEFAULT_MODEL
+from sc2patches.core.models import ChangeType, ParsedChange, ParsedPatch, Race
 
 # Path to units database
 UNITS_JSON_PATH = Path(__file__).parent.parent.parent / "data" / "units.json"

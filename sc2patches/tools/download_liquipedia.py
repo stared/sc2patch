@@ -1,14 +1,8 @@
 #!/usr/bin/env python3
-"""Stage 1b: Download patches from Liquipedia for patches with broken Blizzard URLs.
+"""Download patches from Liquipedia for patches with broken Blizzard URLs.
 
 Usage:
-    uv run python scripts/1b_download_liquipedia.py
-
-This script downloads HTML from Liquipedia for patches where the original
-Blizzard URL is broken or unavailable. A warning note is added to indicate
-the source is Liquipedia, not the official Blizzard patch notes.
-
-Only patches with "liquipedia.net" as the primary URL are processed.
+    uv run python sc2patches/tools/download_liquipedia.py
 """
 
 import json
@@ -17,12 +11,10 @@ import time
 from pathlib import Path
 from urllib.parse import urlparse
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
 import httpx
 from rich.console import Console
 
-from sc2patches.logger import PipelineLogger
+from sc2patches.core.logger import PipelineLogger
 
 console = Console()
 

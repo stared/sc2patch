@@ -2,10 +2,10 @@
 """Stage 1: Download patches from URLs and convert to HTML + Markdown.
 
 Usage:
-    uv run python scripts/1_download.py              # Download all patches
-    uv run python scripts/1_download.py --skip-existing  # Skip already downloaded
+    uv run python sc2patches/pipeline/1_download.py
+    uv run python sc2patches/pipeline/1_download.py --skip-existing
 
-Supports new schema with:
+Supports schema with:
 - version: Patch version (e.g., "5.0.15", "4.1.4")
 - url: Primary Blizzard News URL
 - additional_urls: Optional array of additional URLs (for BU merging)
@@ -17,13 +17,11 @@ import sys
 import time
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
 from rich.console import Console
 from rich.progress import BarColumn, Progress, SpinnerColumn, TaskProgressColumn, TextColumn
 
-from sc2patches.download import DownloadError, download_patch, fetch_html, validate_patch_html
-from sc2patches.logger import PipelineLogger
+from sc2patches.core.download import DownloadError, download_patch, fetch_html, validate_patch_html
+from sc2patches.core.logger import PipelineLogger
 
 console = Console()
 

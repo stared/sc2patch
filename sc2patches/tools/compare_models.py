@@ -2,20 +2,18 @@
 """Compare different LLM models on parsing a patch.
 
 Usage:
-    uv run python scripts/compare_models.py 5-0-13
+    uv run python sc2patches/tools/compare_models.py 5-0-13
 """
 
 import json
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
 from dotenv import load_dotenv
 
-import sc2patches.llm_config as llm_config
-from sc2patches.llm_config import ALLOWED_MODELS
-from sc2patches.parse import extract_body_from_html, parse_with_llm
+from sc2patches.core import llm_config
+from sc2patches.core.llm_config import ALLOWED_MODELS
+from sc2patches.core.parse import extract_body_from_html, parse_with_llm
 
 load_dotenv()
 

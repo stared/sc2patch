@@ -4,7 +4,7 @@
 Generates a single patches.json file with all data.
 
 Usage:
-    uv run python scripts/4_export_for_viz.py
+    uv run python sc2patches/pipeline/4_export_for_viz.py
 """
 
 import json
@@ -12,12 +12,10 @@ import re
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
 from rich.console import Console
 
-from sc2patches.logger import PipelineLogger
-from sc2patches.models import ParsedPatch, Patch, PatchesData, Unit
+from sc2patches.core.logger import PipelineLogger
+from sc2patches.core.models import ParsedPatch, Patch, PatchesData, Unit
 
 console = Console()
 

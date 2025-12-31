@@ -30,7 +30,10 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"scripts/utils/*" = [
+"sc2patches/pipeline/*" = [
+    "N999",     # Invalid module name (numbered files like 1_download.py)
+]
+"sc2patches/tools/*" = [
     "PLR0912",  # Too many branches - utility scripts are often complex
     "PLR0915",  # Too many statements - utility scripts are often long
 ]

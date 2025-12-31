@@ -62,10 +62,10 @@
 
 The pipeline has 4 stages:
 
-1. **Download** (`scripts/1_download.py`) - Fetch HTML from Blizzard News
-2. **Parse** (`scripts/2_parse.py`) - Extract structured data with LLM via OpenRouter
-3. **Validate** (`scripts/3_validate.py`) - Check completeness
-4. **Export** (`scripts/4_export_for_viz.py`) - Copy data to visualization
+1. **Download** (`sc2patches/pipeline/1_download.py`) - Fetch HTML from Blizzard News
+2. **Parse** (`sc2patches/pipeline/2_parse.py`) - Extract structured data with LLM via OpenRouter
+3. **Validate** (`sc2patches/pipeline/3_validate.py`) - Check completeness
+4. **Export** (`sc2patches/pipeline/4_export_for_viz.py`) - Copy data to visualization
 
 Each stage:
 
@@ -77,7 +77,7 @@ Each stage:
 
 **API Keys:** `OPENROUTER_API_KEY` is stored in `.env` file (not committed to git)
 
-**LLM Model:** `google/gemini-3-pro-preview` via OpenRouter (defined in `src/sc2patches/llm_config.py`)
+**LLM Model:** `google/gemini-3-pro-preview` via OpenRouter (defined in `sc2patches/core/llm_config.py`)
 
 ## Pipeline Integrity
 
@@ -86,7 +86,7 @@ Each stage:
 If data is wrong:
 
 1. **Fix the pipeline** (scripts or parsing logic)
-2. **Reparse only affected files** using `--only` flag (e.g., `uv run python scripts/2_parse.py --only "4.0"`)
+2. **Reparse only affected files** using `--only` flag (e.g., `uv run python sc2patches/pipeline/2_parse.py --only "4.0"`)
 3. **Don't rerun entire pipeline** unless necessary - parsing is time-consuming and costs API credits
 
 If a patch file has no HTML source (orphaned data):
@@ -99,10 +99,29 @@ If a patch file has no HTML source (orphaned data):
 **Quick start:**
 
 ```bash
-uv run python scripts/1_download.py
-uv run python scripts/2_parse.py  # Uses OPENROUTER_API_KEY from .env
-uv run python scripts/3_validate.py
-uv run python scripts/4_export_for_viz.py
+uv run python sc2patches/pipeline/1_download.py
+uv run python sc2patches/pipeline/2_parse.py  # Uses OPENROUTER_API_KEY from .env
+uv run python sc2patches/pipeline/3_validate.py
+uv run python sc2patches/pipeline/4_export_for_viz.py
+```
+
+**Pipeline arguments:**
+
+```bash
+# Download
+1_download.py --skip-existing    # Skip already downloaded
+
+# Parse (most common)
+2_parse.py                       # Parse all
+2_parse.py --skip-existing       # Skip already parsed
+2_parse.py 5.0.15                # Parse single patch
+2_parse.py --only "4.0"          # Same as above
+```
+
+**Common workflow - reparse single patch:**
+```bash
+uv run python sc2patches/pipeline/2_parse.py 5.0.15
+uv run python sc2patches/pipeline/4_export_for_viz.py
 ```
 
 ## Testing
@@ -114,7 +133,7 @@ Before committing:
 ```bash
 uv run ruff format .
 uv run ruff check .
-uv run ty check src/
+uv run ty check sc2patches/
 ```
 
 ### TypeScript (Visualization)
@@ -129,23 +148,17 @@ pnpm dev            # Start dev server (localhost:5173)
 ## Project Structure
 
 ```
-sc2patches/
-├── DATA.md                  # Patch coverage, known issues
+.
+├── sc2patches/              # Python package
+│   ├── pipeline/            # Main scripts (1-4)
+│   ├── core/                # Library (parse, download, models)
+│   └── tools/               # Utility scripts
 ├── data/
 │   ├── patch_urls.json      # ← ONLY manually edited file
 │   ├── logs/                # Timestamped execution logs
 │   ├── raw_html/            # Downloaded HTML
 │   ├── raw_patches/         # Human-readable Markdown
 │   └── processed/patches/   # Final JSON data (one per patch)
-├── src/sc2patches/          # Python library
-│   ├── logger.py            # Markdown log generation
-│   ├── download.py          # Download & convert logic
-│   └── parse.py             # LLM parsing logic
-├── scripts/                 # Pipeline scripts
-│   ├── 1_download.py        # Stage 1: Download
-│   ├── 2_parse.py           # Stage 2: Parse with LLM
-│   ├── 3_validate.py        # Stage 3: Validate
-│   └── 4_export_for_viz.py  # Stage 4: Export
 ├── visualization/           # React + Vite visualization
 │   ├── src/                 # React components
 │   └── public/data/         # Exported data (copies from data/)

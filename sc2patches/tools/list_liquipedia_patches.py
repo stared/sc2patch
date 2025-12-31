@@ -4,8 +4,8 @@
 Uses LLM to extract patch information from Liquipedia's patches page.
 
 Usage:
-    uv run python scripts/list_liquipedia_patches.py
-    uv run python scripts/list_liquipedia_patches.py --output patches_list.json
+    uv run python sc2patches/tools/list_liquipedia_patches.py
+    uv run python sc2patches/tools/list_liquipedia_patches.py --output patches_list.json
 """
 
 import argparse
@@ -20,7 +20,7 @@ from markdownify import markdownify
 from rich.console import Console
 from rich.table import Table
 
-from sc2patches.llm_config import DEFAULT_MODEL
+from sc2patches.core.llm_config import DEFAULT_MODEL
 
 load_dotenv()
 

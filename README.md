@@ -79,10 +79,10 @@ Copy `.env.example` to `.env` and add your `OPENROUTER_API_KEY`.
 
 ```bash
 uv sync
-uv run python scripts/1_download.py
-uv run python scripts/2_parse.py
-uv run python scripts/3_validate.py
-uv run python scripts/4_export_for_viz.py
+uv run python sc2patches/pipeline/1_download.py
+uv run python sc2patches/pipeline/2_parse.py
+uv run python sc2patches/pipeline/3_validate.py
+uv run python sc2patches/pipeline/4_export_for_viz.py
 ```
 
 Most of the development was done with Claude Code and Opus 4.5. See [my blog post praising Claude Code + Gemini](https://quesma.com/blog/claude-skills-not-antigravity/).
@@ -90,8 +90,10 @@ Most of the development was done with Claude Code and Opus 4.5. See [my blog pos
 ### Structure
 
 ```
-├── scripts/           # Pipeline (1-4)
-├── src/sc2patches/    # Python library
+├── sc2patches/        # Python package
+│   ├── pipeline/      # Main scripts (1-4)
+│   ├── core/          # Library code
+│   └── tools/         # Utility scripts
 ├── data/              # Source URLs, processed JSON
 └── visualization/     # React frontend
 ```

@@ -4,8 +4,8 @@
 Uses LLM to find the official Blizzard link(s) from a Liquipedia patch page.
 
 Usage:
-    uv run python scripts/get_blizzard_url_from_liquipedia.py https://liquipedia.net/starcraft2/Patch_5.0.15
-    uv run python scripts/get_blizzard_url_from_liquipedia.py "1.5.4"  # Auto-constructs URL
+    uv run python sc2patches/tools/get_blizzard_url_from_liquipedia.py https://liquipedia.net/starcraft2/Patch_5.0.15
+    uv run python sc2patches/tools/get_blizzard_url_from_liquipedia.py "1.5.4"
 """
 
 import argparse
@@ -19,7 +19,7 @@ from dotenv import load_dotenv
 from markdownify import markdownify
 from rich.console import Console
 
-from sc2patches.llm_config import DEFAULT_MODEL
+from sc2patches.core.llm_config import DEFAULT_MODEL
 
 load_dotenv()
 

@@ -2,7 +2,7 @@
 """Stage 3: Validate processed patches for completeness and correctness.
 
 Usage:
-    uv run python scripts/3_validate.py
+    uv run python sc2patches/pipeline/3_validate.py
 """
 
 import json
@@ -10,12 +10,10 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
 from rich.console import Console
 from rich.table import Table
 
-from sc2patches.logger import PipelineLogger
+from sc2patches.core.logger import PipelineLogger
 
 console = Console()
 

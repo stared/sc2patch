@@ -2,9 +2,9 @@
 """Stage 2: Parse HTML patches with LLM to extract structured balance changes.
 
 Usage:
-    uv run python scripts/2_parse.py                    # Parse all HTML files
-    uv run python scripts/2_parse.py --skip-existing    # Skip already parsed
-    uv run python scripts/2_parse.py 5.0.15             # Parse specific version
+    uv run python sc2patches/pipeline/2_parse.py                    # Parse all
+    uv run python sc2patches/pipeline/2_parse.py --skip-existing    # Skip already parsed
+    uv run python sc2patches/pipeline/2_parse.py 5.0.15             # Parse specific version
 
 Supports multi-HTML parsing when patches have additional_urls in patch_urls.json.
 The LLM parses main + BU HTML files together for intelligent deduplication.
@@ -18,16 +18,14 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
 from dotenv import load_dotenv
 from rich.console import Console
 from rich.progress import BarColumn, Progress, SpinnerColumn, TaskProgressColumn, TextColumn
 
-from sc2patches.extraction import url_to_filename
-from sc2patches.logger import PipelineLogger
-from sc2patches.models import PatchConfig
-from sc2patches.parse import ParseError, parse_patch, parse_patches_combined
+from sc2patches.core.extraction import url_to_filename
+from sc2patches.core.logger import PipelineLogger
+from sc2patches.core.models import PatchConfig
+from sc2patches.core.parse import ParseError, parse_patch, parse_patches_combined
 
 # Load environment variables from .env file
 load_dotenv()

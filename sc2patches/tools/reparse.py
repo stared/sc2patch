@@ -2,10 +2,9 @@
 """Re-parse specific patches with different model or validate for Co-op content.
 
 Usage:
-    uv run python scripts/utils/reparse.py                           # Check all for Co-op
-    uv run python scripts/utils/reparse.py --fix                     # Re-parse patches with Co-op
-    uv run python scripts/utils/reparse.py --model google/gemini-3-pro-preview --fix
-    uv run python scripts/utils/reparse.py 4.11.4                    # Re-parse specific version
+    uv run python sc2patches/tools/reparse.py
+    uv run python sc2patches/tools/reparse.py --fix
+    uv run python sc2patches/tools/reparse.py 4.11.4
 """
 
 import json
@@ -14,12 +13,10 @@ import sys
 import time
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
-
 from dotenv import load_dotenv
 from rich.console import Console
 
-from sc2patches.parse import ParseError, parse_patch
+from sc2patches.core.parse import ParseError, parse_patch
 
 # Load environment variables from .env file
 load_dotenv()
