@@ -12,9 +12,7 @@
 import { ProcessedPatchData, Change, ProcessedEntity, RACES, Race, Unit } from '../types';
 import { layout } from '../utils/uxSettings';
 
-// ============================================================================
-// TYPES
-// ============================================================================
+// Types
 
 /** Header layout data */
 export interface HeaderLayout {
@@ -73,9 +71,7 @@ export interface LayoutInput {
   selectedRace: Race | null;
 }
 
-// ============================================================================
-// MAIN ENTRY POINT
-// ============================================================================
+// Main entry point
 
 /**
  * Calculate complete layout for the visualization.
@@ -120,9 +116,7 @@ export function calculateLayout(input: LayoutInput, svgWidth: number): LayoutRes
   };
 }
 
-// ============================================================================
-// HELPERS
-// ============================================================================
+// Helpers
 
 function getColumnWidth(svgWidth: number, isFiltered: boolean): number {
   const available = svgWidth - layout.patchLabelWidth;
@@ -139,9 +133,7 @@ function getHeaderX(_svgWidth: number, columnWidth: number, columnIndex: number)
   return layout.patchLabelWidth + columnIndex * columnWidth + contentWidth / 2;
 }
 
-// ============================================================================
-// HEADER LAYOUT
-// ============================================================================
+// Header layout
 
 function calculateHeaderPositions(input: LayoutInput, svgWidth: number): HeaderLayout[] {
   const availableWidth = svgWidth - layout.patchLabelWidth;
@@ -187,9 +179,7 @@ function calculateHeaderPositions(input: LayoutInput, svgWidth: number): HeaderL
   });
 }
 
-// ============================================================================
-// PATCH ROW LAYOUT
-// ============================================================================
+// Patch row layout
 
 function calculatePatchRows(input: LayoutInput, columnWidth: number): PatchRowLayout[] {
   const cellsPerRow = getCellsPerRow(columnWidth);
@@ -236,9 +226,7 @@ function calculatePatchRows(input: LayoutInput, columnWidth: number): PatchRowLa
   });
 }
 
-// ============================================================================
-// ENTITY LAYOUT
-// ============================================================================
+// Entity layout
 
 function calculateEntityPositions(
   input: LayoutInput,
@@ -298,9 +286,7 @@ function calculateEntityPositions(
   return entities;
 }
 
-// ============================================================================
-// CHANGES LAYOUT
-// ============================================================================
+// Changes layout
 
 function calculateChangesLayout(
   rows: PatchRowLayout[],

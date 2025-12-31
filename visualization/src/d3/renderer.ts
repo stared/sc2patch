@@ -16,9 +16,7 @@ import {
 // Extend d3-selection to include transition
 select.prototype.transition = transition;
 
-// ============================================================================
-// TYPES
-// ============================================================================
+// Types
 
 interface RenderState {
   patches: ProcessedPatchData[];
@@ -32,11 +30,7 @@ interface RenderState {
   setSelectedRace?: (race: Race | null) => void;
 }
 
-// ============================================================================
-// ANIMATION TIMING
-// Phased animation: exit → move → enter
-// ============================================================================
-
+// Animation timing - phased: exit → move → enter
 const PHASE = {
   EXIT_DURATION: timing.fade,      // 300ms - exiting elements fade out
   MOVE_DELAY: timing.fade,         // 300ms - wait for exits
@@ -44,10 +38,6 @@ const PHASE = {
   ENTER_DELAY: timing.fade + timing.move,  // 700ms - wait for moves
   ENTER_DURATION: timing.fade      // 300ms - new elements fade in
 };
-
-// ============================================================================
-// RENDERER CLASS
-// ============================================================================
 
 export class PatchGridRenderer {
   private svg: Selection<SVGSVGElement, unknown, null, undefined>;
@@ -59,10 +49,6 @@ export class PatchGridRenderer {
     this.svg = select(svgElement);
     this.initializeDefs();
   }
-
-  // ==========================================================================
-  // PUBLIC API
-  // ==========================================================================
 
   render(state: RenderState, options: { immediate?: boolean } = {}): void {
     // Set immediate mode: first render or explicit request
@@ -102,18 +88,10 @@ export class PatchGridRenderer {
     this.isFirstRender = false;
   }
 
-  // ==========================================================================
-  // HELPERS
-  // ==========================================================================
-
-  // Returns 0 if immediate mode, else the provided value
+  // Helper: returns 0 if immediate mode, else the provided value
   private t(value: number): number {
     return this.isImmediate ? 0 : value;
   }
-
-  // ==========================================================================
-  // INITIALIZATION
-  // ==========================================================================
 
   private initializeDefs(): void {
     if (!this.svg.select('defs').empty()) return;
@@ -134,10 +112,6 @@ export class PatchGridRenderer {
       .attr('rx', 4).attr('ry', 4);
   }
 
-  // ==========================================================================
-  // SCROLL HELPER
-  // ==========================================================================
-
   private scrollToTargetPosition(targetY: number): void {
     const svgElement = this.svg.node();
     if (!svgElement) return;
@@ -155,10 +129,6 @@ export class PatchGridRenderer {
       window.scrollTo({ top: Math.max(0, targetScrollY), behavior: 'smooth' });
     }
   }
-
-  // ==========================================================================
-  // HEADERS - Unified join pattern
-  // ==========================================================================
 
   private renderHeaders(layoutResult: LayoutResult, state: RenderState): void {
     let headersContainer = this.svg.select<SVGGElement>('.headers-container');
@@ -293,10 +263,6 @@ export class PatchGridRenderer {
       });
   }
 
-  // ==========================================================================
-  // PATCHES - Unified join pattern
-  // ==========================================================================
-
   private renderPatches(layoutResult: LayoutResult, _state: RenderState): void {
     let patchesContainer = this.svg.select<SVGGElement>('.patches-container');
     if (patchesContainer.empty()) {
@@ -364,10 +330,6 @@ export class PatchGridRenderer {
         )
       );
   }
-
-  // ==========================================================================
-  // ENTITIES - Unified join pattern
-  // ==========================================================================
 
   private renderEntities(layoutResult: LayoutResult, state: RenderState): void {
     let entitiesContainer = this.svg.select<SVGGElement>('.entities-container');
@@ -456,10 +418,6 @@ export class PatchGridRenderer {
       })
       .on('mouseleave', () => state.setTooltip({ entity: null, visible: false }));
   }
-
-  // ==========================================================================
-  // CHANGES - Unified join pattern
-  // ==========================================================================
 
   private renderChanges(layoutResult: LayoutResult): void {
     // Remove container if no changes
