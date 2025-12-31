@@ -205,10 +205,19 @@ body {
   margin: 0;
   color: #ccc;
   transition: all 0.15s ease;
+  filter: drop-shadow(0 0 0 transparent) brightness(1);
 }
 
 button.filter-chip { cursor: pointer; }
-button.filter-chip:hover, .filter-chip.active { color: var(--chip-color); background: rgba(255,255,255,0.08); }
+button.filter-chip:hover {
+  color: var(--chip-color);
+  background: rgba(255,255,255,0.08);
+  filter: drop-shadow(0 0 6px var(--chip-color)) brightness(1.2);
+}
+.filter-chip.active {
+  color: var(--chip-color);
+  background: rgba(255,255,255,0.08);
+}
 .filter-chip.inactive { opacity: 0.35; }
 .filter-chip.inactive:hover { opacity: 0.6; }
 
