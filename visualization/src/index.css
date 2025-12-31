@@ -181,7 +181,7 @@ body {
 .segment-line {
   flex: 1;
   height: 3px;
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--segment-color);
   position: relative;
   overflow: hidden;
   transition: background 0.3s ease, box-shadow 0.3s ease;
@@ -217,9 +217,8 @@ body {
   100% { left: 100%; opacity: 0; }
 }
 
-/* Non-active segments show dimmed color */
-.timeline-segment:not(.active) .segment-line {
-  background: var(--segment-color);
+/* Inactive segments (when another era is selected) show dimmed */
+.timeline-segment.inactive .segment-line {
   opacity: 0.4;
 }
 
