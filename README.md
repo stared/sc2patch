@@ -41,7 +41,7 @@ HTML (Blizzard) → LLM Parse → Validate → JSON → React/D3
 ### Stack
 - **Frontend:** React, D3.js, TypeScript, Vite
 - **Backend:** Python 3.12, Pydantic, httpx
-- **LLM:** [Gemini 3 Pro](https://openrouter.ai/google/gemini-3-pro-preview) via [OpenRouter](https://openrouter.ai/)
+- **LLM:** [Gemini 3 Pro](https://openrouter.ai/google/gemini-3-pro-preview) via [OpenRouter](https://openrouter.ai/) (tested GPT-4.1, GPT-5.2, Gemini Flash — Gemini 3 Pro seems to work the best for this data)
 
 ### Quick Start
 
