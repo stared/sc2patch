@@ -46,7 +46,6 @@ export const PatchesDataSchema = z.object({
 
 export type Race = z.infer<typeof RaceSchema>;
 export type ChangeType = z.infer<typeof ChangeTypeSchema>;
-export type UnitType = z.infer<typeof UnitTypeSchema>;
 export type Unit = z.infer<typeof UnitSchema>;
 export type Change = z.infer<typeof ChangeSchema>;
 export type Patch = z.infer<typeof PatchSchema>;
