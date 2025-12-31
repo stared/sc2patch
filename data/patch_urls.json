@@ -12,7 +12,8 @@
   {
     "version": "5.0.13",
     "url": "https://news.blizzard.com/en-us/article/24078322/starcraft-ii-5-0-13-patch-notes",
-    "liquipedia": "https://liquipedia.net/starcraft2/Patch_5.0.13"
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_5.0.13",
+    "parse_hint": "EXCLUDE the Vespene Geyser footprint change. This is NOT a balance change - it's a compensatory fix to maintain existing worker-geyser interactions after the worker inner radius was changed."
   },
   {
     "version": "5.0.12",
@@ -131,7 +132,8 @@
   {
     "version": "3.8.0",
     "url": "https://news.blizzard.com/en-us/starcraft2/20372512/starcraft-ii-legacy-of-the-void-3-8-0-patch-notes",
-    "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.8.0"
+    "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.8.0",
+    "parse_hint": "The 'Rocks now have 0 armor' change is in Co-op Missions section. Do NOT include it - Co-op only, not Versus."
   },
   {
     "version": "3.3.0",
@@ -212,7 +214,8 @@
     "version": "1.4.3 BU",
     "url": "https://liquipedia.net/starcraft2/Patch_1.4.3",
     "liquipedia": "https://liquipedia.net/starcraft2/Patch_1.4.3",
-    "note": "Balance Update - server-side, no patch download"
+    "note": "Balance Update - server-side, no patch download",
+    "parse_hint": "This page has BOTH main patch 1.4.3 AND Balance Update. ONLY extract Balance Update section (dated May 10, 2012): Observer build time, Overlord speed, Queen range. Do NOT include main patch changes."
   },
   {
     "version": "1.5.3 BU",

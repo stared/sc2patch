@@ -19,12 +19,27 @@ dev = [
 ]
 
 [tool.ruff]
-line-length = 100
+line-length = 140
 target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "UP", "B", "A", "C4", "DTZ", "RET", "SIM", "ARG", "PTH", "PL"]
-ignore = ["UP017"]  # ty doesn't recognize datetime.UTC yet
+ignore = [
+    "UP017",   # ty doesn't recognize datetime.UTC yet
+    "PLR2004", # Magic value comparison - too strict for utility scripts
+]
+
+[tool.ruff.lint.per-file-ignores]
+"sc2patches/pipeline/*" = [
+    "N999",     # Invalid module name (numbered files like 1_download.py)
+]
+"sc2patches/tools/*" = [
+    "PLR0912",  # Too many branches - utility scripts are often complex
+    "PLR0915",  # Too many statements - utility scripts are often long
+]
+"sc2patches/core/parse.py" = [
+    "PLR0913",  # Too many arguments - parse_with_llm needs multiple options
+]
 
 [tool.ruff.format]
 quote-style = "double"
@@ -36,6 +51,6 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
-    "ruff>=0.13.3",
-    "ty>=0.0.1a21",
+    "ruff>=0.9",
+    "ty>=0.0.8",
 ]

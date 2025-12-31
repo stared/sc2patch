@@ -64,6 +64,43 @@ export class PatchGridRenderer {
   }
 
   // ==========================================================================
+  // SCROLL HELPERS
+  // ==========================================================================
+
+  /**
+   * Scroll to make selected entity visible at its TARGET position.
+   * Called during animation so scroll happens concurrently with movement.
+   * @param targetY - The Y coordinate in SVG space where the entity will end up
+   */
+  private scrollToTargetPosition(targetY: number): void {
+    const svgElement = this.svg.node();
+    if (!svgElement) return;
+
+    // Convert SVG Y to page Y
+    const svgRect = svgElement.getBoundingClientRect();
+    const pageY = svgRect.top + window.scrollY + targetY;
+
+    // Account for sticky header
+    const headerHeight = 200;
+    const viewportHeight = window.innerHeight;
+    const visibleTop = window.scrollY + headerHeight;
+    const visibleBottom = window.scrollY + viewportHeight - 50;
+
+    // Check if target will be visible
+    const isVisible = pageY > visibleTop && pageY < visibleBottom;
+
+    if (!isVisible) {
+      // Scroll to position element comfortably below header
+      const targetScrollY = pageY - headerHeight - 50;
+
+      window.scrollTo({
+        top: Math.max(0, targetScrollY),
+        behavior: 'smooth'
+      });
+    }
+  }
+
+  // ==========================================================================
   // HEADER POSITION HELPERS - Single source of truth
   // ==========================================================================
 
@@ -608,8 +645,15 @@ export class PatchGridRenderer {
     ]);
 
     // Phase 2 (600-1400ms): Move selected entities, patches, and headers together
+    // Also start scrolling concurrently so user sees the destination
     const selectedHeader = this.svg.selectAll('.race-header')
       .filter(function() { return select(this).datum() === selectedRace; });
+
+    // Get first selected entity's target position and start scroll immediately
+    const firstSelected = entities.data().find(d => d.animationGroup === 'SELECTED');
+    if (firstSelected?.targetY !== undefined) {
+      this.scrollToTargetPosition(firstSelected.targetY);
+    }
 
     await Promise.all([
       entities

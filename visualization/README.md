@@ -107,7 +107,7 @@ Unit and building images are located in `public/assets/units/`:
 The visualization is deployed to GitHub Pages:
 
 ```bash
-pnpm build          # Creates dist/ with BASE_URL=/sc2patch/
+pnpm build          # Creates dist/ with base=/sc2-balance-timeline/
 # Push to GitHub, Actions will deploy
 ```
 
@@ -116,8 +116,8 @@ pnpm build          # Creates dist/ with BASE_URL=/sc2patch/
 ## Known Issues
 
 - Some older patches may have incomplete data
-- Ramp range changes are split by race (should be neutral)
-- Missing images fall back to placeholder (gray question mark)
+- Missing images fall back to placeholder
+- See [DATA.md](../DATA.md) for data-level issues (e.g., ramp entity IDs)
 
 ## License
 
