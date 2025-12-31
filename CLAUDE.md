@@ -38,6 +38,12 @@
 - Example - BAD: `grep "creep_tumor" data/processed/patches/*.json`
 - Example - GOOD: Load all JSON files with Python, iterate and check with Gemini
 
+## GEMINI CONSULTANT USAGE
+
+- Use `--thinking high` (default), avoid `low`
+- Pass open-ended questions (give space, don't confine to few options)
+- Always pass full relevant files via `-c "$(cat file.ts)"`
+
 ## VERIFY ALL LINKS
 
 - When adding any URL or link, ALWAYS verify it exists and has expected content

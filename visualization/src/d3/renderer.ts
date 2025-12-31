@@ -1,6 +1,6 @@
 import { select, type Selection } from 'd3-selection';
 import { transition } from 'd3-transition';
-import { easeCubicOut } from 'd3-ease';
+import { easeCubicInOut } from 'd3-ease';
 import { ProcessedPatchData, ProcessedChange, Race, Unit, EntityWithPosition } from '../types';
 import { layout, timing, raceColors, eraColors, getChangeIndicator, getChangeColor, getEraFromVersion, type ChangeType } from '../utils/uxSettings';
 import {
@@ -205,7 +205,7 @@ export class PatchGridRenderer {
         update => update.call(u => u.transition()
           .duration(this.t(PHASE.MOVE_DURATION))
           .delay(this.t(PHASE.MOVE_DELAY))
-          .ease(easeCubicOut)
+          .ease(easeCubicInOut)
           .attr('transform', d => `translate(${d.x}, 0)`)
           .style('opacity', d => d.opacity)
           .style('pointer-events', d => d.opacity > 0 ? 'all' : 'none')
@@ -351,7 +351,7 @@ export class PatchGridRenderer {
         update => update.call(u => u.transition()
           .delay(this.t(PHASE.MOVE_DELAY))
           .duration(this.t(PHASE.MOVE_DURATION))
-          .ease(easeCubicOut)
+          .ease(easeCubicInOut)
           .attr('transform', d => `translate(0, ${d.y})`)
           .style('opacity', 1)
         ),
@@ -423,7 +423,7 @@ export class PatchGridRenderer {
         update => update.call(u => u.transition()
           .delay(this.t(PHASE.MOVE_DELAY))
           .duration(this.t(PHASE.MOVE_DURATION))
-          .ease(easeCubicOut)
+          .ease(easeCubicInOut)
           .attr('transform', d => `translate(${d.x}, ${d.y})`)
           .style('opacity', 1)
         ),
@@ -514,7 +514,7 @@ export class PatchGridRenderer {
         update => update.call(u => u.transition()
           .delay(this.t(PHASE.MOVE_DELAY))
           .duration(this.t(PHASE.MOVE_DURATION))
-          .ease(easeCubicOut)
+          .ease(easeCubicInOut)
           .attr('transform', d => `translate(${d.x}, ${d.y})`)
           .style('opacity', 1)  // CRITICAL: ensure visibility after interrupted ENTER
         ),

@@ -126,7 +126,7 @@ export function calculateLayout(input: LayoutInput, svgWidth: number): LayoutRes
 
 function getColumnWidth(svgWidth: number, isFiltered: boolean): number {
   const available = svgWidth - layout.patchLabelWidth;
-  return isFiltered ? available : Math.floor(available / RACES.length);
+  return isFiltered ? available : available / RACES.length;
 }
 
 function getCellsPerRow(columnWidth: number): number {
@@ -145,7 +145,7 @@ function getHeaderX(_svgWidth: number, columnWidth: number, columnIndex: number)
 
 function calculateHeaderPositions(input: LayoutInput, svgWidth: number): HeaderLayout[] {
   const availableWidth = svgWidth - layout.patchLabelWidth;
-  const gridColumnWidth = Math.floor(availableWidth / RACES.length);
+  const gridColumnWidth = availableWidth / RACES.length;
 
   // Determine which race header to show
   let visibleRace: Race | null = null;
@@ -165,10 +165,13 @@ function calculateHeaderPositions(input: LayoutInput, svgWidth: number): HeaderL
   return RACES.map((race, index) => {
     const isVisible = visibleRace === null || race === visibleRace;
 
-    // Position: centered if filtered, grid position otherwise
-    const x = visibleRace !== null
-      ? getHeaderX(svgWidth, availableWidth, 0)
-      : getHeaderX(svgWidth, gridColumnWidth, index);
+    // Grid position (natural column position for 4-column layout)
+    const gridX = getHeaderX(svgWidth, gridColumnWidth, index);
+
+    // Position: selected header goes to center of available space (simple continuous function)
+    // Others stay at their grid position (they fade out anyway)
+    const centeredX = layout.patchLabelWidth + availableWidth / 2;
+    const x = (race === visibleRace) ? centeredX : gridX;
 
     // Text: unit name if unit selected and this is its race, otherwise race name
     const text = (headerText && race === visibleRace)
@@ -267,7 +270,7 @@ function calculateEntityPositions(
       const racesToShow = input.selectedRace ? [input.selectedRace] : RACES;
       const raceColumnWidth = input.selectedRace
         ? (svgWidth - layout.patchLabelWidth)
-        : Math.floor((svgWidth - layout.patchLabelWidth) / RACES.length);
+        : (svgWidth - layout.patchLabelWidth) / RACES.length;
 
       racesToShow.forEach((race, raceIndex) => {
         const raceEntities = Array.from(patch.entities.entries())
