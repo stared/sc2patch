@@ -31,6 +31,7 @@ function App() {
   const rendererRef = useRef<PatchGridRenderer | null>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const prevWindowWidthRef = useRef(window.innerWidth);
   const [tooltipPosition, setTooltipPosition] = useState<{ left: number; top: number; flipped: boolean }>({ left: 0, top: 0, flipped: false });
 
   // Calculate tooltip position - left or right of icon, FIXED distance
@@ -167,6 +168,10 @@ function App() {
       rendererRef.current = new PatchGridRenderer(svgRef.current);
     }
 
+    // Detect if this render is due to resize
+    const isResize = windowWidth !== prevWindowWidthRef.current;
+    prevWindowWidthRef.current = windowWidth;
+
     rendererRef.current.render({
       patches: sortedAndFilteredPatches,
       selectedEntityId,
@@ -177,7 +182,7 @@ function App() {
       sortOrder,
       setSortOrder,
       setSelectedRace
-    });
+    }, { immediate: isResize });
   }, [sortedAndFilteredPatches, selectedEntityId, units, selectedRace, selectedEra, sortOrder, windowWidth]);
 
   if (loading) {

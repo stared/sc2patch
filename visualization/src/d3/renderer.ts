@@ -52,6 +52,8 @@ const PHASE = {
 export class PatchGridRenderer {
   private svg: Selection<SVGSVGElement, unknown, null, undefined>;
   private svgWidth: number = 1400;
+  private isFirstRender: boolean = true;
+  private isImmediate: boolean = false; // Set per render() call
 
   constructor(svgElement: SVGSVGElement) {
     this.svg = select(svgElement);
@@ -62,7 +64,10 @@ export class PatchGridRenderer {
   // PUBLIC API
   // ==========================================================================
 
-  render(state: RenderState): void {
+  render(state: RenderState, options: { immediate?: boolean } = {}): void {
+    // Set immediate mode: first render or explicit request
+    this.isImmediate = options.immediate || this.isFirstRender;
+
     // Update SVG width
     const svgElement = this.svg.node();
     const containerWidth = svgElement?.parentElement?.clientWidth || 1400;
@@ -92,6 +97,18 @@ export class PatchGridRenderer {
     this.renderPatches(layoutResult, state);
     this.renderEntities(layoutResult, state);
     this.renderChanges(layoutResult);
+
+    // Clear first render flag
+    this.isFirstRender = false;
+  }
+
+  // ==========================================================================
+  // HELPERS
+  // ==========================================================================
+
+  // Returns 0 if immediate mode, else the provided value
+  private t(value: number): number {
+    return this.isImmediate ? 0 : value;
   }
 
   // ==========================================================================
@@ -186,8 +203,8 @@ export class PatchGridRenderer {
 
         // UPDATE: Existing headers - animate to new position/opacity
         update => update.call(u => u.transition()
-          .duration(PHASE.MOVE_DURATION)
-          .delay(PHASE.MOVE_DELAY)
+          .duration(this.t(PHASE.MOVE_DURATION))
+          .delay(this.t(PHASE.MOVE_DELAY))
           .ease(easeCubicOut)
           .attr('transform', d => `translate(${d.x}, 0)`)
           .style('opacity', d => d.opacity)
@@ -196,7 +213,7 @@ export class PatchGridRenderer {
 
         // EXIT: Headers being removed (shouldn't happen, but handle gracefully)
         exit => exit.call(e => e.transition()
-          .duration(PHASE.EXIT_DURATION)
+          .duration(this.t(PHASE.EXIT_DURATION))
           .style('opacity', 0)
           .remove()
         )
@@ -257,9 +274,9 @@ export class PatchGridRenderer {
         enter => enter.append('text')
           .attr('class', 'unit-links wiki-link')
           .style('opacity', 0)
-          .call(e => e.transition().delay(PHASE.ENTER_DELAY).duration(PHASE.ENTER_DURATION).style('opacity', 1)),
+          .call(e => e.transition().delay(this.t(PHASE.ENTER_DELAY)).duration(this.t(PHASE.ENTER_DURATION)).style('opacity', 1)),
         update => update,
-        exit => exit.transition().duration(PHASE.EXIT_DURATION).style('opacity', 0).remove()
+        exit => exit.transition().duration(this.t(PHASE.EXIT_DURATION)).style('opacity', 0).remove()
       )
       .attr('x', this.svgWidth - 20).attr('y', 16).attr('text-anchor', 'end')
       .style('fill', '#666').style('font-size', '11px').style('cursor', 'pointer')
@@ -323,8 +340,8 @@ export class PatchGridRenderer {
 
           // Fade in after move phase
           pg.transition()
-            .delay(PHASE.ENTER_DELAY)
-            .duration(PHASE.ENTER_DURATION)
+            .delay(this.t(PHASE.ENTER_DELAY))
+            .duration(this.t(PHASE.ENTER_DURATION))
             .style('opacity', 1);
 
           return pg;
@@ -332,8 +349,8 @@ export class PatchGridRenderer {
 
         // UPDATE: Existing patches move to new position
         update => update.call(u => u.transition()
-          .delay(PHASE.MOVE_DELAY)
-          .duration(PHASE.MOVE_DURATION)
+          .delay(this.t(PHASE.MOVE_DELAY))
+          .duration(this.t(PHASE.MOVE_DURATION))
           .ease(easeCubicOut)
           .attr('transform', d => `translate(0, ${d.y})`)
           .style('opacity', 1)
@@ -341,7 +358,7 @@ export class PatchGridRenderer {
 
         // EXIT: Patches fade out
         exit => exit.call(e => e.transition()
-          .duration(PHASE.EXIT_DURATION)
+          .duration(this.t(PHASE.EXIT_DURATION))
           .style('opacity', 0)
           .remove()
         )
@@ -395,8 +412,8 @@ export class PatchGridRenderer {
 
           // Fade in after move phase
           eg.transition()
-            .delay(PHASE.ENTER_DELAY)
-            .duration(PHASE.ENTER_DURATION)
+            .delay(this.t(PHASE.ENTER_DELAY))
+            .duration(this.t(PHASE.ENTER_DURATION))
             .style('opacity', 1);
 
           return eg;
@@ -404,8 +421,8 @@ export class PatchGridRenderer {
 
         // UPDATE: Existing entities move to new position
         update => update.call(u => u.transition()
-          .delay(PHASE.MOVE_DELAY)
-          .duration(PHASE.MOVE_DURATION)
+          .delay(this.t(PHASE.MOVE_DELAY))
+          .duration(this.t(PHASE.MOVE_DURATION))
           .ease(easeCubicOut)
           .attr('transform', d => `translate(${d.x}, ${d.y})`)
           .style('opacity', 1)
@@ -413,7 +430,7 @@ export class PatchGridRenderer {
 
         // EXIT: Entities fade out in place
         exit => exit.call(e => e.transition()
-          .duration(PHASE.EXIT_DURATION)
+          .duration(this.t(PHASE.EXIT_DURATION))
           .style('opacity', 0)
           .remove()
         )
@@ -486,8 +503,8 @@ export class PatchGridRenderer {
 
           // Fade in last
           cg.transition()
-            .delay(PHASE.ENTER_DELAY)
-            .duration(PHASE.ENTER_DURATION)
+            .delay(this.t(PHASE.ENTER_DELAY))
+            .duration(this.t(PHASE.ENTER_DURATION))
             .style('opacity', 1);
 
           return cg;
@@ -495,8 +512,8 @@ export class PatchGridRenderer {
 
         // UPDATE: Move to new position AND ensure visible
         update => update.call(u => u.transition()
-          .delay(PHASE.MOVE_DELAY)
-          .duration(PHASE.MOVE_DURATION)
+          .delay(this.t(PHASE.MOVE_DELAY))
+          .duration(this.t(PHASE.MOVE_DURATION))
           .ease(easeCubicOut)
           .attr('transform', d => `translate(${d.x}, ${d.y})`)
           .style('opacity', 1)  // CRITICAL: ensure visibility after interrupted ENTER
@@ -504,7 +521,7 @@ export class PatchGridRenderer {
 
         // EXIT: Fade out
         exit => exit.call(e => e.transition()
-          .duration(PHASE.EXIT_DURATION)
+          .duration(this.t(PHASE.EXIT_DURATION))
           .style('opacity', 0)
           .remove()
         )
