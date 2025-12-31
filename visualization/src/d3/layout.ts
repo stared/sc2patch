@@ -124,7 +124,7 @@ function getColumnWidth(svgWidth: number, isFiltered: boolean): number {
 }
 
 function getCellsPerRow(columnWidth: number): number {
-  return Math.max(1, Math.floor(columnWidth / (layout.cellSize + layout.cellGap)));
+  return Math.max(1, Math.floor((columnWidth - layout.raceColumnPadding) / (layout.cellSize + layout.cellGap)));
 }
 
 function getHeaderX(_svgWidth: number, columnWidth: number, columnIndex: number): number {
