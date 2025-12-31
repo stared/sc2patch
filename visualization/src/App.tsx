@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { loadPatchesData, createUnitsMap, processPatches } from './utils/dataLoader';
 import { ProcessedPatchData, Unit, EntityWithPosition, Race } from './types';
-import { PatchGridRenderer } from './utils/patchGridRenderer';
+import { PatchGridRenderer } from './d3';
 import { Tooltip } from './components/Tooltip';
 import { Header } from './components/Header';
 import { FilterStatus } from './components/FilterStatus';

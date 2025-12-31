@@ -2,7 +2,7 @@ import { select, type Selection } from 'd3-selection';
 import { transition } from 'd3-transition';
 import { easeCubicOut } from 'd3-ease';
 import { ProcessedPatchData, ProcessedChange, EntityItem, PatchRow, RACES, Race, Unit, EntityWithPosition } from '../types';
-import { layout, timing, raceColors, eraColors, getChangeIndicator, getChangeColor, getEraFromVersion, type ChangeType } from './uxSettings';
+import { layout, timing, raceColors, eraColors, getChangeIndicator, getChangeColor, getEraFromVersion, type ChangeType } from '../utils/uxSettings';
 
 // Extend d3-selection to include transition
 select.prototype.transition = transition;
