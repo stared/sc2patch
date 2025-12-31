@@ -186,11 +186,20 @@ export class PatchGridRenderer {
       // Update content for all (enter + update)
       .each(function(d) {
         const g = select(this);
-        g.select('.race-text')
+
+        // Update text and measure width
+        const textEl = g.select<SVGTextElement>('.race-text')
           .text(d.text)
           .style('fill', raceColors[d.race]);
 
+        const textWidth = textEl.node()?.getComputedTextLength() ?? 60;
+        const padding = 32; // 16px each side
+        const rectWidth = textWidth + padding;
+
+        // Update rect to fit text
         g.select('.race-bg')
+          .attr('width', rectWidth)
+          .attr('x', -rectWidth / 2)
           .style('stroke', d.opacity > 0 ? raceColors[d.race] : 'rgba(255, 255, 255, 0.08)');
       })
       .style('--race-color', d => raceColors[d.race])
