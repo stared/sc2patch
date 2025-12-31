@@ -13,17 +13,11 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from dotenv import load_dotenv
 
-import sc2patches.parse as parse_module
+import sc2patches.llm_config as llm_config
+from sc2patches.llm_config import ALLOWED_MODELS
 from sc2patches.parse import extract_body_from_html, parse_with_llm
 
 load_dotenv()
-
-MODELS = [
-    "openai/gpt-5.2",
-    "google/gemini-3-pro-preview",
-    "anthropic/claude-opus-4.5",
-    "google/gemini-3-flash-preview",
-]
 
 # Output directory
 OUTPUT_DIR = Path("data/model_comparison")
@@ -54,14 +48,14 @@ def main() -> None:
 
     results = {}
 
-    for model in MODELS:
+    for model in ALLOWED_MODELS:
         print(f"\n{'=' * 60}")
         print(f"Model: {model}")
         print("=" * 60)
 
         # Temporarily override the model
-        original_model = parse_module.OPENROUTER_MODEL
-        parse_module.OPENROUTER_MODEL = model
+        original_model = llm_config.DEFAULT_MODEL
+        llm_config.DEFAULT_MODEL = model
 
         try:
             patch_data = parse_with_llm(body_text, version_hint)
@@ -98,7 +92,7 @@ def main() -> None:
             results[model] = {"model": model, "error": str(e)}
 
         finally:
-            parse_module.OPENROUTER_MODEL = original_model
+            llm_config.DEFAULT_MODEL = original_model
 
     # Summary
     print(f"\n{'=' * 60}")

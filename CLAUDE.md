@@ -76,13 +76,7 @@ Each stage:
 
 **API Keys:** `OPENROUTER_API_KEY` is stored in `.env` file (not committed to git)
 
-**Allowed LLM Models:** Only these models may be used (via OpenRouter):
-- `google/gemini-3-pro-preview` (default)
-- `google/gemini-3-flash-preview`
-- `openai/gpt-5.2`
-- `anthropic/claude-opus-4.5`
-
-See `src/sc2patches/llm_config.py` for the canonical list.
+**LLM Model:** `google/gemini-3-pro-preview` via OpenRouter (defined in `src/sc2patches/llm_config.py`)
 
 ## Pipeline Integrity
 

@@ -8,10 +8,8 @@ from bs4 import BeautifulSoup
 from pydantic import BaseModel, Field
 
 from sc2patches.extraction import extract_body_html, extract_date_from_jsonld
+from sc2patches.llm_config import DEFAULT_MODEL
 from sc2patches.models import ChangeType, ParsedChange, ParsedPatch, Race
-
-# Model to use for parsing
-OPENROUTER_MODEL = "google/gemini-3-pro-preview"
 
 # Path to units database
 UNITS_JSON_PATH = Path(__file__).parent.parent.parent / "data" / "units.json"
@@ -222,7 +220,7 @@ Return ONLY valid JSON matching the example format. Include ALL required fields.
                 "X-Title": "SC2 Patch Parser",
             },
             json={
-                "model": OPENROUTER_MODEL,
+                "model": DEFAULT_MODEL,
                 "messages": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt},
