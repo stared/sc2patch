@@ -135,6 +135,7 @@ body {
   font-size: 14px;
   color: #888;
   margin-top: 16px;
+  min-height: 2.5em; /* Prevent layout shift during selection changes */
 }
 
 /* Filter chip */
@@ -490,17 +491,13 @@ button.filter-chip:hover, .filter-chip.active { color: var(--chip-color); backgr
 /* Patch Grid Layout */
 .patch-grid-container {
   width: 100%;
-  transition: all 0.3s ease;
-  perspective: 1500px;
-  transform-style: preserve-3d;
+  contain: layout; /* Isolate from header reflows */
 }
 
 .patch-grid {
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 24px;
-  transition: all 0.3s ease;
-  transform-style: preserve-3d;
 }
 
 .race-headers {
