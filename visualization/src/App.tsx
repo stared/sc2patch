@@ -29,8 +29,6 @@ function App() {
 
   const svgRef = useRef<SVGSVGElement>(null);
   const rendererRef = useRef<PatchGridRenderer | null>(null);
-  const prevSelectedIdRef = useRef<string | null>(null);
-  const prevSelectedRaceRef = useRef<Race | null>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [tooltipPosition, setTooltipPosition] = useState<{ left: number; top: number; flipped: boolean }>({ left: 0, top: 0, flipped: false });
@@ -169,16 +167,9 @@ function App() {
       rendererRef.current = new PatchGridRenderer(svgRef.current);
     }
 
-    const prevSelectedId = prevSelectedIdRef.current;
-    prevSelectedIdRef.current = selectedEntityId;
-    const prevSelectedRace = prevSelectedRaceRef.current;
-    prevSelectedRaceRef.current = selectedRace;
-
     rendererRef.current.render({
       patches: sortedAndFilteredPatches,
       selectedEntityId,
-      prevSelectedId,
-      prevSelectedRace,
       onEntitySelect: setSelectedEntityId,
       setTooltip,
       unitsMap: units,

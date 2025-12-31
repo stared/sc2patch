@@ -1,8 +1,17 @@
 import { select, type Selection } from 'd3-selection';
 import { transition } from 'd3-transition';
 import { easeCubicOut } from 'd3-ease';
-import { ProcessedPatchData, ProcessedChange, EntityItem, PatchRow, RACES, Race, Unit, EntityWithPosition } from '../types';
+import { ProcessedPatchData, ProcessedChange, Race, Unit, EntityWithPosition } from '../types';
 import { layout, timing, raceColors, eraColors, getChangeIndicator, getChangeColor, getEraFromVersion, type ChangeType } from '../utils/uxSettings';
+import {
+  calculateLayout,
+  type EntityLayout,
+  type PatchRowLayout,
+  type ChangeLayout,
+  type LayoutResult,
+  type LayoutInput,
+  type HeaderLayout
+} from './layout';
 
 // Extend d3-selection to include transition
 select.prototype.transition = transition;
@@ -11,28 +20,9 @@ select.prototype.transition = transition;
 // TYPES
 // ============================================================================
 
-type AnimationState = 'IDLE' | 'SELECTING' | 'DESELECTING';
-
-type AnimationGroup = 'SELECTED' | 'FADE_OUT' | 'MOVE_BACK' | 'FADE_IN' | 'NORMAL';
-
-interface EntityItemWithAnimation extends EntityItem {
-  animationGroup: AnimationGroup;
-  targetX?: number;
-  targetY?: number;
-}
-
-type ChangeItem = {
-  id: string;
-  x: number;
-  y: number;
-  changes: ProcessedChange[];
-};
-
 interface RenderState {
   patches: ProcessedPatchData[];
   selectedEntityId: string | null;
-  prevSelectedId: string | null;
-  prevSelectedRace: Race | null;
   onEntitySelect: (entityId: string | null) => void;
   setTooltip: (tooltip: { entity: EntityWithPosition | null; visible: boolean }) => void;
   unitsMap: Map<string, Unit>;
@@ -42,11 +32,18 @@ interface RenderState {
   setSelectedRace?: (race: Race | null) => void;
 }
 
-interface LayoutData {
-  patchRows: PatchRow[];
-  entities: EntityItemWithAnimation[];
-  svgHeight: number;
-}
+// ============================================================================
+// ANIMATION TIMING
+// Phased animation: exit → move → enter
+// ============================================================================
+
+const PHASE = {
+  EXIT_DURATION: timing.fade,      // 300ms - exiting elements fade out
+  MOVE_DELAY: timing.fade,         // 300ms - wait for exits
+  MOVE_DURATION: timing.move,      // 400ms - move to new positions
+  ENTER_DELAY: timing.fade + timing.move,  // 700ms - wait for moves
+  ENTER_DURATION: timing.fade      // 300ms - new elements fade in
+};
 
 // ============================================================================
 // RENDERER CLASS
@@ -55,8 +52,6 @@ interface LayoutData {
 export class PatchGridRenderer {
   private svg: Selection<SVGSVGElement, unknown, null, undefined>;
   private svgWidth: number = 1400;
-  private animationState: AnimationState = 'IDLE';
-  private isAnimating: boolean = false;
 
   constructor(svgElement: SVGSVGElement) {
     this.svg = select(svgElement);
@@ -64,110 +59,39 @@ export class PatchGridRenderer {
   }
 
   // ==========================================================================
-  // SCROLL HELPERS
-  // ==========================================================================
-
-  /**
-   * Scroll to make selected entity visible at its TARGET position.
-   * Called during animation so scroll happens concurrently with movement.
-   * @param targetY - The Y coordinate in SVG space where the entity will end up
-   */
-  private scrollToTargetPosition(targetY: number): void {
-    const svgElement = this.svg.node();
-    if (!svgElement) return;
-
-    // Convert SVG Y to page Y
-    const svgRect = svgElement.getBoundingClientRect();
-    const pageY = svgRect.top + window.scrollY + targetY;
-
-    // Account for sticky header
-    const headerHeight = 200;
-    const viewportHeight = window.innerHeight;
-    const visibleTop = window.scrollY + headerHeight;
-    const visibleBottom = window.scrollY + viewportHeight - 50;
-
-    // Check if target will be visible
-    const isVisible = pageY > visibleTop && pageY < visibleBottom;
-
-    if (!isVisible) {
-      // Scroll to position element comfortably below header
-      const targetScrollY = pageY - headerHeight - 50;
-
-      window.scrollTo({
-        top: Math.max(0, targetScrollY),
-        behavior: 'smooth'
-      });
-    }
-  }
-
-  // ==========================================================================
-  // HEADER POSITION HELPERS - Single source of truth
-  // ==========================================================================
-
-  /** Header X position in a column (centered over content) */
-  private getHeaderX(columnWidth: number, columnIndex: number = 0): number {
-    const cellsPerRow = Math.max(1, Math.floor(columnWidth / (layout.cellSize + layout.cellGap)));
-    const contentWidth = cellsPerRow * layout.cellSize + (cellsPerRow - 1) * layout.cellGap;
-    return layout.patchLabelWidth + columnIndex * columnWidth + contentWidth / 2;
-  }
-
-  /** Header X position when race OR unit selected (centered over full width) */
-  private getHeaderCenterX(): number {
-    const availableWidth = this.svgWidth - layout.patchLabelWidth;
-    return this.getHeaderX(availableWidth, 0);
-  }
-
-  /** Header X position in grid layout (4 columns, centered per column) */
-  private getHeaderGridX(raceIndex: number): number {
-    const availableWidth = this.svgWidth - layout.patchLabelWidth;
-    const columnWidth = Math.floor(availableWidth / RACES.length);
-    return this.getHeaderX(columnWidth, raceIndex);
-  }
-
-  // ==========================================================================
   // PUBLIC API
   // ==========================================================================
 
-  async render(state: RenderState): Promise<void> {
-    // Block re-entry during animations
-    if (this.isAnimating) return;
-
-    // Update SVG width (needed for header positioning)
+  render(state: RenderState): void {
+    // Update SVG width
     const svgElement = this.svg.node();
     const containerWidth = svgElement?.parentElement?.clientWidth || 1400;
     this.svgWidth = Math.min(containerWidth, 1400);
 
-    // Update headers (structure only, no transitions - those happen in applyAnimation)
-    this.renderHeaders(state);
+    // Build layout input (no prev state tracking!)
+    const layoutInput: LayoutInput = {
+      patches: state.patches,
+      unitsMap: state.unitsMap,
+      selectedEntityId: state.selectedEntityId,
+      selectedRace: state.selectedRace
+    };
 
-    // Determine animation type
-    const animType = this.determineAnimationType(state);
-    this.animationState = animType;
+    // Calculate layout (pure function - just target positions)
+    const layoutResult = calculateLayout(layoutInput, this.svgWidth);
 
-    // Calculate layout (pure data, no DOM)
-    const layoutData = this.calculateLayout(state);
+    // Update SVG dimensions
+    this.svg.attr('width', this.svgWidth).attr('height', layoutResult.svgHeight);
 
-    // Update SVG height
-    this.svg.attr('width', this.svgWidth).attr('height', layoutData.svgHeight);
-
-    // Sync DOM structure (immediate, no animations)
-    const entities = this.syncEntities(layoutData.entities, state);
-    const patches = this.syncPatches(layoutData.patchRows, state);
-    const changes = this.syncChanges(layoutData.patchRows, state);
-
-    // Apply animations (block during animation)
-    this.isAnimating = true;
-    await this.applyAnimation(animType, entities, patches, changes, state);
-
-    // Reset animation state before any post-animation sync
-    this.animationState = 'IDLE';
-    this.isAnimating = false;
-
-    // For SELECTING, update DOM to show only filtered entities after animation completes
-    if (animType === 'SELECTING' && state.selectedEntityId) {
-      const filteredLayout = this.calculateLayout(state);
-      this.syncEntities(filteredLayout.entities, state);
+    // Scroll to focus if needed
+    if (layoutResult.focusTargetY !== null) {
+      this.scrollToTargetPosition(layoutResult.focusTargetY);
     }
+
+    // Render all layers with unified join pattern
+    this.renderHeaders(layoutResult, state);
+    this.renderPatches(layoutResult, state);
+    this.renderEntities(layoutResult, state);
+    this.renderChanges(layoutResult);
   }
 
   // ==========================================================================
@@ -194,207 +118,256 @@ export class PatchGridRenderer {
   }
 
   // ==========================================================================
-  // DATA LAYER - Calculate positions and animation groups
+  // SCROLL HELPER
   // ==========================================================================
 
-  private determineAnimationType(state: RenderState): AnimationState {
-    if (state.prevSelectedId === null && state.selectedEntityId !== null) {
-      return 'SELECTING';
-    } else if (state.prevSelectedId !== null && state.selectedEntityId === null) {
-      return 'DESELECTING';
+  private scrollToTargetPosition(targetY: number): void {
+    const svgElement = this.svg.node();
+    if (!svgElement) return;
+
+    const svgRect = svgElement.getBoundingClientRect();
+    const pageY = svgRect.top + window.scrollY + targetY;
+    const headerHeight = 200;
+    const viewportHeight = window.innerHeight;
+    const visibleTop = window.scrollY + headerHeight;
+    const visibleBottom = window.scrollY + viewportHeight - 50;
+    const isVisible = pageY > visibleTop && pageY < visibleBottom;
+
+    if (!isVisible) {
+      const targetScrollY = pageY - headerHeight - 50;
+      window.scrollTo({ top: Math.max(0, targetScrollY), behavior: 'smooth' });
     }
-    // Race changes without entity selection use IDLE but with transitions
-    return 'IDLE';
   }
 
-  private isRaceChanging(state: RenderState): boolean {
-    return state.prevSelectedRace !== state.selectedRace;
-  }
+  // ==========================================================================
+  // HEADERS - Unified join pattern
+  // ==========================================================================
 
-  private calculateLayout(state: RenderState): LayoutData {
-    const patchRows = this.calculatePatchRows(state.patches, state.selectedEntityId, state.selectedRace);
+  private renderHeaders(layoutResult: LayoutResult, state: RenderState): void {
+    let headersContainer = this.svg.select<SVGGElement>('.headers-container');
+    if (headersContainer.empty()) {
+      headersContainer = this.svg.append('g').attr('class', 'headers-container');
+    }
+    headersContainer.attr('transform', `translate(0, ${layout.headerY})`);
 
-    // Calculate dynamic Y positions for filtered view (used for target positions)
-    // This needs to be done even during SELECTING so entities know where to animate to
-    const filteredY = new Map<string, number>();
-    if (state.selectedEntityId) {
-      let cumulativeY = 80;
-      patchRows.forEach(patchRow => {
-        if (patchRow.visible) {
-          const entity = patchRow.patch.entities.get(state.selectedEntityId!);
-          if (entity) {
-            filteredY.set(patchRow.patch.version, cumulativeY);
-            const changeCount = entity.changes?.length || 0;
-            const changeNotesHeight = changeCount * layout.changeNoteLineHeight;
-            cumulativeY += layout.cellSize + changeNotesHeight + layout.changeNotePadding;
-          }
+    // Sort control
+    this.renderSortControl(headersContainer, state);
+
+    // Race headers with unified join
+    headersContainer
+      .selectAll<SVGGElement, HeaderLayout>('.race-header')
+      .data(layoutResult.headers, d => d.race)
+      .join(
+        // ENTER: New headers (first render)
+        enter => {
+          const g = enter.append('g')
+            .attr('class', 'race-header')
+            .attr('transform', d => `translate(${d.x}, 0)`)
+            .style('opacity', d => d.opacity)
+            .style('pointer-events', d => d.opacity > 0 ? 'all' : 'none');
+
+          g.append('rect')
+            .attr('class', 'race-bg')
+            .attr('x', -40).attr('width', 80)
+            .attr('height', 24).attr('rx', 4)
+            .style('fill', 'rgba(255, 255, 255, 0.03)')
+            .style('stroke', 'rgba(255, 255, 255, 0.08)')
+            .style('stroke-width', 1)
+            .style('cursor', 'pointer');
+
+          g.append('text')
+            .attr('class', 'race-text')
+            .attr('text-anchor', 'middle')
+            .attr('x', 0)
+            .attr('y', 16);
+
+          return g;
+        },
+
+        // UPDATE: Existing headers - animate to new position/opacity
+        update => update.call(u => u.transition()
+          .duration(PHASE.MOVE_DURATION)
+          .delay(PHASE.MOVE_DELAY)
+          .ease(easeCubicOut)
+          .attr('transform', d => `translate(${d.x}, 0)`)
+          .style('opacity', d => d.opacity)
+          .style('pointer-events', d => d.opacity > 0 ? 'all' : 'none')
+        ),
+
+        // EXIT: Headers being removed (shouldn't happen, but handle gracefully)
+        exit => exit.call(e => e.transition()
+          .duration(PHASE.EXIT_DURATION)
+          .style('opacity', 0)
+          .remove()
+        )
+      )
+      // Update content for all (enter + update)
+      .each(function(d) {
+        const g = select(this);
+        g.select('.race-text')
+          .text(d.text)
+          .style('fill', raceColors[d.race]);
+
+        g.select('.race-bg')
+          .style('stroke', d.opacity > 0 ? raceColors[d.race] : 'rgba(255, 255, 255, 0.08)');
+      })
+      .style('--race-color', d => raceColors[d.race])
+      .style('cursor', 'pointer')
+      .on('click', (_event, d) => {
+        if (state.selectedEntityId) {
+          state.onEntitySelect(null);
+        } else if (state.setSelectedRace) {
+          state.setSelectedRace(state.selectedRace === d.race ? null : d.race);
         }
       });
 
-      // Apply dynamic positions to patchRows so patches animate to correct targets
-      patchRows.forEach(patchRow => {
-        const y = filteredY.get(patchRow.patch.version);
-        if (y !== undefined) {
-          patchRow.y = y;
+    // Liquipedia link
+    this.renderUnitLink(headersContainer, state);
+  }
+
+  private renderSortControl(container: Selection<SVGGElement, unknown, null, undefined>, state: RenderState): void {
+    const sortData = [state.sortOrder];
+    container.selectAll<SVGGElement, string>('.sort-control')
+      .data(sortData)
+      .join(
+        enter => {
+          const g = enter.append('g').attr('class', 'sort-control').attr('transform', 'translate(30, 0)');
+          g.append('text')
+            .attr('class', 'sort-text')
+            .attr('x', 0).attr('y', 16).attr('text-anchor', 'middle')
+            .style('fill', '#666').style('font-size', '16px').style('cursor', 'pointer');
+          return g;
+        },
+        update => update
+      )
+      .select('.sort-text')
+      .text(state.sortOrder === 'newest' ? '↑' : '↓')
+      .on('click', () => {
+        if (state.setSortOrder) {
+          state.setSortOrder(state.sortOrder === 'newest' ? 'oldest' : 'newest');
         }
       });
+  }
+
+  private renderUnitLink(container: Selection<SVGGElement, unknown, null, undefined>, state: RenderState): void {
+    const linksData = state.selectedEntityId ? [state.selectedEntityId] : [];
+    container.selectAll<SVGTextElement, string>('.unit-links')
+      .data(linksData)
+      .join(
+        enter => enter.append('text')
+          .attr('class', 'unit-links wiki-link')
+          .style('opacity', 0)
+          .call(e => e.transition().delay(PHASE.ENTER_DELAY).duration(PHASE.ENTER_DURATION).style('opacity', 1)),
+        update => update,
+        exit => exit.transition().duration(PHASE.EXIT_DURATION).style('opacity', 0).remove()
+      )
+      .attr('x', this.svgWidth - 20).attr('y', 16).attr('text-anchor', 'end')
+      .style('fill', '#666').style('font-size', '11px').style('cursor', 'pointer')
+      .text(() => {
+        if (!state.selectedEntityId) return '';
+        const unit = state.unitsMap.get(state.selectedEntityId);
+        return unit ? `more on ${unit.name}` : '';
+      })
+      .on('click', () => {
+        if (state.selectedEntityId) {
+          const unit = state.unitsMap.get(state.selectedEntityId);
+          if (unit) window.open(unit.liquipedia_url, '_blank');
+        }
+      });
+  }
+
+  // ==========================================================================
+  // PATCHES - Unified join pattern
+  // ==========================================================================
+
+  private renderPatches(layoutResult: LayoutResult, _state: RenderState): void {
+    let patchesContainer = this.svg.select<SVGGElement>('.patches-container');
+    if (patchesContainer.empty()) {
+      patchesContainer = this.svg.append('g').attr('class', 'patches-container');
     }
 
-    const entities = this.buildEntitiesList(patchRows, state, filteredY);
-    const svgHeight = 80 + patchRows.reduce((sum, item) => sum + item.height, 0) + 200;
+    patchesContainer
+      .selectAll<SVGGElement, PatchRowLayout>('.patch-group')
+      .data(layoutResult.patchRows, d => d.version)
+      .join(
+        // ENTER: New patches appear
+        enter => {
+          const pg = enter.append('g')
+            .attr('class', 'patch-group')
+            .attr('transform', d => `translate(0, ${d.y})`)
+            .style('opacity', 0);
 
-    return { patchRows, entities, svgHeight };
-  }
+          const label = pg.append('g')
+            .attr('class', 'patch-label')
+            .attr('transform', 'translate(0, 20)');
 
-  private calculatePatchRows(
-    patches: ProcessedPatchData[],
-    selectedEntityId: string | null,
-    selectedRace: Race | null
-  ): PatchRow[] {
-    const availableWidth = this.svgWidth - layout.patchLabelWidth;
-    const raceColumnWidth = (selectedEntityId || selectedRace) ? availableWidth : Math.floor(availableWidth / RACES.length);
-    const cellsPerRow = Math.floor(raceColumnWidth / (layout.cellSize + layout.cellGap));
+          label.append('text')
+            .attr('x', 10).attr('y', 0)
+            .style('font-size', '13px')
+            .style('font-weight', '600')
+            .style('cursor', 'pointer')
+            .each(function(d) {
+              select(this)
+                .style('fill', eraColors[getEraFromVersion(d.version)])
+                .text(d.date.split('-').slice(0, 2).join('-'));
+            })
+            .on('click', (_e, d) => window.open(d.url, '_blank'));
 
-    const visiblePatches = patches.map(patch => {
-      const visible = !selectedEntityId || patch.entities.has(selectedEntityId);
-      let maxRows = 1;
+          label.append('text')
+            .attr('x', 10).attr('y', 14)
+            .style('fill', '#777')
+            .style('font-size', '11px')
+            .style('cursor', 'pointer')
+            .text(d => d.version)
+            .on('click', (_e, d) => window.open(d.url, '_blank'));
 
-      if (visible && !selectedEntityId) {
-        const racesToCheck = selectedRace ? [selectedRace] : RACES;
-        racesToCheck.forEach(race => {
-          const count = Array.from(patch.entities.values())
-            .filter(entity => (entity.race || 'neutral') === race).length;
-          maxRows = Math.max(maxRows, Math.ceil(count / cellsPerRow));
-        });
-      }
+          // Fade in after move phase
+          pg.transition()
+            .delay(PHASE.ENTER_DELAY)
+            .duration(PHASE.ENTER_DURATION)
+            .style('opacity', 1);
 
-      return { patch, visible, height: 40 + maxRows * (layout.cellSize + layout.cellGap) + 10 };
-    });
+          return pg;
+        },
 
-    let currentY = layout.gridStartY;
-    return visiblePatches.map(item => {
-      const row = { ...item, y: item.visible ? currentY : -1000 };
-      if (item.visible) currentY += item.height;
-      return row;
-    });
-  }
+        // UPDATE: Existing patches move to new position
+        update => update.call(u => u.transition()
+          .delay(PHASE.MOVE_DELAY)
+          .duration(PHASE.MOVE_DURATION)
+          .ease(easeCubicOut)
+          .attr('transform', d => `translate(0, ${d.y})`)
+          .style('opacity', 1)
+        ),
 
-  private buildEntitiesList(
-    patchRows: PatchRow[],
-    state: RenderState,
-    filteredPositions: Map<string, number>
-  ): EntityItemWithAnimation[] {
-    const availableWidth = this.svgWidth - layout.patchLabelWidth;
-    const raceColumnWidth = (state.selectedEntityId || state.selectedRace) ? availableWidth : Math.floor(availableWidth / RACES.length);
-    const cellsPerRow = Math.floor(raceColumnWidth / (layout.cellSize + layout.cellGap));
-
-    const entities: EntityItemWithAnimation[] = [];
-
-    patchRows.filter(row => row.visible).forEach(patchRow => {
-      const { patch, y: patchY } = patchRow;
-
-      // During SELECTING, show grid even though selectedEntityId is set
-      if (state.selectedEntityId && this.animationState !== 'SELECTING') {
-        // Filtered view - only selected entity with dynamic positioning
-        const entity = patch.entities.get(state.selectedEntityId);
-        if (entity) {
-          const filteredY = filteredPositions.get(patch.version) || patchY;
-          entities.push({
-            id: `${state.selectedEntityId}-${patch.version}`,
-            entityId: state.selectedEntityId,
-            patchVersion: patch.version,
-            entity,
-            x: layout.patchLabelWidth + layout.filteredEntityOffset,
-            y: filteredY,
-            targetX: layout.patchLabelWidth + layout.filteredEntityOffset,
-            targetY: filteredY,
-            visible: true,
-            animationGroup: 'SELECTED'
-          });
-        }
-      } else {
-        // Grid view - all entities
-        const racesToShow = state.selectedRace ? [state.selectedRace] : RACES;
-        racesToShow.forEach((race, raceIndex) => {
-          const raceEntities = Array.from(patch.entities.entries())
-            .filter(([_, entity]) => (entity.race || 'neutral') === race);
-
-          raceEntities.forEach(([entityId, entity], entityIndex) => {
-            const row = Math.floor(entityIndex / cellsPerRow);
-            const col = entityIndex % cellsPerRow;
-            const x = layout.patchLabelWidth + raceIndex * raceColumnWidth + col * (layout.cellSize + layout.cellGap);
-            const y = patchY + row * (layout.cellSize + layout.cellGap);
-
-            // Determine animation group based on state
-            let animationGroup: AnimationGroup = 'NORMAL';
-            let targetX: number | undefined;
-            let targetY: number | undefined;
-
-            const entityRace = (entity.race || 'neutral') as Race;
-            const isDeselectingRace = state.prevSelectedRace !== null && state.selectedRace === null;
-            const wasHiddenByRaceFilter = state.prevSelectedRace !== null && entityRace !== state.prevSelectedRace;
-
-            if (this.animationState === 'DESELECTING') {
-              // Only the previously selected entity was visible during filtered view
-              if (entityId === state.prevSelectedId) {
-                animationGroup = 'MOVE_BACK';
-              } else {
-                // All other entities were hidden, so they should fade in at final position
-                animationGroup = 'FADE_IN';
-              }
-            } else if (this.animationState === 'SELECTING' && entityId === state.selectedEntityId) {
-              // Mark selected entities during selection animation
-              animationGroup = 'SELECTED';
-              // Set target position for animation (filtered view position with dynamic spacing)
-              targetX = layout.patchLabelWidth + layout.filteredEntityOffset;
-              targetY = filteredPositions.get(patch.version) || patchY;
-            } else if (isDeselectingRace && wasHiddenByRaceFilter) {
-              // Entity was hidden by race filter, should fade in after movement
-              animationGroup = 'FADE_IN';
-            }
-
-            entities.push({
-              id: `${entityId}-${patch.version}`,
-              entityId,
-              patchVersion: patch.version,
-              entity,
-              x,
-              y,
-              visible: true,
-              animationGroup,
-              targetX,
-              targetY
-            });
-          });
-        });
-      }
-    });
-
-    return entities;
+        // EXIT: Patches fade out
+        exit => exit.call(e => e.transition()
+          .duration(PHASE.EXIT_DURATION)
+          .style('opacity', 0)
+          .remove()
+        )
+      );
   }
 
   // ==========================================================================
-  // DOM LAYER - Structure only, no animations
+  // ENTITIES - Unified join pattern
   // ==========================================================================
 
-  private syncEntities(
-    entities: EntityItemWithAnimation[],
-    state: RenderState
-  ): Selection<SVGGElement, EntityItemWithAnimation, SVGGElement, unknown> {
+  private renderEntities(layoutResult: LayoutResult, state: RenderState): void {
     let entitiesContainer = this.svg.select<SVGGElement>('.entities-container');
     if (entitiesContainer.empty()) {
       entitiesContainer = this.svg.append('g').attr('class', 'entities-container');
     }
 
-    const entityGroups = entitiesContainer
-      .selectAll<SVGGElement, EntityItemWithAnimation>('.entity-cell-group')
-      .data(entities, d => d.id)
+    entitiesContainer
+      .selectAll<SVGGElement, EntityLayout>('.entity-cell-group')
+      .data(layoutResult.entities, d => d.id)
       .join(
+        // ENTER: New entities appear at target position, fade in
         enter => {
           const eg = enter.append('g')
             .attr('class', 'entity-cell-group')
             .attr('transform', d => `translate(${d.x}, ${d.y})`)
-            .style('opacity', d => d.animationGroup === 'FADE_IN' ? 0 : 1)
+            .style('opacity', 0)
             .style('--glow-color', d => {
               const { status } = d.entity;
               return status ? getChangeColor(status as ChangeType) : raceColors[(d.entity.race || 'neutral') as Race];
@@ -420,24 +393,38 @@ export class PatchGridRenderer {
             .attr('preserveAspectRatio', 'xMidYMid slice')
             .style('pointer-events', 'none');
 
+          // Fade in after move phase
+          eg.transition()
+            .delay(PHASE.ENTER_DELAY)
+            .duration(PHASE.ENTER_DURATION)
+            .style('opacity', 1);
+
           return eg;
         },
-        update => update
-          .style('opacity', d => d.animationGroup === 'FADE_IN' ? 0 : 1),
-        exit => exit.remove()
-      );
 
-    // Event handlers
-    entityGroups
+        // UPDATE: Existing entities move to new position
+        update => update.call(u => u.transition()
+          .delay(PHASE.MOVE_DELAY)
+          .duration(PHASE.MOVE_DURATION)
+          .ease(easeCubicOut)
+          .attr('transform', d => `translate(${d.x}, ${d.y})`)
+          .style('opacity', 1)
+        ),
+
+        // EXIT: Entities fade out in place
+        exit => exit.call(e => e.transition()
+          .duration(PHASE.EXIT_DURATION)
+          .style('opacity', 0)
+          .remove()
+        )
+      )
+      // Event handlers for all
       .on('click', (event, d) => {
         event.stopPropagation();
-        if (this.isAnimating) return; // Block clicks during animation
         state.onEntitySelect(state.selectedEntityId === d.entityId ? null : d.entityId);
       })
       .on('mouseenter', (event, d) => {
-        // No tooltip when a unit is already selected
         if (state.selectedEntityId) return;
-        // Use currentTarget (the group), not target (could be child image/rect)
         const group = event.currentTarget as SVGGElement;
         const rect = group.getBoundingClientRect();
         state.setTooltip({
@@ -451,69 +438,17 @@ export class PatchGridRenderer {
         });
       })
       .on('mouseleave', () => state.setTooltip({ entity: null, visible: false }));
-
-    return entityGroups;
   }
 
-  private syncPatches(
-    patchRows: PatchRow[],
-    _state: RenderState
-  ): Selection<SVGGElement, PatchRow, SVGGElement, unknown> {
-    let patchesContainer = this.svg.select<SVGGElement>('.patches-container');
-    if (patchesContainer.empty()) {
-      patchesContainer = this.svg.append('g').attr('class', 'patches-container');
-    }
+  // ==========================================================================
+  // CHANGES - Unified join pattern
+  // ==========================================================================
 
-    const patchGroups = patchesContainer
-      .selectAll<SVGGElement, PatchRow>('.patch-group')
-      .data(patchRows, d => d.patch.version)
-      .join(
-        enter => {
-          const pg = enter.append('g')
-            .attr('class', 'patch-group')
-            .attr('transform', d => `translate(0, ${d.y})`)
-            .style('opacity', d => d.visible ? 1 : 0);
-
-          // Render patch label - date prominent, version smaller
-          const label = pg.append('g')
-            .attr('class', 'patch-label')
-            .attr('transform', 'translate(0, 20)');
-
-          // Date first (prominent)
-          label.append('text')
-            .attr('x', 10).attr('y', 0)
-            .style('fill', d => eraColors[getEraFromVersion(d.patch.version)])
-            .style('font-size', '13px')
-            .style('font-weight', '600')
-            .style('cursor', 'pointer')
-            .text(d => d.patch.date.split('-').slice(0, 2).join('-'))
-            .on('click', (_e, d) => window.open(d.patch.url, '_blank'));
-
-          // Version below (smaller)
-          label.append('text')
-            .attr('x', 10).attr('y', 14)
-            .style('fill', '#777')
-            .style('font-size', '11px')
-            .style('cursor', 'pointer')
-            .text(d => d.patch.version)
-            .on('click', (_e, d) => window.open(d.patch.url, '_blank'));
-
-          return pg;
-        },
-        update => update,
-        exit => exit.transition().duration(300).style('opacity', 0).remove()
-      );
-
-    return patchGroups;
-  }
-
-  private syncChanges(
-    patchRows: PatchRow[],
-    state: RenderState
-  ): Selection<SVGGElement, ChangeItem, SVGGElement, unknown> {
-    if (!state.selectedEntityId) {
+  private renderChanges(layoutResult: LayoutResult): void {
+    // Remove container if no changes
+    if (layoutResult.changes.length === 0) {
       this.svg.select('.changes-container').remove();
-      return this.svg.selectAll('.changes-group');
+      return;
     }
 
     let changesContainer = this.svg.select<SVGGElement>('.changes-container');
@@ -521,22 +456,11 @@ export class PatchGridRenderer {
       changesContainer = this.svg.append('g').attr('class', 'changes-container');
     }
 
-    const changesData: ChangeItem[] = patchRows
-      .filter(row => row.visible && row.patch.entities.has(state.selectedEntityId!))
-      .map(row => {
-        const entity = row.patch.entities.get(state.selectedEntityId!);
-        return {
-          id: `${state.selectedEntityId}-${row.patch.version}`,
-          x: layout.patchLabelWidth + 140,
-          y: row.y + 10,
-          changes: entity?.changes || []
-        };
-      });
-
-    const changesGroups = changesContainer
-      .selectAll<SVGGElement, ChangeItem>('.changes-group')
-      .data(changesData, d => d.id)
+    changesContainer
+      .selectAll<SVGGElement, ChangeLayout>('.changes-group')
+      .data(layoutResult.changes, d => d.id)
       .join(
+        // ENTER: Change notes appear last (after everything settles)
         enter => {
           const cg = enter.append('g')
             .attr('class', 'changes-group')
@@ -560,518 +484,30 @@ export class PatchGridRenderer {
             });
           });
 
+          // Fade in last
+          cg.transition()
+            .delay(PHASE.ENTER_DELAY)
+            .duration(PHASE.ENTER_DURATION)
+            .style('opacity', 1);
+
           return cg;
         },
-        update => update.attr('transform', d => `translate(${d.x}, ${d.y})`),
-        exit => exit.transition().duration(timing.fade).style('opacity', 0).remove()
+
+        // UPDATE: Move to new position AND ensure visible
+        update => update.call(u => u.transition()
+          .delay(PHASE.MOVE_DELAY)
+          .duration(PHASE.MOVE_DURATION)
+          .ease(easeCubicOut)
+          .attr('transform', d => `translate(${d.x}, ${d.y})`)
+          .style('opacity', 1)  // CRITICAL: ensure visibility after interrupted ENTER
+        ),
+
+        // EXIT: Fade out
+        exit => exit.call(e => e.transition()
+          .duration(PHASE.EXIT_DURATION)
+          .style('opacity', 0)
+          .remove()
+        )
       );
-
-    return changesGroups;
-  }
-
-  // ==========================================================================
-  // ANIMATION LAYER - Separated, clean
-  // ==========================================================================
-
-  private async applyAnimation(
-    type: AnimationState,
-    entities: Selection<SVGGElement, EntityItemWithAnimation, SVGGElement, unknown>,
-    patches: Selection<SVGGElement, PatchRow, SVGGElement, unknown>,
-    changes: Selection<SVGGElement, ChangeItem, SVGGElement, unknown>,
-    state: RenderState
-  ): Promise<void> {
-    switch (type) {
-      case 'SELECTING':
-        return this.applySelectAnimation(entities, patches, changes, state);
-      case 'DESELECTING':
-        return this.applyDeselectAnimation(entities, patches, state);
-      case 'IDLE':
-        return this.applyIdleAnimation(entities, patches, state);
-    }
-  }
-
-  private async applySelectAnimation(
-    entities: Selection<SVGGElement, EntityItemWithAnimation, SVGGElement, unknown>,
-    patches: Selection<SVGGElement, PatchRow, SVGGElement, unknown>,
-    changes: Selection<SVGGElement, ChangeItem, SVGGElement, unknown>,
-    state: RenderState
-  ): Promise<void> {
-    // Get selected entity ID from entities data
-    const selectedEntity = entities.data().find(d => d.animationGroup === 'SELECTED');
-    const selectedEntityId = selectedEntity?.entityId;
-    const headerTargetX = this.getHeaderCenterX();
-
-    // Change header text to unit name IMMEDIATELY (before animation starts)
-    const unit = state.unitsMap.get(selectedEntityId || '');
-    const unitName = unit?.name || '';
-    const selectedRace = unit?.race;
-    this.svg.selectAll('.race-header')
-      .filter(function() { return select(this).datum() === selectedRace; })
-      .select('.race-text')
-      .text(unitName);
-
-    // Phase 1 (0-600ms): Fade non-selected entities and irrelevant patch labels
-    await Promise.all([
-      entities
-        .filter(d => d.animationGroup !== 'SELECTED')
-        .transition('select-fade')
-        .duration(timing.fade)
-        .style('opacity', 0)
-        .end()
-        .catch(() => {}),
-
-      // Only fade out patch labels for patches that don't contain the selected entity
-      patches
-        .filter(d => !selectedEntityId || !d.patch.entities.has(selectedEntityId))
-        .select('.patch-label')
-        .transition('select-fade-labels')
-        .duration(timing.fade)
-        .style('opacity', 0)
-        .end()
-        .catch(() => {}),
-
-      // Fade out non-selected race headers
-      this.svg.selectAll('.race-header')
-        .filter(function() {
-          const race = select(this).datum() as Race;
-          const selectedRace = state.unitsMap.get(selectedEntityId || '')?.race;
-          return race !== selectedRace;
-        })
-        .transition('select-fade-headers')
-        .duration(timing.fade)
-        .style('opacity', 0)
-        .end()
-        .catch(() => {})
-    ]);
-
-    // Phase 2 (600-1400ms): Move selected entities, patches, and headers together
-    // Also start scrolling concurrently so user sees the destination
-    const selectedHeader = this.svg.selectAll('.race-header')
-      .filter(function() { return select(this).datum() === selectedRace; });
-
-    // Get first selected entity's target position and start scroll immediately
-    const firstSelected = entities.data().find(d => d.animationGroup === 'SELECTED');
-    if (firstSelected?.targetY !== undefined) {
-      this.scrollToTargetPosition(firstSelected.targetY);
-    }
-
-    await Promise.all([
-      entities
-        .filter(d => d.animationGroup === 'SELECTED')
-        .transition('select-move')
-        .duration(timing.move)
-        .ease(easeCubicOut)
-        .attr('transform', d => `translate(${d.targetX ?? d.x}, ${d.targetY ?? d.y})`)
-        .end()
-        .catch(() => {}),
-
-      patches
-        .filter(d => d.visible)
-        .transition('select-move-patches')
-        .duration(timing.move)
-        .ease(easeCubicOut)
-        .attr('transform', d => `translate(0, ${d.y})`)
-        .end()
-        .catch(() => {}),
-
-      // Move remaining header to center and ensure it's visible
-      selectedHeader
-        .transition('select-move-headers')
-        .duration(timing.move)
-        .ease(easeCubicOut)
-        .attr('transform', `translate(${headerTargetX}, 0)`)
-        .style('opacity', 1)
-        .end()
-        .catch(() => {})
-    ]);
-
-    // Phase 3 (1400ms+): Show change notes
-    await changes
-      .transition('select-changes')
-      .duration(timing.fade)
-      .style('opacity', 1)
-      .end()
-      .catch(() => {});
-  }
-
-  private async applyDeselectAnimation(
-    entities: Selection<SVGGElement, EntityItemWithAnimation, SVGGElement, unknown>,
-    patches: Selection<SVGGElement, PatchRow, SVGGElement, unknown>,
-    state: RenderState
-  ): Promise<void> {
-    // Change header text back to race names IMMEDIATELY (before animation starts)
-    RACES.forEach(race => {
-      this.svg.selectAll('.race-header')
-        .filter(function() { return select(this).datum() === race; })
-        .select('.race-text')
-        .text(race.charAt(0).toUpperCase() + race.slice(1));
-    });
-
-    // Target position depends on whether a race is still selected
-    const getTargetX = (race: Race, i: number) =>
-      state.selectedRace === race ? this.getHeaderCenterX() : this.getHeaderGridX(i);
-
-    // Phase 1: Move entities, patches, and headers to target positions
-    await Promise.all([
-      entities
-        .filter(d => d.animationGroup === 'MOVE_BACK')
-        .transition('deselect-move')
-        .duration(timing.move)
-        .ease(easeCubicOut)
-        .attr('transform', d => `translate(${d.x}, ${d.y})`)
-        .end()
-        .catch(() => {}),
-
-      ...patches.data().map(d => {
-        const patch = patches.filter(pd => pd.patch.version === d.patch.version);
-        return patch
-          .transition('deselect-move-patches')
-          .duration(timing.move)
-          .ease(easeCubicOut)
-          .attr('transform', `translate(0, ${d.y})`)
-          .end()
-          .catch(() => {});
-      }),
-
-      ...RACES.map((race, i) => {
-        return this.svg.selectAll('.race-header')
-          .filter(function() { return select(this).datum() === race; })
-          .transition('deselect-move-headers')
-          .duration(timing.move)
-          .ease(easeCubicOut)
-          .attr('transform', `translate(${getTargetX(race, i)}, 0)`)
-          .end()
-          .catch(() => {});
-      })
-    ]);
-
-    // Phase 2: Fade in newly appearing entities, patch labels, and headers
-    await Promise.all([
-      entities
-        .filter(d => d.animationGroup === 'FADE_IN')
-        .transition('deselect-fade')
-        .duration(timing.fade)
-        .style('opacity', 1)
-        .end()
-        .catch(() => {}),
-
-      patches
-        .select('.patch-label')
-        .transition('deselect-fade-labels')
-        .duration(timing.fade)
-        .style('opacity', 1)
-        .end()
-        .catch(() => {}),
-
-      // Fade in headers that should be visible (all if no race selected, just selected race otherwise)
-      this.svg.selectAll('.race-header')
-        .filter(function() {
-          const race = select(this).datum() as Race;
-          return !state.selectedRace || race === state.selectedRace;
-        })
-        .transition('deselect-fade-headers')
-        .duration(timing.fade)
-        .style('opacity', 1)
-        .end()
-        .catch(() => {})
-    ]);
-
-    // Remove exiting elements
-    entities.filter(d => !d.visible).remove();
-  }
-
-  private async applyIdleAnimation(
-    entities: Selection<SVGGElement, EntityItemWithAnimation, SVGGElement, unknown>,
-    patches: Selection<SVGGElement, PatchRow, SVGGElement, unknown>,
-    state: RenderState
-  ): Promise<void> {
-    const raceChanging = this.isRaceChanging(state);
-    const isSelectingRace = state.prevSelectedRace === null && state.selectedRace !== null;
-    const isDeselectingRace = state.prevSelectedRace !== null && state.selectedRace === null;
-
-    if (raceChanging) {
-      // When selecting race: fade out first, then move
-      if (isSelectingRace && state.selectedRace) {
-        // Phase 1: Fade out entities and headers that will be hidden
-        await Promise.all([
-          entities
-            .filter(d => !d.visible)
-            .transition('race-fade-out')
-            .duration(timing.fade)
-            .style('opacity', 0)
-            .end()
-            .catch(() => {}),
-
-          // Hide non-selected race headers immediately (no fade - instant)
-          this.svg.selectAll('.race-header')
-            .filter(function() { return select(this).datum() !== state.selectedRace; })
-            .style('opacity', 0)
-        ]);
-
-        // Phase 2: Move remaining entities, patches, and header together
-        const headerTargetX = this.getHeaderCenterX();
-        await Promise.all([
-          entities
-            .filter(d => d.visible)
-            .transition('race-move')
-            .duration(timing.move)
-            .ease(easeCubicOut)
-            .attr('transform', d => `translate(${d.x}, ${d.y})`)
-            .end()
-            .catch(() => {}),
-
-          patches
-            .transition('race-patches')
-            .duration(timing.move)
-            .ease(easeCubicOut)
-            .style('opacity', d => d.visible ? 1 : 0)
-            .attr('transform', d => `translate(0, ${d.y})`)
-            .end()
-            .catch(() => {}),
-
-          // Move remaining header to center
-          this.svg.selectAll('.race-header')
-            .filter(function() { return select(this).datum() === state.selectedRace; })
-            .interrupt()
-            .transition('race-move-headers')
-            .duration(timing.move)
-            .ease(easeCubicOut)
-            .attr('transform', `translate(${headerTargetX}, 0)`)
-            .end()
-            .catch(() => {})
-        ]);
-      }
-      // When deselecting race: move first, then fade in
-      else if (isDeselectingRace) {
-        // Phase 1: Move entities, patches, and headers back to grid
-        await Promise.all([
-          entities
-            .transition('race-move')
-            .duration(timing.move)
-            .ease(easeCubicOut)
-            .attr('transform', d => `translate(${d.x}, ${d.y})`)
-            .end()
-            .catch(() => {}),
-
-          patches
-            .transition('race-patches')
-            .duration(timing.move)
-            .ease(easeCubicOut)
-            .style('opacity', d => d.visible ? 1 : 0)
-            .attr('transform', d => `translate(0, ${d.y})`)
-            .end()
-            .catch(() => {}),
-
-          // Move headers back to grid positions
-          ...RACES.map((race, i) => {
-            return this.svg.selectAll('.race-header')
-              .filter(function() { return select(this).datum() === race; })
-              .transition('race-move-headers')
-              .duration(timing.move)
-              .ease(easeCubicOut)
-              .attr('transform', `translate(${this.getHeaderGridX(i)}, 0)`)
-              .end()
-              .catch(() => {});
-          })
-        ]);
-
-        // Phase 2: Fade in new entities and headers
-        await Promise.all([
-          entities
-            .transition('race-fade-in')
-            .duration(timing.fade)
-            .style('opacity', 1)
-            .end()
-            .catch(() => {}),
-
-          this.svg.selectAll('.race-header')
-            .transition('race-fade-in-headers')
-            .duration(timing.fade)
-            .style('opacity', 1)
-            .end()
-            .catch(() => {})
-        ]);
-      }
-    } else {
-      // No race change - set positions immediately
-      entities
-        .style('opacity', 1)
-        .attr('transform', d => `translate(${d.x}, ${d.y})`);
-
-      patches
-        .style('opacity', d => d.visible ? 1 : 0)
-        .attr('transform', d => `translate(0, ${d.y})`);
-
-      // Set header positions and visibility immediately based on mode
-      // Headers stay in DOM always, opacity controls visibility
-      const selectedUnitRace = state.selectedEntityId
-        ? state.unitsMap.get(state.selectedEntityId)?.race
-        : undefined;
-
-      RACES.forEach((race, i) => {
-        const header = this.svg.selectAll('.race-header')
-          .filter(function() { return select(this).datum() === race; });
-
-        // Determine visibility
-        let visible = true;
-        if (state.selectedEntityId) {
-          visible = race === selectedUnitRace;
-        } else if (state.selectedRace) {
-          visible = race === state.selectedRace;
-        }
-
-        // Determine position based on mode (text always centered, rect always fixed)
-        let x: number;
-        let textContent: string;
-
-        if (state.selectedEntityId && race === selectedUnitRace) {
-          x = this.getHeaderCenterX();
-          const unit = state.unitsMap.get(state.selectedEntityId);
-          textContent = unit?.name || race.charAt(0).toUpperCase() + race.slice(1);
-        } else if (state.selectedRace && race === state.selectedRace) {
-          x = this.getHeaderCenterX();
-          textContent = race.charAt(0).toUpperCase() + race.slice(1);
-        } else {
-          x = this.getHeaderGridX(i);
-          textContent = race.charAt(0).toUpperCase() + race.slice(1);
-        }
-
-        header
-          .style('opacity', visible ? 1 : 0)
-          .style('pointer-events', visible ? 'all' : 'none')
-          .attr('transform', `translate(${x}, 0)`);
-
-        header.select('.race-text').text(textContent);
-      });
-    }
-  }
-
-  // ==========================================================================
-  // HEADERS
-  // ==========================================================================
-
-  private renderHeaders(state: RenderState): void {
-    let headersContainer = this.svg.select<SVGGElement>('.headers-container');
-    if (headersContainer.empty()) {
-      headersContainer = this.svg.append('g').attr('class', 'headers-container');
-    }
-    // Position the entire header group - children use Y=0 relative to this
-    headersContainer.attr('transform', `translate(0, ${layout.headerY})`);
-
-    // Determine which race should be visible (for opacity/pointer-events)
-    const selectedUnitRace = state.selectedEntityId ? state.unitsMap.get(state.selectedEntityId)?.race as Race | undefined : undefined;
-
-    // Helper: is this race header currently visible?
-    const isHeaderVisible = (race: Race): boolean => {
-      if (state.selectedEntityId) return race === selectedUnitRace;
-      if (state.selectedRace) return race === state.selectedRace;
-      return true; // All visible in grid mode
-    };
-
-    // Sort control - minimal arrow only
-    const sortGroup = headersContainer.selectAll<SVGGElement, SortOrder>('.sort-control').data([state.sortOrder]);
-    const sortEnter = sortGroup.enter().append('g').attr('class', 'sort-control');
-    const sortMerge = sortEnter.merge(sortGroup);
-
-    type SortOrder = 'newest' | 'oldest';
-
-    sortMerge.attr('transform', 'translate(30, 0)');
-
-    sortEnter.append('text').attr('class', 'sort-text');
-
-    // Arrow: ↑ for newest (time flows up), ↓ for oldest
-    sortMerge.select('.sort-text')
-      .attr('x', 0).attr('y', 16).attr('text-anchor', 'middle')
-      .style('fill', '#666').style('font-size', '16px').style('font-weight', '400')
-      .style('cursor', 'pointer')
-      .text(state.sortOrder === 'newest' ? '↑' : '↓')
-      .on('click', () => {
-        if (this.isAnimating) return; // Block clicks during animation
-        if (state.setSortOrder) {
-          state.setSortOrder(state.sortOrder === 'newest' ? 'oldest' : 'newest');
-        }
-      });
-
-    // Race headers - always keep ALL 4 in DOM, use opacity to show/hide
-    const raceHeaders = headersContainer.selectAll<SVGGElement, Race>('.race-header')
-      .data(RACES, d => d);  // Always all 4 races
-
-    const raceEnter = raceHeaders.enter().append('g').attr('class', 'race-header');
-
-    // Position entering headers: unit=left-aligned, race=centered, grid=per-column
-    raceEnter.attr('transform', (race: Race) => {
-      const x = state.selectedEntityId
-        ? this.getHeaderCenterX()
-        : state.selectedRace
-          ? this.getHeaderCenterX()
-          : this.getHeaderGridX(RACES.indexOf(race));
-      return `translate(${x}, 0)`;
-    });
-
-    raceEnter.append('rect').attr('class', 'race-bg');
-    raceEnter.append('text').attr('class', 'race-text');
-    raceEnter.style('opacity', 0); // Group starts invisible, fade in via animation
-
-    const raceMerge = raceEnter.merge(raceHeaders);
-
-    // Set race color variable and active class for CSS hover effects
-    // Position and opacity transitions are handled by animation code
-    raceMerge
-      .style('--race-color', (race: Race) => raceColors[race])
-      .style('pointer-events', (race: Race) => isHeaderVisible(race) ? 'all' : 'none')
-      .classed('active', (race: Race) => state.selectedRace === race || selectedUnitRace === race);
-
-    // Background rect - always centered, fixed size (no mode-specific changes)
-    raceMerge.select('.race-bg')
-      .attr('x', -40).attr('width', 80)
-      .attr('height', 24).attr('rx', 4)
-      .style('fill', (race) => {
-        const isActive = state.selectedRace === race || selectedUnitRace === race;
-        return isActive ? 'rgba(255, 255, 255, 0.08)' : 'rgba(255, 255, 255, 0.03)';
-      })
-      .style('stroke', (race) => {
-        const isActive = state.selectedRace === race || selectedUnitRace === race;
-        return isActive ? raceColors[race] : 'rgba(255, 255, 255, 0.08)';
-      })
-      .style('stroke-width', 1).style('cursor', 'pointer')
-      .on('click', (_event, race) => {
-        if (this.isAnimating) return; // Block clicks during animation
-        if (state.selectedEntityId) {
-          // Unit selected: just deselect it, keep race selection as-is
-          state.onEntitySelect(null);
-        } else if (state.setSelectedRace) {
-          // No unit selected: toggle race selection
-          state.setSelectedRace(state.selectedRace === race ? null : race);
-        }
-      });
-
-    // Header text - always centered (text content set by animation code)
-    raceMerge.select('.race-text')
-      .classed('active', (race: Race) => state.selectedRace === race || selectedUnitRace === race)
-      .attr('text-anchor', 'middle')
-      .attr('x', 0)
-      .attr('y', 16)
-      .style('fill', (race) => raceColors[race]);
-
-    // No exit().remove() - headers stay in DOM, visibility controlled by opacity
-
-    // Liquipedia link to the right of unit name (only when unit selected)
-    const linksData = state.selectedEntityId ? [state.selectedEntityId] : [];
-    const links = this.svg.select('.headers-container').selectAll<SVGTextElement, string>('.unit-links').data(linksData);
-
-    const linksEnter = links.enter().append('text').attr('class', 'unit-links');
-    const linksMerge = linksEnter.merge(links);
-
-    if (state.selectedEntityId) {
-      const unit = state.unitsMap.get(state.selectedEntityId)!;
-      linksMerge
-        .attr('class', 'unit-links wiki-link')
-        .attr('x', this.svgWidth - 20).attr('y', 16).attr('text-anchor', 'end')
-        .style('fill', '#666').style('font-size', '11px').style('cursor', 'pointer')
-        .text(`more on ${unit.name}`)
-        .on('click', () => window.open(unit.liquipedia_url, '_blank'));
-    }
-
-    links.exit().remove();
   }
 }
