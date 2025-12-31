@@ -11,8 +11,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from sc2patches.core import llm_config
-from sc2patches.core.llm_config import ALLOWED_MODELS
+from sc2patches.core.llm_config import ALLOWED_MODELS, get_openrouter_api_key
 from sc2patches.core.parse import extract_body_from_html, parse_with_llm
 
 load_dotenv()
@@ -23,7 +22,7 @@ OUTPUT_DIR = Path("data/model_comparison")
 
 def main() -> None:
     if len(sys.argv) < 2:
-        print("Usage: uv run python scripts/compare_models.py <patch-filename>")
+        print("Usage: uv run python sc2patches/tools/compare_models.py <patch-filename>")
         sys.exit(1)
 
     patch_pattern = sys.argv[1]
@@ -41,6 +40,7 @@ def main() -> None:
     # Extract body text once
     body_text = extract_body_from_html(html_path)
     version_hint = html_path.stem
+    api_key = get_openrouter_api_key()
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -51,12 +51,8 @@ def main() -> None:
         print(f"Model: {model}")
         print("=" * 60)
 
-        # Temporarily override the model
-        original_model = llm_config.DEFAULT_MODEL
-        llm_config.DEFAULT_MODEL = model
-
         try:
-            patch_data = parse_with_llm(body_text, version_hint)
+            patch_data = parse_with_llm(body_text, version_hint, api_key, model=model)
 
             # Save result
             output_file = OUTPUT_DIR / f"{version_hint}_{model.replace('/', '_')}.json"
@@ -88,9 +84,6 @@ def main() -> None:
         except Exception as e:
             print(f"  ERROR: {e}")
             results[model] = {"model": model, "error": str(e)}
-
-        finally:
-            llm_config.DEFAULT_MODEL = original_model
 
     # Summary
     print(f"\n{'=' * 60}")

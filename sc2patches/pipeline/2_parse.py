@@ -11,7 +11,6 @@ The LLM parses main + BU HTML files together for intelligent deduplication.
 """
 
 import json
-import os
 import re
 import sys
 import time
@@ -23,6 +22,7 @@ from rich.console import Console
 from rich.progress import BarColumn, Progress, SpinnerColumn, TaskProgressColumn, TextColumn
 
 from sc2patches.core.extraction import url_to_filename
+from sc2patches.core.llm_config import get_openrouter_api_key
 from sc2patches.core.logger import PipelineLogger
 from sc2patches.core.models import PatchConfig
 from sc2patches.core.parse import ParseError, parse_patch, parse_patches_combined
@@ -42,16 +42,6 @@ class ParseContext:
     skip_existing: bool
     logger: PipelineLogger
     api_key: str
-
-
-def get_api_key() -> str:
-    """Get OpenRouter API key from environment. Fails if not found."""
-    api_key = os.getenv("OPENROUTER_API_KEY")
-    if api_key:
-        return api_key
-    console.print("[red]ERROR: OPENROUTER_API_KEY not found in environment[/red]")
-    console.print("Set it in .env file or export OPENROUTER_API_KEY=...")
-    sys.exit(1)
 
 
 def load_patch_config(urls_path: Path) -> list[PatchConfig]:
@@ -173,7 +163,7 @@ def process_single_patch(patch_config: PatchConfig, ctx: ParseContext) -> bool:
 
 def main() -> None:
     """Parse all HTML patches with Gemini 3 Pro."""
-    api_key = get_api_key()
+    api_key = get_openrouter_api_key()
     skip_existing = "--skip-existing" in sys.argv
     specific_version = next((a for a in sys.argv[1:] if not a.startswith("--")), None)
 

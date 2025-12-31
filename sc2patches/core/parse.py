@@ -88,6 +88,7 @@ def parse_with_llm(
     api_key: str,
     is_multi_source: bool = False,
     parse_hint: str | None = None,
+    model: str | None = None,
 ) -> LLMPatchResponse:
     """Call OpenRouter LLM to extract balance changes from patch text."""
     # Load valid entity IDs and format for prompt
@@ -220,7 +221,7 @@ Return ONLY valid JSON matching the example format. Include ALL required fields.
                 "X-Title": "SC2 Patch Parser",
             },
             json={
-                "model": DEFAULT_MODEL,
+                "model": model or DEFAULT_MODEL,
                 "messages": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt},

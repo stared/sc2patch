@@ -86,7 +86,7 @@ Each stage:
 If data is wrong:
 
 1. **Fix the pipeline** (scripts or parsing logic)
-2. **Reparse only affected files** using `--only` flag (e.g., `uv run python sc2patches/pipeline/2_parse.py --only "4.0"`)
+2. **Reparse only affected files** (e.g., `uv run python sc2patches/pipeline/2_parse.py 4.0`)
 3. **Don't rerun entire pipeline** unless necessary - parsing is time-consuming and costs API credits
 
 If a patch file has no HTML source (orphaned data):
@@ -109,13 +109,13 @@ uv run python sc2patches/pipeline/4_export_for_viz.py
 
 ```bash
 # Download
+1_download.py                    # Download all
 1_download.py --skip-existing    # Skip already downloaded
 
 # Parse (most common)
 2_parse.py                       # Parse all
 2_parse.py --skip-existing       # Skip already parsed
 2_parse.py 5.0.15                # Parse single patch
-2_parse.py --only "4.0"          # Same as above
 ```
 
 **Common workflow - reparse single patch:**

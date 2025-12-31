@@ -37,6 +37,9 @@ ignore = [
     "PLR0912",  # Too many branches - utility scripts are often complex
     "PLR0915",  # Too many statements - utility scripts are often long
 ]
+"sc2patches/core/parse.py" = [
+    "PLR0913",  # Too many arguments - parse_with_llm needs multiple options
+]
 
 [tool.ruff.format]
 quote-style = "double"

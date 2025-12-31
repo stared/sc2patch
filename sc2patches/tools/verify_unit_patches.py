@@ -15,8 +15,8 @@ import asyncio
 import json
 from pathlib import Path
 
-from google import genai
-from google.genai import types
+from google import genai  # type: ignore[import-not-found]
+from google.genai import types  # type: ignore[import-not-found]
 from rich.console import Console
 from rich.table import Table
 

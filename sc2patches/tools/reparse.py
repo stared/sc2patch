@@ -16,21 +16,13 @@ from pathlib import Path
 from dotenv import load_dotenv
 from rich.console import Console
 
+from sc2patches.core.llm_config import get_openrouter_api_key
 from sc2patches.core.parse import ParseError, parse_patch
 
 # Load environment variables from .env file
 load_dotenv()
 
 console = Console()
-
-
-def get_api_key() -> str:
-    """Get OpenRouter API key from environment."""
-    api_key = os.getenv("OPENROUTER_API_KEY")
-    if api_key:
-        return api_key
-    console.print("[red]OPENROUTER_API_KEY not set in environment[/red]")
-    sys.exit(1)
 
 
 # Co-op keywords to detect
@@ -144,7 +136,7 @@ def main() -> None:
     console.print(f"Fix mode: {fix_mode}\n")
 
     # Get API key for parsing
-    api_key = get_api_key()
+    api_key = get_openrouter_api_key()
 
     if specific_versions:
         # Re-parse specific versions
