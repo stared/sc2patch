@@ -525,13 +525,16 @@ button.filter-chip:hover {
   box-shadow:
     0 8px 24px rgba(0, 0, 0, 0.6),
     0 0 8px color-mix(in srgb, var(--change-color, #888) 25%, transparent);
-  /* Animation */
+  /* Animation - fade in/out 400ms */
   opacity: 0;
-  transition: opacity 0.12s ease-out;
+  visibility: hidden;
+  transition: opacity 0.4s ease-out, visibility 0s linear 0.4s;
 }
 
 .tooltip.visible {
   opacity: 1;
+  visibility: visible;
+  transition: opacity 0.4s ease-out, visibility 0s linear 0s;
 }
 
 .tooltip h4 {
@@ -604,6 +607,11 @@ button.filter-chip:hover {
 .patch-grid-container {
   width: 100%;
   contain: layout; /* Isolate from header reflows */
+}
+
+/* Disable mouse interactions during grid transitions */
+.patch-grid-container.transitioning {
+  pointer-events: none;
 }
 
 .patch-grid {

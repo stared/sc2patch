@@ -255,7 +255,6 @@ function App() {
         entity={tooltip.entity}
         visible={tooltip.visible}
         position={tooltipPosition}
-        selectedEntityId={selectedEntityId}
       />
     </div>
   );

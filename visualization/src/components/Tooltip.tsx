@@ -12,11 +12,10 @@ interface TooltipProps {
   entity: EntityWithPosition | null;
   visible: boolean;
   position: { left: number; top: number };
-  selectedEntityId: string | null;
 }
 
 export const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
-  ({ entity, visible, position, selectedEntityId }, ref) => {
+  ({ entity, visible, position }, ref) => {
     if (!entity) return null;
 
     return (
@@ -31,18 +30,16 @@ export const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
         } as React.CSSProperties}
       >
         <h4>{entity.name || 'Unknown'}</h4>
-        {!selectedEntityId && (
-          <ul>
-            {entity.changes.map((change: Change, i: number) => (
-              <li key={i}>
-                <span style={{ color: getChangeColor(change.change_type as ChangeType), fontWeight: 'bold' }}>
-                  {getChangeIndicator(change.change_type as ChangeType)}
-                </span>
-                {change.raw_text}
-              </li>
-            ))}
-          </ul>
-        )}
+        <ul>
+          {entity.changes.map((change: Change, i: number) => (
+            <li key={i}>
+              <span style={{ color: getChangeColor(change.change_type as ChangeType), fontWeight: 'bold' }}>
+                {getChangeIndicator(change.change_type as ChangeType)}
+              </span>
+              {change.raw_text}
+            </li>
+          ))}
+        </ul>
       </div>
     );
   }

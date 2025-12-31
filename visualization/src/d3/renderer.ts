@@ -386,6 +386,16 @@ export class PatchGridRenderer {
       // Event handlers for all
       .on('click', (event, d) => {
         event.stopPropagation();
+        state.setTooltip({ entity: null, visible: false }); // Hide tooltip instantly on click
+
+        // Disable interactions during transition animation
+        const container = document.querySelector('.patch-grid-container');
+        if (container) {
+          container.classList.add('transitioning');
+          const totalAnimationTime = PHASE.ENTER_DELAY + PHASE.ENTER_DURATION + 50; // ~1050ms
+          setTimeout(() => container.classList.remove('transitioning'), totalAnimationTime);
+        }
+
         state.onEntitySelect(state.selectedEntityId === d.entityId ? null : d.entityId);
       })
       .on('mouseenter', (event, d) => {
@@ -402,7 +412,19 @@ export class PatchGridRenderer {
           visible: true
         });
       })
-      .on('mouseleave', () => state.setTooltip({ entity: null, visible: false }));
+      .on('mouseleave', (event, d) => {
+        const group = event.currentTarget as SVGGElement;
+        const rect = group.getBoundingClientRect();
+        state.setTooltip({
+          entity: {
+            ...d.entity,
+            name: state.unitsMap.get(d.entityId)?.name || d.entity.name || d.entityId,
+            x: rect.left + rect.width / 2,
+            y: rect.top + rect.height / 2
+          },
+          visible: false
+        });
+      });
   }
 
   private renderChanges(layoutResult: LayoutResult): void {
