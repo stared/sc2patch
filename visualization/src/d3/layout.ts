@@ -9,7 +9,7 @@
  * The renderer handles all animation logic - layout just says "where things belong."
  */
 
-import { ProcessedPatchData, ProcessedChange, ProcessedEntity, RACES, Race, Unit } from '../types';
+import { ProcessedPatchData, Change, ProcessedEntity, RACES, Race, Unit } from '../types';
 import { layout } from '../utils/uxSettings';
 
 // ============================================================================
@@ -49,7 +49,7 @@ export interface ChangeLayout {
   id: string;
   x: number;
   y: number;
-  changes: ProcessedChange[];
+  changes: Change[];
 }
 
 /** Complete layout result */

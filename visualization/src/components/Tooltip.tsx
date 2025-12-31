@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { ProcessedChange, EntityWithPosition, Race } from '../types';
+import { Change, EntityWithPosition, Race } from '../types';
 import {
   raceColors,
   changeTypeConfig,
@@ -33,12 +33,12 @@ export const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
         <h4>{entity.name || 'Unknown'}</h4>
         {!selectedEntityId && (
           <ul>
-            {entity.changes.map((change: ProcessedChange, i: number) => (
+            {entity.changes.map((change: Change, i: number) => (
               <li key={i}>
                 <span style={{ color: getChangeColor(change.change_type as ChangeType), fontWeight: 'bold' }}>
                   {getChangeIndicator(change.change_type as ChangeType)}
                 </span>
-                {change.text}
+                {change.raw_text}
               </li>
             ))}
           </ul>

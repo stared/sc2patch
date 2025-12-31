@@ -1,7 +1,7 @@
 import { select, type Selection } from 'd3-selection';
 import { transition } from 'd3-transition';
 import { easeCubicInOut } from 'd3-ease';
-import { ProcessedPatchData, ProcessedChange, Race, Unit, EntityWithPosition } from '../types';
+import { ProcessedPatchData, Change, Race, Unit, EntityWithPosition } from '../types';
 import { layout, timing, raceColors, eraColors, getChangeIndicator, getChangeColor, getEraFromVersion, type ChangeType } from '../utils/uxSettings';
 import {
   calculateLayout,
@@ -486,7 +486,7 @@ export class PatchGridRenderer {
 
           cg.each(function(d) {
             const group = select(this);
-            d.changes.forEach((change: ProcessedChange, i: number) => {
+            d.changes.forEach((change: Change, i: number) => {
               const text = group.append('text')
                 .attr('x', 0).attr('y', i * 18)
                 .style('fill', '#ccc')
@@ -497,7 +497,7 @@ export class PatchGridRenderer {
                 .style('font-weight', 'bold')
                 .text(getChangeIndicator(change.change_type as ChangeType));
 
-              text.append('tspan').text(change.text);
+              text.append('tspan').text(change.raw_text);
             });
           });
 
