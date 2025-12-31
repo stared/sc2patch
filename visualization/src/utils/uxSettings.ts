@@ -86,18 +86,28 @@ export const changeTypeOrder: ChangeType[] = ['buff', 'nerf', 'mixed'];
 
 // Layout constants
 export const layout = {
+  // Cell grid
   cellSize: 48,
   cellGap: 6,
-  patchLabelWidth: 90,  // Reduced from 120 - sort arrow is minimal
+  patchLabelWidth: 90,
   raceColumnWidth: 250,
+  // Canvas
+  maxWidth: 1400,
+  marginTop: 80,
+  marginBottom: 200,
   // Header positioning
-  headerY: 12,        // Y position of header row (sort button + race labels)
-  gridStartY: 55,     // Y position where first patch row starts
-  // Filtered view (single unit selected)
-  filteredEntityOffset: 40, // X offset from patchLabelWidth for entity in filtered view
-  // Change notes layout (for filtered view)
+  headerY: 12,
+  gridStartY: 55,
+  scrollHeaderOffset: 200,
+  // Patch row
+  patchHeaderHeight: 40,
+  patchFooterPadding: 10,
+  // Filtered view
+  filteredEntityOffset: 40,
+  // Change notes
   changeNoteLineHeight: 18,
-  changeNotePadding: 16
+  changeNotePadding: 16,
+  changeNoteOffsetX: 140
 } as const;
 
 // Animation timing (milliseconds)

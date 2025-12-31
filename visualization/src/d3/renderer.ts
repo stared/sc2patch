@@ -41,7 +41,7 @@ const PHASE = {
 
 export class PatchGridRenderer {
   private svg: Selection<SVGSVGElement, unknown, null, undefined>;
-  private svgWidth: number = 1400;
+  private svgWidth: number = layout.maxWidth;
   private isFirstRender: boolean = true;
   private isImmediate: boolean = false; // Set per render() call
 
@@ -56,8 +56,8 @@ export class PatchGridRenderer {
 
     // Update SVG width
     const svgElement = this.svg.node();
-    const containerWidth = svgElement?.parentElement?.clientWidth || 1400;
-    this.svgWidth = Math.min(containerWidth, 1400);
+    const containerWidth = svgElement?.parentElement?.clientWidth || layout.maxWidth;
+    this.svgWidth = Math.min(containerWidth, layout.maxWidth);
 
     // Build layout input (no prev state tracking!)
     const layoutInput: LayoutInput = {
@@ -118,7 +118,7 @@ export class PatchGridRenderer {
 
     const svgRect = svgElement.getBoundingClientRect();
     const pageY = svgRect.top + window.scrollY + targetY;
-    const headerHeight = 200;
+    const headerHeight = layout.scrollHeaderOffset;
     const viewportHeight = window.innerHeight;
     const visibleTop = window.scrollY + headerHeight;
     const visibleBottom = window.scrollY + viewportHeight - 50;
@@ -156,15 +156,10 @@ export class PatchGridRenderer {
           g.append('rect')
             .attr('class', 'race-bg')
             .attr('x', -40).attr('width', 80)
-            .attr('height', 24).attr('rx', 4)
-            .style('fill', 'rgba(255, 255, 255, 0.03)')
-            .style('stroke', 'rgba(255, 255, 255, 0.08)')
-            .style('stroke-width', 1)
-            .style('cursor', 'pointer');
+            .attr('height', 24).attr('rx', 4);
 
           g.append('text')
             .attr('class', 'race-text')
-            .attr('text-anchor', 'middle')
             .attr('x', 0)
             .attr('y', 16);
 
@@ -221,8 +216,7 @@ export class PatchGridRenderer {
           const g = enter.append('g').attr('class', 'sort-control').attr('transform', 'translate(30, 0)');
           g.append('text')
             .attr('class', 'sort-text')
-            .attr('x', 0).attr('y', 16).attr('text-anchor', 'middle')
-            .style('fill', '#666').style('font-size', '16px').style('cursor', 'pointer');
+            .attr('x', 0).attr('y', 16);
           return g;
         },
         update => update
@@ -248,8 +242,7 @@ export class PatchGridRenderer {
         update => update,
         exit => exit.transition().duration(this.t(PHASE.EXIT_DURATION)).style('opacity', 0).remove()
       )
-      .attr('x', this.svgWidth - 20).attr('y', 16).attr('text-anchor', 'end')
-      .style('fill', '#666').style('font-size', '11px').style('cursor', 'pointer')
+      .attr('x', this.svgWidth - 20).attr('y', 16)
       .text(() => {
         if (!state.selectedEntityId) return '';
         const unit = state.unitsMap.get(state.selectedEntityId);
@@ -285,10 +278,8 @@ export class PatchGridRenderer {
             .attr('transform', 'translate(0, 20)');
 
           label.append('text')
+            .attr('class', 'patch-date')
             .attr('x', 10).attr('y', 0)
-            .style('font-size', '13px')
-            .style('font-weight', '600')
-            .style('cursor', 'pointer')
             .each(function(d) {
               select(this)
                 .style('fill', eraColors[getEraFromVersion(d.version)])
@@ -297,10 +288,8 @@ export class PatchGridRenderer {
             .on('click', (_e, d) => window.open(d.url, '_blank'));
 
           label.append('text')
+            .attr('class', 'patch-version')
             .attr('x', 10).attr('y', 14)
-            .style('fill', '#777')
-            .style('font-size', '11px')
-            .style('cursor', 'pointer')
             .text(d => d.version)
             .on('click', (_e, d) => window.open(d.url, '_blank'));
 
@@ -360,17 +349,14 @@ export class PatchGridRenderer {
             .style('stroke', d => {
               const { status } = d.entity;
               return status ? getChangeColor(status as ChangeType) : raceColors[(d.entity.race || 'neutral') as Race];
-            })
-            .style('stroke-width', 2)
-            .style('cursor', 'pointer');
+            });
 
           eg.append('image')
             .attr('width', layout.cellSize)
             .attr('height', layout.cellSize)
             .attr('href', d => `${import.meta.env.BASE_URL}assets/units/${d.entityId}.png`)
             .attr('clip-path', 'url(#roundedCorners)')
-            .attr('preserveAspectRatio', 'xMidYMid slice')
-            .style('pointer-events', 'none');
+            .attr('preserveAspectRatio', 'xMidYMid slice');
 
           // Fade in after move phase
           eg.transition()
@@ -446,13 +432,12 @@ export class PatchGridRenderer {
             const group = select(this);
             d.changes.forEach((change: Change, i: number) => {
               const text = group.append('text')
-                .attr('x', 0).attr('y', i * 18)
-                .style('fill', '#ccc')
-                .style('font-size', '13px');
+                .attr('class', 'change-note')
+                .attr('x', 0).attr('y', i * 18);
 
               text.append('tspan')
+                .attr('class', 'change-indicator')
                 .style('fill', getChangeColor(change.change_type as ChangeType))
-                .style('font-weight', 'bold')
                 .text(getChangeIndicator(change.change_type as ChangeType));
 
               text.append('tspan').text(change.raw_text);

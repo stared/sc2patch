@@ -100,7 +100,7 @@ export function calculateLayout(input: LayoutInput, svgWidth: number): LayoutRes
     : [];
 
   // Calculate total height
-  const svgHeight = 80 + patchRows.reduce((sum, row) => sum + row.height, 0) + 200;
+  const svgHeight = layout.marginTop + patchRows.reduce((sum, row) => sum + row.height, 0) + layout.marginBottom;
 
   // Calculate focus target for scrolling
   const focusTargetY = isFocusMode && entities.length > 0 ? entities[0].y : null;
@@ -209,7 +209,7 @@ function calculatePatchRows(input: LayoutInput, columnWidth: number): PatchRowLa
           .filter(entity => (entity.race || 'neutral') === race).length;
         maxRows = Math.max(maxRows, Math.ceil(count / cellsPerRow));
       });
-      height = 40 + maxRows * (layout.cellSize + layout.cellGap) + 10;
+      height = layout.patchHeaderHeight + maxRows * (layout.cellSize + layout.cellGap) + layout.patchFooterPadding;
     }
 
     const y = currentY;
@@ -298,7 +298,7 @@ function calculateChangesLayout(
       const entity = row.patch.entities.get(selectedEntityId)!;
       return {
         id: `${selectedEntityId}-${row.version}`,
-        x: layout.patchLabelWidth + 140,
+        x: layout.patchLabelWidth + layout.changeNoteOffsetX,
         y: row.y + 10,
         changes: entity.changes || []
       };

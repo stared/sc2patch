@@ -549,15 +549,87 @@ svg .sort-control:hover {
 }
 
 svg .sort-control:hover text {
-  fill: #aaa !important;
+  fill: #aaa;
 }
 
 /* SVG patch label hover glow */
-svg .patch-label {
-  transition: filter 0.15s ease;
+/* SVG interactive elements - cursor */
+svg .race-bg,
+svg .sort-text,
+svg .unit-links,
+svg .patch-label,
+svg .entity-cell-group {
   cursor: pointer;
 }
 
+/* SVG text defaults */
+svg .race-text,
+svg .unit-text {
+  font-size: 12px;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+svg .race-text { font-weight: 500; }
+svg .race-text.active { font-weight: 600; }
+svg .unit-text { font-weight: 600; }
+
+/* Sort control */
+svg .sort-text {
+  font-size: 16px;
+  text-anchor: middle;
+  fill: #666;
+}
+
+/* Wiki links */
+svg .unit-links {
+  font-size: 11px;
+  text-anchor: end;
+  fill: #666;
+}
+
+/* Patch labels */
+svg .patch-label {
+  transition: filter 0.15s ease;
+}
+
+svg .patch-date {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+svg .patch-version {
+  font-size: 11px;
+  fill: #777;
+}
+
+/* Race header bg */
+svg .race-bg {
+  fill: rgba(255, 255, 255, 0.03);
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-width: 1px;
+}
+
+/* Entity cells */
+svg .entity-cell-group rect {
+  stroke-width: 2px;
+}
+
+svg .entity-cell-group image {
+  pointer-events: none;
+}
+
+/* Change notes */
+svg .change-note {
+  font-size: 13px;
+  fill: #ccc;
+}
+
+svg .change-indicator {
+  font-weight: bold;
+}
+
+/* Hover effects */
 svg .patch-label:hover {
   filter: drop-shadow(0 0 8px currentColor) brightness(1.2);
 }
@@ -568,27 +640,7 @@ svg .wiki-link {
 
 svg .wiki-link:hover {
   filter: drop-shadow(0 0 6px rgba(136, 136, 136, 0.6)) brightness(1.3);
-  fill: #999 !important;
-}
-
-/* Header text base styles (race and unit names) */
-svg .race-text,
-svg .unit-text {
-  font-size: 12px;
-  cursor: pointer;
-  pointer-events: none;
-}
-
-svg .race-text {
-  font-weight: 500;
-}
-
-svg .race-text.active {
-  font-weight: 600;
-}
-
-svg .unit-text {
-  font-weight: 600;
+  fill: #999;
 }
 
 .patch-row {
