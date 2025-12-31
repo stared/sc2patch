@@ -13,8 +13,6 @@ export const raceColors: Record<Race, string> = {
   neutral: '#888'
 };
 
-export const filterableRaces: Array<Exclude<Race, 'neutral'>> = ['terran', 'zerg', 'protoss'];
-
 // Era colors and data
 // Each major version is its own era
 export type Era = 'wol' | 'hots' | 'lotv' | 'f2p' | 'anniversary';
@@ -117,12 +115,6 @@ export const timing = {
   textCrossFade: 200  // Race/unit text cross-fade duration
 } as const;
 
-// Header text layout
-export const headerText = {
-  unitTextX: 8,  // X offset for left-aligned unit text
-  raceTextX: 0   // X offset for centered race text (text-anchor: middle)
-} as const;
-
 // Helper functions
 export function getChangeColor(changeType: ChangeType): string {
   return changeTypeConfig[changeType].color;
@@ -130,8 +122,4 @@ export function getChangeColor(changeType: ChangeType): string {
 
 export function getChangeIndicator(changeType: ChangeType): string {
   return changeTypeConfig[changeType].indicator;
-}
-
-export function getRaceColor(race: Race): string {
-  return raceColors[race];
 }
