@@ -1,12 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
 import { loadPatchesData, createUnitsMap, processPatches } from './utils/dataLoader';
-import { ProcessedPatchData, Unit, ProcessedChange, EntityWithPosition, Race } from './types';
+import { ProcessedPatchData, Unit, EntityWithPosition, Race } from './types';
 import { PatchGridRenderer } from './utils/patchGridRenderer';
+import { Tooltip } from './components/Tooltip';
 import {
-  getChangeIndicator,
-  getChangeColor,
   getEraFromVersion,
-  type ChangeType,
   eraData,
   eraColors,
   eraOrder,
@@ -341,33 +339,13 @@ function App() {
         </footer>
       </main>
 
-      {/* Tooltip at root level for correct position:fixed behavior */}
-      {tooltip.entity && (
-        <div
-          ref={tooltipRef}
-          className={`tooltip ${tooltip.visible ? 'visible' : ''}`}
-          style={{
-            '--race-color': raceColors[(tooltip.entity.race as Race) || 'neutral'],
-            '--change-color': tooltip.entity.status ? changeTypeConfig[tooltip.entity.status as ChangeType].color : '#888',
-            left: `${tooltipPosition.left}px`,
-            top: `${tooltipPosition.top}px`,
-          } as React.CSSProperties}
-        >
-          <h4>{tooltip.entity.name || 'Unknown'}</h4>
-          {!selectedEntityId && (
-            <ul>
-              {tooltip.entity.changes.map((change: ProcessedChange, i: number) => (
-                <li key={i}>
-                  <span style={{ color: getChangeColor(change.change_type as ChangeType), fontWeight: 'bold' }}>
-                    {getChangeIndicator(change.change_type as ChangeType)}
-                  </span>
-                  {change.text}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      )}
+      <Tooltip
+        ref={tooltipRef}
+        entity={tooltip.entity}
+        visible={tooltip.visible}
+        position={tooltipPosition}
+        selectedEntityId={selectedEntityId}
+      />
     </div>
   );
 }
