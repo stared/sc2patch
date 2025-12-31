@@ -30,3 +30,4 @@ scripts/entity_candidates.json
 
 # Node modules
 node_modules/
+.pyscn/
