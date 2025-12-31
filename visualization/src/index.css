@@ -65,6 +65,58 @@ body {
   line-height: 1.2;
 }
 
+/* Abathur easter egg */
+.balance-easter-egg {
+  position: relative;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.balance-text {
+  color: var(--balance-color);
+  transition: filter 0.3s ease;
+}
+
+.balance-easter-egg:hover .balance-text {
+  filter: drop-shadow(0 0 8px var(--zerg-color)) brightness(1.2);
+}
+
+.abathur-quote {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  width: max-content;
+  max-width: 90vw;
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 400;
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--zerg-color);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.balance-easter-egg:hover .abathur-quote {
+  opacity: 0.8;
+  visibility: visible;
+  transform: translateX(-50%) translateY(4px);
+  transition-delay: 0.4s;
+}
+
+/* Show full quote on desktop, short on mobile */
+.abathur-short { display: none; }
+
+@media (max-width: 768px) {
+  .abathur-full { display: none; }
+  .abathur-short { display: block; }
+}
+
 /* Era Timeline */
 .era-timeline {
   display: flex;
