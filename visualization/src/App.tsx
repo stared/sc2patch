@@ -1,18 +1,13 @@
 import { useEffect, useState, useRef } from 'react';
 import { loadPatchesData, createUnitsMap, processPatches } from './utils/dataLoader';
-import { ProcessedPatchData, Unit, ProcessedChange, EntityWithPosition, Race } from './types';
-import { PatchGridRenderer } from './utils/patchGridRenderer';
+import { ProcessedPatchData, Unit, EntityWithPosition, Race } from './types';
+import { PatchGridRenderer } from './d3';
+import { Tooltip } from './components/Tooltip';
+import { Header } from './components/Header';
+import { FilterStatus } from './components/FilterStatus';
 import {
-  getChangeIndicator,
-  getChangeColor,
   getEraFromVersion,
-  type ChangeType,
-  eraData,
   eraColors,
-  eraOrder,
-  raceColors,
-  changeTypeConfig,
-  changeTypeOrder,
   type Era,
 } from './utils/uxSettings';
 
@@ -34,10 +29,9 @@ function App() {
 
   const svgRef = useRef<SVGSVGElement>(null);
   const rendererRef = useRef<PatchGridRenderer | null>(null);
-  const prevSelectedIdRef = useRef<string | null>(null);
-  const prevSelectedRaceRef = useRef<Race | null>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const prevWindowWidthRef = useRef(window.innerWidth);
   const [tooltipPosition, setTooltipPosition] = useState<{ left: number; top: number; flipped: boolean }>({ left: 0, top: 0, flipped: false });
 
   // Calculate tooltip position - left or right of icon, FIXED distance
@@ -174,16 +168,13 @@ function App() {
       rendererRef.current = new PatchGridRenderer(svgRef.current);
     }
 
-    const prevSelectedId = prevSelectedIdRef.current;
-    prevSelectedIdRef.current = selectedEntityId;
-    const prevSelectedRace = prevSelectedRaceRef.current;
-    prevSelectedRaceRef.current = selectedRace;
+    // Detect if this render is due to resize
+    const isResize = windowWidth !== prevWindowWidthRef.current;
+    prevWindowWidthRef.current = windowWidth;
 
     rendererRef.current.render({
       patches: sortedAndFilteredPatches,
       selectedEntityId,
-      prevSelectedId,
-      prevSelectedRace,
       onEntitySelect: setSelectedEntityId,
       setTooltip,
       unitsMap: units,
@@ -191,7 +182,7 @@ function App() {
       sortOrder,
       setSortOrder,
       setSelectedRace
-    });
+    }, { immediate: isResize });
   }, [sortedAndFilteredPatches, selectedEntityId, units, selectedRace, selectedEra, sortOrder, windowWidth]);
 
   if (loading) {
@@ -224,99 +215,18 @@ function App() {
     <div className="app-container">
       <header className="app-header">
         <div className="header-content">
-          {/* Top row: Title + Attribution */}
-          <div className="header-top">
-            <div className="header-title-group">
-              <h1 className="header-title">
-                15 Years of StarCraft II <span style={{ color: changeTypeConfig.mixed.color }}>Balance Changes</span> Visualized
-              </h1>
-            </div>
-            <div className="attribution">
-              <span className="attribution-author">by <a href="https://p.migdal.pl" target="_blank" rel="noopener noreferrer">Piotr Migdał</a></span>
-              <a href="https://github.com/stared/sc2-balance-timeline" target="_blank" rel="noopener noreferrer" className="attribution-source">source code</a>
-            </div>
-          </div>
+          <Header selectedEra={selectedEra} setSelectedEra={setSelectedEra} />
 
-          {/* Era Timeline */}
-          <div className="era-timeline">
-            {eraOrder.map((era, i) => (
-              <button
-                key={era}
-                className={`timeline-segment ${selectedEra === era ? 'active' : ''} ${selectedEra && selectedEra !== era ? 'inactive' : ''}`}
-                style={{ '--segment-color': eraColors[era] } as React.CSSProperties}
-                onClick={() => setSelectedEra(selectedEra === era ? null : era)}
-                title={`${eraData[era].name} (${eraData[era].version})`}
-              >
-                <div className="segment-label">{eraData[era].short}</div>
-                <div className="segment-track">
-                  <div className="segment-line" />
-                </div>
-                <div className="segment-date">{eraData[era].releaseDate}{i === eraOrder.length - 1 && <span className="segment-date-now">now</span>}</div>
-              </button>
-            ))}
-          </div>
-
-          {/* Filter Status */}
-          <div className="filter-status">
-            {(() => {
-              // Compute date range from actual filtered patches
-              const dates = filteredPatches.map(p => new Date(p.date)).sort((a, b) => a.getTime() - b.getTime());
-              const formatDate = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-              const startDate = dates.length > 0 ? formatDate(dates[0]) : '';
-              const endDate = dates.length > 0 ? formatDate(dates[dates.length - 1]) : '';
-
-              return (
-                <>
-                  Showing {filteredPatches.length} patches with{' '}
-                  {changeTypeOrder.map((type, i) => (
-                    <span key={type}>
-                      <span
-                        className="filter-chip"
-                        style={{ borderColor: changeTypeConfig[type].color, '--chip-color': changeTypeConfig[type].color } as React.CSSProperties}
-                      >
-                        {changeTypeConfig[type].label}
-                      </span>
-                      {i === 0 && ', '}
-                      {i === 1 && ', and '}
-                    </span>
-                  ))}
-                  {' '}balance changes from {startDate} to {endDate} covering{' '}
-                  {selectedEra ? (
-                    <button
-                      className="filter-chip active"
-                      style={{ borderColor: eraColors[selectedEra], '--chip-color': eraColors[selectedEra] } as React.CSSProperties}
-                      onClick={() => setSelectedEra(null)}
-                    >
-                      {eraData[selectedEra].name} ×
-                    </button>
-                  ) : (
-                    <span>the whole timeline</span>
-                  )}
-                  {' '}and affecting{' '}
-                  {selectedEntityId ? (
-                    <button
-                      className="filter-chip active"
-                      style={{ borderColor: raceColors[units.get(selectedEntityId)?.race || 'neutral'], '--chip-color': raceColors[units.get(selectedEntityId)?.race || 'neutral'] } as React.CSSProperties}
-                      onClick={() => setSelectedEntityId(null)}
-                    >
-                      {units.get(selectedEntityId)?.name || selectedEntityId} ×
-                    </button>
-                  ) : selectedRace ? (
-                    <button
-                      className="filter-chip active"
-                      style={{ borderColor: raceColors[selectedRace], '--chip-color': raceColors[selectedRace] } as React.CSSProperties}
-                      onClick={() => setSelectedRace(null)}
-                    >
-                      {selectedRace.charAt(0).toUpperCase() + selectedRace.slice(1)} ×
-                    </button>
-                  ) : (
-                    <span>all races</span>
-                  )}
-                  . Hover and click to explore.
-                </>
-              );
-            })()}
-          </div>
+          <FilterStatus
+            filteredPatches={filteredPatches}
+            selectedEra={selectedEra}
+            setSelectedEra={setSelectedEra}
+            selectedEntityId={selectedEntityId}
+            setSelectedEntityId={setSelectedEntityId}
+            selectedRace={selectedRace}
+            setSelectedRace={setSelectedRace}
+            units={units}
+          />
         </div>
       </header>
 
@@ -341,33 +251,13 @@ function App() {
         </footer>
       </main>
 
-      {/* Tooltip at root level for correct position:fixed behavior */}
-      {tooltip.entity && (
-        <div
-          ref={tooltipRef}
-          className={`tooltip ${tooltip.visible ? 'visible' : ''}`}
-          style={{
-            '--race-color': raceColors[(tooltip.entity.race as Race) || 'neutral'],
-            '--change-color': tooltip.entity.status ? changeTypeConfig[tooltip.entity.status as ChangeType].color : '#888',
-            left: `${tooltipPosition.left}px`,
-            top: `${tooltipPosition.top}px`,
-          } as React.CSSProperties}
-        >
-          <h4>{tooltip.entity.name || 'Unknown'}</h4>
-          {!selectedEntityId && (
-            <ul>
-              {tooltip.entity.changes.map((change: ProcessedChange, i: number) => (
-                <li key={i}>
-                  <span style={{ color: getChangeColor(change.change_type as ChangeType), fontWeight: 'bold' }}>
-                    {getChangeIndicator(change.change_type as ChangeType)}
-                  </span>
-                  {change.text}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      )}
+      <Tooltip
+        ref={tooltipRef}
+        entity={tooltip.entity}
+        visible={tooltip.visible}
+        position={tooltipPosition}
+        selectedEntityId={selectedEntityId}
+      />
     </div>
   );
 }

@@ -1,41 +1,66 @@
 /**
- * TypeScript types for SC2 patch visualization.
- *
- * Data types (Unit, Patch, etc.) are defined in schemas.ts via Zod.
- * This file contains visualization-specific types.
+ * Types for SC2 patch visualization.
+ * Zod schemas for runtime validation + derived TypeScript types.
  */
 
-// Re-export data types from Zod schemas
-export type {
-  Race,
-  ChangeType,
-  UnitType,
-  Unit,
-  Change,
-  EntityChanges,
-  Patch,
-  PatchesData,
-} from './schemas';
+import { z } from 'zod';
 
-// Re-export race enum for iteration
-export { RaceSchema } from './schemas';
-export const RACES = ['terran', 'zerg', 'protoss', 'neutral'] as const;
+// --- Zod Schemas (Source of Truth) ---
 
-// Visualization types (post-processing)
+export const RaceSchema = z.enum(['terran', 'protoss', 'zerg', 'neutral']);
+export const ChangeTypeSchema = z.enum(['buff', 'nerf', 'mixed']);
+export const UnitTypeSchema = z.enum(['unit', 'building', 'upgrade', 'ability', 'mechanic']);
 
-export interface ProcessedChange {
-  text: string;
-  change_type: 'buff' | 'nerf' | 'mixed';
-}
+export const UnitSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  race: RaceSchema,
+  type: UnitTypeSchema.default('unit'),
+  liquipedia_url: z.string().url(),
+});
 
-export interface ProcessedEntity {
-  id: string;
-  name: string;
-  race: string;
-  type: 'unit' | 'building' | 'upgrade' | 'ability' | 'mechanic' | 'unknown';
-  changes: ProcessedChange[];
-  status: 'buff' | 'nerf' | 'mixed' | null;
-}
+export const ChangeSchema = z.object({
+  raw_text: z.string(),
+  change_type: ChangeTypeSchema,
+});
+
+export const EntityChangesSchema = z.object({
+  entity_id: z.string(),
+  changes: z.array(ChangeSchema),
+});
+
+export const PatchSchema = z.object({
+  version: z.string(),
+  date: z.string(),
+  url: z.string().url(),
+  entities: z.array(EntityChangesSchema),
+});
+
+export const PatchesDataSchema = z.object({
+  patches: z.array(PatchSchema),
+  units: z.array(UnitSchema),
+  generated_at: z.string(),
+});
+
+// --- Inferred Base Types ---
+
+export type Race = z.infer<typeof RaceSchema>;
+export type ChangeType = z.infer<typeof ChangeTypeSchema>;
+export type Unit = z.infer<typeof UnitSchema>;
+export type Change = z.infer<typeof ChangeSchema>;
+export type Patch = z.infer<typeof PatchSchema>;
+export type PatchesData = z.infer<typeof PatchesDataSchema>;
+
+// --- Visualization Types (derived from base) ---
+
+// Race list derived from schema (single source of truth)
+export const RACES = RaceSchema.options;
+
+// ProcessedEntity extends Unit with visualization data
+export type ProcessedEntity = Unit & {
+  changes: Change[];
+  status: ChangeType | null;
+};
 
 export interface ProcessedPatchData {
   version: string;
@@ -44,25 +69,5 @@ export interface ProcessedPatchData {
   entities: Map<string, ProcessedEntity>;
 }
 
-// Entity with position for tooltip display
+// Entity with screen position for tooltip
 export type EntityWithPosition = ProcessedEntity & { x: number; y: number };
-
-export type ViewMode = 'by-patch' | 'by-unit';
-
-// D3 rendering interfaces
-export interface EntityItem {
-  id: string;
-  entityId: string;
-  patchVersion: string;
-  entity: ProcessedEntity;
-  x: number;
-  y: number;
-  visible: boolean;
-}
-
-export interface PatchRow {
-  patch: ProcessedPatchData;
-  y: number;
-  visible: boolean;
-  height: number;
-}
