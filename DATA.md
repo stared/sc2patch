@@ -44,7 +44,3 @@ Ramp mechanics use per-race IDs (`terran-ramp`, `protoss-ramp`, `zerg-ramp`) ins
 
 **Status:** Pending normalization fix.
 
-## Sources
-
-- **Primary:** Blizzard News (news.blizzard.com)
-- **Reference:** Liquipedia (liquipedia.net/starcraft2/Patches)

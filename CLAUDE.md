@@ -60,8 +60,6 @@
 
 ## Data Pipeline
 
-**See scripts/README.md for pipeline details**
-
 The pipeline has 4 stages:
 
 1. **Download** (`scripts/1_download.py`) - Fetch HTML from Blizzard News
@@ -188,7 +186,7 @@ All patches use this JSON structure:
 - **ALWAYS ASK before committing** - never commit without explicit user confirmation
 - When needed, manually check Blizzard websites or Liqudidpedia, e.g. https://liquipedia.net/starcraft2/Units_(Legacy_of_the_Void) and its pages, e.g. https://liquipedia.net/starcraft2/Factory_(Legacy_of_the_Void), https://liquipedia.net/starcraft2/Stalker_(Legacy_of_the_Void) or https://liquipedia.net/starcraft2/Chitinous_Plating (to show you patters for buildings, units, upgrades). Useful websites: https://liquipedia.net/starcraft2/Upgrades and for patches - https://liquipedia.net/starcraft2/Patches.
 
-## Visualization Structure
+## Visualization
 
 ```
 visualization/
@@ -206,28 +204,25 @@ visualization/
     └── assets/units/                # Unit/building images
 ```
 
-**Architecture principles:**
+**Architecture:**
 - **App.tsx**: Single component orchestrating everything (data, state, rendering, UI)
-- **patchGridRenderer.ts**: D3 class with clear separation of concerns (render, layout calculation, element rendering)
-- **uxSettings.ts**: Centralized configuration - all colors, sizes, timings in one place
-- **No defensive programming**: Fail fast with strict types, use constants from types.ts (e.g., RACES)
-- **Targeted D3 imports**: Only d3-selection, d3-transition, d3-ease (not full d3 package)
+- **patchGridRenderer.ts**: D3 class (render, layout, elements)
+- **uxSettings.ts**: All colors, sizes, timings centralized
+- **Targeted D3 imports**: Only d3-selection, d3-transition, d3-ease (not full d3)
 
-**Animation philosophy:**
+**Animation rules:**
 
-**Selecting a unit (grid → filtered):**
+Selecting unit (grid → filtered):
 1. Fade out irrelevant entities
 2. Move selected unit to filtered position
-3. Show change notes (fade in after movement completes)
+3. Show change notes (fade in after movement)
 
-**Deselecting (filtered → grid):**
-1. Previously selected unit moves back to grid position
-2. Previously visible patches move to new grid positions
-3. Newly appearing patches/units fade in at final positions - **NO MOVEMENT**
+Deselecting (filtered → grid):
+1. Selected unit moves back to grid position
+2. Previously visible patches move to new positions
+3. Newly appearing elements: fade in at final position only - **NO MOVEMENT**
 
-**Critical rules:**
-- All timing values centralized in `uxSettings.ts` (never inline)
-- Clicking selected unit deselects it (same as clicking X button)
-- Newly appearing elements: fade in at final position only (no movement animation)
-- Previously visible elements: animate to their new positions
-- After deselection, positions must match original grid layout exactly
+**Critical:**
+- All timing in `uxSettings.ts` (never inline)
+- Clicking selected unit deselects it
+- After deselection, positions must match original grid exactly

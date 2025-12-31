@@ -116,8 +116,8 @@ pnpm build          # Creates dist/ with base=/sc2-balance-timeline/
 ## Known Issues
 
 - Some older patches may have incomplete data
-- Ramp range changes are split by race (should be neutral)
-- Missing images fall back to placeholder (gray question mark)
+- Missing images fall back to placeholder
+- See [DATA.md](../DATA.md) for data-level issues (e.g., ramp entity IDs)
 
 ## License
 
