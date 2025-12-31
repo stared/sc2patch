@@ -722,10 +722,6 @@ svg .wiki-link:hover {
   font-size: 14px;
 }
 
-.footer-wol {
-  color: var(--wol-color);
-}
-
 .app-footer a {
   color: var(--wol-color);
   text-decoration: none;
