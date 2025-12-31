@@ -82,12 +82,25 @@ body {
   background: transparent;
   border: none;
   padding: 4px 0;
-  cursor: pointer;
   position: relative;
+  /* Sync with D3 Phase 1 (fade out) timing */
+  opacity: 1;
+  transform: scale(1);
+  transition:
+    opacity 600ms cubic-bezier(0.4, 0.0, 0.2, 1),
+    filter 600ms cubic-bezier(0.4, 0.0, 0.2, 1),
+    transform 200ms ease-out;
 }
 
+/* Tactile click feedback */
+.timeline-segment:active {
+  transform: scale(0.97);
+}
+
+/* Fog of War effect for inactive eras */
 .timeline-segment.inactive {
   opacity: 0.35;
+  filter: grayscale(0.8) blur(0.5px);
 }
 
 .timeline-segment:hover:not(.inactive):not(.active) {
@@ -116,7 +129,46 @@ body {
 .segment-line {
   flex: 1;
   height: 3px;
+  background: rgba(255, 255, 255, 0.15);
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Active segment line glow */
+.timeline-segment.active .segment-line {
   background: var(--segment-color);
+  box-shadow: 0 0 10px var(--segment-color);
+}
+
+/* Psionic surge animation on selection */
+.timeline-segment.active .segment-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.8),
+    transparent
+  );
+  animation: psionic-surge 2s ease-in-out forwards;
+}
+
+@keyframes psionic-surge {
+  0% { left: 0%; opacity: 0; }
+  5% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { left: 100%; opacity: 0; }
+}
+
+/* Non-active segments show dimmed color */
+.timeline-segment:not(.active) .segment-line {
+  background: var(--segment-color);
+  opacity: 0.4;
 }
 
 .segment-date {
