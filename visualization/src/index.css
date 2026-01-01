@@ -45,24 +45,27 @@ body {
 .header-top {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-  gap: 24px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .header-title-group {
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
-/* SC2-style title */
+/* SC2-style title - always one line, scales with viewport */
 .header-title {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  font-size: 1.8rem;
+  font-size: clamp(0.75rem, 2.5vw, 1.8rem);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.03em;
   margin: 0;
   color: #fff;
-  line-height: 1.2;
+  line-height: 0.95;  /* Tight line-height for top alignment */
+  white-space: nowrap;
 }
 
 /* Abathur easter egg */
@@ -326,7 +329,7 @@ button.filter-chip:hover {
   gap: 2px;
   font-size: 12px;
   flex-shrink: 0;
-  margin-top: 0.5em;
+  margin-top: 2px;  /* Align cap-height with title */
 }
 
 .attribution-author {
@@ -417,11 +420,6 @@ button.filter-chip:hover {
   }
 }
 
-@media (max-width: 1024px) {
-  .header-title {
-    font-size: 1.4rem;
-  }
-}
 
 @media (max-width: 768px) {
   .app-header {
@@ -432,19 +430,22 @@ button.filter-chip:hover {
     padding: 0 16px;
   }
 
-  .header-top {
-    flex-direction: column;
-    gap: 12px;
+  .header-title-group {
+    width: 100%;
   }
 
   .header-title {
-    font-size: 1.1rem;
+    font-size: clamp(0.7rem, 3.1vw, 1.4rem);
+    letter-spacing: 0;
+    line-height: 1.1;
   }
 
   .attribution {
+    width: 100%;
     flex-direction: row;
+    justify-content: flex-end;
     gap: 12px;
-    align-items: center;
+    margin-top: 0;
   }
 
   .era-bar {
@@ -481,11 +482,6 @@ button.filter-chip:hover {
 }
 
 @media (max-width: 480px) {
-  .header-title {
-    font-size: 0.95rem;
-    letter-spacing: 0.01em;
-  }
-
   .attribution {
     flex-direction: row;
     gap: 8px;
