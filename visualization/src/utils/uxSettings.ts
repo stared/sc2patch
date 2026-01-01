@@ -82,8 +82,35 @@ export type ChangeType = keyof typeof changeTypeConfig;
 
 export const changeTypeOrder: ChangeType[] = ['buff', 'nerf', 'mixed'];
 
+// Layout config type (widened from literal types for mobile/desktop variants)
+export interface LayoutConfig {
+  cellSize: number;
+  cellGap: number;
+  raceColumnPadding: number;
+  patchLabelWidth: number;
+  raceColumnWidth: number;
+  maxWidth: number;
+  marginTop: number;
+  marginBottom: number;
+  headerY: number;
+  gridStartY: number;
+  scrollHeaderOffset: number;
+  patchHeaderHeight: number;
+  patchFooterPadding: number;
+  filteredEntityOffset: number;
+  changeNoteLineHeight: number;
+  changeNotePadding: number;
+  changeNoteOffsetX: number;
+  // Patch label positioning (mobile: above icons, desktop: on left)
+  patchLabelTranslateX: number;
+  patchLabelTranslateY: number;
+  patchDateOffsetY: number;
+  patchVersionOffsetX: number;
+  patchVersionOffsetY: number;
+}
+
 // Layout constants
-export const layout = {
+export const layout: LayoutConfig = {
   // Cell grid
   cellSize: 48,
   cellGap: 6,
@@ -106,8 +133,42 @@ export const layout = {
   // Change notes
   changeNoteLineHeight: 18,
   changeNotePadding: 16,
-  changeNoteOffsetX: 140
-} as const;
+  changeNoteOffsetX: 140,
+  // Patch label positioning (desktop: on left, vertical stack)
+  patchLabelTranslateX: 0,
+  patchLabelTranslateY: 20,
+  patchDateOffsetY: 0,
+  patchVersionOffsetX: 0,
+  patchVersionOffsetY: 14
+};
+
+// Mobile support
+export const MOBILE_BREAKPOINT = 768;
+
+const mobileLayout: LayoutConfig = {
+  ...layout,
+  cellSize: 36,         // 75% of 48
+  cellGap: 5,           // Slightly bigger gap between icons
+  patchLabelWidth: 0,   // No left column - labels go above icons
+  // Patch label positioning (mobile: above icons, horizontal)
+  patchLabelTranslateX: 12,
+  patchLabelTranslateY: 6,
+  patchDateOffsetY: 4,
+  patchVersionOffsetX: 65,
+  patchVersionOffsetY: 4
+};
+
+// Races to show (mobile hides neutral to save space)
+export const DESKTOP_RACES: readonly Race[] = ['terran', 'zerg', 'protoss', 'neutral'];
+export const MOBILE_RACES: readonly Race[] = ['terran', 'zerg', 'protoss'];
+
+/** Get layout config for current viewport */
+export function getLayoutConfig(isMobile: boolean) {
+  return {
+    layout: isMobile ? mobileLayout : layout,
+    races: isMobile ? MOBILE_RACES : DESKTOP_RACES,
+  };
+}
 
 // Animation timing (milliseconds)
 export const timing = {

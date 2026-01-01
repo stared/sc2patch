@@ -40,9 +40,29 @@
 
 ## GEMINI CONSULTANT USAGE
 
+**CRITICAL: Always provide full context!**
+
+- **Pass FULL relevant files** (2-5 files typically) via `-c "$(cat file1.ts file2.ts)"`
+- **Include screenshots** when discussing UI/visual issues via `-i screenshot.png`
+- **Include diffs** when discussing code changes via `-c "$(git diff HEAD)"`
+- **Write elaborate prompts** - explain the problem, constraints, what you tried, what failed
 - Use `--thinking high` (default), avoid `low`
 - Pass open-ended questions (give space, don't confine to few options)
-- Always pass full relevant files via `-c "$(cat file.ts)"`
+
+**Good example:**
+```bash
+uv run consult.py "I need to add mobile support to this D3 layout module..." \
+  -c "$(cat src/d3/layout.ts src/d3/renderer.ts src/utils/uxSettings.ts)" \
+  -c "$(git diff HEAD)" \
+  -i /tmp/mobile-screenshot.png \
+  --thinking high
+```
+
+**Bad example:**
+```bash
+uv run consult.py "How to add mobile support?" --thinking high
+# Missing: files, context, constraints, what was tried
+```
 
 ## VERIFY ALL LINKS
 

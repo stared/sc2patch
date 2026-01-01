@@ -9,8 +9,8 @@
  * The renderer handles all animation logic - layout just says "where things belong."
  */
 
-import { ProcessedPatchData, Change, ProcessedEntity, RACES, Race, Unit } from '../types';
-import { layout } from '../utils/uxSettings';
+import { ProcessedPatchData, Change, ProcessedEntity, Race, Unit } from '../types';
+import type { LayoutConfig } from '../utils/uxSettings';
 
 // Types
 
@@ -61,6 +61,8 @@ export interface LayoutResult {
   isFocusMode: boolean;
   /** Target scroll position for focusing */
   focusTargetY: number | null;
+  /** Whether this is mobile layout (labels above icons) */
+  isMobile: boolean;
 }
 
 /** Input state for layout calculation */
@@ -71,236 +73,346 @@ export interface LayoutInput {
   selectedRace: Race | null;
 }
 
-// Main entry point
-
 /**
- * Calculate complete layout for the visualization.
- * Pure function: same inputs = same outputs.
- * No tracking of previous state - just calculates where things should be NOW.
+ * Factory function that creates a layout calculator with the given config.
+ * All helpers read layout/races from closure scope - no prop drilling needed.
  */
-export function calculateLayout(input: LayoutInput, svgWidth: number): LayoutResult {
-  // Priority: unit selection > race filter
-  const isFocusMode = input.selectedEntityId !== null;
+export function createLayoutEngine(
+  layout: LayoutConfig,
+  races: readonly Race[]
+) {
+  // Helpers - read layout/races from closure
 
-  // Calculate column width based on mode
-  const columnWidth = getColumnWidth(svgWidth, isFocusMode || input.selectedRace !== null);
-
-  // Calculate visible patch rows
-  const patchRows = calculatePatchRows(input, columnWidth);
-
-  // Calculate visible entities
-  const entities = calculateEntityPositions(input, patchRows, columnWidth, svgWidth);
-
-  // Calculate headers
-  const headers = calculateHeaderPositions(input, svgWidth);
-
-  // Calculate changes (only in focus mode)
-  const changes = isFocusMode
-    ? calculateChangesLayout(patchRows, input.selectedEntityId!)
-    : [];
-
-  // Calculate total height
-  const svgHeight = layout.marginTop + patchRows.reduce((sum, row) => sum + row.height, 0) + layout.marginBottom;
-
-  // Calculate focus target for scrolling
-  const focusTargetY = isFocusMode && entities.length > 0 ? entities[0].y : null;
-
-  return {
-    svgHeight,
-    headers,
-    patchRows,
-    entities,
-    changes,
-    isFocusMode,
-    focusTargetY
-  };
-}
-
-// Helpers
-
-function getColumnWidth(svgWidth: number, isFiltered: boolean): number {
-  const available = svgWidth - layout.patchLabelWidth;
-  return isFiltered ? available : available / RACES.length;
-}
-
-function getCellsPerRow(columnWidth: number): number {
-  return Math.max(1, Math.floor((columnWidth - layout.raceColumnPadding) / (layout.cellSize + layout.cellGap)));
-}
-
-function getHeaderX(_svgWidth: number, columnWidth: number, columnIndex: number): number {
-  const cellsPerRow = getCellsPerRow(columnWidth);
-  const contentWidth = cellsPerRow * layout.cellSize + (cellsPerRow - 1) * layout.cellGap;
-  return layout.patchLabelWidth + columnIndex * columnWidth + contentWidth / 2;
-}
-
-// Header layout
-
-function calculateHeaderPositions(input: LayoutInput, svgWidth: number): HeaderLayout[] {
-  const availableWidth = svgWidth - layout.patchLabelWidth;
-  const gridColumnWidth = availableWidth / RACES.length;
-
-  // Determine which race header to show
-  let visibleRace: Race | null = null;
-  let headerText: string | null = null;
-
-  if (input.selectedEntityId) {
-    // Unit selected - show that unit's race with unit name
-    const unit = input.unitsMap.get(input.selectedEntityId);
-    visibleRace = unit?.race || null;
-    headerText = unit?.name || null;
-  } else if (input.selectedRace) {
-    // Race selected - show that race
-    visibleRace = input.selectedRace;
-    headerText = null; // Use race name
+  function getColumnWidth(svgWidth: number, isFiltered: boolean): number {
+    const available = svgWidth - layout.patchLabelWidth;
+    return isFiltered ? available : available / races.length;
   }
 
-  return RACES.map((race, index) => {
-    const isVisible = visibleRace === null || race === visibleRace;
+  function getCellsPerRow(columnWidth: number): number {
+    return Math.max(1, Math.floor((columnWidth - layout.raceColumnPadding) / (layout.cellSize + layout.cellGap)));
+  }
 
-    // Grid position (natural column position for 4-column layout)
-    const gridX = getHeaderX(svgWidth, gridColumnWidth, index);
+  function getHeaderX(_svgWidth: number, columnWidth: number, columnIndex: number): number {
+    const cellsPerRow = getCellsPerRow(columnWidth);
+    const contentWidth = cellsPerRow * layout.cellSize + (cellsPerRow - 1) * layout.cellGap;
+    return layout.patchLabelWidth + columnIndex * columnWidth + contentWidth / 2;
+  }
 
-    // Position: selected header goes to center of available space (simple continuous function)
-    // Others stay at their grid position (they fade out anyway)
-    const centeredX = layout.patchLabelWidth + availableWidth / 2;
-    const x = (race === visibleRace) ? centeredX : gridX;
+  // Mobile layout constants (centralized here for consistency)
+  const MOBILE_MARGIN = 6;        // Small edge margin on mobile
+  const MOBILE_RACE_GAP = 12;     // Visible gap between race columns
+  const MOBILE_LABEL_HEIGHT = 24; // Height for date+version label row
+  const MOBILE_ROW_GAP = 6;       // Small gap between patch rows
+  const MOBILE_CHANGE_GAP = 10;   // Gap between icon and change notes text
 
-    // Text: unit name if unit selected and this is its race, otherwise race name
-    const text = (headerText && race === visibleRace)
-      ? headerText
-      : race.charAt(0).toUpperCase() + race.slice(1);
+  /** Calculate mobile grid metrics - shared by headers and entities */
+  function calculateMobileGridMetrics(svgWidth: number, raceCount: number) {
+    const edgeMargin = MOBILE_MARGIN;
+    const totalGapWidth = (raceCount - 1) * MOBILE_RACE_GAP;
+    const availableWidth = svgWidth - 2 * edgeMargin - totalGapWidth;
+    const rawColumnWidth = availableWidth / raceCount;
+    const cellsPerRaceRow = Math.max(1, Math.floor(rawColumnWidth / (layout.cellSize + layout.cellGap)));
+    const actualRaceWidth = cellsPerRaceRow * layout.cellSize + (cellsPerRaceRow - 1) * layout.cellGap;
+    const totalContentWidth = raceCount * actualRaceWidth;
+    const remainingSpace = svgWidth - totalContentWidth - 2 * edgeMargin;
+    const actualRaceGap = raceCount > 1 ? remainingSpace / (raceCount - 1) : 0;
 
-    return {
-      race,
-      x,
-      opacity: isVisible ? 1 : 0,
-      text
-    };
-  });
-}
+    return { edgeMargin, actualRaceWidth, actualRaceGap, cellsPerRaceRow };
+  }
 
-// Patch row layout
+  // Header layout
 
-function calculatePatchRows(input: LayoutInput, columnWidth: number): PatchRowLayout[] {
-  const cellsPerRow = getCellsPerRow(columnWidth);
+  function calculateHeaderPositions(input: LayoutInput, svgWidth: number): HeaderLayout[] {
+    const isMobile = layout.patchLabelWidth === 0;
+    const raceCount = races.length;
 
-  // Filter patches to only those that are visible
-  const visiblePatches = input.selectedEntityId
-    ? input.patches.filter(p => p.entities.has(input.selectedEntityId!))
-    : input.patches;
-
-  let currentY = layout.gridStartY;
-
-  return visiblePatches.map(patch => {
-    let height: number;
+    // Determine which race header to show
+    let visibleRace: Race | null = null;
+    let headerText: string | null = null;
 
     if (input.selectedEntityId) {
-      // Focus mode: height based on change notes
-      const entity = patch.entities.get(input.selectedEntityId);
-      const changeCount = entity?.changes?.length || 0;
-      const changeNotesHeight = changeCount * layout.changeNoteLineHeight;
-      height = layout.cellSize + changeNotesHeight + layout.changeNotePadding;
-    } else {
-      // Overview mode: height based on entity rows
-      let maxRows = 1;
-      const racesToCheck = input.selectedRace ? [input.selectedRace] : RACES;
-      racesToCheck.forEach(race => {
-        const count = Array.from(patch.entities.values())
-          .filter(entity => (entity.race || 'neutral') === race).length;
-        maxRows = Math.max(maxRows, Math.ceil(count / cellsPerRow));
-      });
-      height = layout.patchHeaderHeight + maxRows * (layout.cellSize + layout.cellGap) + layout.patchFooterPadding;
+      // Unit selected - show that unit's race with unit name
+      const unit = input.unitsMap.get(input.selectedEntityId);
+      visibleRace = unit?.race || null;
+      headerText = unit?.name || null;
+    } else if (input.selectedRace) {
+      // Race selected - show that race
+      visibleRace = input.selectedRace;
+      headerText = null; // Use race name
     }
 
-    const y = currentY;
-    currentY += height;
+    // Calculate header X positions - must match entity positioning logic
+    let headerXPositions: number[];
 
-    return {
-      version: patch.version,
-      date: patch.date,
-      url: patch.url,
-      y,
-      height,
-      patch
-    };
-  });
-}
-
-// Entity layout
-
-function calculateEntityPositions(
-  input: LayoutInput,
-  rows: PatchRowLayout[],
-  columnWidth: number,
-  svgWidth: number
-): EntityLayout[] {
-  const cellsPerRow = getCellsPerRow(columnWidth);
-  const entities: EntityLayout[] = [];
-
-  rows.forEach(row => {
-    const patch = row.patch;
-
-    if (input.selectedEntityId) {
-      // Focus mode: only the selected entity
-      const entity = patch.entities.get(input.selectedEntityId);
-      if (entity) {
-        entities.push({
-          id: `${input.selectedEntityId}-${patch.version}`,
-          entityId: input.selectedEntityId,
-          patchVersion: patch.version,
-          entity,
-          x: layout.patchLabelWidth + layout.filteredEntityOffset,
-          y: row.y
-        });
-      }
+    if (isMobile) {
+      // Mobile: use shared grid metrics
+      const grid = calculateMobileGridMetrics(svgWidth, raceCount);
+      headerXPositions = races.map((_, index) => {
+        const raceStartX = grid.edgeMargin + index * (grid.actualRaceWidth + grid.actualRaceGap);
+        return raceStartX + grid.actualRaceWidth / 2; // Center of race column
+      });
     } else {
-      // Overview mode: entities in grid
-      const racesToShow = input.selectedRace ? [input.selectedRace] : RACES;
-      const raceColumnWidth = input.selectedRace
-        ? (svgWidth - layout.patchLabelWidth)
-        : (svgWidth - layout.patchLabelWidth) / RACES.length;
+      // Desktop: use original calculation
+      const availableWidth = svgWidth - layout.patchLabelWidth;
+      const gridColumnWidth = availableWidth / races.length;
+      headerXPositions = races.map((_, index) => getHeaderX(svgWidth, gridColumnWidth, index));
+    }
 
-      racesToShow.forEach((race, raceIndex) => {
-        const raceEntities = Array.from(patch.entities.entries())
-          .filter(([_, entity]) => (entity.race || 'neutral') === race);
+    return races.map((race, index) => {
+      const isVisible = visibleRace === null || race === visibleRace;
 
-        raceEntities.forEach(([entityId, entity], entityIndex) => {
-          const rowNum = Math.floor(entityIndex / cellsPerRow);
-          const col = entityIndex % cellsPerRow;
-          const x = layout.patchLabelWidth + raceIndex * raceColumnWidth + col * (layout.cellSize + layout.cellGap);
-          const y = row.y + rowNum * (layout.cellSize + layout.cellGap);
+      // Grid position
+      const gridX = headerXPositions[index];
 
+      // Position: selected header goes to center of available space
+      const availableWidth = svgWidth - layout.patchLabelWidth;
+      const centeredX = layout.patchLabelWidth + availableWidth / 2;
+      const x = (race === visibleRace) ? centeredX : gridX;
+
+      // Text: unit name if unit selected and this is its race, otherwise race name
+      const text = (headerText && race === visibleRace)
+        ? headerText
+        : race.charAt(0).toUpperCase() + race.slice(1);
+
+      return {
+        race,
+        x,
+        opacity: isVisible ? 1 : 0,
+        text
+      };
+    });
+  }
+
+  // Patch row layout
+
+  function calculatePatchRows(input: LayoutInput, columnWidth: number, isMobile: boolean): PatchRowLayout[] {
+    const cellsPerRow = getCellsPerRow(columnWidth);
+
+    // Filter patches to only those that are visible
+    const visiblePatches = input.selectedEntityId
+      ? input.patches.filter(p => p.entities.has(input.selectedEntityId!))
+      : input.patches;
+
+    let currentY = layout.gridStartY;
+
+    return visiblePatches.map(patch => {
+      let height: number;
+
+      if (input.selectedEntityId) {
+        // Focus mode: height based on change notes
+        const entity = patch.entities.get(input.selectedEntityId);
+        const changeCount = entity?.changes?.length || 0;
+        const changeNotesHeight = changeCount * layout.changeNoteLineHeight;
+        height = layout.cellSize + changeNotesHeight + layout.changeNotePadding;
+        if (isMobile) height += MOBILE_LABEL_HEIGHT;
+      } else {
+        // Overview mode: height based on entity rows
+        let maxRows = 1;
+        const racesToCheck = input.selectedRace ? [input.selectedRace] : races;
+        racesToCheck.forEach(race => {
+          const count = Array.from(patch.entities.values())
+            .filter(entity => (entity.race || 'neutral') === race).length;
+          maxRows = Math.max(maxRows, Math.ceil(count / cellsPerRow));
+        });
+        if (isMobile) {
+          // Mobile: label above + icons + small gap
+          height = MOBILE_LABEL_HEIGHT + maxRows * (layout.cellSize + layout.cellGap) + MOBILE_ROW_GAP;
+        } else {
+          // Desktop: header area + icons + footer padding
+          height = layout.patchHeaderHeight + maxRows * (layout.cellSize + layout.cellGap) + layout.patchFooterPadding;
+        }
+      }
+
+      const y = currentY;
+      currentY += height;
+
+      return {
+        version: patch.version,
+        date: patch.date,
+        url: patch.url,
+        y,
+        height,
+        patch
+      };
+    });
+  }
+
+  // Entity layout
+
+  function calculateEntityPositions(
+    input: LayoutInput,
+    rows: PatchRowLayout[],
+    columnWidth: number,
+    svgWidth: number,
+    isMobile: boolean
+  ): EntityLayout[] {
+    const entities: EntityLayout[] = [];
+    const yOffset = isMobile ? MOBILE_LABEL_HEIGHT : 0;
+
+    rows.forEach(row => {
+      const patch = row.patch;
+
+      if (input.selectedEntityId) {
+        // Focus mode: only the selected entity
+        const entity = patch.entities.get(input.selectedEntityId);
+        if (entity) {
+          // Mobile: icon at left edge; Desktop: offset from patch label
+          const x = isMobile
+            ? MOBILE_MARGIN
+            : layout.patchLabelWidth + layout.filteredEntityOffset;
           entities.push({
-            id: `${entityId}-${patch.version}`,
-            entityId,
+            id: `${input.selectedEntityId}-${patch.version}`,
+            entityId: input.selectedEntityId,
             patchVersion: patch.version,
             entity,
             x,
-            y
+            y: row.y + yOffset
           });
-        });
-      });
-    }
-  });
+        }
+      } else {
+        // Overview mode: entities in grid
+        const racesToShow = input.selectedRace ? [input.selectedRace] : races;
+        const raceCount = racesToShow.length;
 
-  return entities;
-}
+        if (isMobile) {
+          // Mobile: use shared grid metrics
+          const grid = calculateMobileGridMetrics(svgWidth, raceCount);
 
-// Changes layout
+          racesToShow.forEach((race, raceIndex) => {
+            const raceEntities = Array.from(patch.entities.entries())
+              .filter(([_, entity]) => (entity.race || 'neutral') === race);
 
-function calculateChangesLayout(
-  rows: PatchRowLayout[],
-  selectedEntityId: string
-): ChangeLayout[] {
-  return rows
-    .filter(row => row.patch.entities.has(selectedEntityId))
-    .map(row => {
-      const entity = row.patch.entities.get(selectedEntityId)!;
-      return {
-        id: `${selectedEntityId}-${row.version}`,
-        x: layout.patchLabelWidth + layout.changeNoteOffsetX,
-        y: row.y + 10,
-        changes: entity.changes || []
-      };
+            const raceStartX = grid.edgeMargin + raceIndex * (grid.actualRaceWidth + grid.actualRaceGap);
+
+            raceEntities.forEach(([entityId, entity], entityIndex) => {
+              const rowNum = Math.floor(entityIndex / grid.cellsPerRaceRow);
+              const col = entityIndex % grid.cellsPerRaceRow;
+              const x = raceStartX + col * (layout.cellSize + layout.cellGap);
+              const y = row.y + yOffset + rowNum * (layout.cellSize + layout.cellGap);
+
+              entities.push({
+                id: `${entityId}-${patch.version}`,
+                entityId,
+                patchVersion: patch.version,
+                entity,
+                x,
+                y
+              });
+            });
+          });
+        } else {
+          // Desktop: divide available width into race columns
+          const cellsPerRow = getCellsPerRow(columnWidth);
+          const availableWidth = svgWidth - layout.patchLabelWidth;
+          const raceColumnWidth = input.selectedRace
+            ? availableWidth
+            : availableWidth / races.length;
+
+          racesToShow.forEach((race, raceIndex) => {
+            const raceEntities = Array.from(patch.entities.entries())
+              .filter(([_, entity]) => (entity.race || 'neutral') === race);
+
+            raceEntities.forEach(([entityId, entity], entityIndex) => {
+              const rowNum = Math.floor(entityIndex / cellsPerRow);
+              const col = entityIndex % cellsPerRow;
+              const x = layout.patchLabelWidth + raceIndex * raceColumnWidth + col * (layout.cellSize + layout.cellGap);
+              const y = row.y + rowNum * (layout.cellSize + layout.cellGap);
+
+              entities.push({
+                id: `${entityId}-${patch.version}`,
+                entityId,
+                patchVersion: patch.version,
+                entity,
+                x,
+                y
+              });
+            });
+          });
+        }
+      }
     });
+
+    return entities;
+  }
+
+  // Changes layout
+
+  function calculateChangesLayout(
+    rows: PatchRowLayout[],
+    selectedEntityId: string,
+    isMobile: boolean
+  ): ChangeLayout[] {
+    return rows
+      .filter(row => row.patch.entities.has(selectedEntityId))
+      .map(row => {
+        const entity = row.patch.entities.get(selectedEntityId)!;
+        // Mobile: text starts right after icon with small gap
+        // Desktop: text at fixed offset from patch label
+        const x = isMobile
+          ? MOBILE_MARGIN + layout.cellSize + MOBILE_CHANGE_GAP
+          : layout.patchLabelWidth + layout.changeNoteOffsetX;
+        // Mobile: slightly below icon top (icon starts at MOBILE_LABEL_HEIGHT)
+        // Desktop: small offset from row
+        const y = isMobile
+          ? row.y + MOBILE_LABEL_HEIGHT + 10  // ~0.25em more down from icon top
+          : row.y + 10;
+        return {
+          id: `${selectedEntityId}-${row.version}`,
+          x,
+          y,
+          changes: entity.changes || []
+        };
+      });
+  }
+
+  // Main entry point
+
+  /**
+   * Calculate complete layout for the visualization.
+   * Pure function: same inputs = same outputs.
+   */
+  function calculateLayout(input: LayoutInput, svgWidth: number): LayoutResult {
+    // Detect mobile by patchLabelWidth (0 = mobile, labels go above icons)
+    const isMobile = layout.patchLabelWidth === 0;
+
+    // Priority: unit selection > race filter
+    const isFocusMode = input.selectedEntityId !== null;
+
+    // Calculate column width based on mode
+    const columnWidth = getColumnWidth(svgWidth, isFocusMode || input.selectedRace !== null);
+
+    // Calculate visible patch rows
+    const patchRows = calculatePatchRows(input, columnWidth, isMobile);
+
+    // Calculate visible entities
+    const entities = calculateEntityPositions(input, patchRows, columnWidth, svgWidth, isMobile);
+
+    // Calculate headers
+    const headers = calculateHeaderPositions(input, svgWidth);
+
+    // Calculate changes (only in focus mode)
+    const changes = isFocusMode
+      ? calculateChangesLayout(patchRows, input.selectedEntityId!, isMobile)
+      : [];
+
+    // Calculate total height
+    const svgHeight = layout.marginTop + patchRows.reduce((sum, row) => sum + row.height, 0) + layout.marginBottom;
+
+    // Calculate focus target for scrolling
+    const focusTargetY = isFocusMode && entities.length > 0 ? entities[0].y : null;
+
+    return {
+      svgHeight,
+      headers,
+      patchRows,
+      entities,
+      changes,
+      isFocusMode,
+      focusTargetY,
+      isMobile
+    };
+  }
+
+  // Return only what renderer needs
+  return { calculateLayout, getCellSize: () => layout.cellSize };
 }

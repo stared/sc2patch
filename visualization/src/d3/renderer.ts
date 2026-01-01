@@ -2,9 +2,9 @@ import { select, type Selection } from 'd3-selection';
 import { transition } from 'd3-transition';
 import { easeCubicInOut } from 'd3-ease';
 import { ProcessedPatchData, Change, Race, Unit, EntityWithPosition } from '../types';
-import { layout, timing, raceColors, eraColors, getChangeIndicator, getChangeColor, getEraFromVersion, type ChangeType } from '../utils/uxSettings';
+import { layout, timing, raceColors, eraColors, getChangeIndicator, getChangeColor, getEraFromVersion, getLayoutConfig, MOBILE_BREAKPOINT, type ChangeType, type LayoutConfig } from '../utils/uxSettings';
 import {
-  calculateLayout,
+  createLayoutEngine,
   type EntityLayout,
   type PatchRowLayout,
   type ChangeLayout,
@@ -44,6 +44,7 @@ export class PatchGridRenderer {
   private svgWidth: number = layout.maxWidth;
   private isFirstRender: boolean = true;
   private isImmediate: boolean = false; // Set per render() call
+  private currentCellSize: number = layout.cellSize; // Track for clipPath updates
 
   constructor(svgElement: SVGSVGElement) {
     this.svg = select(svgElement);
@@ -59,6 +60,18 @@ export class PatchGridRenderer {
     const containerWidth = svgElement?.parentElement?.clientWidth || layout.maxWidth;
     this.svgWidth = Math.min(containerWidth, layout.maxWidth);
 
+    // Get mobile-aware layout config
+    const isMobile = containerWidth < MOBILE_BREAKPOINT;
+    const config = getLayoutConfig(isMobile);
+    const engine = createLayoutEngine(config.layout, config.races);
+
+    // Update clipPath if cellSize changed
+    const cellSize = engine.getCellSize();
+    if (cellSize !== this.currentCellSize) {
+      this.currentCellSize = cellSize;
+      this.updateClipPath(cellSize);
+    }
+
     // Build layout input (no prev state tracking!)
     const layoutInput: LayoutInput = {
       patches: state.patches,
@@ -68,7 +81,7 @@ export class PatchGridRenderer {
     };
 
     // Calculate layout (pure function - just target positions)
-    const layoutResult = calculateLayout(layoutInput, this.svgWidth);
+    const layoutResult = engine.calculateLayout(layoutInput, this.svgWidth);
 
     // Update SVG dimensions
     this.svg.attr('width', this.svgWidth).attr('height', layoutResult.svgHeight);
@@ -80,7 +93,7 @@ export class PatchGridRenderer {
 
     // Render all layers with unified join pattern
     this.renderHeaders(layoutResult, state);
-    this.renderPatches(layoutResult, state);
+    this.renderPatches(layoutResult, state, config.layout);
     this.renderEntities(layoutResult, state);
     this.renderChanges(layoutResult);
 
@@ -107,9 +120,15 @@ export class PatchGridRenderer {
 
     defs.append('clipPath').attr('id', 'roundedCorners')
       .append('rect')
-      .attr('width', layout.cellSize)
-      .attr('height', layout.cellSize)
+      .attr('width', this.currentCellSize)
+      .attr('height', this.currentCellSize)
       .attr('rx', 4).attr('ry', 4);
+  }
+
+  private updateClipPath(cellSize: number): void {
+    this.svg.select('#roundedCorners rect')
+      .attr('width', cellSize)
+      .attr('height', cellSize);
   }
 
   private scrollToTargetPosition(targetY: number): void {
@@ -137,8 +156,8 @@ export class PatchGridRenderer {
     }
     headersContainer.attr('transform', `translate(0, ${layout.headerY})`);
 
-    // Sort control
-    this.renderSortControl(headersContainer, state);
+    // Sort control (hide on mobile)
+    this.renderSortControl(headersContainer, state, layoutResult.isMobile);
 
     // Race headers with unified join
     headersContainer
@@ -216,8 +235,9 @@ export class PatchGridRenderer {
     this.renderUnitLink(headersContainer, state);
   }
 
-  private renderSortControl(container: Selection<SVGGElement, unknown, null, undefined>, state: RenderState): void {
-    const sortData = [state.sortOrder];
+  private renderSortControl(container: Selection<SVGGElement, unknown, null, undefined>, state: RenderState, isMobile: boolean): void {
+    // Hide sort control on mobile
+    const sortData = isMobile ? [] : [state.sortOrder];
     container.selectAll<SVGGElement, string>('.sort-control')
       .data(sortData)
       .join(
@@ -228,7 +248,8 @@ export class PatchGridRenderer {
             .attr('x', 0).attr('y', 16);
           return g;
         },
-        update => update
+        update => update,
+        exit => exit.remove()
       )
       .select('.sort-text')
       .text(state.sortOrder === 'newest' ? '↑' : '↓')
@@ -265,11 +286,14 @@ export class PatchGridRenderer {
       });
   }
 
-  private renderPatches(layoutResult: LayoutResult, _state: RenderState): void {
+  private renderPatches(layoutResult: LayoutResult, _state: RenderState, currentLayout: LayoutConfig): void {
     let patchesContainer = this.svg.select<SVGGElement>('.patches-container');
     if (patchesContainer.empty()) {
       patchesContainer = this.svg.append('g').attr('class', 'patches-container');
     }
+
+    // Use layout config for positioning (handles mobile/desktop differences)
+    const { patchLabelTranslateX, patchLabelTranslateY, patchDateOffsetY, patchVersionOffsetX, patchVersionOffsetY } = currentLayout;
 
     patchesContainer
       .selectAll<SVGGElement, PatchRowLayout>('.patch-group')
@@ -282,13 +306,16 @@ export class PatchGridRenderer {
             .attr('transform', d => `translate(0, ${d.y})`)
             .style('opacity', 0);
 
+          // On mobile: label above icons (horizontal layout)
+          // On desktop: label on left side (vertical layout)
           const label = pg.append('g')
             .attr('class', 'patch-label')
-            .attr('transform', 'translate(0, 20)');
+            .attr('transform', `translate(${patchLabelTranslateX}, ${patchLabelTranslateY})`);
 
           label.append('text')
             .attr('class', 'patch-date')
-            .attr('x', 10).attr('y', 0)
+            .attr('x', 0)
+            .attr('y', patchDateOffsetY)
             .each(function(d) {
               select(this)
                 .style('fill', eraColors[getEraFromVersion(d.version)])
@@ -298,7 +325,8 @@ export class PatchGridRenderer {
 
           label.append('text')
             .attr('class', 'patch-version')
-            .attr('x', 10).attr('y', 14)
+            .attr('x', patchVersionOffsetX)
+            .attr('y', patchVersionOffsetY)
             .text(d => d.version)
             .on('click', (_e, d) => window.open(d.url, '_blank'));
 
@@ -312,18 +340,30 @@ export class PatchGridRenderer {
           return pg;
         },
 
-        // UPDATE: Existing patches move to new position
+        // UPDATE: Existing patches move to new position and update label layout
         // If element was mid-exit (low opacity), wait for ENTER phase instead of MOVE
-        update => update.call(u => u.transition()
-          .delay((_d, i, nodes) => {
-            const wasExiting = +select(nodes[i]).style('opacity') < 0.5;
-            return this.t(wasExiting ? PHASE.ENTER_DELAY : PHASE.MOVE_DELAY);
-          })
-          .duration(this.t(PHASE.MOVE_DURATION))
-          .ease(easeCubicInOut)
-          .attr('transform', d => `translate(0, ${d.y})`)
-          .style('opacity', 1)
-        ),
+        update => {
+          // Update label positions for breakpoint crossing
+          update.select('.patch-label')
+            .attr('transform', `translate(${patchLabelTranslateX}, ${patchLabelTranslateY})`);
+          update.select('.patch-date')
+            .attr('x', 0)
+            .attr('y', patchDateOffsetY);
+          update.select('.patch-version')
+            .attr('x', patchVersionOffsetX)
+            .attr('y', patchVersionOffsetY);
+
+          return update.call(u => u.transition()
+            .delay((_d, i, nodes) => {
+              const wasExiting = +select(nodes[i]).style('opacity') < 0.5;
+              return this.t(wasExiting ? PHASE.ENTER_DELAY : PHASE.MOVE_DELAY);
+            })
+            .duration(this.t(PHASE.MOVE_DURATION))
+            .ease(easeCubicInOut)
+            .attr('transform', d => `translate(0, ${d.y})`)
+            .style('opacity', 1)
+          );
+        },
 
         // EXIT: Patches fade out
         exit => exit.call(e => e.transition()
@@ -356,8 +396,8 @@ export class PatchGridRenderer {
             });
 
           eg.append('rect')
-            .attr('width', layout.cellSize)
-            .attr('height', layout.cellSize)
+            .attr('width', this.currentCellSize)
+            .attr('height', this.currentCellSize)
             .attr('rx', 4)
             .style('fill', 'url(#cellGradient)')
             .style('stroke', d => {
@@ -366,8 +406,8 @@ export class PatchGridRenderer {
             });
 
           eg.append('image')
-            .attr('width', layout.cellSize)
-            .attr('height', layout.cellSize)
+            .attr('width', this.currentCellSize)
+            .attr('height', this.currentCellSize)
             .attr('href', d => `${import.meta.env.BASE_URL}assets/units/${d.entityId}.png`)
             .attr('clip-path', 'url(#roundedCorners)')
             .attr('preserveAspectRatio', 'xMidYMid slice');
@@ -382,18 +422,28 @@ export class PatchGridRenderer {
           return eg;
         },
 
-        // UPDATE: Existing entities move to new position
+        // UPDATE: Existing entities move to new position and update size
         // If element was mid-exit (low opacity), wait for ENTER phase instead of MOVE
-        update => update.call(u => u.transition()
-          .delay((_d, i, nodes) => {
-            const wasExiting = +select(nodes[i]).style('opacity') < 0.5;
-            return this.t(wasExiting ? PHASE.ENTER_DELAY : PHASE.MOVE_DELAY);
-          })
-          .duration(this.t(PHASE.MOVE_DURATION))
-          .ease(easeCubicInOut)
-          .attr('transform', d => `translate(${d.x}, ${d.y})`)
-          .style('opacity', 1)
-        ),
+        update => {
+          // Update sizes immediately (for breakpoint crossing)
+          update.select('rect')
+            .attr('width', this.currentCellSize)
+            .attr('height', this.currentCellSize);
+          update.select('image')
+            .attr('width', this.currentCellSize)
+            .attr('height', this.currentCellSize);
+
+          return update.call(u => u.transition()
+            .delay((_d, i, nodes) => {
+              const wasExiting = +select(nodes[i]).style('opacity') < 0.5;
+              return this.t(wasExiting ? PHASE.ENTER_DELAY : PHASE.MOVE_DELAY);
+            })
+            .duration(this.t(PHASE.MOVE_DURATION))
+            .ease(easeCubicInOut)
+            .attr('transform', d => `translate(${d.x}, ${d.y})`)
+            .style('opacity', 1)
+          );
+        },
 
         // EXIT: Entities fade out in place
         exit => exit.call(e => e.transition()
@@ -418,6 +468,7 @@ export class PatchGridRenderer {
         state.onEntitySelect(state.selectedEntityId === d.entityId ? null : d.entityId);
       })
       .on('mouseenter', (event, d) => {
+        if (layoutResult.isMobile) return; // No tooltips on mobile (no hover)
         if (state.selectedEntityId) return;
         const group = event.currentTarget as SVGGElement;
         const rect = group.getBoundingClientRect();

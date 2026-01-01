@@ -1,6 +1,6 @@
 export { PatchGridRenderer } from './renderer';
 export {
-  calculateLayout,
+  createLayoutEngine,
   type HeaderLayout,
   type PatchRowLayout,
   type EntityLayout,
