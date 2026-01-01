@@ -245,13 +245,16 @@ export function createLayoutEngine(
         // Focus mode: only the selected entity
         const entity = patch.entities.get(input.selectedEntityId);
         if (entity) {
-          const xOffset = isMobile ? MOBILE_MARGIN : layout.patchLabelWidth;
+          // Mobile: icon at left edge; Desktop: offset from patch label
+          const x = isMobile
+            ? MOBILE_MARGIN
+            : layout.patchLabelWidth + layout.filteredEntityOffset;
           entities.push({
             id: `${input.selectedEntityId}-${patch.version}`,
             entityId: input.selectedEntityId,
             patchVersion: patch.version,
             entity,
-            x: xOffset + layout.filteredEntityOffset,
+            x,
             y: row.y + yOffset
           });
         }
@@ -334,19 +337,31 @@ export function createLayoutEngine(
   }
 
   // Changes layout
+  const MOBILE_CHANGE_GAP = 10; // Small gap between icon and text on mobile
 
   function calculateChangesLayout(
     rows: PatchRowLayout[],
-    selectedEntityId: string
+    selectedEntityId: string,
+    isMobile: boolean
   ): ChangeLayout[] {
     return rows
       .filter(row => row.patch.entities.has(selectedEntityId))
       .map(row => {
         const entity = row.patch.entities.get(selectedEntityId)!;
+        // Mobile: text starts right after icon with small gap
+        // Desktop: text at fixed offset from patch label
+        const x = isMobile
+          ? MOBILE_MARGIN + layout.cellSize + MOBILE_CHANGE_GAP
+          : layout.patchLabelWidth + layout.changeNoteOffsetX;
+        // Mobile: slightly below icon top (icon starts at MOBILE_LABEL_HEIGHT)
+        // Desktop: small offset from row
+        const y = isMobile
+          ? row.y + MOBILE_LABEL_HEIGHT + 6  // 6px down from icon top
+          : row.y + 10;
         return {
           id: `${selectedEntityId}-${row.version}`,
-          x: layout.patchLabelWidth + layout.changeNoteOffsetX,
-          y: row.y + 10,
+          x,
+          y,
           changes: entity.changes || []
         };
       });
@@ -379,7 +394,7 @@ export function createLayoutEngine(
 
     // Calculate changes (only in focus mode)
     const changes = isFocusMode
-      ? calculateChangesLayout(patchRows, input.selectedEntityId!)
+      ? calculateChangesLayout(patchRows, input.selectedEntityId!, isMobile)
       : [];
 
     // Calculate total height
