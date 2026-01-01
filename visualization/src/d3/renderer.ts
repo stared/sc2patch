@@ -467,6 +467,7 @@ export class PatchGridRenderer {
         state.onEntitySelect(state.selectedEntityId === d.entityId ? null : d.entityId);
       })
       .on('mouseenter', (event, d) => {
+        if (layoutResult.isMobile) return; // No tooltips on mobile (no hover)
         if (state.selectedEntityId) return;
         const group = event.currentTarget as SVGGElement;
         const rect = group.getBoundingClientRect();
