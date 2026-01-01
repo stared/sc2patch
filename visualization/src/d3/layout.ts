@@ -101,8 +101,8 @@ export function createLayoutEngine(
   // Header layout
 
   function calculateHeaderPositions(input: LayoutInput, svgWidth: number): HeaderLayout[] {
-    const availableWidth = svgWidth - layout.patchLabelWidth;
-    const gridColumnWidth = availableWidth / races.length;
+    const isMobile = layout.patchLabelWidth === 0;
+    const raceCount = races.length;
 
     // Determine which race header to show
     let visibleRace: Race | null = null;
@@ -119,14 +119,38 @@ export function createLayoutEngine(
       headerText = null; // Use race name
     }
 
+    // Calculate header X positions - must match entity positioning logic
+    let headerXPositions: number[];
+
+    if (isMobile) {
+      // Mobile: same calculation as entity positions
+      const tempAvailable = svgWidth - 2 * MOBILE_MARGIN - (raceCount - 1) * MOBILE_RACE_GAP;
+      const tempColumnWidth = tempAvailable / raceCount;
+      const cellsPerRaceRow = Math.max(1, Math.floor(tempColumnWidth / (layout.cellSize + layout.cellGap)));
+      const actualRaceWidth = cellsPerRaceRow * layout.cellSize + (cellsPerRaceRow - 1) * layout.cellGap;
+      const totalContentWidth = raceCount * actualRaceWidth;
+      const extraSpace = svgWidth - totalContentWidth - 2 * MOBILE_MARGIN;
+      const raceGap = extraSpace / (raceCount - 1);
+
+      headerXPositions = races.map((_, index) => {
+        const raceStartX = MOBILE_MARGIN + index * (actualRaceWidth + raceGap);
+        return raceStartX + actualRaceWidth / 2; // Center of race column
+      });
+    } else {
+      // Desktop: use original calculation
+      const availableWidth = svgWidth - layout.patchLabelWidth;
+      const gridColumnWidth = availableWidth / races.length;
+      headerXPositions = races.map((_, index) => getHeaderX(svgWidth, gridColumnWidth, index));
+    }
+
     return races.map((race, index) => {
       const isVisible = visibleRace === null || race === visibleRace;
 
-      // Grid position (natural column position)
-      const gridX = getHeaderX(svgWidth, gridColumnWidth, index);
+      // Grid position
+      const gridX = headerXPositions[index];
 
       // Position: selected header goes to center of available space
-      // Others stay at their grid position (they fade out anyway)
+      const availableWidth = svgWidth - layout.patchLabelWidth;
       const centeredX = layout.patchLabelWidth + availableWidth / 2;
       const x = (race === visibleRace) ? centeredX : gridX;
 
