@@ -5,6 +5,7 @@ import {
   raceColors,
   changeTypeConfig,
   changeTypeOrder,
+  MOBILE_BREAKPOINT,
   type Era,
 } from '../utils/uxSettings';
 
@@ -29,7 +30,9 @@ export function FilterStatus({
   setSelectedRace,
   units,
 }: FilterStatusProps) {
-  // Compute date range from actual filtered patches
+  const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
+
+  // Compute date range from actual filtered patches (desktop only)
   const dates = filteredPatches.map(p => new Date(p.date)).sort((a, b) => a.getTime() - b.getTime());
   const formatDate = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
   const startDate = dates.length > 0 ? formatDate(dates[0]) : '';
@@ -50,7 +53,7 @@ export function FilterStatus({
           {i === 1 && ', and '}
         </span>
       ))}
-      {' '}balance changes from {startDate} to {endDate} covering{' '}
+      {' '}balance changes{!isMobile && <> from {startDate} to {endDate}</>} covering{' '}
       {selectedEra ? (
         <>
           <button
@@ -85,7 +88,7 @@ export function FilterStatus({
       ) : (
         <span>all races</span>
       )}
-      . Hover and click to explore — there is a lot to see!
+      . {isMobile ? 'Click to explore!' : 'Hover and click to explore — there is a lot to see!'}
     </div>
   );
 }
