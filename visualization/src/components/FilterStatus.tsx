@@ -85,7 +85,7 @@ export function FilterStatus({
       ) : (
         <span>all races</span>
       )}
-      . Hover and click to explore - there is a lot to see!
+      . Hover and click to explore — there is a lot to see!
     </div>
   );
 }
