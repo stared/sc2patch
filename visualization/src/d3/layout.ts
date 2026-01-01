@@ -98,6 +98,28 @@ export function createLayoutEngine(
     return layout.patchLabelWidth + columnIndex * columnWidth + contentWidth / 2;
   }
 
+  // Mobile layout constants (centralized here for consistency)
+  const MOBILE_MARGIN = 6;        // Small edge margin on mobile
+  const MOBILE_RACE_GAP = 12;     // Visible gap between race columns
+  const MOBILE_LABEL_HEIGHT = 24; // Height for date+version label row
+  const MOBILE_ROW_GAP = 6;       // Small gap between patch rows
+  const MOBILE_CHANGE_GAP = 10;   // Gap between icon and change notes text
+
+  /** Calculate mobile grid metrics - shared by headers and entities */
+  function calculateMobileGridMetrics(svgWidth: number, raceCount: number) {
+    const edgeMargin = MOBILE_MARGIN;
+    const totalGapWidth = (raceCount - 1) * MOBILE_RACE_GAP;
+    const availableWidth = svgWidth - 2 * edgeMargin - totalGapWidth;
+    const rawColumnWidth = availableWidth / raceCount;
+    const cellsPerRaceRow = Math.max(1, Math.floor(rawColumnWidth / (layout.cellSize + layout.cellGap)));
+    const actualRaceWidth = cellsPerRaceRow * layout.cellSize + (cellsPerRaceRow - 1) * layout.cellGap;
+    const totalContentWidth = raceCount * actualRaceWidth;
+    const remainingSpace = svgWidth - totalContentWidth - 2 * edgeMargin;
+    const actualRaceGap = raceCount > 1 ? remainingSpace / (raceCount - 1) : 0;
+
+    return { edgeMargin, actualRaceWidth, actualRaceGap, cellsPerRaceRow };
+  }
+
   // Header layout
 
   function calculateHeaderPositions(input: LayoutInput, svgWidth: number): HeaderLayout[] {
@@ -123,18 +145,11 @@ export function createLayoutEngine(
     let headerXPositions: number[];
 
     if (isMobile) {
-      // Mobile: same calculation as entity positions
-      const tempAvailable = svgWidth - 2 * MOBILE_MARGIN - (raceCount - 1) * MOBILE_RACE_GAP;
-      const tempColumnWidth = tempAvailable / raceCount;
-      const cellsPerRaceRow = Math.max(1, Math.floor(tempColumnWidth / (layout.cellSize + layout.cellGap)));
-      const actualRaceWidth = cellsPerRaceRow * layout.cellSize + (cellsPerRaceRow - 1) * layout.cellGap;
-      const totalContentWidth = raceCount * actualRaceWidth;
-      const extraSpace = svgWidth - totalContentWidth - 2 * MOBILE_MARGIN;
-      const raceGap = raceCount > 1 ? extraSpace / (raceCount - 1) : 0;
-
+      // Mobile: use shared grid metrics
+      const grid = calculateMobileGridMetrics(svgWidth, raceCount);
       headerXPositions = races.map((_, index) => {
-        const raceStartX = MOBILE_MARGIN + index * (actualRaceWidth + raceGap);
-        return raceStartX + actualRaceWidth / 2; // Center of race column
+        const raceStartX = grid.edgeMargin + index * (grid.actualRaceWidth + grid.actualRaceGap);
+        return raceStartX + grid.actualRaceWidth / 2; // Center of race column
       });
     } else {
       // Desktop: use original calculation
@@ -169,8 +184,6 @@ export function createLayoutEngine(
   }
 
   // Patch row layout
-  const MOBILE_LABEL_HEIGHT = 24; // Height for date+version label row on mobile
-  const MOBILE_ROW_GAP = 6; // Small gap between patch rows on mobile
 
   function calculatePatchRows(input: LayoutInput, columnWidth: number, isMobile: boolean): PatchRowLayout[] {
     const cellsPerRow = getCellsPerRow(columnWidth);
@@ -225,8 +238,6 @@ export function createLayoutEngine(
   }
 
   // Entity layout
-  const MOBILE_MARGIN = 6; // Small edge margin on mobile
-  const MOBILE_RACE_GAP = 12; // Visible gap between race columns on mobile
 
   function calculateEntityPositions(
     input: LayoutInput,
@@ -264,30 +275,18 @@ export function createLayoutEngine(
         const raceCount = racesToShow.length;
 
         if (isMobile) {
-          // Mobile: small edge margins, bigger gaps between races
-          const edgeMargin = MOBILE_MARGIN; // Small edge margin (less than patch label margin)
-          const tempAvailable = svgWidth - 2 * edgeMargin - (raceCount - 1) * MOBILE_RACE_GAP;
-          const tempColumnWidth = tempAvailable / raceCount;
-          const cellsPerRaceRow = Math.max(1, Math.floor(tempColumnWidth / (layout.cellSize + layout.cellGap)));
-
-          // Actual width used by icons in each race column
-          const actualRaceWidth = cellsPerRaceRow * layout.cellSize + (cellsPerRaceRow - 1) * layout.cellGap;
-          // Total content width
-          const totalContentWidth = raceCount * actualRaceWidth;
-          // Extra space goes into race gaps (not edge margins)
-          const extraSpace = svgWidth - totalContentWidth - 2 * edgeMargin;
-          const raceGap = raceCount > 1 ? extraSpace / (raceCount - 1) : 0;
+          // Mobile: use shared grid metrics
+          const grid = calculateMobileGridMetrics(svgWidth, raceCount);
 
           racesToShow.forEach((race, raceIndex) => {
             const raceEntities = Array.from(patch.entities.entries())
               .filter(([_, entity]) => (entity.race || 'neutral') === race);
 
-            // Position: edge margin + previous races + previous gaps
-            const raceStartX = edgeMargin + raceIndex * (actualRaceWidth + raceGap);
+            const raceStartX = grid.edgeMargin + raceIndex * (grid.actualRaceWidth + grid.actualRaceGap);
 
             raceEntities.forEach(([entityId, entity], entityIndex) => {
-              const rowNum = Math.floor(entityIndex / cellsPerRaceRow);
-              const col = entityIndex % cellsPerRaceRow;
+              const rowNum = Math.floor(entityIndex / grid.cellsPerRaceRow);
+              const col = entityIndex % grid.cellsPerRaceRow;
               const x = raceStartX + col * (layout.cellSize + layout.cellGap);
               const y = row.y + yOffset + rowNum * (layout.cellSize + layout.cellGap);
 
@@ -337,7 +336,6 @@ export function createLayoutEngine(
   }
 
   // Changes layout
-  const MOBILE_CHANGE_GAP = 10; // Small gap between icon and text on mobile
 
   function calculateChangesLayout(
     rows: PatchRowLayout[],

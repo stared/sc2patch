@@ -101,6 +101,12 @@ export interface LayoutConfig {
   changeNoteLineHeight: number;
   changeNotePadding: number;
   changeNoteOffsetX: number;
+  // Patch label positioning (mobile: above icons, desktop: on left)
+  patchLabelTranslateX: number;
+  patchLabelTranslateY: number;
+  patchDateOffsetY: number;
+  patchVersionOffsetX: number;
+  patchVersionOffsetY: number;
 }
 
 // Layout constants
@@ -127,7 +133,13 @@ export const layout: LayoutConfig = {
   // Change notes
   changeNoteLineHeight: 18,
   changeNotePadding: 16,
-  changeNoteOffsetX: 140
+  changeNoteOffsetX: 140,
+  // Patch label positioning (desktop: on left, vertical stack)
+  patchLabelTranslateX: 0,
+  patchLabelTranslateY: 20,
+  patchDateOffsetY: 0,
+  patchVersionOffsetX: 0,
+  patchVersionOffsetY: 14
 };
 
 // Mobile support
@@ -138,6 +150,12 @@ const mobileLayout: LayoutConfig = {
   cellSize: 36,         // 75% of 48
   cellGap: 5,           // Slightly bigger gap between icons
   patchLabelWidth: 0,   // No left column - labels go above icons
+  // Patch label positioning (mobile: above icons, horizontal)
+  patchLabelTranslateX: 12,
+  patchLabelTranslateY: 6,
+  patchDateOffsetY: 4,
+  patchVersionOffsetX: 65,
+  patchVersionOffsetY: 4
 };
 
 // Races to show (mobile hides neutral to save space)

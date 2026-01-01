@@ -2,7 +2,7 @@ import { select, type Selection } from 'd3-selection';
 import { transition } from 'd3-transition';
 import { easeCubicInOut } from 'd3-ease';
 import { ProcessedPatchData, Change, Race, Unit, EntityWithPosition } from '../types';
-import { layout, timing, raceColors, eraColors, getChangeIndicator, getChangeColor, getEraFromVersion, getLayoutConfig, MOBILE_BREAKPOINT, type ChangeType } from '../utils/uxSettings';
+import { layout, timing, raceColors, eraColors, getChangeIndicator, getChangeColor, getEraFromVersion, getLayoutConfig, MOBILE_BREAKPOINT, type ChangeType, type LayoutConfig } from '../utils/uxSettings';
 import {
   createLayoutEngine,
   type EntityLayout,
@@ -93,7 +93,7 @@ export class PatchGridRenderer {
 
     // Render all layers with unified join pattern
     this.renderHeaders(layoutResult, state);
-    this.renderPatches(layoutResult, state);
+    this.renderPatches(layoutResult, state, config.layout);
     this.renderEntities(layoutResult, state);
     this.renderChanges(layoutResult);
 
@@ -286,13 +286,14 @@ export class PatchGridRenderer {
       });
   }
 
-  private renderPatches(layoutResult: LayoutResult, _state: RenderState): void {
+  private renderPatches(layoutResult: LayoutResult, _state: RenderState, currentLayout: LayoutConfig): void {
     let patchesContainer = this.svg.select<SVGGElement>('.patches-container');
     if (patchesContainer.empty()) {
       patchesContainer = this.svg.append('g').attr('class', 'patches-container');
     }
 
-    const isMobile = layoutResult.isMobile;
+    // Use layout config for positioning (handles mobile/desktop differences)
+    const { patchLabelTranslateX, patchLabelTranslateY, patchDateOffsetY, patchVersionOffsetX, patchVersionOffsetY } = currentLayout;
 
     patchesContainer
       .selectAll<SVGGElement, PatchRowLayout>('.patch-group')
@@ -305,16 +306,16 @@ export class PatchGridRenderer {
             .attr('transform', d => `translate(0, ${d.y})`)
             .style('opacity', 0);
 
-          // On mobile: label above icons (centered, horizontal layout)
+          // On mobile: label above icons (horizontal layout)
           // On desktop: label on left side (vertical layout)
           const label = pg.append('g')
             .attr('class', 'patch-label')
-            .attr('transform', isMobile ? 'translate(12, 6)' : 'translate(0, 20)');
+            .attr('transform', `translate(${patchLabelTranslateX}, ${patchLabelTranslateY})`);
 
           label.append('text')
             .attr('class', 'patch-date')
             .attr('x', 0)
-            .attr('y', isMobile ? 4 : 0)  // Mobile: 0.5em higher
+            .attr('y', patchDateOffsetY)
             .each(function(d) {
               select(this)
                 .style('fill', eraColors[getEraFromVersion(d.version)])
@@ -324,8 +325,8 @@ export class PatchGridRenderer {
 
           label.append('text')
             .attr('class', 'patch-version')
-            .attr('x', isMobile ? 65 : 0)
-            .attr('y', isMobile ? 4 : 14)  // Mobile: 0.5em higher
+            .attr('x', patchVersionOffsetX)
+            .attr('y', patchVersionOffsetY)
             .text(d => d.version)
             .on('click', (_e, d) => window.open(d.url, '_blank'));
 
@@ -344,13 +345,13 @@ export class PatchGridRenderer {
         update => {
           // Update label positions for breakpoint crossing
           update.select('.patch-label')
-            .attr('transform', isMobile ? 'translate(12, 6)' : 'translate(0, 20)');
+            .attr('transform', `translate(${patchLabelTranslateX}, ${patchLabelTranslateY})`);
           update.select('.patch-date')
             .attr('x', 0)
-            .attr('y', isMobile ? 4 : 0);
+            .attr('y', patchDateOffsetY);
           update.select('.patch-version')
-            .attr('x', isMobile ? 65 : 0)
-            .attr('y', isMobile ? 4 : 14);
+            .attr('x', patchVersionOffsetX)
+            .attr('y', patchVersionOffsetY);
 
           return update.call(u => u.transition()
             .delay((_d, i, nodes) => {
