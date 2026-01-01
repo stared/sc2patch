@@ -1,5 +1,7 @@
 # StarCraft II Balance Timeline
 
+> Never perfect. Perfection goal that changes. Never stops moving. Can chase, cannot catch. - Abathur ([hear it here](https://www.youtube.com/watch?v=pw_GN3v-0Ls))
+
 Visual history of StarCraft II multiplayer balance changes (2010–present), by [Piotr Migdał](https://p.migdal.pl/).
 
 **[Live Demo](https://p.migdal.pl/sc2-balance-timeline/)**
