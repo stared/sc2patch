@@ -1,6 +1,8 @@
 # StarCraft II Balance Timeline
 
-Visual history of StarCraft II multiplayer balance changes (2010–present).
+> Never perfect. Perfection goal that changes. Never stops moving. Can chase, cannot catch. — Abathur ([hear it here](https://www.youtube.com/watch?v=pw_GN3v-0Ls))
+
+Visual history of StarCraft II multiplayer balance changes (2010–present), by [Piotr Migdał](https://p.migdal.pl/).
 
 **[Live Demo](https://p.migdal.pl/sc2-balance-timeline/)**
 
@@ -63,6 +65,8 @@ Manual input would work... but it is also why only now I started this project (t
 
 I use [Gemini 3 Pro](https://openrouter.ai/google/gemini-3-pro-preview) via [OpenRouter](https://openrouter.ai/) (tested Claude Opus 4.5, GPT-5.2, Gemini 3 Flash — Gemini 3 Pro seems to work the best for this data).
 
+As side note, see my blog post [AI for coding is still playing Go, not StarCraft](https://quesma.com/blog/coding-is-starcraft-not-go/).
+
 ## Running locally
 
 For running vis, you need [pnpm](https://pnpm.io/):
@@ -105,3 +109,7 @@ MIT by [Piotr Migdał](https://p.migdal.pl/) - processing code and data viz
 ---
 
 _StarCraft II and Blizzard Entertainment are trademarks of Blizzard Entertainment, Inc._ Unit icons are assets of Blizzard.
+
+## Thanks
+
+I am grateful to [Jasmine Otto](https://jazztap.github.io/) for valuable feedback on an early draft.

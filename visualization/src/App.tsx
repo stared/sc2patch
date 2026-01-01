@@ -245,8 +245,7 @@ function App() {
 
         <footer className="app-footer" style={{ '--wol-color': eraColors.wol } as React.CSSProperties}>
           <p>
-            <span className="footer-wol">StarCraft II: Wings of Liberty</span> was released worldwide on July 27, 2010.
-            See its <a href="https://www.youtube.com/watch?v=VSGmPpidDvo" target="_blank" rel="noopener noreferrer">epic cinematic teaser</a>, showcasing Blizzard's legendary animation craft.
+            <a href="https://en.wikipedia.org/wiki/StarCraft_II:_Wings_of_Liberty" target="_blank" rel="noopener noreferrer">StarCraft II: Wings of Liberty</a> was released worldwide on July 27, 2010. Even today, <a href="https://www.youtube.com/watch?v=VSGmPpidDvo" target="_blank" rel="noopener noreferrer">the cinematic teaser</a> is a treat to watch. A beautiful reminder of Blizzard's animation craft at its peak.
           </p>
         </footer>
       </main>
@@ -256,7 +255,6 @@ function App() {
         entity={tooltip.entity}
         visible={tooltip.visible}
         position={tooltipPosition}
-        selectedEntityId={selectedEntityId}
       />
     </div>
   );

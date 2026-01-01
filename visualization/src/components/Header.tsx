@@ -3,6 +3,7 @@ import {
   eraColors,
   eraOrder,
   changeTypeConfig,
+  raceColors,
   type Era,
 } from '../utils/uxSettings';
 
@@ -18,12 +19,24 @@ export function Header({ selectedEra, setSelectedEra }: HeaderProps) {
       <div className="header-top">
         <div className="header-title-group">
           <h1 className="header-title">
-            15 Years of StarCraft II <span style={{ color: changeTypeConfig.mixed.color }}>Balance Changes</span> Visualized
+            15 Years of StarCraft II{' '}
+            <a
+              href="https://www.youtube.com/watch?v=pw_GN3v-0Ls"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="balance-easter-egg"
+              style={{ '--zerg-color': raceColors.zerg, '--balance-color': changeTypeConfig.mixed.color } as React.CSSProperties}
+            >
+              <span className="balance-text">Balance Changes</span>
+              <span className="abathur-quote abathur-full">"Never perfect. Perfection goal that changes. Never stops moving. Can chase, cannot catch." — Abathur</span>
+              <span className="abathur-quote abathur-short">"Never perfect. Perfection goal that changes." — Abathur</span>
+            </a>
+            {' '}Visualized
           </h1>
         </div>
         <div className="attribution">
           <span className="attribution-author">by <a href="https://p.migdal.pl" target="_blank" rel="noopener noreferrer">Piotr Migdał</a></span>
-          <a href="https://github.com/stared/sc2-balance-timeline" target="_blank" rel="noopener noreferrer" className="attribution-source">source code</a>
+          <a href="https://github.com/stared/sc2-balance-timeline" target="_blank" rel="noopener noreferrer" className="attribution-source">source code & about</a>
         </div>
       </div>
 

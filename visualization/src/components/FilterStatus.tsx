@@ -52,13 +52,16 @@ export function FilterStatus({
       ))}
       {' '}balance changes from {startDate} to {endDate} covering{' '}
       {selectedEra ? (
-        <button
-          className="filter-chip active"
-          style={{ borderColor: eraColors[selectedEra], '--chip-color': eraColors[selectedEra] } as React.CSSProperties}
-          onClick={() => setSelectedEra(null)}
-        >
-          {eraData[selectedEra].name} ×
-        </button>
+        <>
+          <button
+            className="filter-chip active"
+            style={{ borderColor: eraColors[selectedEra], '--chip-color': eraColors[selectedEra] } as React.CSSProperties}
+            onClick={() => setSelectedEra(null)}
+          >
+            {eraData[selectedEra].name} ×
+          </button>
+          {' '}era
+        </>
       ) : (
         <span>the whole timeline</span>
       )}
@@ -82,7 +85,7 @@ export function FilterStatus({
       ) : (
         <span>all races</span>
       )}
-      . Hover and click to explore.
+      . Hover and click to explore — there is a lot to see!
     </div>
   );
 }

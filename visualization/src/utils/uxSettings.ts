@@ -87,6 +87,7 @@ export const layout = {
   // Cell grid
   cellSize: 48,
   cellGap: 6,
+  raceColumnPadding: 16,  // Visual gap between race columns (~1/3 of cellSize)
   patchLabelWidth: 90,
   raceColumnWidth: 250,
   // Canvas

@@ -45,24 +45,79 @@ body {
 .header-top {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-  gap: 24px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .header-title-group {
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
-/* SC2-style title */
+/* SC2-style title - always one line, scales with viewport */
 .header-title {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  font-size: 1.8rem;
+  font-size: clamp(0.75rem, 2.5vw, 1.8rem);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.03em;
   margin: 0;
   color: #fff;
-  line-height: 1.2;
+  line-height: 0.95;  /* Tight line-height for top alignment */
+  white-space: nowrap;
+}
+
+/* Abathur easter egg */
+.balance-easter-egg {
+  position: relative;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.balance-text {
+  color: var(--balance-color);
+  transition: filter 0.3s ease;
+}
+
+.balance-easter-egg:hover .balance-text {
+  filter: drop-shadow(0 0 8px var(--zerg-color)) brightness(1.2);
+}
+
+.abathur-quote {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  width: max-content;
+  max-width: 90vw;
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 400;
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--zerg-color);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.balance-easter-egg:hover .abathur-quote {
+  opacity: 0.8;
+  visibility: visible;
+  transform: translateX(-50%) translateY(4px);
+  transition-delay: 0.4s;
+}
+
+/* Show full quote on desktop, short on mobile */
+.abathur-short { display: none; }
+
+@media (max-width: 768px) {
+  .abathur-full { display: none; }
+  .abathur-short { display: block; }
 }
 
 /* Era Timeline */
@@ -82,12 +137,25 @@ body {
   background: transparent;
   border: none;
   padding: 4px 0;
-  cursor: pointer;
   position: relative;
+  /* Sync with D3 Phase 1 (fade out) timing */
+  opacity: 1;
+  transform: scale(1);
+  transition:
+    opacity 600ms cubic-bezier(0.4, 0.0, 0.2, 1),
+    filter 600ms cubic-bezier(0.4, 0.0, 0.2, 1),
+    transform 200ms ease-out;
 }
 
+/* Tactile click feedback */
+.timeline-segment:active {
+  transform: scale(0.97);
+}
+
+/* Fog of War effect for inactive eras */
 .timeline-segment.inactive {
   opacity: 0.35;
+  filter: grayscale(0.8) blur(0.5px);
 }
 
 .timeline-segment:hover:not(.inactive):not(.active) {
@@ -117,6 +185,44 @@ body {
   flex: 1;
   height: 3px;
   background: var(--segment-color);
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Active segment line glow */
+.timeline-segment.active .segment-line {
+  background: var(--segment-color);
+  box-shadow: 0 0 10px var(--segment-color);
+}
+
+/* Psionic surge animation on selection */
+.timeline-segment.active .segment-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.8),
+    transparent
+  );
+  animation: psionic-surge 2s ease-in-out forwards;
+}
+
+@keyframes psionic-surge {
+  0% { left: 0%; opacity: 0; }
+  5% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { left: 100%; opacity: 0; }
+}
+
+/* Inactive segments (when another era is selected) show dimmed */
+.timeline-segment.inactive .segment-line {
+  opacity: 0.4;
 }
 
 .segment-date {
@@ -150,13 +256,22 @@ body {
   font-weight: 500;
   line-height: 1;
   padding: 3px 6px;
-  margin: 0;
+  margin: 2px 0;
   color: #ccc;
   transition: all 0.15s ease;
+  filter: drop-shadow(0 0 0 transparent) brightness(1);
 }
 
 button.filter-chip { cursor: pointer; }
-button.filter-chip:hover, .filter-chip.active { color: var(--chip-color); background: rgba(255,255,255,0.08); }
+button.filter-chip:hover {
+  color: var(--chip-color);
+  background: rgba(255,255,255,0.08);
+  filter: drop-shadow(0 0 6px var(--chip-color)) brightness(1.2);
+}
+.filter-chip.active {
+  color: var(--chip-color);
+  background: rgba(255,255,255,0.08);
+}
 .filter-chip.inactive { opacity: 0.35; }
 .filter-chip.inactive:hover { opacity: 0.6; }
 
@@ -214,7 +329,7 @@ button.filter-chip:hover, .filter-chip.active { color: var(--chip-color); backgr
   gap: 2px;
   font-size: 12px;
   flex-shrink: 0;
-  margin-top: 0.5em;
+  margin-top: 2px;  /* Align cap-height with title */
 }
 
 .attribution-author {
@@ -305,11 +420,6 @@ button.filter-chip:hover, .filter-chip.active { color: var(--chip-color); backgr
   }
 }
 
-@media (max-width: 1024px) {
-  .header-title {
-    font-size: 1.4rem;
-  }
-}
 
 @media (max-width: 768px) {
   .app-header {
@@ -320,19 +430,22 @@ button.filter-chip:hover, .filter-chip.active { color: var(--chip-color); backgr
     padding: 0 16px;
   }
 
-  .header-top {
-    flex-direction: column;
-    gap: 12px;
+  .header-title-group {
+    width: 100%;
   }
 
   .header-title {
-    font-size: 1.1rem;
+    font-size: clamp(0.7rem, 3.1vw, 1.4rem);
+    letter-spacing: 0;
+    line-height: 1.1;
   }
 
   .attribution {
+    width: 100%;
     flex-direction: row;
+    justify-content: flex-end;
     gap: 12px;
-    align-items: center;
+    margin-top: 0;
   }
 
   .era-bar {
@@ -369,11 +482,6 @@ button.filter-chip:hover, .filter-chip.active { color: var(--chip-color); backgr
 }
 
 @media (max-width: 480px) {
-  .header-title {
-    font-size: 0.95rem;
-    letter-spacing: 0.01em;
-  }
-
   .attribution {
     flex-direction: row;
     gap: 8px;
@@ -413,13 +521,16 @@ button.filter-chip:hover, .filter-chip.active { color: var(--chip-color); backgr
   box-shadow:
     0 8px 24px rgba(0, 0, 0, 0.6),
     0 0 8px color-mix(in srgb, var(--change-color, #888) 25%, transparent);
-  /* Animation */
+  /* Animation - fade in/out 400ms */
   opacity: 0;
-  transition: opacity 0.12s ease-out;
+  visibility: hidden;
+  transition: opacity 0.4s ease-out, visibility 0s linear 0.4s;
 }
 
 .tooltip.visible {
   opacity: 1;
+  visibility: visible;
+  transition: opacity 0.4s ease-out, visibility 0s linear 0s;
 }
 
 .tooltip h4 {
@@ -492,6 +603,11 @@ button.filter-chip:hover, .filter-chip.active { color: var(--chip-color); backgr
 .patch-grid-container {
   width: 100%;
   contain: layout; /* Isolate from header reflows */
+}
+
+/* Disable mouse interactions during grid transitions */
+.patch-grid-container.transitioning {
+  pointer-events: none;
 }
 
 .patch-grid {
@@ -659,10 +775,6 @@ svg .wiki-link:hover {
   padding: 32px 24px 48px;
   color: #888;
   font-size: 14px;
-}
-
-.footer-wol {
-  color: var(--wol-color);
 }
 
 .app-footer a {

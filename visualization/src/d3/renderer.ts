@@ -186,11 +186,20 @@ export class PatchGridRenderer {
       // Update content for all (enter + update)
       .each(function(d) {
         const g = select(this);
-        g.select('.race-text')
+
+        // Update text and measure width
+        const textEl = g.select<SVGTextElement>('.race-text')
           .text(d.text)
           .style('fill', raceColors[d.race]);
 
+        const textWidth = textEl.node()?.getComputedTextLength() ?? 60;
+        const padding = 32; // 16px each side
+        const rectWidth = textWidth + padding;
+
+        // Update rect to fit text
         g.select('.race-bg')
+          .attr('width', rectWidth)
+          .attr('x', -rectWidth / 2)
           .style('stroke', d.opacity > 0 ? raceColors[d.race] : 'rgba(255, 255, 255, 0.08)');
       })
       .style('--race-color', d => raceColors[d.race])
@@ -238,7 +247,7 @@ export class PatchGridRenderer {
         enter => enter.append('text')
           .attr('class', 'unit-links wiki-link')
           .style('opacity', 0)
-          .call(e => e.transition().delay(this.t(PHASE.ENTER_DELAY)).duration(this.t(PHASE.ENTER_DURATION)).style('opacity', 1)),
+          .call(e => e.transition('enter').delay(this.t(PHASE.ENTER_DELAY + PHASE.ENTER_DURATION)).duration(this.t(PHASE.ENTER_DURATION)).style('opacity', 1)),
         update => update,
         exit => exit.transition().duration(this.t(PHASE.EXIT_DURATION)).style('opacity', 0).remove()
       )
@@ -294,7 +303,8 @@ export class PatchGridRenderer {
             .on('click', (_e, d) => window.open(d.url, '_blank'));
 
           // Fade in after move phase
-          pg.transition()
+          // Named transition prevents UPDATE from cancelling this on React re-render
+          pg.transition('enter')
             .delay(this.t(PHASE.ENTER_DELAY))
             .duration(this.t(PHASE.ENTER_DURATION))
             .style('opacity', 1);
@@ -303,8 +313,12 @@ export class PatchGridRenderer {
         },
 
         // UPDATE: Existing patches move to new position
+        // If element was mid-exit (low opacity), wait for ENTER phase instead of MOVE
         update => update.call(u => u.transition()
-          .delay(this.t(PHASE.MOVE_DELAY))
+          .delay((_d, i, nodes) => {
+            const wasExiting = +select(nodes[i]).style('opacity') < 0.5;
+            return this.t(wasExiting ? PHASE.ENTER_DELAY : PHASE.MOVE_DELAY);
+          })
           .duration(this.t(PHASE.MOVE_DURATION))
           .ease(easeCubicInOut)
           .attr('transform', d => `translate(0, ${d.y})`)
@@ -359,7 +373,8 @@ export class PatchGridRenderer {
             .attr('preserveAspectRatio', 'xMidYMid slice');
 
           // Fade in after move phase
-          eg.transition()
+          // Named transition prevents UPDATE from cancelling this on React re-render
+          eg.transition('enter')
             .delay(this.t(PHASE.ENTER_DELAY))
             .duration(this.t(PHASE.ENTER_DURATION))
             .style('opacity', 1);
@@ -368,8 +383,12 @@ export class PatchGridRenderer {
         },
 
         // UPDATE: Existing entities move to new position
+        // If element was mid-exit (low opacity), wait for ENTER phase instead of MOVE
         update => update.call(u => u.transition()
-          .delay(this.t(PHASE.MOVE_DELAY))
+          .delay((_d, i, nodes) => {
+            const wasExiting = +select(nodes[i]).style('opacity') < 0.5;
+            return this.t(wasExiting ? PHASE.ENTER_DELAY : PHASE.MOVE_DELAY);
+          })
           .duration(this.t(PHASE.MOVE_DURATION))
           .ease(easeCubicInOut)
           .attr('transform', d => `translate(${d.x}, ${d.y})`)
@@ -386,6 +405,16 @@ export class PatchGridRenderer {
       // Event handlers for all
       .on('click', (event, d) => {
         event.stopPropagation();
+        state.setTooltip({ entity: null, visible: false }); // Hide tooltip instantly on click
+
+        // Disable interactions during transition animation
+        const container = document.querySelector('.patch-grid-container');
+        if (container) {
+          container.classList.add('transitioning');
+          const totalAnimationTime = PHASE.ENTER_DELAY + PHASE.ENTER_DURATION + 50; // ~1050ms
+          setTimeout(() => container.classList.remove('transitioning'), totalAnimationTime);
+        }
+
         state.onEntitySelect(state.selectedEntityId === d.entityId ? null : d.entityId);
       })
       .on('mouseenter', (event, d) => {
@@ -402,7 +431,19 @@ export class PatchGridRenderer {
           visible: true
         });
       })
-      .on('mouseleave', () => state.setTooltip({ entity: null, visible: false }));
+      .on('mouseleave', (event, d) => {
+        const group = event.currentTarget as SVGGElement;
+        const rect = group.getBoundingClientRect();
+        state.setTooltip({
+          entity: {
+            ...d.entity,
+            name: state.unitsMap.get(d.entityId)?.name || d.entity.name || d.entityId,
+            x: rect.left + rect.width / 2,
+            y: rect.top + rect.height / 2
+          },
+          visible: false
+        });
+      });
   }
 
   private renderChanges(layoutResult: LayoutResult): void {
@@ -444,22 +485,22 @@ export class PatchGridRenderer {
             });
           });
 
-          // Fade in last
-          cg.transition()
-            .delay(this.t(PHASE.ENTER_DELAY))
+          // Fade in after unit icon has finished moving
+          // Named transition prevents UPDATE from cancelling this on React re-render
+          cg.transition('enter')
+            .delay(this.t(PHASE.ENTER_DELAY + PHASE.ENTER_DURATION))
             .duration(this.t(PHASE.ENTER_DURATION))
             .style('opacity', 1);
 
           return cg;
         },
 
-        // UPDATE: Move to new position AND ensure visible
+        // UPDATE: Move to new position (don't touch opacity - ENTER handles that)
         update => update.call(u => u.transition()
           .delay(this.t(PHASE.MOVE_DELAY))
           .duration(this.t(PHASE.MOVE_DURATION))
           .ease(easeCubicInOut)
           .attr('transform', d => `translate(${d.x}, ${d.y})`)
-          .style('opacity', 1)  // CRITICAL: ensure visibility after interrupted ENTER
         ),
 
         // EXIT: Fade out
