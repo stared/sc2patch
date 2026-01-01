@@ -247,7 +247,7 @@ export class PatchGridRenderer {
         enter => enter.append('text')
           .attr('class', 'unit-links wiki-link')
           .style('opacity', 0)
-          .call(e => e.transition().delay(this.t(PHASE.ENTER_DELAY)).duration(this.t(PHASE.ENTER_DURATION)).style('opacity', 1)),
+          .call(e => e.transition('enter').delay(this.t(PHASE.ENTER_DELAY + PHASE.ENTER_DURATION)).duration(this.t(PHASE.ENTER_DURATION)).style('opacity', 1)),
         update => update,
         exit => exit.transition().duration(this.t(PHASE.EXIT_DURATION)).style('opacity', 0).remove()
       )
@@ -303,7 +303,8 @@ export class PatchGridRenderer {
             .on('click', (_e, d) => window.open(d.url, '_blank'));
 
           // Fade in after move phase
-          pg.transition()
+          // Named transition prevents UPDATE from cancelling this on React re-render
+          pg.transition('enter')
             .delay(this.t(PHASE.ENTER_DELAY))
             .duration(this.t(PHASE.ENTER_DURATION))
             .style('opacity', 1);
@@ -312,8 +313,12 @@ export class PatchGridRenderer {
         },
 
         // UPDATE: Existing patches move to new position
+        // If element was mid-exit (low opacity), wait for ENTER phase instead of MOVE
         update => update.call(u => u.transition()
-          .delay(this.t(PHASE.MOVE_DELAY))
+          .delay((_d, i, nodes) => {
+            const wasExiting = +select(nodes[i]).style('opacity') < 0.5;
+            return this.t(wasExiting ? PHASE.ENTER_DELAY : PHASE.MOVE_DELAY);
+          })
           .duration(this.t(PHASE.MOVE_DURATION))
           .ease(easeCubicInOut)
           .attr('transform', d => `translate(0, ${d.y})`)
@@ -368,7 +373,8 @@ export class PatchGridRenderer {
             .attr('preserveAspectRatio', 'xMidYMid slice');
 
           // Fade in after move phase
-          eg.transition()
+          // Named transition prevents UPDATE from cancelling this on React re-render
+          eg.transition('enter')
             .delay(this.t(PHASE.ENTER_DELAY))
             .duration(this.t(PHASE.ENTER_DURATION))
             .style('opacity', 1);
@@ -377,8 +383,12 @@ export class PatchGridRenderer {
         },
 
         // UPDATE: Existing entities move to new position
+        // If element was mid-exit (low opacity), wait for ENTER phase instead of MOVE
         update => update.call(u => u.transition()
-          .delay(this.t(PHASE.MOVE_DELAY))
+          .delay((_d, i, nodes) => {
+            const wasExiting = +select(nodes[i]).style('opacity') < 0.5;
+            return this.t(wasExiting ? PHASE.ENTER_DELAY : PHASE.MOVE_DELAY);
+          })
           .duration(this.t(PHASE.MOVE_DURATION))
           .ease(easeCubicInOut)
           .attr('transform', d => `translate(${d.x}, ${d.y})`)
@@ -475,22 +485,22 @@ export class PatchGridRenderer {
             });
           });
 
-          // Fade in last
-          cg.transition()
-            .delay(this.t(PHASE.ENTER_DELAY))
+          // Fade in after unit icon has finished moving
+          // Named transition prevents UPDATE from cancelling this on React re-render
+          cg.transition('enter')
+            .delay(this.t(PHASE.ENTER_DELAY + PHASE.ENTER_DURATION))
             .duration(this.t(PHASE.ENTER_DURATION))
             .style('opacity', 1);
 
           return cg;
         },
 
-        // UPDATE: Move to new position AND ensure visible
+        // UPDATE: Move to new position (don't touch opacity - ENTER handles that)
         update => update.call(u => u.transition()
           .delay(this.t(PHASE.MOVE_DELAY))
           .duration(this.t(PHASE.MOVE_DURATION))
           .ease(easeCubicInOut)
           .attr('transform', d => `translate(${d.x}, ${d.y})`)
-          .style('opacity', 1)  // CRITICAL: ensure visibility after interrupted ENTER
         ),
 
         // EXIT: Fade out
