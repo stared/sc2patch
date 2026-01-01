@@ -2,9 +2,9 @@ import { select, type Selection } from 'd3-selection';
 import { transition } from 'd3-transition';
 import { easeCubicInOut } from 'd3-ease';
 import { ProcessedPatchData, Change, Race, Unit, EntityWithPosition } from '../types';
-import { layout, timing, raceColors, eraColors, getChangeIndicator, getChangeColor, getEraFromVersion, type ChangeType } from '../utils/uxSettings';
+import { layout, timing, raceColors, eraColors, getChangeIndicator, getChangeColor, getEraFromVersion, getLayoutConfig, MOBILE_BREAKPOINT, type ChangeType } from '../utils/uxSettings';
 import {
-  calculateLayout,
+  createLayoutEngine,
   type EntityLayout,
   type PatchRowLayout,
   type ChangeLayout,
@@ -44,6 +44,7 @@ export class PatchGridRenderer {
   private svgWidth: number = layout.maxWidth;
   private isFirstRender: boolean = true;
   private isImmediate: boolean = false; // Set per render() call
+  private currentCellSize: number = layout.cellSize; // Track for clipPath updates
 
   constructor(svgElement: SVGSVGElement) {
     this.svg = select(svgElement);
@@ -59,6 +60,18 @@ export class PatchGridRenderer {
     const containerWidth = svgElement?.parentElement?.clientWidth || layout.maxWidth;
     this.svgWidth = Math.min(containerWidth, layout.maxWidth);
 
+    // Get mobile-aware layout config
+    const isMobile = containerWidth < MOBILE_BREAKPOINT;
+    const config = getLayoutConfig(isMobile);
+    const engine = createLayoutEngine(config.layout, config.races);
+
+    // Update clipPath if cellSize changed
+    const cellSize = engine.getCellSize();
+    if (cellSize !== this.currentCellSize) {
+      this.currentCellSize = cellSize;
+      this.updateClipPath(cellSize);
+    }
+
     // Build layout input (no prev state tracking!)
     const layoutInput: LayoutInput = {
       patches: state.patches,
@@ -68,7 +81,7 @@ export class PatchGridRenderer {
     };
 
     // Calculate layout (pure function - just target positions)
-    const layoutResult = calculateLayout(layoutInput, this.svgWidth);
+    const layoutResult = engine.calculateLayout(layoutInput, this.svgWidth);
 
     // Update SVG dimensions
     this.svg.attr('width', this.svgWidth).attr('height', layoutResult.svgHeight);
@@ -107,9 +120,15 @@ export class PatchGridRenderer {
 
     defs.append('clipPath').attr('id', 'roundedCorners')
       .append('rect')
-      .attr('width', layout.cellSize)
-      .attr('height', layout.cellSize)
+      .attr('width', this.currentCellSize)
+      .attr('height', this.currentCellSize)
       .attr('rx', 4).attr('ry', 4);
+  }
+
+  private updateClipPath(cellSize: number): void {
+    this.svg.select('#roundedCorners rect')
+      .attr('width', cellSize)
+      .attr('height', cellSize);
   }
 
   private scrollToTargetPosition(targetY: number): void {
@@ -137,8 +156,8 @@ export class PatchGridRenderer {
     }
     headersContainer.attr('transform', `translate(0, ${layout.headerY})`);
 
-    // Sort control
-    this.renderSortControl(headersContainer, state);
+    // Sort control (hide on mobile)
+    this.renderSortControl(headersContainer, state, layoutResult.isMobile);
 
     // Race headers with unified join
     headersContainer
@@ -216,8 +235,9 @@ export class PatchGridRenderer {
     this.renderUnitLink(headersContainer, state);
   }
 
-  private renderSortControl(container: Selection<SVGGElement, unknown, null, undefined>, state: RenderState): void {
-    const sortData = [state.sortOrder];
+  private renderSortControl(container: Selection<SVGGElement, unknown, null, undefined>, state: RenderState, isMobile: boolean): void {
+    // Hide sort control on mobile
+    const sortData = isMobile ? [] : [state.sortOrder];
     container.selectAll<SVGGElement, string>('.sort-control')
       .data(sortData)
       .join(
@@ -228,7 +248,8 @@ export class PatchGridRenderer {
             .attr('x', 0).attr('y', 16);
           return g;
         },
-        update => update
+        update => update,
+        exit => exit.remove()
       )
       .select('.sort-text')
       .text(state.sortOrder === 'newest' ? '↑' : '↓')
@@ -271,6 +292,8 @@ export class PatchGridRenderer {
       patchesContainer = this.svg.append('g').attr('class', 'patches-container');
     }
 
+    const isMobile = layoutResult.isMobile;
+
     patchesContainer
       .selectAll<SVGGElement, PatchRowLayout>('.patch-group')
       .data(layoutResult.patchRows, d => d.version)
@@ -282,13 +305,16 @@ export class PatchGridRenderer {
             .attr('transform', d => `translate(0, ${d.y})`)
             .style('opacity', 0);
 
+          // On mobile: label above icons (centered, horizontal layout)
+          // On desktop: label on left side (vertical layout)
           const label = pg.append('g')
             .attr('class', 'patch-label')
-            .attr('transform', 'translate(0, 20)');
+            .attr('transform', isMobile ? 'translate(12, 6)' : 'translate(0, 20)');
 
           label.append('text')
             .attr('class', 'patch-date')
-            .attr('x', 10).attr('y', 0)
+            .attr('x', 0)
+            .attr('y', isMobile ? 12 : 0)
             .each(function(d) {
               select(this)
                 .style('fill', eraColors[getEraFromVersion(d.version)])
@@ -298,7 +324,8 @@ export class PatchGridRenderer {
 
           label.append('text')
             .attr('class', 'patch-version')
-            .attr('x', 10).attr('y', 14)
+            .attr('x', isMobile ? 65 : 0)
+            .attr('y', isMobile ? 12 : 14)
             .text(d => d.version)
             .on('click', (_e, d) => window.open(d.url, '_blank'));
 
@@ -356,8 +383,8 @@ export class PatchGridRenderer {
             });
 
           eg.append('rect')
-            .attr('width', layout.cellSize)
-            .attr('height', layout.cellSize)
+            .attr('width', this.currentCellSize)
+            .attr('height', this.currentCellSize)
             .attr('rx', 4)
             .style('fill', 'url(#cellGradient)')
             .style('stroke', d => {
@@ -366,8 +393,8 @@ export class PatchGridRenderer {
             });
 
           eg.append('image')
-            .attr('width', layout.cellSize)
-            .attr('height', layout.cellSize)
+            .attr('width', this.currentCellSize)
+            .attr('height', this.currentCellSize)
             .attr('href', d => `${import.meta.env.BASE_URL}assets/units/${d.entityId}.png`)
             .attr('clip-path', 'url(#roundedCorners)')
             .attr('preserveAspectRatio', 'xMidYMid slice');
