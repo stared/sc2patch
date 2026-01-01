@@ -136,7 +136,7 @@ export const MOBILE_BREAKPOINT = 768;
 const mobileLayout: LayoutConfig = {
   ...layout,
   cellSize: 36,         // 75% of 48
-  cellGap: 4,
+  cellGap: 5,           // Slightly bigger gap between icons
   patchLabelWidth: 0,   // No left column - labels go above icons
 };
 

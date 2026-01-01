@@ -146,7 +146,7 @@ export function createLayoutEngine(
 
   // Patch row layout
   const MOBILE_LABEL_HEIGHT = 24; // Height for date+version label row on mobile
-  const MOBILE_ROW_GAP = 8; // Small gap between patch rows on mobile
+  const MOBILE_ROW_GAP = 6; // Small gap between patch rows on mobile
 
   function calculatePatchRows(input: LayoutInput, columnWidth: number, isMobile: boolean): PatchRowLayout[] {
     const cellsPerRow = getCellsPerRow(columnWidth);
@@ -237,18 +237,26 @@ export function createLayoutEngine(
         const raceCount = racesToShow.length;
 
         if (isMobile) {
-          // Mobile: use full width with visible gaps between races
-          const totalGaps = (raceCount - 1) * MOBILE_RACE_GAP;
-          const availableForIcons = svgWidth - 2 * MOBILE_MARGIN - totalGaps;
-          const raceColumnWidth = availableForIcons / raceCount;
-          const cellsPerRaceRow = Math.max(1, Math.floor(raceColumnWidth / (layout.cellSize + layout.cellGap)));
+          // Mobile: small edge margins, bigger gaps between races
+          const edgeMargin = MOBILE_MARGIN; // Small edge margin (less than patch label margin)
+          const tempAvailable = svgWidth - 2 * edgeMargin - (raceCount - 1) * MOBILE_RACE_GAP;
+          const tempColumnWidth = tempAvailable / raceCount;
+          const cellsPerRaceRow = Math.max(1, Math.floor(tempColumnWidth / (layout.cellSize + layout.cellGap)));
+
+          // Actual width used by icons in each race column
+          const actualRaceWidth = cellsPerRaceRow * layout.cellSize + (cellsPerRaceRow - 1) * layout.cellGap;
+          // Total content width
+          const totalContentWidth = raceCount * actualRaceWidth;
+          // Extra space goes into race gaps (not edge margins)
+          const extraSpace = svgWidth - totalContentWidth - 2 * edgeMargin;
+          const raceGap = extraSpace / (raceCount - 1);
 
           racesToShow.forEach((race, raceIndex) => {
             const raceEntities = Array.from(patch.entities.entries())
               .filter(([_, entity]) => (entity.race || 'neutral') === race);
 
-            // Calculate race column start position
-            const raceStartX = MOBILE_MARGIN + raceIndex * (raceColumnWidth + MOBILE_RACE_GAP);
+            // Position: edge margin + previous races + previous gaps
+            const raceStartX = edgeMargin + raceIndex * (actualRaceWidth + raceGap);
 
             raceEntities.forEach(([entityId, entity], entityIndex) => {
               const rowNum = Math.floor(entityIndex / cellsPerRaceRow);
