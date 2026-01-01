@@ -130,7 +130,7 @@ export function createLayoutEngine(
       const actualRaceWidth = cellsPerRaceRow * layout.cellSize + (cellsPerRaceRow - 1) * layout.cellGap;
       const totalContentWidth = raceCount * actualRaceWidth;
       const extraSpace = svgWidth - totalContentWidth - 2 * MOBILE_MARGIN;
-      const raceGap = extraSpace / (raceCount - 1);
+      const raceGap = raceCount > 1 ? extraSpace / (raceCount - 1) : 0;
 
       headerXPositions = races.map((_, index) => {
         const raceStartX = MOBILE_MARGIN + index * (actualRaceWidth + raceGap);
@@ -276,7 +276,7 @@ export function createLayoutEngine(
           const totalContentWidth = raceCount * actualRaceWidth;
           // Extra space goes into race gaps (not edge margins)
           const extraSpace = svgWidth - totalContentWidth - 2 * edgeMargin;
-          const raceGap = extraSpace / (raceCount - 1);
+          const raceGap = raceCount > 1 ? extraSpace / (raceCount - 1) : 0;
 
           racesToShow.forEach((race, raceIndex) => {
             const raceEntities = Array.from(patch.entities.entries())
