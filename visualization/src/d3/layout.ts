@@ -356,7 +356,7 @@ export function createLayoutEngine(
         // Mobile: slightly below icon top (icon starts at MOBILE_LABEL_HEIGHT)
         // Desktop: small offset from row
         const y = isMobile
-          ? row.y + MOBILE_LABEL_HEIGHT + 6  // 6px down from icon top
+          ? row.y + MOBILE_LABEL_HEIGHT + 10  // ~0.25em more down from icon top
           : row.y + 10;
         return {
           id: `${selectedEntityId}-${row.version}`,

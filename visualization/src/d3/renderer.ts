@@ -314,7 +314,7 @@ export class PatchGridRenderer {
           label.append('text')
             .attr('class', 'patch-date')
             .attr('x', 0)
-            .attr('y', isMobile ? 12 : 0)
+            .attr('y', isMobile ? 4 : 0)  // Mobile: 0.5em higher
             .each(function(d) {
               select(this)
                 .style('fill', eraColors[getEraFromVersion(d.version)])
@@ -325,7 +325,7 @@ export class PatchGridRenderer {
           label.append('text')
             .attr('class', 'patch-version')
             .attr('x', isMobile ? 65 : 0)
-            .attr('y', isMobile ? 12 : 14)
+            .attr('y', isMobile ? 4 : 14)  // Mobile: 0.5em higher
             .text(d => d.version)
             .on('click', (_e, d) => window.open(d.url, '_blank'));
 
@@ -347,10 +347,10 @@ export class PatchGridRenderer {
             .attr('transform', isMobile ? 'translate(12, 6)' : 'translate(0, 20)');
           update.select('.patch-date')
             .attr('x', 0)
-            .attr('y', isMobile ? 12 : 0);
+            .attr('y', isMobile ? 4 : 0);
           update.select('.patch-version')
             .attr('x', isMobile ? 65 : 0)
-            .attr('y', isMobile ? 12 : 14);
+            .attr('y', isMobile ? 4 : 14);
 
           return update.call(u => u.transition()
             .delay((_d, i, nodes) => {
