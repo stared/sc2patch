@@ -339,18 +339,30 @@ export class PatchGridRenderer {
           return pg;
         },
 
-        // UPDATE: Existing patches move to new position
+        // UPDATE: Existing patches move to new position and update label layout
         // If element was mid-exit (low opacity), wait for ENTER phase instead of MOVE
-        update => update.call(u => u.transition()
-          .delay((_d, i, nodes) => {
-            const wasExiting = +select(nodes[i]).style('opacity') < 0.5;
-            return this.t(wasExiting ? PHASE.ENTER_DELAY : PHASE.MOVE_DELAY);
-          })
-          .duration(this.t(PHASE.MOVE_DURATION))
-          .ease(easeCubicInOut)
-          .attr('transform', d => `translate(0, ${d.y})`)
-          .style('opacity', 1)
-        ),
+        update => {
+          // Update label positions for breakpoint crossing
+          update.select('.patch-label')
+            .attr('transform', isMobile ? 'translate(12, 6)' : 'translate(0, 20)');
+          update.select('.patch-date')
+            .attr('x', 0)
+            .attr('y', isMobile ? 12 : 0);
+          update.select('.patch-version')
+            .attr('x', isMobile ? 65 : 0)
+            .attr('y', isMobile ? 12 : 14);
+
+          return update.call(u => u.transition()
+            .delay((_d, i, nodes) => {
+              const wasExiting = +select(nodes[i]).style('opacity') < 0.5;
+              return this.t(wasExiting ? PHASE.ENTER_DELAY : PHASE.MOVE_DELAY);
+            })
+            .duration(this.t(PHASE.MOVE_DURATION))
+            .ease(easeCubicInOut)
+            .attr('transform', d => `translate(0, ${d.y})`)
+            .style('opacity', 1)
+          );
+        },
 
         // EXIT: Patches fade out
         exit => exit.call(e => e.transition()
@@ -409,18 +421,28 @@ export class PatchGridRenderer {
           return eg;
         },
 
-        // UPDATE: Existing entities move to new position
+        // UPDATE: Existing entities move to new position and update size
         // If element was mid-exit (low opacity), wait for ENTER phase instead of MOVE
-        update => update.call(u => u.transition()
-          .delay((_d, i, nodes) => {
-            const wasExiting = +select(nodes[i]).style('opacity') < 0.5;
-            return this.t(wasExiting ? PHASE.ENTER_DELAY : PHASE.MOVE_DELAY);
-          })
-          .duration(this.t(PHASE.MOVE_DURATION))
-          .ease(easeCubicInOut)
-          .attr('transform', d => `translate(${d.x}, ${d.y})`)
-          .style('opacity', 1)
-        ),
+        update => {
+          // Update sizes immediately (for breakpoint crossing)
+          update.select('rect')
+            .attr('width', this.currentCellSize)
+            .attr('height', this.currentCellSize);
+          update.select('image')
+            .attr('width', this.currentCellSize)
+            .attr('height', this.currentCellSize);
+
+          return update.call(u => u.transition()
+            .delay((_d, i, nodes) => {
+              const wasExiting = +select(nodes[i]).style('opacity') < 0.5;
+              return this.t(wasExiting ? PHASE.ENTER_DELAY : PHASE.MOVE_DELAY);
+            })
+            .duration(this.t(PHASE.MOVE_DURATION))
+            .ease(easeCubicInOut)
+            .attr('transform', d => `translate(${d.x}, ${d.y})`)
+            .style('opacity', 1)
+          );
+        },
 
         // EXIT: Entities fade out in place
         exit => exit.call(e => e.transition()
