@@ -1,10 +1,12 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { loadPatchesData, createUnitsMap, processPatches } from './utils/dataLoader';
 import { ProcessedPatchData, Unit, EntityWithPosition, Race } from './types';
 import { PatchGridRenderer } from './d3';
 import { Tooltip } from './components/Tooltip';
 import { Header } from './components/Header';
 import { FilterStatus } from './components/FilterStatus';
+import { SEOContent } from './components/SEOContent';
 import {
   getEraFromVersion,
   eraColors,
@@ -13,7 +15,36 @@ import {
 
 type SortOrder = 'newest' | 'oldest';
 
+// Convert entity_id (e.g., "zerg-hydralisk") to URL path (e.g., "/zerg/hydralisk")
+function entityIdToPath(entityId: string): string {
+  const [race, ...rest] = entityId.split('-');
+  return `/${race}/${rest.join('-')}`;
+}
+
+// Parse URL path to get race and/or entity_id
+function parseUrlPath(pathname: string): { race: Race | null; entityId: string | null } {
+  const parts = pathname.split('/').filter(Boolean);
+  if (parts.length === 0) {
+    return { race: null, entityId: null };
+  }
+  const race = parts[0] as Race;
+  const validRaces: Race[] = ['terran', 'zerg', 'protoss', 'neutral'];
+  if (!validRaces.includes(race)) {
+    return { race: null, entityId: null };
+  }
+  if (parts.length === 1) {
+    // Race-only URL like /protoss/
+    return { race, entityId: null };
+  }
+  // Unit URL like /protoss/zealot
+  const unitParts = parts.slice(1);
+  return { race, entityId: `${race}-${unitParts.join('-')}` };
+}
+
 function App() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [units, setUnits] = useState<Map<string, Unit>>(new Map());
   const [patches, setPatches] = useState<ProcessedPatchData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -67,34 +98,37 @@ function App() {
     setTooltipPosition({ left, top, flipped: !placeOnRight });
   }, [tooltip.visible, tooltip.entity]);
 
-  // Read URL on mount
+  // Sync state with URL path (React Router handles back/forward)
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const unit = params.get('unit');
-    if (unit) setSelectedEntityId(unit);
-  }, []);
-
-  // Update URL when selection changes
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (selectedEntityId) {
-      params.set('unit', selectedEntityId);
-    } else {
-      params.delete('unit');
+    const { race, entityId } = parseUrlPath(location.pathname);
+    if (entityId !== selectedEntityId) {
+      setSelectedEntityId(entityId);
     }
-    const newUrl = params.toString() ? `?${params}` : window.location.pathname;
-    window.history.replaceState(null, '', newUrl);
-  }, [selectedEntityId]);
+    if (race !== selectedRace) {
+      setSelectedRace(race);
+    }
+  }, [location.pathname]);
 
-  // Handle browser back/forward
-  useEffect(() => {
-    const handlePopState = () => {
-      const params = new URLSearchParams(window.location.search);
-      setSelectedEntityId(params.get('unit'));
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
+  // Navigate to unit URL when selecting (instead of just setting state)
+  const handleEntitySelect = useCallback((entityId: string | null) => {
+    if (entityId) {
+      navigate(entityIdToPath(entityId));
+    } else if (selectedRace) {
+      // Keep race filter when deselecting unit
+      navigate(`/${selectedRace}/`);
+    } else {
+      navigate('/');
+    }
+  }, [navigate, selectedRace]);
+
+  // Navigate to race URL when selecting race
+  const handleRaceSelect = useCallback((race: Race | null) => {
+    if (race) {
+      navigate(`/${race}/`);
+    } else {
+      navigate('/');
+    }
+  }, [navigate]);
 
   // Handle window resize
   useEffect(() => {
@@ -175,15 +209,15 @@ function App() {
     rendererRef.current.render({
       patches: sortedAndFilteredPatches,
       selectedEntityId,
-      onEntitySelect: setSelectedEntityId,
+      onEntitySelect: handleEntitySelect,
       setTooltip,
       unitsMap: units,
       selectedRace,
       sortOrder,
       setSortOrder,
-      setSelectedRace
+      setSelectedRace: handleRaceSelect
     }, { immediate: isResize });
-  }, [sortedAndFilteredPatches, selectedEntityId, units, selectedRace, selectedEra, sortOrder, windowWidth]);
+  }, [sortedAndFilteredPatches, selectedEntityId, units, selectedRace, selectedEra, sortOrder, windowWidth, handleEntitySelect, handleRaceSelect]);
 
   if (loading) {
     return (
@@ -222,9 +256,9 @@ function App() {
             selectedEra={selectedEra}
             setSelectedEra={setSelectedEra}
             selectedEntityId={selectedEntityId}
-            setSelectedEntityId={setSelectedEntityId}
+            setSelectedEntityId={handleEntitySelect}
             selectedRace={selectedRace}
-            setSelectedRace={setSelectedRace}
+            setSelectedRace={handleRaceSelect}
             units={units}
           />
         </div>
@@ -234,6 +268,7 @@ function App() {
         <div className="patch-grid-container" style={{ width: '100%', minHeight: '100vh' }}>
           <svg
             ref={svgRef}
+            role="img"
             style={{
               background: '#0a0a0a',
               display: 'block',
@@ -242,6 +277,14 @@ function App() {
             }}
           />
         </div>
+
+        <SEOContent
+          selectedEntityId={selectedEntityId}
+          selectedRace={selectedRace}
+          units={units}
+          patches={patches}
+          filteredPatches={filteredPatches}
+        />
 
         <footer className="app-footer" style={{ '--wol-color': eraColors.wol } as React.CSSProperties}>
           <p>

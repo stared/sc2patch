@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "generate-sitemap": "node scripts/generate-sitemap.js",
+    "build": "pnpm generate-sitemap && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -15,6 +16,8 @@
     "d3-transition": "^3.0.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-helmet-async": "^2.0.5",
+    "react-router-dom": "^7.11.0",
     "zod": "^4.2.1"
   },
   "devDependencies": {
