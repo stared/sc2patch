@@ -269,7 +269,6 @@ function App() {
           <svg
             ref={svgRef}
             role="img"
-            aria-hidden="true"
             style={{
               background: '#0a0a0a',
               display: 'block',
