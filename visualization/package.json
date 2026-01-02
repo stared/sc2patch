@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "generate-sitemap": "node scripts/generate-sitemap.js",
-    "build": "pnpm generate-sitemap && tsc -b && vite build",
+    "generate-routes": "node scripts/generate-route-files.js",
+    "build": "pnpm generate-sitemap && tsc -b && vite build && pnpm generate-routes",
     "lint": "eslint .",
     "preview": "vite preview"
   },
