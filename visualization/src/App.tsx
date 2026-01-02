@@ -6,6 +6,7 @@ import { PatchGridRenderer } from './d3';
 import { Tooltip } from './components/Tooltip';
 import { Header } from './components/Header';
 import { FilterStatus } from './components/FilterStatus';
+import { SEOContent } from './components/SEOContent';
 import {
   getEraFromVersion,
   eraColors,
@@ -267,6 +268,8 @@ function App() {
         <div className="patch-grid-container" style={{ width: '100%', minHeight: '100vh' }}>
           <svg
             ref={svgRef}
+            role="img"
+            aria-hidden="true"
             style={{
               background: '#0a0a0a',
               display: 'block',
@@ -275,6 +278,14 @@ function App() {
             }}
           />
         </div>
+
+        <SEOContent
+          selectedEntityId={selectedEntityId}
+          selectedRace={selectedRace}
+          units={units}
+          patches={patches}
+          filteredPatches={filteredPatches}
+        />
 
         <footer className="app-footer" style={{ '--wol-color': eraColors.wol } as React.CSSProperties}>
           <p>

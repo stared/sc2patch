@@ -811,3 +811,17 @@ svg .wiki-link:hover {
 .app-footer a:hover {
   filter: drop-shadow(0 0 8px var(--wol-color)) brightness(1.3);
 }
+
+/* Visually hidden but accessible to screen readers and search engines */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
