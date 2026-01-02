@@ -36,7 +36,7 @@ class ParseError(Exception):
 
 # LLM response models (Field descriptions are used in LLM prompt)
 class LLMChange(BaseModel):
-    text: str = Field(description="Description of the change")
+    text: str = Field(description="Exact change text with all numeric values preserved verbatim from source")
     change_type: ChangeType = Field(description="Type: buff, nerf, or mixed")
 
 
@@ -183,6 +183,10 @@ D) VISUAL/UI CHANGES - "Who Sees It?" Rule:
    - Pure cosmetic (icons, portraits, textures) → EXCLUDE
 
 === 4. OUTPUT FORMAT ===
+
+CRITICAL: Preserve ALL numeric values EXACTLY as written in the source text.
+- WRONG: "Armor upgrade cost reduced" (missing values!)
+- RIGHT: "Armor upgrade cost reduced from 150/150, 225/225, 300/300 to 150/150, 200/200, 250/250"
 
 Return JSON in this EXACT format:
 {{

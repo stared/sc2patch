@@ -4,7 +4,7 @@
       "version": "1.0.0",
       "date": "2010-07-27",
       "url": "https://en.wikipedia.org/wiki/StarCraft_II:_Wings_of_Liberty",
-      "patch_type": "release",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-archon",
@@ -1194,7 +1194,7 @@
       "version": "2.0.0",
       "date": "2013-03-12",
       "url": "https://en.wikipedia.org/wiki/StarCraft_II:_Heart_of_the_Swarm",
-      "patch_type": "release",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-mothership_core",
@@ -1651,7 +1651,7 @@
       "version": "3.0.0",
       "date": "2015-11-10",
       "url": "https://en.wikipedia.org/wiki/StarCraft_II:_Legacy_of_the_Void",
-      "patch_type": "release",
+      "patch_type": "balance",
       "entities": [
         {
           "entity_id": "protoss-adept",
@@ -5076,7 +5076,7 @@
           "entity_id": "protoss-cybernetics_core",
           "changes": [
             {
-              "raw_text": "Air Armor upgrade cost reduced",
+              "raw_text": "Air Armor upgrade cost reduced from 150/150, 225/225, 300/300 to 100/100, 175/175, 250/250",
               "change_type": "buff"
             }
           ]
@@ -5102,7 +5102,7 @@
           "entity_id": "protoss-forge",
           "changes": [
             {
-              "raw_text": "Shield upgrade cost reduced",
+              "raw_text": "Shield upgrade cost reduced from 150/150, 225/225, 300/300 to 150/150, 200/200, 250/250",
               "change_type": "buff"
             }
           ]
@@ -5148,7 +5148,7 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "No longer has energy (Spells are now cooldown based)",
+              "raw_text": "No longer has energy (Spells are now cooldown based and require no energy to cast)",
               "change_type": "mixed"
             },
             {
@@ -5176,7 +5176,7 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "Cloak Field is no longer passive, now lasts 20 seconds with 50 second cooldown",
+              "raw_text": "Cloak Field is no longer passive. It is now an activated ability which lasts for 20 seconds, with a 50 second cooldown",
               "change_type": "nerf"
             }
           ]
@@ -5216,7 +5216,7 @@
           "entity_id": "protoss-void_ray",
           "changes": [
             {
-              "raw_text": "Move speed with Flux Vanes while Prismatic Alignment is active increased from 2.62 to 2.89",
+              "raw_text": "Fixed an issue where the move speed of Void Rays with Flux Vanes while Prismatic Alignment was active was 2.62 instead of 2.89",
               "change_type": "buff"
             }
           ]
@@ -5226,7 +5226,7 @@
           "changes": [
             {
               "raw_text": "Minimap radius increased from 0.875 to 1",
-              "change_type": "buff"
+              "change_type": "nerf"
             }
           ]
         },
@@ -5258,11 +5258,11 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "Lock On now uses the Cyclone's auto attack damage and no longer ignores armor",
+              "raw_text": "Lock On now uses the Cyclone's auto attack damage, and no longer ignores armor",
               "change_type": "mixed"
             },
             {
-              "raw_text": "Auto attack damage changed to 11 (+3 vs mechanical), cooldown 0.481",
+              "raw_text": "Auto attack damage/attack speed now 11 (+3 vs mechanical), 0.481 cooldown, +1 damage per upgrade",
               "change_type": "mixed"
             },
             {
@@ -5270,7 +5270,7 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "Lock On no longer has a delay before first shot and maintains weapon cooldown",
+              "raw_text": "Lock On no longer has a delay before first shot, and maintains weapon cooldown between lock ons",
               "change_type": "buff"
             },
             {
@@ -5294,7 +5294,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "New upgrade added increasing move speed to 4.73",
+              "raw_text": "New upgrade, increasing move speed to 4.73 (Cost: 100/100, 100 seconds, Researched at the Factory's Tech Lab)",
               "change_type": "buff"
             }
           ]
@@ -5325,12 +5325,12 @@
           "entity_id": "terran-medivac",
           "changes": [
             {
-              "raw_text": "Speed upgrade replaced with Caduceus Reactor (Increases energy regeneration rate by 100%)",
+              "raw_text": "Speed upgrade replaced with Caduceus Reactor - Increases Medivac's energy regeneration rate by 100% (Cost: 100/100/53.57 seconds, Upgraded from the Fusion Core)",
               "change_type": "mixed"
             },
             {
               "raw_text": "Minimap radius increased from 0.75 to 1",
-              "change_type": "buff"
+              "change_type": "nerf"
             }
           ]
         },
@@ -5338,7 +5338,7 @@
           "entity_id": "terran-raven",
           "changes": [
             {
-              "raw_text": "Interference Matrix now requires a research (Cost: 50/50, 57.14 seconds)",
+              "raw_text": "Interference Matrix now requires a research (Cost: 50/50, 57.14 seconds research time, Researched at the Starport's Tech Lab)",
               "change_type": "nerf"
             }
           ]
@@ -5379,7 +5379,12 @@
             {
               "raw_text": "Move speed increased from 2.24 to 2.62",
               "change_type": "buff"
-            },
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-broodling",
+          "changes": [
             {
               "raw_text": "Broodling move speed reduced from 5.37 to 4.13",
               "change_type": "nerf"
@@ -5398,7 +5403,7 @@
           "entity_id": "zerg-evolution_chamber",
           "changes": [
             {
-              "raw_text": "Armor upgrade cost reduced",
+              "raw_text": "Armor upgrade cost reduced from 150/150, 225/225, 300/300 to 150/150, 200/200, 250/250",
               "change_type": "buff"
             }
           ]
@@ -5424,7 +5429,7 @@
               "change_type": "nerf"
             },
             {
-              "raw_text": "Starting energy increased from 50 to 75",
+              "raw_text": "Infestor starting energy increased from 50 to 75",
               "change_type": "buff"
             },
             {
@@ -5462,11 +5467,19 @@
               "change_type": "buff"
             },
             {
-              "raw_text": "Transport Upgraded move speed increased from 0.9023 to 1.099",
+              "raw_text": "Transport Upgraded: Deceleration speed increased from 1.49 to 2.28",
               "change_type": "buff"
             },
             {
-              "raw_text": "Transport Upgraded move speed with Pneumatized Carapace increased from 2.62 to 2.83",
+              "raw_text": "Transport Upgraded: Generate Creep delay reduced from 1.43 to 1.07",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Transport Upgraded: Move speed increased from 0.9023 to 1.099",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Transport Upgraded: Move speed with Pneumatized Carapace increased from 2.62 to 2.83",
               "change_type": "buff"
             }
           ]
@@ -5475,7 +5488,7 @@
           "entity_id": "zerg-spire",
           "changes": [
             {
-              "raw_text": "Air Armor upgrade cost reduced",
+              "raw_text": "Air Armor upgrade cost reduced from 150/150, 225/225, 300/300 to 100/100, 175/175, 250/250",
               "change_type": "buff"
             }
           ]
@@ -6080,19 +6093,6 @@
           ]
         },
         {
-          "entity_id": "protoss-nexus",
-          "changes": [
-            {
-              "raw_text": "Energy Recharge grant has been reduced from 100 to 50 energy",
-              "change_type": "nerf"
-            },
-            {
-              "raw_text": "Energy Recharge cooldown reduced from 60 to 45 seconds",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
           "entity_id": "protoss-observer",
           "changes": [
             {
@@ -6115,6 +6115,19 @@
           ]
         },
         {
+          "entity_id": "protoss-shield_battery",
+          "changes": [
+            {
+              "raw_text": "Energy Recharge grant has been reduced from 100 to 50 energy",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Energy Recharge cooldown reduced from 60 to 45 seconds",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
           "entity_id": "terran-banshee",
           "changes": [
             {
@@ -6132,7 +6145,7 @@
             },
             {
               "raw_text": "Now has light attribute",
-              "change_type": "nerf"
+              "change_type": "mixed"
             }
           ]
         },
@@ -7144,5 +7157,5 @@
       "liquipedia_url": "https://liquipedia.net/starcraft2/Zergling"
     }
   ],
-  "generated_at": "2025-12-30T14:40:02.845935+00:00"
+  "generated_at": "2026-01-02T12:05:28.909092+00:00"
 }
