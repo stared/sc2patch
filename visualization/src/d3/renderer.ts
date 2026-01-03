@@ -231,7 +231,8 @@ export class PatchGridRenderer {
       })
       .style('--race-color', d => raceColors[d.race])
       .style('cursor', 'pointer')
-      .on('click', (_event, d) => {
+      .on('click', (event, d) => {
+        event.stopPropagation();
         if (state.selectedEntityId) {
           state.onEntitySelect(null);
         } else if (state.setSelectedRace) {
@@ -261,7 +262,8 @@ export class PatchGridRenderer {
       )
       .select('.sort-text')
       .text(state.sortOrder === 'newest' ? '↑' : '↓')
-      .on('click', () => {
+      .on('click', (event) => {
+        event.stopPropagation();
         if (state.setSortOrder) {
           state.setSortOrder(state.sortOrder === 'newest' ? 'oldest' : 'newest');
         }
@@ -284,7 +286,8 @@ export class PatchGridRenderer {
         exit => exit.transition().duration(this.t(PHASE.EXIT_DURATION)).style('opacity', 0).remove()
       )
       .attr('transform', `translate(${this.svgWidth - 20}, 16)`)
-      .on('click', () => {
+      .on('click', (event) => {
+        event.stopPropagation();
         if (state.selectedEntityId) {
           const unit = state.unitsMap.get(state.selectedEntityId);
           if (unit) window.open(unit.liquipedia_url, '_blank');
@@ -337,14 +340,14 @@ export class PatchGridRenderer {
                 .style('fill', eraColors[getEraFromVersion(d.version)])
                 .text(d.date.split('-').slice(0, 2).join('-'));
             })
-            .on('click', (_e, d) => window.open(d.url, '_blank'));
+            .on('click', (e, d) => { e.stopPropagation(); window.open(d.url, '_blank'); });
 
           label.append('text')
             .attr('class', 'patch-version')
             .attr('x', patchVersionOffsetX)
             .attr('y', patchVersionOffsetY)
             .text(d => d.version)
-            .on('click', (_e, d) => window.open(d.url, '_blank'));
+            .on('click', (e, d) => { e.stopPropagation(); window.open(d.url, '_blank'); });
 
           // Fade in after move phase
           // Named transition prevents UPDATE from cancelling this on React re-render
