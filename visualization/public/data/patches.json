@@ -1649,15 +1649,68 @@
     },
     {
       "version": "3.0.0",
-      "date": "2015-11-10",
-      "url": "https://en.wikipedia.org/wiki/StarCraft_II:_Legacy_of_the_Void",
+      "date": "2015-10-06",
+      "url": "https://liquipedia.net/starcraft2/Legacy_of_the_Void:_All_changes",
       "patch_type": "balance",
       "entities": [
+        {
+          "entity_id": "neutral-mineral_field",
+          "changes": [
+            {
+              "raw_text": "Mineral count on 4 of 8 Mineral Fields per base decreased from 1500 to 900",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "neutral-rocks",
+          "changes": [
+            {
+              "raw_text": "Added Minimap icons for destructible rocks and destructible towers",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "neutral-vespene_geyser",
+          "changes": [
+            {
+              "raw_text": "Gas count on Geysers decreased from 2500 to 2000",
+              "change_type": "nerf"
+            }
+          ]
+        },
         {
           "entity_id": "protoss-adept",
           "changes": [
             {
               "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-carrier",
+          "changes": [
+            {
+              "raw_text": "Health decreased from 300 to 250",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Release Interceptors ability added",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-colossus",
+          "changes": [
+            {
+              "raw_text": "Base damage reduced from 15(+2) to 12(+1)",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Attack speed increased by 10%",
               "change_type": "buff"
             }
           ]
@@ -1672,10 +1725,216 @@
           ]
         },
         {
+          "entity_id": "protoss-gateway",
+          "changes": [
+            {
+              "raw_text": "Warping in units at a Pylon increased to 16 seconds, up from 5",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Warping in units at a Pylon that is near a Warp Gate or a Nexus will take 5 seconds",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-immortal",
+          "changes": [
+            {
+              "raw_text": "Hardened Shield removed",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Turret tracking added",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Barrier ability added",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-mothership",
+          "changes": [
+            {
+              "raw_text": "Time Warp maximum radius increased from 3.5 to 8",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Mass Recall energy cost reduced from 100 to 50",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Movement speed increased from 1.41 to 1.88",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-mothership_core",
+          "changes": [
+            {
+              "raw_text": "Time Warp maximum radius increased from 3.5 to 8",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Mass Recall energy cost reduced from 100 to 50",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Photon Overcharge energy cost reduced from 100 to 50",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Photon Overcharge now targets Pylons instead of Nexi",
+              "change_type": "mixed"
+            },
+            {
+              "raw_text": "Photon Overcharge range reduced from 13 to 7",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Photon Overcharge duration reduced from 60 seconds to 14 seconds",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Photon Overcharge damage increased from 20 to 30",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-nexus",
+          "changes": [
+            {
+              "raw_text": "Supply contribution increased from 10 to 15",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Chrono Boost Energy Cost removed",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Chrono Boost is now permanently channeled onto a target",
+              "change_type": "mixed"
+            },
+            {
+              "raw_text": "Chrono Boost speed increase reduced from 50% to 15%",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-oracle",
+          "changes": [
+            {
+              "raw_text": "Envision removed",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Revelation now tags cloaked and burrowed units",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Revelation energy cost reduced from 75 to 50",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Revelation cast range increased from 9 to 12",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Stasis Ward ability added",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-probe",
+          "changes": [
+            {
+              "raw_text": "Starting worker count increased from 6 to 12",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-warp_prism",
+          "changes": [
+            {
+              "raw_text": "Pick up range increased to 7",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "protoss-zealot",
+          "changes": [
+            {
+              "raw_text": "Charge deals 8 damage on hit",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-armory",
+          "changes": [
+            {
+              "raw_text": "Vehicle and Ship Weapons upgrades separated",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-banshee",
+          "changes": [
+            {
+              "raw_text": "Hyperflight Rotors upgrade added",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-battlecruiser",
+          "changes": [
+            {
+              "raw_text": "Tactical Jump ability added",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-command_center",
+          "changes": [
+            {
+              "raw_text": "Supply contribution increased from 11 to 15",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
           "entity_id": "terran-cyclone",
           "changes": [
             {
               "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-ghost",
+          "changes": [
+            {
+              "raw_text": "Movement speed increased from 2.25 to 2.81",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Snipe removed",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Steady Targeting ability added",
               "change_type": "buff"
             }
           ]
@@ -1690,6 +1949,180 @@
           ]
         },
         {
+          "entity_id": "terran-marauder",
+          "changes": [
+            {
+              "raw_text": "Now attacks twice for half the damage",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-medivac",
+          "changes": [
+            {
+              "raw_text": "Caduceus Reactor upgrade removed",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "High Capacity Fuel Tanks upgrade added",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-orbital_command",
+          "changes": [
+            {
+              "raw_text": "MULE harvest amount decreased from 30 to 25",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-raven",
+          "changes": [
+            {
+              "raw_text": "Movement speed increased from 2.25 to 2.75",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Durable Materials upgrade removed",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Auto Turret damage increased from 8 to 16",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Auto Turret duration decreased from 160 seconds to 10 seconds",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Seeker Missile cost increased from 75 energy to 125 energy",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Explosive Shrapnel Shells upgrade added",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-reaper",
+          "changes": [
+            {
+              "raw_text": "KD8 Charge ability added",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-scv",
+          "changes": [
+            {
+              "raw_text": "Starting worker count increased from 6 to 12",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-siege_tank",
+          "changes": [
+            {
+              "raw_text": "Can now be loaded into Medivacs in Siege Mode",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Turret tracking added in Tank Mode",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-thor",
+          "changes": [
+            {
+              "raw_text": "High Impact Payload air damage increased from 24 (+2) to 35 (+3)",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "High Impact Payload bonus damage vs armored air +15 (+2) added",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-brood_lord",
+          "changes": [
+            {
+              "raw_text": "Frenzied passive ability removed",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Attack range increased from 9.5 to 11",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-corruptor",
+          "changes": [
+            {
+              "raw_text": "Corruption removed",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Caustic Spray ability added",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-drone",
+          "changes": [
+            {
+              "raw_text": "Starting worker count increased from 6 to 12",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-hatchery",
+          "changes": [
+            {
+              "raw_text": "Supply contribution increased from 2 to 6",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-hydralisk",
+          "changes": [
+            {
+              "raw_text": "Morph to Lurker added",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Grooved Spines upgrade removed",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Muscular Augments now provides +1 range",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-infestor",
+          "changes": [
+            {
+              "raw_text": "Neural Parasite cast range increased from 7 to 9",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
           "entity_id": "zerg-lurker",
           "changes": [
             {
@@ -1699,10 +2132,111 @@
           ]
         },
         {
+          "entity_id": "zerg-nydus_worm",
+          "changes": [
+            {
+              "raw_text": "Invulnerable while unburrowing",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-overlord",
+          "changes": [
+            {
+              "raw_text": "Ventral Sacs upgrade removed",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Mutate Ventral Sacs ability added",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-queen",
+          "changes": [
+            {
+              "raw_text": "Air attack range increased from 7 to 8",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Spawn Larva larva count reduced from 4 to 3",
+              "change_type": "nerf"
+            },
+            {
+              "raw_text": "Spawn Larva can be queued multiple times",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
           "entity_id": "zerg-ravager",
           "changes": [
             {
               "raw_text": "Unit introduced",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-roach",
+          "changes": [
+            {
+              "raw_text": "Glial Reconstitution now increases burrow move speed from 1.4 to ~2.25",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-spore_crawler",
+          "changes": [
+            {
+              "raw_text": "Damage decreased from 15(+45 vs. Biological) to 15(+15 vs. Biological)",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-swarm_host",
+          "changes": [
+            {
+              "raw_text": "Cost changed from 100 Minerals, 200 Gas, 4 Supply to 150 Minerals, 100 Gas, 3 Supply",
+              "change_type": "mixed"
+            },
+            {
+              "raw_text": "Locusts no longer require research to fly",
+              "change_type": "buff"
+            },
+            {
+              "raw_text": "Locust health decreased from 65 to 50",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-ultralisk",
+          "changes": [
+            {
+              "raw_text": "Chitinous Plating bonus armor increased from +2 to +4",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-viper",
+          "changes": [
+            {
+              "raw_text": "Parasitic Bomb ability added",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-zergling",
+          "changes": [
+            {
+              "raw_text": "Adrenal Glands attack speed bonus increased from 18.6% to 40%",
               "change_type": "buff"
             }
           ]
@@ -3595,19 +4129,6 @@
           ]
         },
         {
-          "entity_id": "zerg-all_units",
-          "changes": [
-            {
-              "raw_text": "Burrow and Unburrow have been separated into two separate buttons",
-              "change_type": "buff"
-            },
-            {
-              "raw_text": "Burrowed and Unburrowed Zerg unit types will now be on the same tab-select",
-              "change_type": "buff"
-            }
-          ]
-        },
-        {
           "entity_id": "zerg-hydralisk",
           "changes": [
             {
@@ -5379,12 +5900,7 @@
             {
               "raw_text": "Move speed increased from 2.24 to 2.62",
               "change_type": "buff"
-            }
-          ]
-        },
-        {
-          "entity_id": "zerg-broodling",
-          "changes": [
+            },
             {
               "raw_text": "Broodling move speed reduced from 5.37 to 4.13",
               "change_type": "nerf"
@@ -6317,13 +6833,6 @@
       "liquipedia_url": "https://liquipedia.net/starcraft2/Adept"
     },
     {
-      "id": "protoss-all_units",
-      "name": "All Units",
-      "race": "protoss",
-      "type": "mechanic",
-      "liquipedia_url": "https://liquipedia.net/starcraft2/Protoss_Units_(Legacy_of_the_Void)"
-    },
-    {
       "id": "protoss-archon",
       "name": "Archon",
       "race": "protoss",
@@ -6562,13 +7071,6 @@
       "liquipedia_url": "https://liquipedia.net/starcraft2/Zealot"
     },
     {
-      "id": "terran-all_units",
-      "name": "All Units",
-      "race": "terran",
-      "type": "mechanic",
-      "liquipedia_url": "https://liquipedia.net/starcraft2/Terran_Units_(Legacy_of_the_Void)"
-    },
-    {
       "id": "terran-armory",
       "name": "Armory",
       "race": "terran",
@@ -6730,13 +7232,6 @@
       "liquipedia_url": "https://liquipedia.net/starcraft2/Moebius_Reactor"
     },
     {
-      "id": "terran-mule",
-      "name": "M.U.L.E.",
-      "race": "terran",
-      "type": "mechanic",
-      "liquipedia_url": "https://liquipedia.net/starcraft2/M.U.L.E."
-    },
-    {
       "id": "terran-orbital_command",
       "name": "Orbital Command",
       "race": "terran",
@@ -6856,20 +7351,6 @@
       "liquipedia_url": "https://liquipedia.net/starcraft2/Widow_Mine"
     },
     {
-      "id": "unknown",
-      "name": "Unknown Entity",
-      "race": "neutral",
-      "type": "mechanic",
-      "liquipedia_url": "https://liquipedia.net/starcraft2/Main_Page"
-    },
-    {
-      "id": "zerg-all_units",
-      "name": "All Units",
-      "race": "zerg",
-      "type": "mechanic",
-      "liquipedia_url": "https://liquipedia.net/starcraft2/Zerg_Units_(Legacy_of_the_Void)"
-    },
-    {
       "id": "zerg-baneling",
       "name": "Baneling",
       "race": "zerg",
@@ -6891,13 +7372,6 @@
       "liquipedia_url": "https://liquipedia.net/starcraft2/Brood_Lord"
     },
     {
-      "id": "zerg-broodling",
-      "name": "Broodling",
-      "race": "zerg",
-      "type": "mechanic",
-      "liquipedia_url": "https://liquipedia.net/starcraft2/Broodling"
-    },
-    {
       "id": "zerg-corruptor",
       "name": "Corruptor",
       "race": "zerg",
@@ -6912,13 +7386,6 @@
       "liquipedia_url": "https://liquipedia.net/starcraft2/Drone"
     },
     {
-      "id": "zerg-enduring_locusts",
-      "name": "Enduring Locusts",
-      "race": "zerg",
-      "type": "upgrade",
-      "liquipedia_url": "https://liquipedia.net/starcraft2/Enduring_Locusts"
-    },
-    {
       "id": "zerg-evolution_chamber",
       "name": "Evolution Chamber",
       "race": "zerg",
@@ -6931,13 +7398,6 @@
       "race": "zerg",
       "type": "building",
       "liquipedia_url": "https://liquipedia.net/starcraft2/Extractor"
-    },
-    {
-      "id": "zerg-flying_locusts",
-      "name": "Flying Locusts",
-      "race": "zerg",
-      "type": "upgrade",
-      "liquipedia_url": "https://liquipedia.net/starcraft2/SCUpgrade/Flying_Locusts"
     },
     {
       "id": "zerg-greater_spire",
@@ -6994,13 +7454,6 @@
       "race": "zerg",
       "type": "building",
       "liquipedia_url": "https://liquipedia.net/starcraft2/Lair"
-    },
-    {
-      "id": "zerg-locust",
-      "name": "Locust",
-      "race": "zerg",
-      "type": "mechanic",
-      "liquipedia_url": "https://liquipedia.net/starcraft2/Locust"
     },
     {
       "id": "zerg-lurker",
@@ -7087,13 +7540,6 @@
       "liquipedia_url": "https://liquipedia.net/starcraft2/Roach_Warren"
     },
     {
-      "id": "zerg-spawn_locusts",
-      "name": "Spawn Locusts",
-      "race": "zerg",
-      "type": "ability",
-      "liquipedia_url": "https://liquipedia.net/starcraft2/SCAbility/Spawn_Locusts"
-    },
-    {
       "id": "zerg-spawning_pool",
       "name": "Spawning Pool",
       "race": "zerg",
@@ -7157,5 +7603,5 @@
       "liquipedia_url": "https://liquipedia.net/starcraft2/Zergling"
     }
   ],
-  "generated_at": "2026-01-02T12:05:28.909092+00:00"
+  "generated_at": "2026-01-03T18:28:07.959969+00:00"
 }

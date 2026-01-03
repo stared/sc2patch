@@ -84,13 +84,6 @@
     "liquipedia_url": "https://liquipedia.net/starcraft2/Adept"
   },
   {
-    "id": "protoss-all_units",
-    "name": "All Units",
-    "race": "protoss",
-    "type": "mechanic",
-    "liquipedia_url": "https://liquipedia.net/starcraft2/Protoss_Units_(Legacy_of_the_Void)"
-  },
-  {
     "id": "protoss-archon",
     "name": "Archon",
     "race": "protoss",
@@ -329,13 +322,6 @@
     "liquipedia_url": "https://liquipedia.net/starcraft2/Zealot"
   },
   {
-    "id": "terran-all_units",
-    "name": "All Units",
-    "race": "terran",
-    "type": "mechanic",
-    "liquipedia_url": "https://liquipedia.net/starcraft2/Terran_Units_(Legacy_of_the_Void)"
-  },
-  {
     "id": "terran-armory",
     "name": "Armory",
     "race": "terran",
@@ -497,13 +483,6 @@
     "liquipedia_url": "https://liquipedia.net/starcraft2/Moebius_Reactor"
   },
   {
-    "id": "terran-mule",
-    "name": "M.U.L.E.",
-    "race": "terran",
-    "type": "mechanic",
-    "liquipedia_url": "https://liquipedia.net/starcraft2/M.U.L.E."
-  },
-  {
     "id": "terran-orbital_command",
     "name": "Orbital Command",
     "race": "terran",
@@ -623,20 +602,6 @@
     "liquipedia_url": "https://liquipedia.net/starcraft2/Widow_Mine"
   },
   {
-    "id": "unknown",
-    "name": "Unknown Entity",
-    "race": "neutral",
-    "type": "mechanic",
-    "liquipedia_url": "https://liquipedia.net/starcraft2/Main_Page"
-  },
-  {
-    "id": "zerg-all_units",
-    "name": "All Units",
-    "race": "zerg",
-    "type": "mechanic",
-    "liquipedia_url": "https://liquipedia.net/starcraft2/Zerg_Units_(Legacy_of_the_Void)"
-  },
-  {
     "id": "zerg-baneling",
     "name": "Baneling",
     "race": "zerg",
@@ -658,13 +623,6 @@
     "liquipedia_url": "https://liquipedia.net/starcraft2/Brood_Lord"
   },
   {
-    "id": "zerg-broodling",
-    "name": "Broodling",
-    "race": "zerg",
-    "type": "mechanic",
-    "liquipedia_url": "https://liquipedia.net/starcraft2/Broodling"
-  },
-  {
     "id": "zerg-corruptor",
     "name": "Corruptor",
     "race": "zerg",
@@ -679,13 +637,6 @@
     "liquipedia_url": "https://liquipedia.net/starcraft2/Drone"
   },
   {
-    "id": "zerg-enduring_locusts",
-    "name": "Enduring Locusts",
-    "race": "zerg",
-    "type": "upgrade",
-    "liquipedia_url": "https://liquipedia.net/starcraft2/Enduring_Locusts"
-  },
-  {
     "id": "zerg-evolution_chamber",
     "name": "Evolution Chamber",
     "race": "zerg",
@@ -698,13 +649,6 @@
     "race": "zerg",
     "type": "building",
     "liquipedia_url": "https://liquipedia.net/starcraft2/Extractor"
-  },
-  {
-    "id": "zerg-flying_locusts",
-    "name": "Flying Locusts",
-    "race": "zerg",
-    "type": "upgrade",
-    "liquipedia_url": "https://liquipedia.net/starcraft2/SCUpgrade/Flying_Locusts"
   },
   {
     "id": "zerg-greater_spire",
@@ -761,13 +705,6 @@
     "race": "zerg",
     "type": "building",
     "liquipedia_url": "https://liquipedia.net/starcraft2/Lair"
-  },
-  {
-    "id": "zerg-locust",
-    "name": "Locust",
-    "race": "zerg",
-    "type": "mechanic",
-    "liquipedia_url": "https://liquipedia.net/starcraft2/Locust"
   },
   {
     "id": "zerg-lurker",
@@ -852,13 +789,6 @@
     "race": "zerg",
     "type": "building",
     "liquipedia_url": "https://liquipedia.net/starcraft2/Roach_Warren"
-  },
-  {
-    "id": "zerg-spawn_locusts",
-    "name": "Spawn Locusts",
-    "race": "zerg",
-    "type": "ability",
-    "liquipedia_url": "https://liquipedia.net/starcraft2/SCAbility/Spawn_Locusts"
   },
   {
     "id": "zerg-spawning_pool",

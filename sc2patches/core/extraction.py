@@ -98,9 +98,11 @@ def extract_date_from_jsonld(html: str) -> str | None:
 
 
 def extract_body_html(html: str) -> str:
-    """Extract article body HTML from Blizzard patch notes.
+    """Extract article body HTML from patch notes page.
 
-    All Blizzard patch notes use section.blog for content.
+    Supports:
+    - Blizzard News: section.blog
+    - Liquipedia: div.mw-parser-output (cleaned of navigation elements)
 
     Args:
         html: Full HTML content
@@ -109,12 +111,25 @@ def extract_body_html(html: str) -> str:
         Article body as HTML string
 
     Raises:
-        ExtractionError: If section.blog not found
+        ExtractionError: If no supported content container found
     """
     soup = BeautifulSoup(html, "html.parser")
+
+    # Try Blizzard News format first
     blog_section = soup.find("section", class_="blog")
+    if blog_section:
+        return str(blog_section)
 
-    if not blog_section:
-        raise ExtractionError("No section.blog found in HTML")
+    # Try Liquipedia format
+    wiki_content = soup.find("div", class_="mw-parser-output")
+    if wiki_content:
+        # Clean Liquipedia content - remove non-content elements
+        for element in wiki_content.find_all(["script", "style", "nav"]):
+            element.decompose()
+        for element in wiki_content.find_all(class_=["mw-editsection", "navbox", "toc", "noprint"]):
+            element.decompose()
+        for element in wiki_content.find_all("table", class_="infobox"):
+            element.decompose()
+        return str(wiki_content)
 
-    return str(blog_section)
+    raise ExtractionError("No section.blog or div.mw-parser-output found in HTML")

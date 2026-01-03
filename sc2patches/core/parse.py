@@ -2,6 +2,7 @@
 
 import json
 from pathlib import Path
+from typing import Literal
 
 import httpx
 from bs4 import BeautifulSoup
@@ -14,19 +15,22 @@ from sc2patches.core.models import ChangeType, ParsedChange, ParsedPatch, Race
 # Path to units database
 UNITS_JSON_PATH = Path(__file__).parent.parent.parent / "data" / "units.json"
 
+# Load valid entity IDs at module load time
+with UNITS_JSON_PATH.open() as _f:
+    _UNITS = json.load(_f)
+    _VALID_IDS = tuple(sorted(u["id"] for u in _UNITS))
+
+# Create Literal type from valid IDs
+EntityId = Literal[_VALID_IDS]  # type: ignore[valid-type]
+
 
 def load_valid_entity_ids() -> dict[str, list[str]]:
     """Load valid entity_ids from units.json, grouped by race."""
-    with UNITS_JSON_PATH.open() as f:
-        units = json.load(f)
-
     by_race: dict[str, list[str]] = {"terran": [], "zerg": [], "protoss": [], "neutral": []}
-    for unit in units:
+    for unit in _UNITS:
         by_race[unit["race"]].append(unit["id"])
-
     for _race, ids in by_race.items():
         ids.sort()
-
     return by_race
 
 
@@ -41,7 +45,7 @@ class LLMChange(BaseModel):
 
 
 class LLMEntityChanges(BaseModel):
-    entity_id: str = Field(description="Entity ID: race-unit_name (e.g., 'terran-marine')")
+    entity_id: EntityId = Field(description="Entity ID: race-unit_name (e.g., 'terran-marine')")
     entity_name: str = Field(description="Display name (e.g., 'Marine')")
     race: Race = Field(description="Race: terran, protoss, zerg, or neutral")
     changes: list[LLMChange] = Field(description="List of changes with classification")
@@ -231,7 +235,7 @@ Return ONLY valid JSON matching the example format. Include ALL required fields.
                     {"role": "user", "content": user_prompt},
                 ],
                 "temperature": 0.1,
-                "max_tokens": 16000,
+                "max_tokens": 32000,
                 "response_format": {"type": "json_object"},
             },
             timeout=180,

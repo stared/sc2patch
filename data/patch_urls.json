@@ -149,6 +149,13 @@
     "liquipedia": "https://liquipedia.net/starcraft2/Patch_3.1.1"
   },
   {
+    "version": "3.0.0",
+    "url": "https://liquipedia.net/starcraft2/Legacy_of_the_Void:_All_changes",
+    "liquipedia": "https://liquipedia.net/starcraft2/Legacy_of_the_Void:_All_changes",
+    "note": "LotV expansion release - no Blizzard patch notes exist. Using Liquipedia.",
+    "parse_hint": "This is Legacy of the Void EXPANSION release. For NEW UNITS (Adept, Disruptor, Ravager, Lurker, Cyclone, Liberator), use raw_text 'Unit introduced'. Include economy changes (workers, minerals, gas, supply)."
+  },
+  {
     "version": "2.1.9",
     "url": "https://news.blizzard.com/en-us/starcraft2/18446033/starcraft-ii-2-1-9-patch-notes",
     "additional_urls": [
