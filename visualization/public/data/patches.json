@@ -6745,6 +6745,50 @@
           ]
         }
       ]
+    },
+    {
+      "version": "5.0.15 HF",
+      "date": "2025-10-08",
+      "url": "https://news.blizzard.com/en-us/article/24240447/starcraft-ii-5-0-15-hotfix-patch-notes",
+      "patch_type": "balance",
+      "entities": [
+        {
+          "entity_id": "protoss-high_templar",
+          "changes": [
+            {
+              "raw_text": "Psionic Storm damage was reduced from 140 to 110 over 6 seconds (23.3 DPS > 18.3 DPS)",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "terran-ghost",
+          "changes": [
+            {
+              "raw_text": "HP increased from 100 to 125",
+              "change_type": "buff"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-brood_lord",
+          "changes": [
+            {
+              "raw_text": "Speed reduced from 2.62 to 2.24",
+              "change_type": "nerf"
+            }
+          ]
+        },
+        {
+          "entity_id": "zerg-viper",
+          "changes": [
+            {
+              "raw_text": "Consume ability will now stop when the building is no lower than 7.5 HP",
+              "change_type": "buff"
+            }
+          ]
+        }
+      ]
     }
   ],
   "units": [
@@ -7603,5 +7647,5 @@
       "liquipedia_url": "https://liquipedia.net/starcraft2/Zergling"
     }
   ],
-  "generated_at": "2026-01-03T18:28:07.959969+00:00"
+  "generated_at": "2026-01-03T18:54:20.892885+00:00"
 }
