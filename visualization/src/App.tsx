@@ -109,17 +109,25 @@ function App() {
     }
   }, [location.pathname]);
 
+  // Track race filter state before unit selection (for proper deselection)
+  const [raceBeforeUnitSelect, setRaceBeforeUnitSelect] = useState<Race | null>(null);
+
   // Navigate to unit URL when selecting (instead of just setting state)
   const handleEntitySelect = useCallback((entityId: string | null) => {
     if (entityId) {
+      // Remember current race filter before selecting unit
+      setRaceBeforeUnitSelect(selectedRace);
       navigate(entityIdToPath(entityId));
-    } else if (selectedRace) {
-      // Keep race filter when deselecting unit
-      navigate(`/${selectedRace}/`);
     } else {
-      navigate('/');
+      // Deselect: go back to previous race state
+      if (raceBeforeUnitSelect) {
+        navigate(`/${raceBeforeUnitSelect}/`);
+      } else {
+        navigate('/');
+      }
+      setRaceBeforeUnitSelect(null);
     }
-  }, [navigate, selectedRace]);
+  }, [navigate, selectedRace, raceBeforeUnitSelect]);
 
   // Navigate to race URL when selecting race
   const handleRaceSelect = useCallback((race: Race | null) => {

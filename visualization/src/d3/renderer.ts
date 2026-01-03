@@ -87,6 +87,13 @@ export class PatchGridRenderer {
     // Update SVG dimensions
     this.svg.attr('width', this.svgWidth).attr('height', layoutResult.svgHeight);
 
+    // SVG background click to deselect
+    this.svg.on('click', () => {
+      if (state.selectedEntityId) {
+        state.onEntitySelect(null);
+      }
+    });
+
     // Scroll to focus if needed
     if (layoutResult.focusTargetY !== null) {
       this.scrollToTargetPosition(layoutResult.focusTargetY);
