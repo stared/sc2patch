@@ -11,6 +11,7 @@
 
 import { ProcessedPatchData, Change, ProcessedEntity, Race, Unit } from '../types';
 import type { LayoutConfig } from '../utils/uxSettings';
+import { wrapText } from '../utils/textMeasurement';
 
 // Types
 
@@ -42,12 +43,17 @@ export interface EntityLayout {
   y: number;
 }
 
+/** Change with pre-calculated wrapped lines for rendering */
+export interface WrappedChange extends Change {
+  lines: string[];
+}
+
 /** Change note layout data */
 export interface ChangeLayout {
   id: string;
   x: number;
   y: number;
-  changes: Change[];
+  changes: WrappedChange[];
 }
 
 /** Complete layout result */
@@ -104,6 +110,21 @@ export function createLayoutEngine(
   const MOBILE_LABEL_HEIGHT = 24; // Height for date+version label row
   const MOBILE_ROW_GAP = 6;       // Small gap between patch rows
   const MOBILE_CHANGE_GAP = 10;   // Gap between icon and change notes text
+
+  // Text wrapping constants
+  const TEXT_RIGHT_PADDING = 16;  // Right edge padding
+  const TEXT_FONT = '13px Inter, sans-serif';  // Must match .change-note in CSS
+  const INDICATOR_WIDTH = 14;     // Width of "+/- " indicator
+
+  // Cache for wrapped changes (shared between calculatePatchRows and calculateChangesLayout)
+  const wrappedChangesCache = new Map<string, WrappedChange[]>();
+
+  /** Get X position where change note text starts */
+  function getChangeTextX(isMobile: boolean): number {
+    return isMobile
+      ? MOBILE_MARGIN + layout.cellSize + MOBILE_CHANGE_GAP
+      : layout.patchLabelWidth + layout.changeNoteOffsetX;
+  }
 
   /** Calculate mobile grid metrics - shared by headers and entities */
   function calculateMobileGridMetrics(svgWidth: number, raceCount: number) {
@@ -185,8 +206,11 @@ export function createLayoutEngine(
 
   // Patch row layout
 
-  function calculatePatchRows(input: LayoutInput, columnWidth: number, isMobile: boolean): PatchRowLayout[] {
+  function calculatePatchRows(input: LayoutInput, columnWidth: number, isMobile: boolean, svgWidth: number): PatchRowLayout[] {
     const cellsPerRow = getCellsPerRow(columnWidth);
+
+    // Clear cache at start of each layout calculation
+    wrappedChangesCache.clear();
 
     // Filter patches to only those that are visible
     const visiblePatches = input.selectedEntityId
@@ -199,10 +223,28 @@ export function createLayoutEngine(
       let height: number;
 
       if (input.selectedEntityId) {
-        // Focus mode: height based on change notes
+        // Focus mode: height based on change notes with text wrapping
         const entity = patch.entities.get(input.selectedEntityId);
-        const changeCount = entity?.changes?.length || 0;
-        const changeNotesHeight = changeCount * layout.changeNoteLineHeight;
+        const rawChanges = entity?.changes || [];
+
+        // Available width = viewport - textStart - rightPadding - indicatorWidth
+        const textStartX = getChangeTextX(isMobile);
+        const availableWidth = svgWidth - textStartX - TEXT_RIGHT_PADDING - INDICATOR_WIDTH;
+
+        // Pre-calculate wrapped lines for each change
+        const wrappedChanges: WrappedChange[] = rawChanges.map(change => ({
+          ...change,
+          lines: wrapText(change.raw_text, availableWidth, TEXT_FONT)
+        }));
+
+        // Store in cache for calculateChangesLayout
+        const cacheKey = `${input.selectedEntityId}-${patch.version}`;
+        wrappedChangesCache.set(cacheKey, wrappedChanges);
+
+        // Calculate total lines across all changes
+        const totalLines = wrappedChanges.reduce((sum, c) => sum + c.lines.length, 0);
+        const changeNotesHeight = totalLines * layout.changeNoteLineHeight;
+
         height = layout.cellSize + changeNotesHeight + layout.changeNotePadding;
         if (isMobile) height += MOBILE_LABEL_HEIGHT;
       } else {
@@ -345,22 +387,21 @@ export function createLayoutEngine(
     return rows
       .filter(row => row.patch.entities.has(selectedEntityId))
       .map(row => {
-        const entity = row.patch.entities.get(selectedEntityId)!;
-        // Mobile: text starts right after icon with small gap
-        // Desktop: text at fixed offset from patch label
-        const x = isMobile
-          ? MOBILE_MARGIN + layout.cellSize + MOBILE_CHANGE_GAP
-          : layout.patchLabelWidth + layout.changeNoteOffsetX;
+        // Retrieve pre-calculated wrapped changes from cache
+        const cacheKey = `${selectedEntityId}-${row.version}`;
+        const wrappedChanges = wrappedChangesCache.get(cacheKey) || [];
+
+        const x = getChangeTextX(isMobile);
         // Mobile: slightly below icon top (icon starts at MOBILE_LABEL_HEIGHT)
         // Desktop: small offset from row
         const y = isMobile
           ? row.y + MOBILE_LABEL_HEIGHT + 10  // ~0.25em more down from icon top
           : row.y + 10;
         return {
-          id: `${selectedEntityId}-${row.version}`,
+          id: cacheKey,
           x,
           y,
-          changes: entity.changes || []
+          changes: wrappedChanges
         };
       });
   }
@@ -381,8 +422,8 @@ export function createLayoutEngine(
     // Calculate column width based on mode
     const columnWidth = getColumnWidth(svgWidth, isFocusMode || input.selectedRace !== null);
 
-    // Calculate visible patch rows
-    const patchRows = calculatePatchRows(input, columnWidth, isMobile);
+    // Calculate visible patch rows (also pre-calculates wrapped text and caches it)
+    const patchRows = calculatePatchRows(input, columnWidth, isMobile, svgWidth);
 
     // Calculate visible entities
     const entities = calculateEntityPositions(input, patchRows, columnWidth, svgWidth, isMobile);

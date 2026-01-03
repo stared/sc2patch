@@ -1,13 +1,14 @@
 import { select, type Selection } from 'd3-selection';
 import { transition } from 'd3-transition';
 import { easeCubicInOut } from 'd3-ease';
-import { ProcessedPatchData, Change, Race, Unit, EntityWithPosition } from '../types';
+import { ProcessedPatchData, Race, Unit, EntityWithPosition } from '../types';
 import { layout, timing, raceColors, eraColors, getChangeIndicator, getChangeColor, getEraFromVersion, getLayoutConfig, MOBILE_BREAKPOINT, type ChangeType, type LayoutConfig } from '../utils/uxSettings';
 import {
   createLayoutEngine,
   type EntityLayout,
   type PatchRowLayout,
   type ChangeLayout,
+  type WrappedChange,
   type LayoutResult,
   type LayoutInput,
   type HeaderLayout
@@ -522,17 +523,36 @@ export class PatchGridRenderer {
 
           cg.each(function(d) {
             const group = select(this);
-            d.changes.forEach((change: Change, i: number) => {
-              const text = group.append('text')
+            let currentY = 0;
+            const lineHeight = layout.changeNoteLineHeight;
+            const indentX = 14; // Hanging indent for wrapped lines (matches indicator width)
+
+            d.changes.forEach((change: WrappedChange) => {
+              const textElement = group.append('text')
                 .attr('class', 'change-note')
-                .attr('x', 0).attr('y', i * 18);
+                .attr('y', currentY);
 
-              text.append('tspan')
-                .attr('class', 'change-indicator')
-                .style('fill', getChangeColor(change.change_type as ChangeType))
-                .text(getChangeIndicator(change.change_type as ChangeType));
+              change.lines.forEach((line, lineIndex) => {
+                if (lineIndex === 0) {
+                  // First line: indicator + text at x=0
+                  textElement.append('tspan')
+                    .attr('class', 'change-indicator')
+                    .style('fill', getChangeColor(change.change_type as ChangeType))
+                    .text(getChangeIndicator(change.change_type as ChangeType));
 
-              text.append('tspan').text(change.raw_text);
+                  textElement.append('tspan')
+                    .text(line);
+                } else {
+                  // Wrapped lines: indented, below previous
+                  textElement.append('tspan')
+                    .attr('x', indentX)
+                    .attr('dy', lineHeight)
+                    .text(line);
+                }
+              });
+
+              // Move Y position for next change block
+              currentY += change.lines.length * lineHeight;
             });
           });
 
