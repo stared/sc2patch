@@ -232,8 +232,8 @@ export class PatchGridRenderer {
         }
       });
 
-    // Liquipedia link
-    this.renderUnitLink(headersContainer, state);
+    // Liquipedia link - render directly on svg for correct positioning
+    this.renderUnitLink(this.svg as unknown as Selection<SVGGElement, unknown, null, undefined>, state);
   }
 
   private renderSortControl(container: Selection<SVGGElement, unknown, null, undefined>, state: RenderState, isMobile: boolean): void {
@@ -263,28 +263,36 @@ export class PatchGridRenderer {
 
   private renderUnitLink(container: Selection<SVGGElement, unknown, null, undefined>, state: RenderState): void {
     const linksData = state.selectedEntityId ? [state.selectedEntityId] : [];
-    container.selectAll<SVGTextElement, string>('.unit-links')
+    const groups = container.selectAll<SVGGElement, string>('.unit-links')
       .data(linksData)
       .join(
-        enter => enter.append('text')
-          .attr('class', 'unit-links wiki-link')
-          .style('opacity', 0)
-          .call(e => e.transition('enter').delay(this.t(PHASE.ENTER_DELAY + PHASE.ENTER_DURATION)).duration(this.t(PHASE.ENTER_DURATION)).style('opacity', 1)),
+        enter => {
+          const g = enter.append('g')
+            .attr('class', 'unit-links wiki-link');
+          g.append('text').attr('class', 'unit-link-name');
+          g.append('text').attr('class', 'unit-link-source').attr('dy', '1.2em');
+          return g;
+        },
         update => update,
         exit => exit.transition().duration(this.t(PHASE.EXIT_DURATION)).style('opacity', 0).remove()
       )
-      .attr('x', this.svgWidth - 20).attr('y', 16)
-      .text(() => {
-        if (!state.selectedEntityId) return '';
-        const unit = state.unitsMap.get(state.selectedEntityId);
-        return unit ? `more on ${unit.name}` : '';
-      })
+      .attr('transform', `translate(${this.svgWidth - 20}, 16)`)
       .on('click', () => {
         if (state.selectedEntityId) {
           const unit = state.unitsMap.get(state.selectedEntityId);
           if (unit) window.open(unit.liquipedia_url, '_blank');
         }
       });
+
+    groups.select<SVGTextElement>('.unit-link-name')
+      .text(() => {
+        if (!state.selectedEntityId) return '';
+        const unit = state.unitsMap.get(state.selectedEntityId);
+        return unit ? `more on ${unit.name}` : '';
+      });
+
+    groups.select<SVGTextElement>('.unit-link-source')
+      .text(state.selectedEntityId ? 'on Liquipedia' : '');
   }
 
   private renderPatches(layoutResult: LayoutResult, _state: RenderState, currentLayout: LayoutConfig): void {

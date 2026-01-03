@@ -723,10 +723,10 @@ svg .sort-text {
 }
 
 /* Wiki links */
-svg .unit-links {
-  font-size: 11px;
+svg .unit-links text {
+  font-size: 12px;
   text-anchor: end;
-  fill: #666;
+  fill: #888;
 }
 
 /* Patch labels */
