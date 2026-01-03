@@ -70,13 +70,27 @@ export function FilterStatus({
       )}
       {' '}and affecting{' '}
       {selectedEntityId ? (
-        <button
-          className="filter-chip active"
-          style={{ borderColor: raceColors[units.get(selectedEntityId)?.race || 'neutral'], '--chip-color': raceColors[units.get(selectedEntityId)?.race || 'neutral'] } as React.CSSProperties}
-          onClick={() => setSelectedEntityId(null)}
-        >
-          {units.get(selectedEntityId)?.name || selectedEntityId} ×
-        </button>
+        <>
+          <button
+            className="filter-chip active"
+            style={{ borderColor: raceColors[units.get(selectedEntityId)?.race || 'neutral'], '--chip-color': raceColors[units.get(selectedEntityId)?.race || 'neutral'] } as React.CSSProperties}
+            onClick={() => setSelectedEntityId(null)}
+          >
+            {units.get(selectedEntityId)?.name || selectedEntityId} ×
+          </button>
+          {selectedRace && (
+            <>
+              {' '}of{' '}
+              <button
+                className="filter-chip active"
+                style={{ borderColor: raceColors[selectedRace], '--chip-color': raceColors[selectedRace] } as React.CSSProperties}
+                onClick={() => setSelectedRace(null)}
+              >
+                {selectedRace.charAt(0).toUpperCase() + selectedRace.slice(1)} ×
+              </button>
+            </>
+          )}
+        </>
       ) : selectedRace ? (
         <button
           className="filter-chip active"

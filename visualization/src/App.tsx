@@ -104,39 +104,41 @@ function App() {
     if (entityId !== selectedEntityId) {
       setSelectedEntityId(entityId);
     }
-    if (race !== selectedRace) {
+    // Only sync race from URL when no unit is selected
+    // When unit is selected, race is managed independently
+    if (!entityId && race !== selectedRace) {
       setSelectedRace(race);
     }
   }, [location.pathname]);
 
-  // Track race filter state before unit selection (for proper deselection)
-  const [raceBeforeUnitSelect, setRaceBeforeUnitSelect] = useState<Race | null>(null);
-
   // Navigate to unit URL when selecting (instead of just setting state)
   const handleEntitySelect = useCallback((entityId: string | null) => {
     if (entityId) {
-      // Remember current race filter before selecting unit
-      setRaceBeforeUnitSelect(selectedRace);
       navigate(entityIdToPath(entityId));
     } else {
-      // Deselect: go back to previous race state
-      if (raceBeforeUnitSelect) {
-        navigate(`/${raceBeforeUnitSelect}/`);
+      // Deselect: go back to race view if race selected, else home
+      if (selectedRace) {
+        navigate(`/${selectedRace}/`);
       } else {
         navigate('/');
       }
-      setRaceBeforeUnitSelect(null);
     }
-  }, [navigate, selectedRace, raceBeforeUnitSelect]);
+  }, [navigate, selectedRace]);
 
-  // Navigate to race URL when selecting race
+  // Navigate to race URL when selecting race (only when no unit selected)
   const handleRaceSelect = useCallback((race: Race | null) => {
-    if (race) {
-      navigate(`/${race}/`);
+    if (selectedEntityId) {
+      // Unit is selected: just toggle race filter state, don't navigate
+      setSelectedRace(race);
     } else {
-      navigate('/');
+      // No unit selected: navigate to race URL
+      if (race) {
+        navigate(`/${race}/`);
+      } else {
+        navigate('/');
+      }
     }
-  }, [navigate]);
+  }, [navigate, selectedEntityId]);
 
   // Handle window resize
   useEffect(() => {
