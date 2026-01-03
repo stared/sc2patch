@@ -51,6 +51,10 @@ There are around 39 beta patches:
 - HotS Beta: Updates #1-15
 - LotV Beta: 2.5.0 - 2.5.5
 
+### Curious findings
+
+Pre-LotV patches use "Blizzard Time" (1.4× faster than real time); LotV switched to real-time display, explaining apparent numeric jumps like Stimpack research going from 170s to 121s without a balance patch.
+
 ### Processing
 
 Most processing happens within Python. The pipeline is as follows:
