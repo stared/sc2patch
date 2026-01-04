@@ -73,8 +73,8 @@ export function SEOContent({ selectedEntityId, selectedRace, units, patches, fil
   const baseUrl = 'https://p.migdal.pl/sc2-balance-timeline';
 
   // Default (no selection)
-  let title = 'StarCraft II Balance Timeline - Visual Patch History';
-  let description = 'Interactive visualization of all StarCraft II balance patches from 2010 to present. Explore buffs, nerfs, and changes for every unit, building, and upgrade.';
+  let title = '15 Years of StarCraft II Balance Changes Visualized';
+  let description = 'The complete timeline of StarCraft II balance. Analyze 15 years of Blizzard patches, detailing every buff and nerf for Zerg, Terran, and Protoss units. Interactive visualization built with D3.js.';
   let canonicalUrl = baseUrl;
   let jsonLd: object | null = null;
 
