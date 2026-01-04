@@ -1,6 +1,8 @@
 # 15 Years of StarCraft II Balance Changes Visualized
 
-> Never perfect. Perfection goal that changes. Never stops moving. Can chase, cannot catch. — Abathur ([hear it here](https://www.youtube.com/watch?v=pw_GN3v-0Ls))
+> Never perfect. Perfection goal that changes. Never stops moving. Can chase, cannot catch. — Abathur ([hear it](https://www.youtube.com/watch?v=pw_GN3v-0Ls))
+
+StarCraft 2 is one of the most balanced games ever - thanks to Blizzard’s pursuit of perfection. It has been over 15 years since the release of Wings of Liberty and over 10 years since the last installment, Legacy of the Void. Yet, balance updates continue to appear, changing how the game plays.
 
 Visual history of StarCraft II multiplayer balance changes (2010–present), by [Piotr Migdał](https://p.migdal.pl/).
 
@@ -93,7 +95,11 @@ uv run python sc2patches/pipeline/3_validate.py
 uv run python sc2patches/pipeline/4_export_for_viz.py
 ```
 
-Most of the development was done with Claude Code and Opus 4.5. See [my blog post praising Claude Code + Gemini](https://quesma.com/blog/claude-skills-not-antigravity/).
+Most of the development was done with Claude Code and Opus 4.5. This project was "pure vibe coding" - while Opus 4.5 was excellent at execution, Gemini 3 Pro was essential for insights, cleaner code, and Playwright skills.
+
+A key challenge was that LLMs do not know D3.js nearly as well as React. The D3.js transition parts were tricky, often requiring manual intervention.
+
+See [my blog post praising Claude Code + Gemini](https://quesma.com/blog/claude-skills-not-antigravity/).
 
 ### Structure
 
