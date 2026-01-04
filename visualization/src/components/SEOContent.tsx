@@ -1,5 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { ProcessedPatchData, Unit, Race } from '../types';
+import seoConfig from '../seoConfig.json';
 
 interface SEOContentProps {
   selectedEntityId: string | null;
@@ -70,11 +71,11 @@ function formatDate(dateStr: string): string {
 }
 
 export function SEOContent({ selectedEntityId, selectedRace, units, patches, filteredPatches }: SEOContentProps) {
-  const baseUrl = 'https://p.migdal.pl/sc2-balance-timeline';
+  const baseUrl = seoConfig.baseUrl;
 
   // Default (no selection)
-  let title = '15 Years of StarCraft II Balance Changes Visualized';
-  let description = 'The complete timeline of StarCraft II balance. Analyze 15 years of Blizzard patches, detailing every buff and nerf for Zerg, Terran, and Protoss units. Interactive visualization built with D3.js.';
+  let title = seoConfig.defaultTitle;
+  let description = seoConfig.defaultDescription;
   let canonicalUrl = baseUrl;
   let jsonLd: object | null = null;
 
@@ -257,13 +258,13 @@ export function SEOContent({ selectedEntityId, selectedRace, units, patches, fil
         <meta property="og:description" content={description} />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content={`${baseUrl}/sc2_balance_timeline.png`} />
+        <meta property="og:image" content={seoConfig.defaultImage} />
 
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={`${baseUrl}/sc2_balance_timeline.png`} />
+        <meta name="twitter:image" content={seoConfig.defaultImage} />
 
         {/* JSON-LD */}
         {jsonLd && (

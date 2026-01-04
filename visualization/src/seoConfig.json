@@ -1,0 +1,7 @@
+{
+  "defaultTitle": "15 Years of StarCraft II Balance Changes Visualized",
+  "defaultDescription": "The complete timeline of StarCraft II balance. Analyze 15 years of Blizzard patches, detailing every buff and nerf for Zerg, Terran, and Protoss units. Interactive visualization built with D3.js.",
+  "baseUrl": "https://p.migdal.pl/sc2-balance-timeline",
+  "defaultImage": "https://p.migdal.pl/sc2-balance-timeline/sc2_balance_timeline.png"
+}
+
