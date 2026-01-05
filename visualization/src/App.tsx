@@ -105,12 +105,11 @@ function App() {
     if (entityId !== selectedEntityId) {
       setSelectedEntityId(entityId);
     }
-    // Only sync race from URL when no unit is selected
-    // When unit is selected, race is managed independently
-    if (!entityId && race !== selectedRace) {
+    // Always sync race from URL
+    if (race !== selectedRace) {
       setSelectedRace(race);
     }
-  }, [location.pathname]);
+  }, [location.pathname, selectedEntityId, selectedRace]);
 
   // Navigate to unit URL when selecting (instead of just setting state)
   const handleEntitySelect = useCallback((entityId: string | null) => {
@@ -126,20 +125,14 @@ function App() {
     }
   }, [navigate, selectedRace]);
 
-  // Navigate to race URL when selecting race (only when no unit selected)
+  // Navigate to race URL when selecting race
   const handleRaceSelect = useCallback((race: Race | null) => {
-    if (selectedEntityId) {
-      // Unit is selected: just toggle race filter state, don't navigate
-      setSelectedRace(race);
+    if (race) {
+      navigate(`/${race}/`);
     } else {
-      // No unit selected: navigate to race URL
-      if (race) {
-        navigate(`/${race}/`);
-      } else {
-        navigate('/');
-      }
+      navigate('/');
     }
-  }, [navigate, selectedEntityId]);
+  }, [navigate]);
 
   // Handle window resize
   useEffect(() => {
@@ -288,7 +281,7 @@ function App() {
               textAlign: 'center'
             }}>
               <img
-                src="/sc2_balance_changeges_logo.jpg"
+                src={`${import.meta.env.BASE_URL}sc2_balance_changeges_logo.jpg`}
                 alt="Balance Changes Logo"
                 style={{ maxWidth: '400px', marginBottom: '20px', borderRadius: '8px', opacity: 0.8 }}
               />
