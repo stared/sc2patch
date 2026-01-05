@@ -310,14 +310,7 @@ function App() {
                 style={{ maxWidth: '250px', marginBottom: '16px', borderRadius: '8px', opacity: 0.8 }}
               />
               <div style={{ fontSize: '14px', color: '#888', marginTop: '10px' }}>
-                Apparently, everything is perfectly balanced for{' '}
-                <span style={{ color: '#eee' }}>
-                  {selectedEntityId ? units.get(selectedEntityId)?.name : (selectedRace ? selectedRace.charAt(0).toUpperCase() + selectedRace.slice(1) : 'everyone')}
-                </span>
-                {' in '}
-                <span style={{ color: eraColors[selectedEra || 'wol'] }}>
-                  {selectedEra ? eraData[selectedEra].name : 'this era'}
-                </span>.
+                Apparently, everything is perfectly balanced for {selectedEntityId ? units.get(selectedEntityId)?.name : (selectedRace ? selectedRace.charAt(0).toUpperCase() + selectedRace.slice(1) : 'everyone')} in {selectedEra ? eraData[selectedEra].name : 'this era'}.
               </div>
             </div>
           )}
