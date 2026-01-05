@@ -310,45 +310,14 @@ function App() {
                 style={{ maxWidth: '250px', marginBottom: '16px', borderRadius: '8px', opacity: 0.8 }}
               />
               <div style={{ fontSize: '14px', color: '#888', marginTop: '10px' }}>
-                {likelyDidntExist ? 'No balance changes recorded for ' : 'Apparently, everything is perfectly balanced for '}
-                
+                Apparently, everything is perfectly balanced for{' '}
                 <span style={{ color: '#eee' }}>
-                  {selectedEntityId ? (
-                    <button
-                      className="filter-chip active"
-                      style={{ borderColor: raceColors[units.get(selectedEntityId)?.race || 'neutral'], '--chip-color': raceColors[units.get(selectedEntityId)?.race || 'neutral'] } as React.CSSProperties}
-                      onClick={() => handleEntitySelect(null)}
-                    >
-                      {units.get(selectedEntityId)?.name} ×
-                    </button>
-                  ) : (
-                    selectedRace ? (
-                      <button
-                        className="filter-chip active"
-                        style={{ borderColor: raceColors[selectedRace], '--chip-color': raceColors[selectedRace] } as React.CSSProperties}
-                        onClick={() => handleRaceSelect(null)}
-                      >
-                        {selectedRace.charAt(0).toUpperCase() + selectedRace.slice(1)} ×
-                      </button>
-                    ) : 'everyone'
-                  )}
+                  {selectedEntityId ? units.get(selectedEntityId)?.name : (selectedRace ? selectedRace.charAt(0).toUpperCase() + selectedRace.slice(1) : 'everyone')}
                 </span>
-                
                 {' in '}
-                
                 <span style={{ color: eraColors[selectedEra || 'wol'] }}>
-                  {selectedEra ? (
-                    <button
-                      className="filter-chip active"
-                      style={{ borderColor: eraColors[selectedEra], '--chip-color': eraColors[selectedEra] } as React.CSSProperties}
-                      onClick={() => setSelectedEra(null)}
-                    >
-                      {eraData[selectedEra].name} ×
-                    </button>
-                  ) : 'this era'}
-                </span>
-                
-                {likelyDidntExist ? ' (unit likely didn\'t exist yet).' : '.'}
+                  {selectedEra ? eraData[selectedEra].name : 'this era'}
+                </span>.
               </div>
             </div>
           )}
