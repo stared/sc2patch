@@ -47,8 +47,6 @@ As of now, there are 49 balance patches.
 
 I only show patches that affect multiplayer balance - excluding all changes for campaign, co-op, bug fixes, and other adjustments which are not directly for typical ranked games.
 
-![404 patch not found - Blizzard SC2](./blizzard_sc2_patch_not_found.jpg)
-
 Also, I didn't include balance for pre-release tests, as they were too rapid, more like a creative process of unit design than something actually released. Also - for some of these changes, original pages might be unavailable. Though, if there is significant demand, I may consider adding beta changes.
 
 There are around 39 beta patches:
@@ -62,6 +60,14 @@ There are around 39 beta patches:
 Pre-LotV patches use "Blizzard Time" (1.4× faster than real time); LotV switched to real-time display, explaining apparent numeric jumps like Stimpack research going from 170s to 121s without a balance patch.
 
 ["Game speed altered to match that of real time" in LotV beta preview](https://news.blizzard.com/en-gb/article/18291111/legacy-of-the-void-beta-preview)
+
+### Missing balance update pages
+
+[![404 patch not found - Blizzard SC2](./blizzard_sc2_patch_not_found.jpg)](https://starcraft2.blizzard.com/en-us/news/12802185)
+
+No-one lives forever - and it is also true for websites (see my stance on that - [if it is worth keeping, save it in Markdown](https://p.migdal.pl/blog/2025/02/markdown-saves/)). 15 years is a lot.
+
+Here we get cute graphics from Carbot Animations showing that some patch is no longer aviable.
 
 ### Processing
 
