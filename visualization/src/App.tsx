@@ -10,6 +10,7 @@ import { SEOContent } from './components/SEOContent';
 import {
   getEraFromVersion,
   eraColors,
+  eraData,
   type Era,
 } from './utils/uxSettings';
 
@@ -276,12 +277,39 @@ function App() {
 
       <main className="app-main">
         <div className="patch-grid-container" style={{ width: '100%', minHeight: '100vh' }}>
+          {filteredPatches.length === 0 && (
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '60vh',
+              color: '#888',
+              textAlign: 'center'
+            }}>
+              <img
+                src="/sc2_balance_changeges_logo.jpg"
+                alt="Balance Changes Logo"
+                style={{ maxWidth: '400px', marginBottom: '20px', borderRadius: '8px', opacity: 0.8 }}
+              />
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 'normal' }}>
+                Apparently, everything is perfectly balanced for{' '}
+                <span style={{ color: '#eee' }}>
+                  {selectedEntityId ? units.get(selectedEntityId)?.name : (selectedRace ? selectedRace.charAt(0).toUpperCase() + selectedRace.slice(1) : 'everyone')}
+                </span>
+                {' '}in{' '}
+                <span style={{ color: eraColors[selectedEra || 'wol'] }}>
+                  {selectedEra ? eraData[selectedEra].name : 'this era'}
+                </span>.
+              </h2>
+            </div>
+          )}
           <svg
             ref={svgRef}
             role="img"
             style={{
               background: '#0a0a0a',
-              display: 'block',
+              display: filteredPatches.length === 0 ? 'none' : 'block',
               width: '100%',
               height: 'auto'
             }}
