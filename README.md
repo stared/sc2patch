@@ -57,6 +57,8 @@ There are around 39 beta patches:
 
 Pre-LotV patches use "Blizzard Time" (1.4× faster than real time); LotV switched to real-time display, explaining apparent numeric jumps like Stimpack research going from 170s to 121s without a balance patch.
 
+["Game speed altered to match that of real time" in LotV beta preview](https://news.blizzard.com/en-gb/article/18291111/legacy-of-the-void-beta-preview)
+
 ### Processing
 
 Most processing happens within Python. The pipeline is as follows:
