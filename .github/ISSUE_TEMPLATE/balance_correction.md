@@ -7,17 +7,16 @@ labels: data
 
 **Help us fix the data!**
 
-BAD: "Toss nerfs missing, fix it!"
-BAD: "Source: everyone knows that!"
+Please provide concrete examples and a source link.
+
+*   🔴 **BAD:** "Toss nerfs missing, fix it!"
+*   🔴 **BAD:** "Source: everyone knows that!"
+*   🟢 **GOOD:** "In Patch 1.4.3, Queen ground attack range increased from 3 to 5."
+*   🟢 **GOOD:** Source: https://liquipedia.net/starcraft2/Patch_1.4.3
 
 **Description**
-<!-- What is incorrect? e.g., "Zergling speed cost is 100/100, should be 200/200." -->
+<!-- What is incorrect? Please specify Unit, Patch, and Value. -->
 
 
 **Source**
-<!-- Link to Blizzard or Liquipedia, e.g., https://liquipedia.net/starcraft2/Patch_X.Y.Z -->
-
-
-**Visualization Link**
-<!-- https://p.migdal.pl/sc2-balance-timeline/... -->
-
+<!-- Link to Blizzard or Liquipedia. -->
