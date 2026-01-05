@@ -283,9 +283,9 @@ function App() {
               <img
                 src={`${import.meta.env.BASE_URL}sc2_balance_changeges_logo.jpg`}
                 alt="Balance Changes Logo"
-                style={{ maxWidth: '400px', marginBottom: '20px', borderRadius: '8px', opacity: 0.8 }}
+                style={{ maxWidth: '250px', marginBottom: '16px', borderRadius: '8px', opacity: 0.8 }}
               />
-              <h2 style={{ fontSize: '1.5rem', fontWeight: 'normal' }}>
+              <h2 style={{ fontSize: '1rem', fontWeight: 'normal', maxWidth: '600px', lineHeight: '1.5' }}>
                 Apparently, everything is perfectly balanced for{' '}
                 <span style={{ color: '#eee' }}>
                   {selectedEntityId ? units.get(selectedEntityId)?.name : (selectedRace ? selectedRace.charAt(0).toUpperCase() + selectedRace.slice(1) : 'everyone')}
