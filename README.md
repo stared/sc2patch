@@ -27,6 +27,8 @@ Data visualization with D3.js, data extraction with LLM (Gemini 3 Pro).
 
 I decided on a unit-first view. So upgrades and similar changes are attributed to the unit. For the same reason, summoned units are assigned to their parent - Locusts to Swarm Host, Infested Terrans to Infestor, Broodlings to Brood Lord (even though they also appear with destroyed Zerg buildings), etc.
 
+![SC2 balance changes logo by Nano Banana Pro](./sc2_balance_changeges_logo.jpg)
+
 ## Data
 
 Data comes from [Blizzard StarCraft II](https://starcraft2.blizzard.com/en-us/), with a lot of supplemental stuff from [Liquipedia](https://liquipedia.net/starcraft2/) ([patch list](https://liquipedia.net/starcraft2), links to unit pages, and validation checks).
@@ -45,7 +47,9 @@ As of now, there are 49 balance patches.
 
 I only show patches that affect multiplayer balance - excluding all changes for campaign, co-op, bug fixes, and other adjustments which are not directly for typical ranked games.
 
-Also, I didn't include balance for pre-release tests, as they were too rapid, more like a creative process of unit design than something actually released. Also - for some of these changes, original pages might be unavailable. THough, if there is significant demand, I may consider adding beta changes.
+![404 patch not found - Blizzard SC2](./blizzard_sc2_patch_not_found.jpg)
+
+Also, I didn't include balance for pre-release tests, as they were too rapid, more like a creative process of unit design than something actually released. Also - for some of these changes, original pages might be unavailable. Though, if there is significant demand, I may consider adding beta changes.
 
 There are around 39 beta patches:
 
@@ -64,7 +68,7 @@ Pre-LotV patches use "Blizzard Time" (1.4× faster than real time); LotV switche
 Most processing happens within Python. The pipeline is as follows:
 
 ```
-HTML (Blizzard) → LLM Parse → Validate → JSON → D3
+JSON list of patches → HTML from Blizzard → Parse with LLMs → Validate → JSON → D3
 ```
 
 For parsing, LLMs are essential. I first tried typical scripts, but over so many years the Blizzard page structure changed repeatedly. Using classical scraping scripts didn't scale well.
@@ -107,11 +111,11 @@ See [my blog post praising Claude Code + Gemini](https://quesma.com/blog/claude-
 
 ```
 ├── sc2patches/        # Python package
-│   ├── pipeline/      # Main scripts (1-4)
+│   ├── pipeline/      # Main scripts
 │   ├── core/          # Library code
 │   └── tools/         # Utility scripts
 ├── data/              # Source URLs, processed JSON
-└── visualization/     # React frontend
+└── visualization/     # Frontend package
 ```
 
 ## License
