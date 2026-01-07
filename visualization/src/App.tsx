@@ -11,9 +11,7 @@ import {
   getEraFromVersion,
   eraColors,
   eraData,
-  eraOrder,
   type Era,
-  raceColors,
 } from './utils/uxSettings';
 
 type SortOrder = 'newest' | 'oldest';
@@ -250,28 +248,6 @@ function App() {
   const filteredPatches = selectedEntityId
     ? sortedAndFilteredPatches.filter(patch => patch.entities.has(selectedEntityId))
     : sortedAndFilteredPatches;
-
-  // Logic to check if unit likely didn't exist in selected era
-  const likelyDidntExist = (() => {
-    if (!selectedEntityId || !selectedEra) return false;
-    
-    // Find first patch globally for this unit
-    const firstPatch = patches.find(p => p.entities.has(selectedEntityId));
-    if (!firstPatch) return false; // Should not happen if unit exists
-    
-    const firstPatchDate = new Date(firstPatch.date);
-    
-    // Get start date of NEXT era (end of current era)
-    const currentEraIndex = eraOrder.indexOf(selectedEra);
-    const nextEra = eraOrder[currentEraIndex + 1];
-    
-    // If no next era, we are in the last era, so unit definitely exists if it has patches
-    if (!nextEra) return false;
-    
-    const nextEraStartDate = new Date(eraData[nextEra].releaseDate);
-    
-    return firstPatchDate >= nextEraStartDate;
-  })();
 
   return (
     <div className="app-container">
