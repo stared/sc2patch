@@ -1,0 +1,21 @@
+name: Prompt Story
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  prompt-story:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: QuesmaOrg/git-prompt-story/.github/actions/prompt-story@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
