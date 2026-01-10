@@ -107,19 +107,24 @@ export class PatchGridRenderer {
 
     // Render based on mode
     if (layoutResult.isPatchMode) {
-      // Clear normal view containers
+      // Clear normal view containers that aren't shared
       this.svg.select('.headers-container').selectAll('*').remove();
       this.svg.select('.patches-container').selectAll('*').remove();
-      this.svg.select('.entities-container').selectAll('*').remove();
-      this.svg.select('.changes-container').remove();
 
-      // Render patch view
+      // Render patch view header
       this.renderPatchViewHeader(layoutResult, state);
-      this.renderPatchViewEntities(layoutResult, state);
+
+      // Use standard entity and changes rendering for smooth animations
+      // D3 will animate entities from their grid positions to patch view positions
+      this.renderEntities(layoutResult, state);
+      this.renderChanges(layoutResult);
+
+      // Render entity names (only in patch mode)
+      this.renderPatchViewEntityNames(layoutResult, state);
     } else {
       // Clear patch view containers
       this.svg.select('.patch-view-header').remove();
-      this.svg.select('.patch-view-entities').remove();
+      this.svg.select('.patch-entity-names').remove();
 
       // Render all layers with unified join pattern
       this.renderHeaders(layoutResult, state);
@@ -358,7 +363,18 @@ export class PatchGridRenderer {
           // On desktop: label on left side (vertical layout)
           const label = pg.append('g')
             .attr('class', 'patch-label')
-            .attr('transform', `translate(${patchLabelTranslateX}, ${patchLabelTranslateY})`);
+            .attr('transform', `translate(${patchLabelTranslateX}, ${patchLabelTranslateY})`)
+            .style('cursor', 'pointer');
+
+          // Invisible hit area for easier clicking (fixes double-click issue)
+          label.append('rect')
+            .attr('class', 'patch-label-hit-area')
+            .attr('x', -5)
+            .attr('y', -5)
+            .attr('width', 85)
+            .attr('height', 35)
+            .style('fill', 'transparent')
+            .on('click', (e, d) => { e.stopPropagation(); state.onPatchSelect(d.version); });
 
           label.append('text')
             .attr('class', 'patch-date')
@@ -368,15 +384,13 @@ export class PatchGridRenderer {
               select(this)
                 .style('fill', eraColors[getEraFromVersion(d.version)])
                 .text(d.date.split('-').slice(0, 2).join('-'));
-            })
-            .on('click', (e, d) => { e.stopPropagation(); state.onPatchSelect(d.version); });
+            });
 
           label.append('text')
             .attr('class', 'patch-version')
             .attr('x', patchVersionOffsetX)
             .attr('y', patchVersionOffsetY)
-            .text(d => d.version)
-            .on('click', (e, d) => { e.stopPropagation(); state.onPatchSelect(d.version); });
+            .text(d => d.version);
 
           // Fade in after move phase
           // Named transition prevents UPDATE from cancelling this on React re-render
@@ -640,6 +654,7 @@ export class PatchGridRenderer {
 
     const patch = layoutResult.selectedPatch;
     const headerY = layout.headerY;
+    const eraColor = eraColors[getEraFromVersion(patch.version)];
 
     // Format date nicely
     const dateObj = new Date(patch.date);
@@ -660,12 +675,19 @@ export class PatchGridRenderer {
             .attr('transform', `translate(${this.svgWidth / 2}, ${headerY})`)
             .style('opacity', 0);
 
+          // Pill background (like race headers)
+          g.append('rect')
+            .attr('class', 'patch-header-bg')
+            .attr('height', 28)
+            .attr('rx', 4)
+            .attr('y', 0);
+
           // Patch version and date text (centered)
           g.append('text')
             .attr('class', 'patch-view-title')
             .attr('text-anchor', 'middle')
-            .attr('y', 16)
-            .style('fill', eraColors[getEraFromVersion(patch.version)])
+            .attr('y', 18)
+            .style('fill', eraColor)
             .text(`Patch ${patch.version} — ${formattedDate}`);
 
           // Fade in
@@ -682,9 +704,24 @@ export class PatchGridRenderer {
           .style('opacity', 1)
         ),
         exit => exit.remove()
-      );
+      )
+      // Size the pill to fit text (like race headers)
+      .each(function() {
+        const group = select(this);
+        const textEl = group.select<SVGTextElement>('.patch-view-title');
+        const textWidth = textEl.node()?.getComputedTextLength() ?? 200;
+        const padding = 32;
+        const rectWidth = textWidth + padding;
 
-    // Blizzard link (right side)
+        group.select('.patch-header-bg')
+          .attr('width', rectWidth)
+          .attr('x', -rectWidth / 2)
+          .style('stroke', eraColor)
+          .style('stroke-width', '1px')
+          .style('fill', 'rgba(0, 0, 0, 0.3)');
+      });
+
+    // Blizzard link (right side) - styled like wiki-link
     const linkData = [patch.url];
     headerContainer
       .selectAll<SVGGElement, string>('.patch-blizzard-link')
@@ -692,7 +729,7 @@ export class PatchGridRenderer {
       .join(
         enter => {
           const g = enter.append('g')
-            .attr('class', 'patch-blizzard-link')
+            .attr('class', 'patch-blizzard-link wiki-link')
             .attr('transform', `translate(${this.svgWidth - 20}, ${headerY})`)
             .style('opacity', 0)
             .style('cursor', 'pointer')
@@ -702,10 +739,16 @@ export class PatchGridRenderer {
             });
 
           g.append('text')
-            .attr('class', 'blizzard-link-text')
+            .attr('class', 'blizzard-link-name')
             .attr('text-anchor', 'end')
-            .attr('y', 16)
-            .text('View on Blizzard →');
+            .attr('y', 10)
+            .text('View patch notes');
+
+          g.append('text')
+            .attr('class', 'blizzard-link-source')
+            .attr('text-anchor', 'end')
+            .attr('y', 24)
+            .text('on Blizzard →');
 
           g.transition('enter')
             .delay(this.t(PHASE.ENTER_DELAY))
@@ -723,125 +766,56 @@ export class PatchGridRenderer {
       );
   }
 
-  private renderPatchViewEntities(layoutResult: LayoutResult, state: RenderState): void {
-    let entitiesContainer = this.svg.select<SVGGElement>('.patch-view-entities');
-    if (entitiesContainer.empty()) {
-      entitiesContainer = this.svg.append('g').attr('class', 'patch-view-entities');
+  /**
+   * Render entity names for patch view (overlaid on the standard entities)
+   * These names appear next to each entity icon and link to unit view
+   */
+  private renderPatchViewEntityNames(layoutResult: LayoutResult, state: RenderState): void {
+    let namesContainer = this.svg.select<SVGGElement>('.patch-entity-names');
+    if (namesContainer.empty()) {
+      namesContainer = this.svg.append('g').attr('class', 'patch-entity-names');
     }
 
-    entitiesContainer
-      .selectAll<SVGGElement, PatchViewEntityLayout>('.patch-entity-group')
+    namesContainer
+      .selectAll<SVGTextElement, PatchViewEntityLayout>('.patch-entity-name')
       .data(layoutResult.patchViewEntities, d => d.entityId)
       .join(
-        enter => {
-          const g = enter.append('g')
-            .attr('class', 'patch-entity-group')
-            .attr('transform', d => `translate(0, ${d.y})`)
-            .style('opacity', 0);
+        enter => enter.append('text')
+          .attr('class', 'patch-entity-name')
+          .attr('x', d => d.nameX)
+          .attr('y', d => d.y + d.nameY)  // Absolute Y = row Y + relative nameY
+          .style('fill', d => raceColors[(d.entity.race || 'neutral') as Race])
+          .style('cursor', 'pointer')
+          .style('opacity', 0)
+          .text(d => state.unitsMap.get(d.entityId)?.name || d.entity.name || d.entityId)
+          .on('click', (event, d) => {
+            event.stopPropagation();
 
-          // Entity icon (left side, like unit view)
-          const iconGroup = g.append('g')
-            .attr('class', 'entity-icon-group')
-            .attr('transform', d => `translate(${d.x}, 0)`)  // Position at x, y=0 relative to group
-            .style('cursor', 'pointer')
-            .style('--glow-color', d => raceColors[(d.entity.race || 'neutral') as Race]);
+            // Disable interactions during transition
+            const container = document.querySelector('.patch-grid-container');
+            if (container) {
+              container.classList.add('transitioning');
+              const totalAnimationTime = PHASE.ENTER_DELAY + PHASE.ENTER_DURATION + 50;
+              setTimeout(() => container.classList.remove('transitioning'), totalAnimationTime);
+            }
 
-          iconGroup.append('rect')
-            .attr('width', this.currentCellSize)
-            .attr('height', this.currentCellSize)
-            .attr('rx', 4)
-            .style('fill', 'url(#cellGradient)')
-            .style('stroke', d => {
-              const { status } = d.entity;
-              return status ? getChangeColor(status as ChangeType) : raceColors[(d.entity.race || 'neutral') as Race];
-            });
-
-          iconGroup.append('image')
-            .attr('width', this.currentCellSize)
-            .attr('height', this.currentCellSize)
-            .attr('href', d => `${import.meta.env.BASE_URL}assets/units/${d.entityId}.png`)
-            .attr('clip-path', 'url(#roundedCorners)')
-            .attr('preserveAspectRatio', 'xMidYMid slice');
-
-          // Entity name (header, like race header in unit view)
-          // Position: nameX, nameY are RELATIVE to the group
-          g.append('text')
-            .attr('class', 'patch-entity-name')
-            .attr('x', d => d.nameX)
-            .attr('y', d => d.nameY)  // RELATIVE Y - centered with icon
-            .style('fill', d => raceColors[(d.entity.race || 'neutral') as Race])
-            .style('cursor', 'pointer')
-            .text(d => state.unitsMap.get(d.entityId)?.name || d.entity.name || d.entityId);
-
-          // Change notes (below name, like unit view)
-          // Position: changesX, changesY are RELATIVE to the group
-          g.each(function(d) {
-            const group = select(this);
-            const changesGroup = group.append('g')
-              .attr('class', 'patch-entity-changes')
-              .attr('transform', `translate(${d.changesX}, ${d.changesY})`);  // RELATIVE position
-
-            let currentY = 0;
-            const lineHeight = layout.changeNoteLineHeight;
-            const indentX = 14;
-
-            d.changes.forEach((change: WrappedChange) => {
-              const textElement = changesGroup.append('text')
-                .attr('class', 'change-note')
-                .attr('y', currentY);
-
-              change.lines.forEach((line, lineIndex) => {
-                if (lineIndex === 0) {
-                  textElement.append('tspan')
-                    .attr('class', 'change-indicator')
-                    .style('fill', getChangeColor(change.change_type as ChangeType))
-                    .text(getChangeIndicator(change.change_type as ChangeType));
-
-                  textElement.append('tspan').text(line);
-                } else {
-                  textElement.append('tspan')
-                    .attr('x', indentX)
-                    .attr('dy', lineHeight)
-                    .text(line);
-                }
-              });
-
-              currentY += change.lines.length * lineHeight;
-            });
-          });
-
-          // Click handlers on icon and name to navigate to unit view
-          g.selectAll('.entity-icon-group, .patch-entity-name')
-            .on('click', (event, _d) => {
-              event.stopPropagation();
-              const entityData = select((event.currentTarget as SVGElement).parentNode as SVGGElement).datum() as PatchViewEntityLayout;
-
-              // Disable interactions during transition
-              const container = document.querySelector('.patch-grid-container');
-              if (container) {
-                container.classList.add('transitioning');
-                const totalAnimationTime = PHASE.ENTER_DELAY + PHASE.ENTER_DURATION + 50;
-                setTimeout(() => container.classList.remove('transitioning'), totalAnimationTime);
-              }
-
-              state.onEntitySelect(entityData.entityId);
-            });
-
-          // Fade in after enter delay (consistent with unit view)
-          g.transition('enter')
+            state.onEntitySelect(d.entityId);
+          })
+          .call(e => e.transition('enter')
             .delay(this.t(PHASE.ENTER_DELAY))
             .duration(this.t(PHASE.ENTER_DURATION))
-            .style('opacity', 1);
+            .style('opacity', 1)
+          ),
 
-          return g;
-        },
         update => update.call(u => u.transition()
           .delay(this.t(PHASE.MOVE_DELAY))
           .duration(this.t(PHASE.MOVE_DURATION))
           .ease(easeCubicInOut)
-          .attr('transform', d => `translate(0, ${d.y})`)
+          .attr('x', d => d.nameX)
+          .attr('y', d => d.y + d.nameY)
           .style('opacity', 1)
         ),
+
         exit => exit.call(e => e.transition()
           .duration(this.t(PHASE.EXIT_DURATION))
           .style('opacity', 0)

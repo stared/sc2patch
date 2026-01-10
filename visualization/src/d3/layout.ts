@@ -433,8 +433,15 @@ export function createLayoutEngine(
     patch: ProcessedPatchData,
     svgWidth: number,
     isMobile: boolean
-  ): { entities: PatchViewEntityLayout[]; totalHeight: number } {
+  ): {
+    entities: PatchViewEntityLayout[];
+    totalHeight: number;
+    standardEntities: EntityLayout[];
+    standardChanges: ChangeLayout[];
+  } {
     const entities: PatchViewEntityLayout[] = [];
+    const standardEntities: EntityLayout[] = [];
+    const standardChanges: ChangeLayout[] = [];
 
     // Match unit view's text positioning
     const textStartX = getChangeTextX(isMobile);
@@ -492,10 +499,29 @@ export function createLayoutEngine(
         changesY      // RELATIVE Y (relative to group)
       });
 
+      // ALSO create standard EntityLayout for D3 animation
+      // ID format matches overview: `entityId-patchVersion`
+      standardEntities.push({
+        id: `${entityId}-${patch.version}`,
+        entityId,
+        patchVersion: patch.version,
+        entity,
+        x: iconX,
+        y: currentY
+      });
+
+      // ALSO create standard ChangeLayout for D3 animation
+      standardChanges.push({
+        id: `${entityId}-${patch.version}`,
+        x: changesX,
+        y: currentY + changesY, // Absolute Y for changes
+        changes: wrappedChanges
+      });
+
       currentY += entityHeight + entityGap;
     }
 
-    return { entities, totalHeight: currentY };
+    return { entities, totalHeight: currentY, standardEntities, standardChanges };
   }
 
   // Main entry point
@@ -518,8 +544,10 @@ export function createLayoutEngine(
       : null;
 
     // Handle patch view mode
+    // IMPORTANT: We return entities in the STANDARD format so D3 can animate them
+    // from their grid positions to their patch view positions
     if (isPatchMode && selectedPatch) {
-      const { entities: patchViewEntities, totalHeight } = calculatePatchViewEntities(
+      const { entities: patchViewEntities, totalHeight, standardEntities, standardChanges } = calculatePatchViewEntities(
         selectedPatch,
         svgWidth,
         isMobile
@@ -531,12 +559,12 @@ export function createLayoutEngine(
         svgHeight,
         headers: [], // No race headers in patch view
         patchRows: [], // No patch rows in patch view
-        entities: [], // No grid entities in patch view
-        changes: [], // Changes are part of patchViewEntities
+        entities: standardEntities, // Standard entities for animation
+        changes: standardChanges,   // Standard changes for animation
         isFocusMode: false,
         isPatchMode: true,
         selectedPatch,
-        patchViewEntities,
+        patchViewEntities, // Additional data for entity names
         focusTargetY: layout.gridStartY,
         isMobile
       };
