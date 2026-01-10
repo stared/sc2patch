@@ -1,0 +1,34 @@
+{
+  "v": 1,
+  "start_work": "2026-01-07T09:30:44Z",
+  "sessions": [
+    {
+      "tool": "claude-code",
+      "id": "6b2d5991-6e2f-48d6-8d5e-18ab7ba6cd67",
+      "path": "claude-code/6b2d5991-6e2f-48d6-8d5e-18ab7ba6cd67.jsonl",
+      "created": "2026-01-10T14:29:30.56Z",
+      "modified": "2026-01-10T15:48:24.427Z"
+    },
+    {
+      "tool": "claude-code",
+      "id": "bec7a650-20c9-4f43-92d9-1c6e4bf1f027",
+      "path": "claude-code/bec7a650-20c9-4f43-92d9-1c6e4bf1f027.jsonl",
+      "created": "2026-01-10T14:26:17.477Z",
+      "modified": "2026-01-10T14:26:17.462Z"
+    },
+    {
+      "tool": "claude-code",
+      "id": "b5e64c2f-4689-4cdd-b829-f5d624055cf6",
+      "path": "claude-code/b5e64c2f-4689-4cdd-b829-f5d624055cf6.jsonl",
+      "created": "2026-01-10T12:21:17.603Z",
+      "modified": "2026-01-10T14:26:10.785Z"
+    },
+    {
+      "tool": "claude-code",
+      "id": "f8f72fcb-5772-41e9-9fae-a273aca433b7",
+      "path": "claude-code/f8f72fcb-5772-41e9-9fae-a273aca433b7.jsonl",
+      "created": "2026-01-07T09:27:00.518Z",
+      "modified": "2026-01-07T17:51:40.504Z"
+    }
+  ]
+}
