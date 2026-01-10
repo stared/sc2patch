@@ -632,13 +632,7 @@ export class PatchGridRenderer {
     const headerY = layout.headerY;
     const eraColor = eraColors[getEraFromVersion(patch.version)];
 
-    // Format date
-    const dateObj = new Date(patch.date);
-    const formattedDate = dateObj.toLocaleDateString('en-US', {
-      year: 'numeric', month: 'short', day: 'numeric'
-    });
-
-    // Title (centered)
+    // Title: "Patch 5.0.9" (main, bold, era-colored)
     const titleData = [patch.version];
     headerContainer
       .selectAll<SVGTextElement, string>('.patch-view-title')
@@ -647,11 +641,11 @@ export class PatchGridRenderer {
         enter => enter.append('text')
           .attr('class', 'patch-view-title')
           .attr('x', this.svgWidth / 2)
-          .attr('y', headerY + 16)
+          .attr('y', headerY + 12)
           .attr('text-anchor', 'middle')
           .style('fill', eraColor)
           .style('opacity', 0)
-          .text(`Patch ${patch.version} — ${formattedDate}`)
+          .text(`Patch ${patch.version}`)
           .call(e => e.transition('enter')
             .delay(this.t(PHASE.ENTER_DELAY))
             .duration(this.t(PHASE.ENTER_DURATION))
@@ -659,7 +653,33 @@ export class PatchGridRenderer {
           ),
         update => update
           .attr('x', this.svgWidth / 2)
-          .text(`Patch ${patch.version} — ${formattedDate}`),
+          .text(`Patch ${patch.version}`),
+        exit => exit.remove()
+      );
+
+    // Date below (smaller, muted)
+    const dateData = [patch.date];
+    headerContainer
+      .selectAll<SVGTextElement, string>('.patch-view-date')
+      .data(dateData)
+      .join(
+        enter => enter.append('text')
+          .attr('class', 'patch-view-date')
+          .attr('x', this.svgWidth / 2)
+          .attr('y', headerY + 28)
+          .attr('text-anchor', 'middle')
+          .style('fill', '#888')
+          .style('font-size', '12px')
+          .style('opacity', 0)
+          .text(patch.date)
+          .call(e => e.transition('enter')
+            .delay(this.t(PHASE.ENTER_DELAY))
+            .duration(this.t(PHASE.ENTER_DURATION))
+            .style('opacity', 1)
+          ),
+        update => update
+          .attr('x', this.svgWidth / 2)
+          .text(patch.date),
         exit => exit.remove()
       );
 
