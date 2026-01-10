@@ -728,21 +728,19 @@ svg .wiki-link:hover {
   font-weight: 600;
 }
 
-/* Blizzard link (styled like wiki-link) */
-.patch-blizzard-link .blizzard-link-name {
+/* External link (Blizzard/Liquipedia) */
+.external-link-name {
   fill: #888;
   font-size: 12px;
-  transition: fill 0.15s ease;
 }
 
-.patch-blizzard-link .blizzard-link-source {
+.external-link-source {
   fill: #666;
   font-size: 11px;
-  transition: fill 0.15s ease;
 }
 
-.patch-blizzard-link:hover .blizzard-link-name,
-.patch-blizzard-link:hover .blizzard-link-source {
+.external-link:hover .external-link-name,
+.external-link:hover .external-link-source {
   fill: #aaa;
 }
 

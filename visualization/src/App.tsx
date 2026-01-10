@@ -289,6 +289,8 @@ function App() {
             setSelectedEntityId={handleEntitySelect}
             selectedRace={selectedRace}
             setSelectedRace={handleRaceSelect}
+            selectedPatchVersion={selectedPatchVersion}
+            setSelectedPatchVersion={handlePatchSelect}
             units={units}
           />
         </div>

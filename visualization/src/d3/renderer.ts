@@ -323,16 +323,12 @@ export class PatchGridRenderer {
           g.append('text')
             .attr('class', 'external-link-name')
             .attr('text-anchor', 'end')
-            .attr('y', 0)
-            .style('fill', '#ccc')
-            .style('font-size', '13px');
+            .attr('y', 0);
 
           g.append('text')
             .attr('class', 'external-link-source')
             .attr('text-anchor', 'end')
-            .attr('y', 14)
-            .style('fill', '#888')
-            .style('font-size', '11px');
+            .attr('y', 14);
 
           g.transition('enter')
             .delay(this.t(PHASE.ENTER_DELAY))

@@ -6,6 +6,7 @@ import {
   changeTypeConfig,
   changeTypeOrder,
   MOBILE_BREAKPOINT,
+  getEraFromVersion,
   type Era,
 } from '../utils/uxSettings';
 
@@ -17,6 +18,8 @@ interface FilterStatusProps {
   setSelectedEntityId: (id: string | null) => void;
   selectedRace: Race | null;
   setSelectedRace: (race: Race | null) => void;
+  selectedPatchVersion: string | null;
+  setSelectedPatchVersion: (version: string | null) => void;
   units: Map<string, Unit>;
 }
 
@@ -28,9 +31,16 @@ export function FilterStatus({
   setSelectedEntityId,
   selectedRace,
   setSelectedRace,
+  selectedPatchVersion,
+  setSelectedPatchVersion,
   units,
 }: FilterStatusProps) {
   const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
+
+  // Find selected patch data
+  const selectedPatch = selectedPatchVersion
+    ? filteredPatches.find(p => p.version === selectedPatchVersion)
+    : null;
 
   // Compute date range from actual filtered patches (desktop only)
   const dates = filteredPatches.map(p => new Date(p.date)).sort((a, b) => a.getTime() - b.getTime());
@@ -53,7 +63,25 @@ export function FilterStatus({
           {i === 1 && ', and '}
         </span>
       ))}
-      {' '}balance changes{!isMobile && <> from {startDate} to {endDate}</>} covering{' '}
+      {' '}balance changes
+      {!isMobile && (
+        selectedPatch ? (
+          <>
+            {' '}
+            <button
+              className="filter-chip active"
+              style={{ borderColor: eraColors[getEraFromVersion(selectedPatch.version)], '--chip-color': eraColors[getEraFromVersion(selectedPatch.version)] } as React.CSSProperties}
+              onClick={() => setSelectedPatchVersion(null)}
+            >
+              Patch {selectedPatch.version} ×
+            </button>
+            {' '}from {formatDate(new Date(selectedPatch.date))}
+          </>
+        ) : (
+          <> from {startDate} to {endDate}</>
+        )
+      )}
+      {' '}covering{' '}
       {selectedEra ? (
         <>
           <button

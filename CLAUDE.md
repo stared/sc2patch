@@ -272,3 +272,10 @@ Deselecting (filtered → grid):
 - All timing in `uxSettings.ts` (never inline)
 - Clicking selected unit deselects it
 - After deselection, positions must match original grid exactly
+
+**Styling rules:**
+
+- **NO new fonts** - never introduce new font sizes, colors, or weights unless strictly necessary
+- **CSS over inline** - all font/color styling goes in `index.css`, not inline in renderer code
+- **Reuse existing styles** - check existing CSS classes before creating new ones
+- **Minimal repetition** - consolidate similar styles into shared classes
