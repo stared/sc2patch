@@ -555,21 +555,10 @@ export function createLayoutEngine(
 
       const svgHeight = layout.marginTop + totalHeight + layout.marginBottom;
 
-      // Return the selected patch as a single patchRow at header position
-      // This allows the patch label to ANIMATE to the header instead of fading out
-      const selectedPatchRow: PatchRowLayout = {
-        version: selectedPatch.version,
-        date: selectedPatch.date,
-        url: selectedPatch.url,
-        y: layout.headerY - 20,  // Move to header area
-        height: 0,  // No content height needed
-        patch: selectedPatch
-      };
-
       return {
         svgHeight,
         headers: [], // No race headers in patch view
-        patchRows: [selectedPatchRow], // Selected patch animates to header
+        patchRows: [], // No patch rows - header is separate
         entities: standardEntities, // Standard entities for animation
         changes: standardChanges,   // Standard changes for animation
         isFocusMode: false,
