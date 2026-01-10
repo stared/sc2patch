@@ -118,7 +118,7 @@ export class PatchGridRenderer {
 
       // Use standard entity and changes rendering for smooth animations
       this.renderEntities(layoutResult, state);
-      this.renderChanges(layoutResult);
+      this.renderChanges(layoutResult, true); // isPatchMode = true: sync timing with entity names
 
       // Render entity names (only in patch mode)
       this.renderPatchViewEntityNames(layoutResult, state);
@@ -570,7 +570,7 @@ export class PatchGridRenderer {
       });
   }
 
-  private renderChanges(layoutResult: LayoutResult): void {
+  private renderChanges(layoutResult: LayoutResult, isPatchMode: boolean = false): void {
     // Remove container if no changes
     if (layoutResult.changes.length === 0) {
       this.svg.select('.changes-container').remove();
@@ -628,10 +628,11 @@ export class PatchGridRenderer {
             });
           });
 
-          // Fade in after unit icon has finished moving
+          // Fade in: patch mode = same time as names, unit mode = after icon settles
           // Named transition prevents UPDATE from cancelling this on React re-render
+          const enterDelay = isPatchMode ? PHASE.ENTER_DELAY : PHASE.ENTER_DELAY + PHASE.ENTER_DURATION;
           cg.transition('enter')
-            .delay(this.t(PHASE.ENTER_DELAY + PHASE.ENTER_DURATION))
+            .delay(this.t(enterDelay))
             .duration(this.t(PHASE.ENTER_DURATION))
             .style('opacity', 1);
 
