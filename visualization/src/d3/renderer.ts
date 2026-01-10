@@ -277,9 +277,15 @@ export class PatchGridRenderer {
       .join(
         enter => {
           const g = enter.append('g')
-            .attr('class', 'unit-links wiki-link');
+            .attr('class', 'unit-links wiki-link')
+            .style('opacity', 0);
           g.append('text').attr('class', 'unit-link-name');
           g.append('text').attr('class', 'unit-link-source').attr('dy', '1.2em');
+          // Fade in after unit icon settles (consistent with change notes)
+          g.transition()
+            .delay(this.t(PHASE.ENTER_DELAY + PHASE.ENTER_DURATION))
+            .duration(this.t(PHASE.ENTER_DURATION))
+            .style('opacity', 1);
           return g;
         },
         update => update,
