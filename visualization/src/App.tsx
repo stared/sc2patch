@@ -28,9 +28,9 @@ function parseUrlPath(pathname: string): { race: Race | null; entityId: string |
   if (parts.length === 0) {
     return { race: null, entityId: null, patchVersion: null };
   }
-  // Check for patch URL first: /patch/5.0.9
+  // Check for patch URL first: /patch/5.0.9 or /patch/5.0.15%20HF (with encoded space)
   if (parts[0] === 'patch' && parts.length >= 2) {
-    return { race: null, entityId: null, patchVersion: parts[1] };
+    return { race: null, entityId: null, patchVersion: decodeURIComponent(parts[1]) };
   }
   const race = parts[0] as Race;
   const validRaces: Race[] = ['terran', 'zerg', 'protoss', 'neutral'];
@@ -152,7 +152,7 @@ function App() {
   // Navigate to patch URL when selecting patch
   const handlePatchSelect = useCallback((version: string | null) => {
     if (version) {
-      navigate(`/patch/${version}`);
+      navigate(`/patch/${encodeURIComponent(version)}`);
     } else {
       navigate('/');
     }
