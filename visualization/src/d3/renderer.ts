@@ -110,9 +110,11 @@ export class PatchGridRenderer {
       // Clear normal view elements
       this.svg.select('.headers-container').selectAll('*').remove();
       this.svg.select('.patches-container').selectAll('*').remove();
+      this.svg.selectAll('.unit-links').remove(); // Clear unit links
 
-      // Render simple patch header + Blizzard link
+      // Render simple patch header + external link
       this.renderPatchViewHeader(layoutResult);
+      this.renderExternalLink(state, layoutResult);
 
       // Use standard entity and changes rendering for smooth animations
       this.renderEntities(layoutResult, state);
@@ -130,6 +132,9 @@ export class PatchGridRenderer {
       this.renderPatches(layoutResult, state, config.layout);
       this.renderEntities(layoutResult, state);
       this.renderChanges(layoutResult);
+
+      // Render external link (unit view)
+      this.renderExternalLink(state, layoutResult);
     }
 
     // Clear first render flag
@@ -267,8 +272,6 @@ export class PatchGridRenderer {
         }
       });
 
-    // Liquipedia link - render directly on svg for correct positioning
-    this.renderUnitLink(this.svg as unknown as Selection<SVGGElement, unknown, null, undefined>, state);
   }
 
   private renderSortControl(container: Selection<SVGGElement, unknown, null, undefined>, state: RenderState, isMobile: boolean): void {
@@ -297,45 +300,77 @@ export class PatchGridRenderer {
       });
   }
 
-  private renderUnitLink(container: Selection<SVGGElement, unknown, null, undefined>, state: RenderState): void {
-    const linksData = state.selectedEntityId ? [state.selectedEntityId] : [];
-    const groups = container.selectAll<SVGGElement, string>('.unit-links')
-      .data(linksData)
+  /**
+   * Unified external link - same position for patch view (Blizzard) and unit view (Liquipedia)
+   */
+  private renderExternalLink(state: RenderState, layoutResult: LayoutResult): void {
+    const isPatchMode = layoutResult.isPatchMode;
+    const patch = layoutResult.selectedPatch;
+    const hasLink = isPatchMode ? !!patch : !!state.selectedEntityId;
+
+    const linkData = hasLink ? ['link'] : [];
+
+    this.svg.selectAll<SVGGElement, string>('.external-link')
+      .data(linkData)
       .join(
         enter => {
           const g = enter.append('g')
-            .attr('class', 'unit-links wiki-link')
-            .style('opacity', 0);
-          g.append('text').attr('class', 'unit-link-name');
-          g.append('text').attr('class', 'unit-link-source').attr('dy', '1.2em');
-          // Fade in after unit icon settles (consistent with change notes)
-          g.transition()
-            .delay(this.t(PHASE.ENTER_DELAY + PHASE.ENTER_DURATION))
+            .attr('class', 'external-link wiki-link')
+            .attr('transform', `translate(${this.svgWidth - 20}, 16)`)
+            .style('opacity', 0)
+            .style('cursor', 'pointer');
+
+          g.append('text')
+            .attr('class', 'external-link-name')
+            .attr('text-anchor', 'end')
+            .attr('y', 0)
+            .style('fill', '#ccc')
+            .style('font-size', '13px');
+
+          g.append('text')
+            .attr('class', 'external-link-source')
+            .attr('text-anchor', 'end')
+            .attr('y', 14)
+            .style('fill', '#888')
+            .style('font-size', '11px');
+
+          g.transition('enter')
+            .delay(this.t(PHASE.ENTER_DELAY))
             .duration(this.t(PHASE.ENTER_DURATION))
             .style('opacity', 1);
+
           return g;
         },
-        update => update,
-        exit => exit.transition().duration(this.t(PHASE.EXIT_DURATION)).style('opacity', 0).remove()
+        update => update
+          .attr('transform', `translate(${this.svgWidth - 20}, 16)`)
+          .style('opacity', 1),
+        exit => exit.transition()
+          .duration(this.t(PHASE.EXIT_DURATION))
+          .style('opacity', 0)
+          .remove()
       )
-      .attr('transform', `translate(${this.svgWidth - 20}, 16)`)
       .on('click', (event) => {
         event.stopPropagation();
-        if (state.selectedEntityId) {
+        if (isPatchMode && patch) {
+          window.open(patch.url, '_blank');
+        } else if (state.selectedEntityId) {
           const unit = state.unitsMap.get(state.selectedEntityId);
           if (unit) window.open(unit.liquipedia_url, '_blank');
         }
       });
 
-    groups.select<SVGTextElement>('.unit-link-name')
-      .text(() => {
-        if (!state.selectedEntityId) return '';
+    // Update text content
+    const linkGroup = this.svg.select<SVGGElement>('.external-link');
+    if (!linkGroup.empty()) {
+      if (isPatchMode && patch) {
+        linkGroup.select('.external-link-name').text(`more on Patch ${patch.version}`);
+        linkGroup.select('.external-link-source').text('on Blizzard');
+      } else if (state.selectedEntityId) {
         const unit = state.unitsMap.get(state.selectedEntityId);
-        return unit ? `more on ${unit.name}` : '';
-      });
-
-    groups.select<SVGTextElement>('.unit-link-source')
-      .text(state.selectedEntityId ? 'on Liquipedia' : '');
+        linkGroup.select('.external-link-name').text(unit ? `more on ${unit.name}` : '');
+        linkGroup.select('.external-link-source').text('on Liquipedia');
+      }
+    }
   }
 
   private renderPatches(layoutResult: LayoutResult, state: RenderState, currentLayout: LayoutConfig): void {
@@ -683,46 +718,6 @@ export class PatchGridRenderer {
         exit => exit.remove()
       );
 
-    // Blizzard link (right side)
-    const linkData = [patch.url];
-    headerContainer
-      .selectAll<SVGGElement, string>('.patch-blizzard-link')
-      .data(linkData)
-      .join(
-        enter => {
-          const g = enter.append('g')
-            .attr('class', 'patch-blizzard-link wiki-link')
-            .attr('transform', `translate(${this.svgWidth - 20}, ${headerY})`)
-            .style('opacity', 0)
-            .style('cursor', 'pointer')
-            .on('click', (e) => {
-              e.stopPropagation();
-              window.open(patch.url, '_blank');
-            });
-
-          g.append('text')
-            .attr('class', 'blizzard-link-name')
-            .attr('text-anchor', 'end')
-            .attr('y', 10)
-            .text(`more on Patch ${patch.version}`);
-
-          g.append('text')
-            .attr('class', 'blizzard-link-source')
-            .attr('text-anchor', 'end')
-            .attr('y', 24)
-            .text('on Blizzard');
-
-          g.transition('enter')
-            .delay(this.t(PHASE.ENTER_DELAY))
-            .duration(this.t(PHASE.ENTER_DURATION))
-            .style('opacity', 1);
-
-          return g;
-        },
-        update => update
-          .attr('transform', `translate(${this.svgWidth - 20}, ${headerY})`),
-        exit => exit.remove()
-      );
   }
 
   /**
