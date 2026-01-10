@@ -107,15 +107,16 @@ export class PatchGridRenderer {
 
     // Render based on mode
     if (layoutResult.isPatchMode) {
-      // Clear normal view containers that aren't shared
+      // Clear race headers (not used in patch view)
       this.svg.select('.headers-container').selectAll('*').remove();
-      this.svg.select('.patches-container').selectAll('*').remove();
 
-      // Render patch view header
-      this.renderPatchViewHeader(layoutResult, state);
+      // Render patches - the selected patch animates to header position
+      this.renderPatches(layoutResult, state, config.layout);
+
+      // Render Blizzard link only (patch label is handled by renderPatches)
+      this.renderPatchViewBlizzardLink(layoutResult);
 
       // Use standard entity and changes rendering for smooth animations
-      // D3 will animate entities from their grid positions to patch view positions
       this.renderEntities(layoutResult, state);
       this.renderChanges(layoutResult);
 
@@ -123,7 +124,7 @@ export class PatchGridRenderer {
       this.renderPatchViewEntityNames(layoutResult, state);
     } else {
       // Clear patch view containers
-      this.svg.select('.patch-view-header').remove();
+      this.svg.select('.patch-blizzard-link-container').remove();
       this.svg.select('.patch-entity-names').remove();
 
       // Render all layers with unified join pattern
@@ -345,8 +346,13 @@ export class PatchGridRenderer {
       patchesContainer = this.svg.append('g').attr('class', 'patches-container');
     }
 
+    const isPatchMode = layoutResult.isPatchMode;
+
     // Use layout config for positioning (handles mobile/desktop differences)
     const { patchLabelTranslateX, patchLabelTranslateY, patchDateOffsetY, patchVersionOffsetX, patchVersionOffsetY } = currentLayout;
+
+    // In patch mode, center the label
+    const getLabelX = (_d: PatchRowLayout) => isPatchMode ? this.svgWidth / 2 : patchLabelTranslateX;
 
     patchesContainer
       .selectAll<SVGGElement, PatchRowLayout>('.patch-group')
@@ -361,20 +367,29 @@ export class PatchGridRenderer {
 
           // On mobile: label above icons (horizontal layout)
           // On desktop: label on left side (vertical layout)
+          // In patch mode: centered as header
           const label = pg.append('g')
             .attr('class', 'patch-label')
-            .attr('transform', `translate(${patchLabelTranslateX}, ${patchLabelTranslateY})`)
+            .attr('transform', d => `translate(${getLabelX(d)}, ${patchLabelTranslateY})`)
             .style('cursor', 'pointer');
 
-          // Invisible hit area for easier clicking (fixes double-click issue)
+          // Pill background (only visible in patch mode)
+          label.append('rect')
+            .attr('class', 'patch-label-bg')
+            .attr('height', 28)
+            .attr('rx', 4)
+            .attr('y', -6)
+            .style('opacity', 0);
+
+          // Invisible hit area for easier clicking
           label.append('rect')
             .attr('class', 'patch-label-hit-area')
             .attr('x', -5)
             .attr('y', -5)
             .attr('width', 85)
             .attr('height', 35)
-            .style('fill', 'transparent')
-            .on('click', (e, d) => { e.stopPropagation(); state.onPatchSelect(d.version); });
+            .style('fill', 'rgba(0,0,0,0.001)')
+            .style('pointer-events', 'all');
 
           label.append('text')
             .attr('class', 'patch-date')
@@ -393,7 +408,6 @@ export class PatchGridRenderer {
             .text(d => d.version);
 
           // Fade in after move phase
-          // Named transition prevents UPDATE from cancelling this on React re-render
           pg.transition('enter')
             .delay(this.t(PHASE.ENTER_DELAY))
             .duration(this.t(PHASE.ENTER_DURATION))
@@ -403,18 +417,7 @@ export class PatchGridRenderer {
         },
 
         // UPDATE: Existing patches move to new position and update label layout
-        // If element was mid-exit (low opacity), wait for ENTER phase instead of MOVE
         update => {
-          // Update label positions for breakpoint crossing
-          update.select('.patch-label')
-            .attr('transform', `translate(${patchLabelTranslateX}, ${patchLabelTranslateY})`);
-          update.select('.patch-date')
-            .attr('x', 0)
-            .attr('y', patchDateOffsetY);
-          update.select('.patch-version')
-            .attr('x', patchVersionOffsetX)
-            .attr('y', patchVersionOffsetY);
-
           return update.call(u => u.transition()
             .delay((_d, i, nodes) => {
               const wasExiting = +select(nodes[i]).style('opacity') < 0.5;
@@ -434,6 +437,107 @@ export class PatchGridRenderer {
           .remove()
         )
       );
+
+    // Update label styling based on mode (patch mode = header style)
+    const svgWidth = this.svgWidth;
+    patchesContainer
+      .selectAll<SVGGElement, PatchRowLayout>('.patch-group')
+      .each(function(d) {
+        const group = select(this);
+        const label = group.select('.patch-label');
+        const eraColor = eraColors[getEraFromVersion(d.version)];
+
+        if (isPatchMode) {
+          // Header style: centered, with pill background, full date
+          const dateObj = new Date(d.date);
+          const formattedDate = dateObj.toLocaleDateString('en-US', {
+            year: 'numeric', month: 'short', day: 'numeric'
+          });
+          const headerText = `Patch ${d.version} — ${formattedDate}`;
+
+          // Update to header layout
+          label.transition()
+            .duration(PHASE.MOVE_DURATION)
+            .ease(easeCubicInOut)
+            .attr('transform', `translate(${svgWidth / 2}, ${patchLabelTranslateY})`);
+
+          // Update date text to header format
+          label.select('.patch-date')
+            .transition()
+            .duration(PHASE.MOVE_DURATION)
+            .attr('text-anchor', 'middle')
+            .attr('x', 0)
+            .attr('y', 12)
+            .text(headerText);
+
+          // Hide version (merged into date)
+          label.select('.patch-version')
+            .transition()
+            .duration(PHASE.MOVE_DURATION)
+            .style('opacity', 0);
+
+          // Show and size pill background
+          const textEl = label.select<SVGTextElement>('.patch-date').node();
+          const textWidth = textEl?.getComputedTextLength() ?? 200;
+          const padding = 32;
+          const rectWidth = textWidth + padding;
+
+          label.select('.patch-label-bg')
+            .attr('width', rectWidth)
+            .attr('x', -rectWidth / 2)
+            .style('stroke', eraColor)
+            .style('stroke-width', '1px')
+            .style('fill', 'rgba(0, 0, 0, 0.3)')
+            .transition()
+            .duration(PHASE.MOVE_DURATION)
+            .style('opacity', 1);
+
+          // Disable click (background click returns to overview)
+          label.style('cursor', 'default');
+        } else {
+          // Normal style: left-aligned, no pill
+          label.transition()
+            .duration(PHASE.MOVE_DURATION)
+            .ease(easeCubicInOut)
+            .attr('transform', `translate(${patchLabelTranslateX}, ${patchLabelTranslateY})`);
+
+          label.select('.patch-date')
+            .transition()
+            .duration(PHASE.MOVE_DURATION)
+            .attr('text-anchor', 'start')
+            .attr('x', 0)
+            .attr('y', patchDateOffsetY)
+            .text(d.date.split('-').slice(0, 2).join('-'));
+
+          label.select('.patch-version')
+            .transition()
+            .duration(PHASE.MOVE_DURATION)
+            .attr('x', patchVersionOffsetX)
+            .attr('y', patchVersionOffsetY)
+            .style('opacity', 1);
+
+          label.select('.patch-label-bg')
+            .transition()
+            .duration(PHASE.MOVE_DURATION)
+            .style('opacity', 0);
+
+          label.style('cursor', 'pointer');
+        }
+      });
+
+    // Attach click handler (only works in non-patch mode due to cursor change)
+    if (!isPatchMode) {
+      patchesContainer
+        .selectAll<SVGGElement, PatchRowLayout>('.patch-label')
+        .on('click', (e, d) => {
+          e.stopPropagation();
+          state.onPatchSelect(d.version);
+        });
+    } else {
+      patchesContainer
+        .selectAll<SVGGElement, PatchRowLayout>('.patch-label')
+        .on('click', null);
+    }
   }
 
   private renderEntities(layoutResult: LayoutResult, state: RenderState): void {
@@ -644,86 +748,20 @@ export class PatchGridRenderer {
       );
   }
 
-  private renderPatchViewHeader(layoutResult: LayoutResult, _state: RenderState): void {
+  private renderPatchViewBlizzardLink(layoutResult: LayoutResult): void {
     if (!layoutResult.selectedPatch) return;
 
-    let headerContainer = this.svg.select<SVGGElement>('.patch-view-header');
-    if (headerContainer.empty()) {
-      headerContainer = this.svg.append('g').attr('class', 'patch-view-header');
+    let linkContainer = this.svg.select<SVGGElement>('.patch-blizzard-link-container');
+    if (linkContainer.empty()) {
+      linkContainer = this.svg.append('g').attr('class', 'patch-blizzard-link-container');
     }
 
     const patch = layoutResult.selectedPatch;
     const headerY = layout.headerY;
-    const eraColor = eraColors[getEraFromVersion(patch.version)];
-
-    // Format date nicely
-    const dateObj = new Date(patch.date);
-    const formattedDate = dateObj.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-
-    const headerData = [patch.version];
-    headerContainer
-      .selectAll<SVGGElement, string>('.patch-header-group')
-      .data(headerData)
-      .join(
-        enter => {
-          const g = enter.append('g')
-            .attr('class', 'patch-header-group')
-            .attr('transform', `translate(${this.svgWidth / 2}, ${headerY})`)
-            .style('opacity', 0);
-
-          // Pill background (like race headers)
-          g.append('rect')
-            .attr('class', 'patch-header-bg')
-            .attr('height', 28)
-            .attr('rx', 4)
-            .attr('y', 0);
-
-          // Patch version and date text (centered)
-          g.append('text')
-            .attr('class', 'patch-view-title')
-            .attr('text-anchor', 'middle')
-            .attr('y', 18)
-            .style('fill', eraColor)
-            .text(`Patch ${patch.version} — ${formattedDate}`);
-
-          // Fade in
-          g.transition('enter')
-            .delay(this.t(PHASE.ENTER_DELAY))
-            .duration(this.t(PHASE.ENTER_DURATION))
-            .style('opacity', 1);
-
-          return g;
-        },
-        update => update.call(u => u.transition()
-          .duration(this.t(PHASE.MOVE_DURATION))
-          .attr('transform', `translate(${this.svgWidth / 2}, ${headerY})`)
-          .style('opacity', 1)
-        ),
-        exit => exit.remove()
-      )
-      // Size the pill to fit text (like race headers)
-      .each(function() {
-        const group = select(this);
-        const textEl = group.select<SVGTextElement>('.patch-view-title');
-        const textWidth = textEl.node()?.getComputedTextLength() ?? 200;
-        const padding = 32;
-        const rectWidth = textWidth + padding;
-
-        group.select('.patch-header-bg')
-          .attr('width', rectWidth)
-          .attr('x', -rectWidth / 2)
-          .style('stroke', eraColor)
-          .style('stroke-width', '1px')
-          .style('fill', 'rgba(0, 0, 0, 0.3)');
-      });
 
     // Blizzard link (right side) - styled like wiki-link
     const linkData = [patch.url];
-    headerContainer
+    linkContainer
       .selectAll<SVGGElement, string>('.patch-blizzard-link')
       .data(linkData)
       .join(
@@ -762,7 +800,11 @@ export class PatchGridRenderer {
           .attr('transform', `translate(${this.svgWidth - 20}, ${headerY})`)
           .style('opacity', 1)
         ),
-        exit => exit.remove()
+        exit => exit.call(e => e.transition()
+          .duration(this.t(PHASE.EXIT_DURATION))
+          .style('opacity', 0)
+          .remove()
+        )
       );
   }
 
