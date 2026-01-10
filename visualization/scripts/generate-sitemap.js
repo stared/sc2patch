@@ -82,7 +82,13 @@ async function generateSitemap() {
       urls.push(generateUrlEntry(racePath, '0.9'));
     });
 
-    // 5. Add Unit Pages
+    // 5. Add Patch Pages
+    data.patches.forEach((patch) => {
+      const patchPath = `/patch/${patch.version}`;
+      urls.push(generateUrlEntry(patchPath, '0.7'));
+    });
+
+    // 6. Add Unit Pages
     entityIds.forEach((entityId) => {
       // Extract race and unit slug from entity_id (e.g., 'zerg-hydralisk' -> race='zerg', slug='hydralisk')
       const parts = entityId.split('-');
@@ -93,17 +99,17 @@ async function generateSitemap() {
       urls.push(generateUrlEntry(unitPath, '0.8'));
     });
 
-    // 6. Construct Final XML
+    // 7. Construct Final XML
     const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.join('')}
 </urlset>
 `;
 
-    // 7. Write sitemap.xml
+    // 8. Write sitemap.xml
     await fs.writeFile(SITEMAP_PATH, sitemapContent);
     console.log(`✅ Sitemap written to: ${SITEMAP_PATH} (${urls.length} URLs)`);
 
-    // 8. Generate robots.txt
+    // 9. Generate robots.txt
     const robotsContent = `User-agent: *
 Allow: /
 
