@@ -34,6 +34,7 @@ export function Header({ selectedEra, setSelectedEra }: HeaderProps) {
         <div className="attribution">
           <span className="attribution-author">by <a href="https://p.migdal.pl" target="_blank" rel="noopener noreferrer">Piotr Migdał</a></span>
           <a href="https://github.com/stared/sc2-balance-timeline" target="_blank" rel="noopener noreferrer" className="attribution-source">source code & about</a>
+          <a href="https://news.ycombinator.com/item?id=46567894" target="_blank" rel="noopener noreferrer" className="attribution-source">discuss on Hacker News</a>
         </div>
       </div>
 
