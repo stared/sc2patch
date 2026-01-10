@@ -704,13 +704,13 @@ export class PatchGridRenderer {
             .attr('class', 'blizzard-link-name')
             .attr('text-anchor', 'end')
             .attr('y', 10)
-            .text('View patch notes');
+            .text(`more on Patch ${patch.version}`);
 
           g.append('text')
             .attr('class', 'blizzard-link-source')
             .attr('text-anchor', 'end')
             .attr('y', 24)
-            .text('on Blizzard →');
+            .text('on Blizzard');
 
           g.transition('enter')
             .delay(this.t(PHASE.ENTER_DELAY))
