@@ -122,8 +122,8 @@ export class PatchGridRenderer {
       this.renderPatchViewEntityNames(layoutResult, state);
     } else {
       // Clear patch view containers
-      this.svg.select('.patch-view-header').remove();
-      this.svg.select('.patch-entity-names').remove();
+      this.svg.selectAll('.patch-view-header').remove();
+      this.svg.selectAll('.patch-entity-names').remove();
 
       // Render all layers with unified join pattern
       this.renderHeaders(layoutResult, state);
