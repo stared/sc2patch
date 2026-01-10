@@ -11,7 +11,8 @@ import {
   type WrappedChange,
   type LayoutResult,
   type LayoutInput,
-  type HeaderLayout
+  type HeaderLayout,
+  type PatchViewEntityLayout
 } from './layout';
 
 // Extend d3-selection to include transition
@@ -29,6 +30,8 @@ interface RenderState {
   sortOrder: 'newest' | 'oldest';
   setSortOrder?: (order: 'newest' | 'oldest') => void;
   setSelectedRace?: (race: Race | null) => void;
+  selectedPatchVersion: string | null;
+  onPatchSelect: (version: string | null) => void;
 }
 
 // Animation timing - phased: exit → move → enter
@@ -78,7 +81,8 @@ export class PatchGridRenderer {
       patches: state.patches,
       unitsMap: state.unitsMap,
       selectedEntityId: state.selectedEntityId,
-      selectedRace: state.selectedRace
+      selectedRace: state.selectedRace,
+      selectedPatchVersion: state.selectedPatchVersion
     };
 
     // Calculate layout (pure function - just target positions)
@@ -91,6 +95,8 @@ export class PatchGridRenderer {
     this.svg.on('click', () => {
       if (state.selectedEntityId) {
         state.onEntitySelect(null);
+      } else if (state.selectedPatchVersion) {
+        state.onPatchSelect(null);
       }
     });
 
@@ -99,11 +105,28 @@ export class PatchGridRenderer {
       this.scrollToTargetPosition(layoutResult.focusTargetY);
     }
 
-    // Render all layers with unified join pattern
-    this.renderHeaders(layoutResult, state);
-    this.renderPatches(layoutResult, state, config.layout);
-    this.renderEntities(layoutResult, state);
-    this.renderChanges(layoutResult);
+    // Render based on mode
+    if (layoutResult.isPatchMode) {
+      // Clear normal view containers
+      this.svg.select('.headers-container').selectAll('*').remove();
+      this.svg.select('.patches-container').selectAll('*').remove();
+      this.svg.select('.entities-container').selectAll('*').remove();
+      this.svg.select('.changes-container').remove();
+
+      // Render patch view
+      this.renderPatchViewHeader(layoutResult, state);
+      this.renderPatchViewEntities(layoutResult, state);
+    } else {
+      // Clear patch view containers
+      this.svg.select('.patch-view-header').remove();
+      this.svg.select('.patch-view-entities').remove();
+
+      // Render all layers with unified join pattern
+      this.renderHeaders(layoutResult, state);
+      this.renderPatches(layoutResult, state, config.layout);
+      this.renderEntities(layoutResult, state);
+      this.renderChanges(layoutResult);
+    }
 
     // Clear first render flag
     this.isFirstRender = false;
@@ -311,7 +334,7 @@ export class PatchGridRenderer {
       .text(state.selectedEntityId ? 'on Liquipedia' : '');
   }
 
-  private renderPatches(layoutResult: LayoutResult, _state: RenderState, currentLayout: LayoutConfig): void {
+  private renderPatches(layoutResult: LayoutResult, state: RenderState, currentLayout: LayoutConfig): void {
     let patchesContainer = this.svg.select<SVGGElement>('.patches-container');
     if (patchesContainer.empty()) {
       patchesContainer = this.svg.append('g').attr('class', 'patches-container');
@@ -346,14 +369,14 @@ export class PatchGridRenderer {
                 .style('fill', eraColors[getEraFromVersion(d.version)])
                 .text(d.date.split('-').slice(0, 2).join('-'));
             })
-            .on('click', (e, d) => { e.stopPropagation(); window.open(d.url, '_blank'); });
+            .on('click', (e, d) => { e.stopPropagation(); state.onPatchSelect(d.version); });
 
           label.append('text')
             .attr('class', 'patch-version')
             .attr('x', patchVersionOffsetX)
             .attr('y', patchVersionOffsetY)
             .text(d => d.version)
-            .on('click', (e, d) => { e.stopPropagation(); window.open(d.url, '_blank'); });
+            .on('click', (e, d) => { e.stopPropagation(); state.onPatchSelect(d.version); });
 
           // Fade in after move phase
           // Named transition prevents UPDATE from cancelling this on React re-render
@@ -599,6 +622,226 @@ export class PatchGridRenderer {
         ),
 
         // EXIT: Fade out
+        exit => exit.call(e => e.transition()
+          .duration(this.t(PHASE.EXIT_DURATION))
+          .style('opacity', 0)
+          .remove()
+        )
+      );
+  }
+
+  private renderPatchViewHeader(layoutResult: LayoutResult, _state: RenderState): void {
+    if (!layoutResult.selectedPatch) return;
+
+    let headerContainer = this.svg.select<SVGGElement>('.patch-view-header');
+    if (headerContainer.empty()) {
+      headerContainer = this.svg.append('g').attr('class', 'patch-view-header');
+    }
+
+    const patch = layoutResult.selectedPatch;
+    const headerY = layout.headerY;
+
+    // Format date nicely
+    const dateObj = new Date(patch.date);
+    const formattedDate = dateObj.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+
+    const headerData = [patch.version];
+    headerContainer
+      .selectAll<SVGGElement, string>('.patch-header-group')
+      .data(headerData)
+      .join(
+        enter => {
+          const g = enter.append('g')
+            .attr('class', 'patch-header-group')
+            .attr('transform', `translate(${this.svgWidth / 2}, ${headerY})`)
+            .style('opacity', 0);
+
+          // Patch version and date text (centered)
+          g.append('text')
+            .attr('class', 'patch-view-title')
+            .attr('text-anchor', 'middle')
+            .attr('y', 16)
+            .style('fill', eraColors[getEraFromVersion(patch.version)])
+            .text(`Patch ${patch.version} — ${formattedDate}`);
+
+          // Fade in
+          g.transition('enter')
+            .delay(this.t(PHASE.ENTER_DELAY))
+            .duration(this.t(PHASE.ENTER_DURATION))
+            .style('opacity', 1);
+
+          return g;
+        },
+        update => update.call(u => u.transition()
+          .duration(this.t(PHASE.MOVE_DURATION))
+          .attr('transform', `translate(${this.svgWidth / 2}, ${headerY})`)
+          .style('opacity', 1)
+        ),
+        exit => exit.remove()
+      );
+
+    // Blizzard link (right side)
+    const linkData = [patch.url];
+    headerContainer
+      .selectAll<SVGGElement, string>('.patch-blizzard-link')
+      .data(linkData)
+      .join(
+        enter => {
+          const g = enter.append('g')
+            .attr('class', 'patch-blizzard-link')
+            .attr('transform', `translate(${this.svgWidth - 20}, ${headerY})`)
+            .style('opacity', 0)
+            .style('cursor', 'pointer')
+            .on('click', (e) => {
+              e.stopPropagation();
+              window.open(patch.url, '_blank');
+            });
+
+          g.append('text')
+            .attr('class', 'blizzard-link-text')
+            .attr('text-anchor', 'end')
+            .attr('y', 16)
+            .text('View on Blizzard →');
+
+          g.transition('enter')
+            .delay(this.t(PHASE.ENTER_DELAY))
+            .duration(this.t(PHASE.ENTER_DURATION))
+            .style('opacity', 1);
+
+          return g;
+        },
+        update => update.call(u => u.transition()
+          .duration(this.t(PHASE.MOVE_DURATION))
+          .attr('transform', `translate(${this.svgWidth - 20}, ${headerY})`)
+          .style('opacity', 1)
+        ),
+        exit => exit.remove()
+      );
+  }
+
+  private renderPatchViewEntities(layoutResult: LayoutResult, state: RenderState): void {
+    let entitiesContainer = this.svg.select<SVGGElement>('.patch-view-entities');
+    if (entitiesContainer.empty()) {
+      entitiesContainer = this.svg.append('g').attr('class', 'patch-view-entities');
+    }
+
+    entitiesContainer
+      .selectAll<SVGGElement, PatchViewEntityLayout>('.patch-entity-group')
+      .data(layoutResult.patchViewEntities, d => d.entityId)
+      .join(
+        enter => {
+          const g = enter.append('g')
+            .attr('class', 'patch-entity-group')
+            .attr('transform', d => `translate(0, ${d.y})`)
+            .style('opacity', 0);
+
+          // Entity icon (left side, like unit view)
+          const iconGroup = g.append('g')
+            .attr('class', 'entity-icon-group')
+            .attr('transform', d => `translate(${d.x}, 0)`)  // Position at x, y=0 relative to group
+            .style('cursor', 'pointer')
+            .style('--glow-color', d => raceColors[(d.entity.race || 'neutral') as Race]);
+
+          iconGroup.append('rect')
+            .attr('width', this.currentCellSize)
+            .attr('height', this.currentCellSize)
+            .attr('rx', 4)
+            .style('fill', 'url(#cellGradient)')
+            .style('stroke', d => {
+              const { status } = d.entity;
+              return status ? getChangeColor(status as ChangeType) : raceColors[(d.entity.race || 'neutral') as Race];
+            });
+
+          iconGroup.append('image')
+            .attr('width', this.currentCellSize)
+            .attr('height', this.currentCellSize)
+            .attr('href', d => `${import.meta.env.BASE_URL}assets/units/${d.entityId}.png`)
+            .attr('clip-path', 'url(#roundedCorners)')
+            .attr('preserveAspectRatio', 'xMidYMid slice');
+
+          // Entity name (header, like race header in unit view)
+          // Position: nameX, nameY are RELATIVE to the group
+          g.append('text')
+            .attr('class', 'patch-entity-name')
+            .attr('x', d => d.nameX)
+            .attr('y', d => d.nameY)  // RELATIVE Y - centered with icon
+            .style('fill', d => raceColors[(d.entity.race || 'neutral') as Race])
+            .style('cursor', 'pointer')
+            .text(d => state.unitsMap.get(d.entityId)?.name || d.entity.name || d.entityId);
+
+          // Change notes (below name, like unit view)
+          // Position: changesX, changesY are RELATIVE to the group
+          g.each(function(d) {
+            const group = select(this);
+            const changesGroup = group.append('g')
+              .attr('class', 'patch-entity-changes')
+              .attr('transform', `translate(${d.changesX}, ${d.changesY})`);  // RELATIVE position
+
+            let currentY = 0;
+            const lineHeight = layout.changeNoteLineHeight;
+            const indentX = 14;
+
+            d.changes.forEach((change: WrappedChange) => {
+              const textElement = changesGroup.append('text')
+                .attr('class', 'change-note')
+                .attr('y', currentY);
+
+              change.lines.forEach((line, lineIndex) => {
+                if (lineIndex === 0) {
+                  textElement.append('tspan')
+                    .attr('class', 'change-indicator')
+                    .style('fill', getChangeColor(change.change_type as ChangeType))
+                    .text(getChangeIndicator(change.change_type as ChangeType));
+
+                  textElement.append('tspan').text(line);
+                } else {
+                  textElement.append('tspan')
+                    .attr('x', indentX)
+                    .attr('dy', lineHeight)
+                    .text(line);
+                }
+              });
+
+              currentY += change.lines.length * lineHeight;
+            });
+          });
+
+          // Click handlers on icon and name to navigate to unit view
+          g.selectAll('.entity-icon-group, .patch-entity-name')
+            .on('click', (event, _d) => {
+              event.stopPropagation();
+              const entityData = select((event.currentTarget as SVGElement).parentNode as SVGGElement).datum() as PatchViewEntityLayout;
+
+              // Disable interactions during transition
+              const container = document.querySelector('.patch-grid-container');
+              if (container) {
+                container.classList.add('transitioning');
+                const totalAnimationTime = PHASE.ENTER_DELAY + PHASE.ENTER_DURATION + 50;
+                setTimeout(() => container.classList.remove('transitioning'), totalAnimationTime);
+              }
+
+              state.onEntitySelect(entityData.entityId);
+            });
+
+          // Fade in after enter delay (consistent with unit view)
+          g.transition('enter')
+            .delay(this.t(PHASE.ENTER_DELAY))
+            .duration(this.t(PHASE.ENTER_DURATION))
+            .style('opacity', 1);
+
+          return g;
+        },
+        update => update.call(u => u.transition()
+          .delay(this.t(PHASE.MOVE_DELAY))
+          .duration(this.t(PHASE.MOVE_DURATION))
+          .ease(easeCubicInOut)
+          .attr('transform', d => `translate(0, ${d.y})`)
+          .style('opacity', 1)
+        ),
         exit => exit.call(e => e.transition()
           .duration(this.t(PHASE.EXIT_DURATION))
           .style('opacity', 0)

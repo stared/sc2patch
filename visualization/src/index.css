@@ -722,6 +722,36 @@ svg .wiki-link:hover {
   fill: #999;
 }
 
+/* Patch view styles */
+.patch-view-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.patch-blizzard-link .blizzard-link-text {
+  fill: #888;
+  font-size: 13px;
+  transition: fill 0.15s ease;
+}
+
+.patch-blizzard-link:hover .blizzard-link-text {
+  fill: #fff;
+}
+
+.patch-entity-name {
+  font-size: 16px;
+  font-weight: 600;
+  transition: filter 0.15s ease;
+}
+
+.patch-entity-name:hover {
+  filter: drop-shadow(0 0 6px currentColor) brightness(1.2);
+}
+
+.entity-icon-group:hover {
+  filter: drop-shadow(0 0 12px var(--glow-color, rgba(74, 158, 255, 0.8))) brightness(1.15);
+}
+
 /* SVG entity cells */
 .entity-cell-group {
   cursor: pointer;
