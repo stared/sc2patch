@@ -27,7 +27,7 @@ Data visualization with D3.js, data extraction with LLM (Gemini 3 Pro).
 
 I decided on a unit-first view. So upgrades and similar changes are attributed to the unit. For the same reason, summoned units are assigned to their parent - Locusts to Swarm Host, Infested Terrans to Infestor, Broodlings to Brood Lord (even though they also appear with destroyed Zerg buildings), etc.
 
-![SC2 balance changes logo by Nano Banana Pro](./sc2_balance_changeges_logo.jpg)
+![SC2 balance changes logo by Nano Banana Pro](https://raw.githubusercontent.com/stared/sc2-balance-timeline/main/visualization/public/sc2_balance_changeges_logo.jpg)
 
 ## Data
 
@@ -63,7 +63,7 @@ Pre-LotV patches use "Blizzard Time" (1.4× faster than real time); LotV switche
 
 ### Missing balance update pages
 
-[![404 patch not found - Blizzard SC2](./blizzard_sc2_patch_not_found.jpg)](https://starcraft2.blizzard.com/en-us/news/12802185)
+[![404 patch not found - Blizzard SC2](https://raw.githubusercontent.com/stared/sc2-balance-timeline/main/visualization/public/blizzard_sc2_patch_not_found.jpg)](https://starcraft2.blizzard.com/en-us/news/12802185)
 
 No-one lives forever - and it is also true for websites (see my stance on that - [if it is worth keeping, save it in Markdown](https://p.migdal.pl/blog/2025/02/markdown-saves/)). 15 years is a lot.
 
