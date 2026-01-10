@@ -529,7 +529,8 @@ export class PatchGridRenderer {
       })
       .on('mouseenter', (event, d) => {
         if (layoutResult.isMobile) return; // No tooltips on mobile (no hover)
-        if (state.selectedEntityId) return;
+        if (state.selectedEntityId) return; // No tooltips when unit is selected (viewing unit history)
+        if (state.selectedPatchVersion) return; // No tooltips in patch view (names already visible)
         const group = event.currentTarget as SVGGElement;
         const rect = group.getBoundingClientRect();
         state.setTooltip({
