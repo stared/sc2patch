@@ -52,6 +52,8 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
   const [selectedRace, setSelectedRace] = useState<Race | null>(null);
+  // Track race filter state before unit selection (to restore on deselect)
+  const [raceBeforeUnitSelect, setRaceBeforeUnitSelect] = useState<Race | null>(null);
   const [selectedEra, setSelectedEra] = useState<Era | null>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>('newest');
   const [tooltip, setTooltip] = useState<{
@@ -105,8 +107,9 @@ function App() {
     if (entityId !== selectedEntityId) {
       setSelectedEntityId(entityId);
     }
-    // Always sync race from URL
-    if (race !== selectedRace) {
+    // Only sync race from URL when no unit is selected
+    // When a unit is selected, the race in URL is implicit from unit ID, not a race filter
+    if (!entityId && race !== selectedRace) {
       setSelectedRace(race);
     }
   }, [location.pathname, selectedEntityId, selectedRace]);
@@ -114,16 +117,19 @@ function App() {
   // Navigate to unit URL when selecting (instead of just setting state)
   const handleEntitySelect = useCallback((entityId: string | null) => {
     if (entityId) {
+      // Save current race filter before selecting unit
+      setRaceBeforeUnitSelect(selectedRace);
       navigate(entityIdToPath(entityId));
     } else {
-      // Deselect: go back to race view if race selected, else home
-      if (selectedRace) {
-        navigate(`/${selectedRace}/`);
+      // Deselect: restore previous race state (or go home if none was selected)
+      if (raceBeforeUnitSelect) {
+        navigate(`/${raceBeforeUnitSelect}/`);
       } else {
         navigate('/');
       }
+      setRaceBeforeUnitSelect(null);
     }
-  }, [navigate, selectedRace]);
+  }, [navigate, selectedRace, raceBeforeUnitSelect]);
 
   // Navigate to race URL when selecting race
   const handleRaceSelect = useCallback((race: Race | null) => {
