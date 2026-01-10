@@ -68,9 +68,8 @@ body {
   white-space: nowrap;
 }
 
-/* Abathur easter egg */
+/* Balance link easter egg */
 .balance-easter-egg {
-  position: relative;
   text-decoration: none;
   cursor: pointer;
 }
@@ -81,68 +80,7 @@ body {
 }
 
 .balance-easter-egg:hover .balance-text {
-  filter: drop-shadow(0 0 8px var(--zerg-color)) brightness(1.2);
-}
-
-.abathur-quote {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%) translateY(12px);
-  width: max-content;
-  max-width: 90vw;
-  text-align: center;
-  font-size: 0.85rem;
-  font-weight: 400;
-  font-style: italic;
-  text-transform: none;
-  letter-spacing: 0;
-  color: var(--zerg-color);
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
-  pointer-events: none;
-  z-index: 10;
-}
-
-.balance-easter-egg:hover .abathur-quote {
-  opacity: 0.8;
-  visibility: visible;
-  transform: translateX(-50%) translateY(14px);
-  transition-delay: 0.4s;
-}
-
-/* Hide attribution when quote is shown (prevents overlap) */
-.header-top:has(.balance-easter-egg:hover) .attribution {
-  opacity: 0;
-}
-
-/* Show full quote on desktop, short on mobile */
-.abathur-short { display: none; }
-
-@media (max-width: 768px) {
-  .abathur-full { display: none; }
-  .abathur-short { display: block; }
-
-  /* Break positioning context - quote positions to header */
-  .balance-easter-egg {
-    position: static;
-  }
-
-  .header-title-group {
-    position: relative;
-  }
-
-  .abathur-quote {
-    left: 0;
-    right: 0;
-    transform: translateX(0) translateY(12px);
-    font-size: 0.85rem;
-  }
-
-  .balance-easter-egg:hover .abathur-quote {
-    transform: translateX(0) translateY(10px);
-  }
+  filter: drop-shadow(0 0 8px var(--balance-color)) brightness(1.2);
 }
 
 /* Era Timeline */

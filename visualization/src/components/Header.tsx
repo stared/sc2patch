@@ -3,7 +3,6 @@ import {
   eraColors,
   eraOrder,
   changeTypeConfig,
-  raceColors,
   type Era,
 } from '../utils/uxSettings';
 
@@ -25,11 +24,9 @@ export function Header({ selectedEra, setSelectedEra }: HeaderProps) {
               target="_blank"
               rel="noopener noreferrer"
               className="balance-easter-egg"
-              style={{ '--zerg-color': raceColors.zerg, '--balance-color': changeTypeConfig.mixed.color } as React.CSSProperties}
+              style={{ '--balance-color': changeTypeConfig.mixed.color } as React.CSSProperties}
             >
               <span className="balance-text">Balance Changes</span>
-              <span className="abathur-quote abathur-full">"Never perfect. Perfection goal that changes. Never stops moving. Can chase, cannot catch." — Abathur</span>
-              <span className="abathur-quote abathur-short">"Never perfect. Perfection goal that changes." — Abathur</span>
             </a>
             {' '}Visualized
           </h1>
