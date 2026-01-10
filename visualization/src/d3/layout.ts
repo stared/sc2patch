@@ -56,6 +56,19 @@ export interface ChangeLayout {
   changes: WrappedChange[];
 }
 
+/** Entity layout in patch view (shows entity with its changes) */
+export interface PatchViewEntityLayout {
+  entityId: string;
+  entity: ProcessedEntity;
+  x: number;
+  y: number;
+  nameX: number;
+  nameY: number;
+  changes: WrappedChange[];
+  changesX: number;
+  changesY: number;
+}
+
 /** Complete layout result */
 export interface LayoutResult {
   svgHeight: number;
@@ -65,6 +78,12 @@ export interface LayoutResult {
   changes: ChangeLayout[];
   /** Whether we're in "focus" mode (unit selected) vs "overview" mode */
   isFocusMode: boolean;
+  /** Whether we're in "patch" mode (patch selected) */
+  isPatchMode: boolean;
+  /** Selected patch data (for patch view) */
+  selectedPatch: ProcessedPatchData | null;
+  /** Entity layouts for patch view */
+  patchViewEntities: PatchViewEntityLayout[];
   /** Target scroll position for focusing */
   focusTargetY: number | null;
   /** Whether this is mobile layout (labels above icons) */
@@ -77,6 +96,7 @@ export interface LayoutInput {
   unitsMap: Map<string, Unit>;
   selectedEntityId: string | null;
   selectedRace: Race | null;
+  selectedPatchVersion: string | null;
 }
 
 /**
@@ -406,6 +426,104 @@ export function createLayoutEngine(
       });
   }
 
+  // Patch view layout
+  // Structure: mirrors the unit view but with [Icon | Name + Changes] instead of [Date | Icon | Changes]
+
+  function calculatePatchViewEntities(
+    patch: ProcessedPatchData,
+    svgWidth: number,
+    isMobile: boolean
+  ): {
+    entities: PatchViewEntityLayout[];
+    totalHeight: number;
+    standardEntities: EntityLayout[];
+    standardChanges: ChangeLayout[];
+  } {
+    const entities: PatchViewEntityLayout[] = [];
+    const standardEntities: EntityLayout[] = [];
+    const standardChanges: ChangeLayout[] = [];
+
+    // Match unit view's text positioning
+    const textStartX = getChangeTextX(isMobile);
+    const availableWidth = svgWidth - textStartX - TEXT_RIGHT_PADDING - INDICATOR_WIDTH;
+    const entityGap = 8; // Smaller gap between entities (like unit view)
+
+    let currentY = layout.gridStartY;
+
+    // Sort entities by race for consistent ordering
+    const sortedEntities = Array.from(patch.entities.entries())
+      .sort((a, b) => {
+        const raceOrder: Record<string, number> = { terran: 0, zerg: 1, protoss: 2, neutral: 3 };
+        const raceA = a[1].race || 'neutral';
+        const raceB = b[1].race || 'neutral';
+        return (raceOrder[raceA] ?? 4) - (raceOrder[raceB] ?? 4);
+      });
+
+    for (const [entityId, entity] of sortedEntities) {
+      // Wrap change text
+      const wrappedChanges: WrappedChange[] = entity.changes.map(change => ({
+        ...change,
+        lines: wrapText(change.raw_text, availableWidth, TEXT_FONT)
+      }));
+
+      // Calculate total lines for height
+      const totalLines = wrappedChanges.reduce((sum, c) => sum + c.lines.length, 0);
+      const changesHeight = totalLines * layout.changeNoteLineHeight;
+
+      // Row height: name + changes + padding
+      // nameY=14, then changes start at ~34, then add changesHeight
+      const contentHeight = 14 + layout.changeNoteLineHeight + 2 + changesHeight + layout.changeNotePadding;
+      const entityHeight = Math.max(layout.cellSize + 8, contentHeight);
+
+      // Icon position - ABSOLUTE Y for the group
+      const iconX = isMobile ? MOBILE_MARGIN : layout.patchLabelWidth + layout.filteredEntityOffset;
+
+      // ALL OTHER POSITIONS ARE RELATIVE TO THE GROUP (relative to 0, not currentY)
+      // Name: at top of row, to the right of icon
+      const nameX = textStartX;  // Same X as change notes
+      const nameY = 14;  // RELATIVE - near top of row
+
+      // Changes: below the name, same X position
+      const changesX = textStartX;
+      const changesY = nameY + layout.changeNoteLineHeight + 2;  // RELATIVE - below name with small gap
+
+      entities.push({
+        entityId,
+        entity,
+        x: iconX,
+        y: currentY,  // ABSOLUTE - used for group translation
+        nameX,        // ABSOLUTE X (doesn't change with Y)
+        nameY,        // RELATIVE Y (relative to group)
+        changes: wrappedChanges,
+        changesX,     // ABSOLUTE X
+        changesY      // RELATIVE Y (relative to group)
+      });
+
+      // ALSO create standard EntityLayout for D3 animation
+      // ID format matches overview: `entityId-patchVersion`
+      standardEntities.push({
+        id: `${entityId}-${patch.version}`,
+        entityId,
+        patchVersion: patch.version,
+        entity,
+        x: iconX,
+        y: currentY
+      });
+
+      // ALSO create standard ChangeLayout for D3 animation
+      standardChanges.push({
+        id: `${entityId}-${patch.version}`,
+        x: changesX,
+        y: currentY + changesY, // Absolute Y for changes
+        changes: wrappedChanges
+      });
+
+      currentY += entityHeight + entityGap;
+    }
+
+    return { entities, totalHeight: currentY, standardEntities, standardChanges };
+  }
+
   // Main entry point
 
   /**
@@ -416,8 +534,41 @@ export function createLayoutEngine(
     // Detect mobile by patchLabelWidth (0 = mobile, labels go above icons)
     const isMobile = layout.patchLabelWidth === 0;
 
-    // Priority: unit selection > race filter
-    const isFocusMode = input.selectedEntityId !== null;
+    // Mode detection: patch view takes priority over unit view
+    const isPatchMode = input.selectedPatchVersion !== null;
+    const isFocusMode = !isPatchMode && input.selectedEntityId !== null;
+
+    // Find selected patch if in patch mode
+    const selectedPatch = isPatchMode
+      ? input.patches.find(p => p.version === input.selectedPatchVersion) || null
+      : null;
+
+    // Handle patch view mode
+    // IMPORTANT: We return entities in the STANDARD format so D3 can animate them
+    // from their grid positions to their patch view positions
+    if (isPatchMode && selectedPatch) {
+      const { entities: patchViewEntities, totalHeight, standardEntities, standardChanges } = calculatePatchViewEntities(
+        selectedPatch,
+        svgWidth,
+        isMobile
+      );
+
+      const svgHeight = layout.marginTop + totalHeight + layout.marginBottom;
+
+      return {
+        svgHeight,
+        headers: [], // No race headers in patch view
+        patchRows: [], // No patch rows - header is separate
+        entities: standardEntities, // Standard entities for animation
+        changes: standardChanges,   // Standard changes for animation
+        isFocusMode: false,
+        isPatchMode: true,
+        selectedPatch,
+        patchViewEntities, // Additional data for entity names
+        focusTargetY: layout.gridStartY,
+        isMobile
+      };
+    }
 
     // Calculate column width based on mode
     const columnWidth = getColumnWidth(svgWidth, isFocusMode || input.selectedRace !== null);
@@ -449,6 +600,9 @@ export function createLayoutEngine(
       entities,
       changes,
       isFocusMode,
+      isPatchMode: false,
+      selectedPatch: null,
+      patchViewEntities: [],
       focusTargetY,
       isMobile
     };

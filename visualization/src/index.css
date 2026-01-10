@@ -722,6 +722,42 @@ svg .wiki-link:hover {
   fill: #999;
 }
 
+/* Patch view styles */
+.patch-view-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* External link (Blizzard/Liquipedia) */
+.external-link-name {
+  fill: #888;
+  font-size: 12px;
+}
+
+.external-link-source {
+  fill: #666;
+  font-size: 11px;
+}
+
+.external-link:hover .external-link-name,
+.external-link:hover .external-link-source {
+  fill: #aaa;
+}
+
+.patch-entity-name {
+  font-size: 16px;
+  font-weight: 600;
+  transition: filter 0.15s ease;
+}
+
+.patch-entity-name:hover {
+  filter: drop-shadow(0 0 6px currentColor) brightness(1.2);
+}
+
+.entity-icon-group:hover {
+  filter: drop-shadow(0 0 12px var(--glow-color, rgba(74, 158, 255, 0.8))) brightness(1.15);
+}
+
 /* SVG entity cells */
 .entity-cell-group {
   cursor: pointer;

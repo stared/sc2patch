@@ -22,24 +22,28 @@ function entityIdToPath(entityId: string): string {
   return `/${race}/${rest.join('-')}`;
 }
 
-// Parse URL path to get race and/or entity_id
-function parseUrlPath(pathname: string): { race: Race | null; entityId: string | null } {
+// Parse URL path to get race, entity_id, or patch version
+function parseUrlPath(pathname: string): { race: Race | null; entityId: string | null; patchVersion: string | null } {
   const parts = pathname.split('/').filter(Boolean);
   if (parts.length === 0) {
-    return { race: null, entityId: null };
+    return { race: null, entityId: null, patchVersion: null };
+  }
+  // Check for patch URL first: /patch/5.0.9
+  if (parts[0] === 'patch' && parts.length >= 2) {
+    return { race: null, entityId: null, patchVersion: parts[1] };
   }
   const race = parts[0] as Race;
   const validRaces: Race[] = ['terran', 'zerg', 'protoss', 'neutral'];
   if (!validRaces.includes(race)) {
-    return { race: null, entityId: null };
+    return { race: null, entityId: null, patchVersion: null };
   }
   if (parts.length === 1) {
     // Race-only URL like /protoss/
-    return { race, entityId: null };
+    return { race, entityId: null, patchVersion: null };
   }
   // Unit URL like /protoss/zealot
   const unitParts = parts.slice(1);
-  return { race, entityId: `${race}-${unitParts.join('-')}` };
+  return { race, entityId: `${race}-${unitParts.join('-')}`, patchVersion: null };
 }
 
 function App() {
@@ -55,6 +59,7 @@ function App() {
   // Track race filter state before unit selection (to restore on deselect)
   const [raceBeforeUnitSelect, setRaceBeforeUnitSelect] = useState<Race | null>(null);
   const [selectedEra, setSelectedEra] = useState<Era | null>(null);
+  const [selectedPatchVersion, setSelectedPatchVersion] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>('newest');
   const [tooltip, setTooltip] = useState<{
     entity: EntityWithPosition | null;
@@ -103,7 +108,7 @@ function App() {
 
   // Sync state with URL path (React Router handles back/forward)
   useEffect(() => {
-    const { race, entityId } = parseUrlPath(location.pathname);
+    const { race, entityId, patchVersion } = parseUrlPath(location.pathname);
     if (entityId !== selectedEntityId) {
       setSelectedEntityId(entityId);
     }
@@ -112,7 +117,11 @@ function App() {
     if (!entityId && race !== selectedRace) {
       setSelectedRace(race);
     }
-  }, [location.pathname, selectedEntityId, selectedRace]);
+    // Sync patch version from URL
+    if (patchVersion !== selectedPatchVersion) {
+      setSelectedPatchVersion(patchVersion);
+    }
+  }, [location.pathname, selectedEntityId, selectedRace, selectedPatchVersion]);
 
   // Navigate to unit URL when selecting (instead of just setting state)
   const handleEntitySelect = useCallback((entityId: string | null) => {
@@ -135,6 +144,15 @@ function App() {
   const handleRaceSelect = useCallback((race: Race | null) => {
     if (race) {
       navigate(`/${race}/`);
+    } else {
+      navigate('/');
+    }
+  }, [navigate]);
+
+  // Navigate to patch URL when selecting patch
+  const handlePatchSelect = useCallback((version: string | null) => {
+    if (version) {
+      navigate(`/patch/${version}`);
     } else {
       navigate('/');
     }
@@ -225,9 +243,11 @@ function App() {
       selectedRace,
       sortOrder,
       setSortOrder,
-      setSelectedRace: handleRaceSelect
+      setSelectedRace: handleRaceSelect,
+      selectedPatchVersion,
+      onPatchSelect: handlePatchSelect
     }, { immediate: isResize });
-  }, [sortedAndFilteredPatches, selectedEntityId, units, selectedRace, selectedEra, sortOrder, windowWidth, handleEntitySelect, handleRaceSelect]);
+  }, [sortedAndFilteredPatches, selectedEntityId, units, selectedRace, selectedEra, sortOrder, windowWidth, handleEntitySelect, handleRaceSelect, selectedPatchVersion, handlePatchSelect]);
 
   if (loading) {
     return (
@@ -269,6 +289,8 @@ function App() {
             setSelectedEntityId={handleEntitySelect}
             selectedRace={selectedRace}
             setSelectedRace={handleRaceSelect}
+            selectedPatchVersion={selectedPatchVersion}
+            setSelectedPatchVersion={handlePatchSelect}
             units={units}
           />
         </div>

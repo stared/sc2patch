@@ -232,6 +232,40 @@ async function generateRouteFiles() {
       created++;
     }
 
+    // Generate patch pages: /patch/5.0.9, /patch/5.0.10, etc.
+    for (const patch of allPatches) {
+      const version = patch.version;
+      const patchDate = new Date(patch.date);
+      const formattedDate = patchDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+      const entityCount = patch.entities ? patch.entities.length : 0;
+
+      // Count changes by type
+      let buffs = 0, nerfs = 0, mixed = 0;
+      if (patch.entities) {
+        patch.entities.forEach(entity => {
+          entity.changes.forEach(change => {
+            if (change.change_type === 'buff') buffs++;
+            else if (change.change_type === 'nerf') nerfs++;
+            else if (change.change_type === 'mixed') mixed++;
+          });
+        });
+      }
+
+      const routeDir = path.join(DIST_DIR, 'patch', version);
+      const routeIndex = path.join(routeDir, 'index.html');
+
+      const title = `Patch ${version} Balance Changes - StarCraft 2`;
+      const description = `StarCraft 2 Patch ${version} (${formattedDate}): ${entityCount} units changed with ${buffs} buffs, ${nerfs} nerfs, and ${mixed} mixed changes.`;
+      const url = `${BASE_URL}/patch/${version}`;
+
+      const html = injectMetaTags(template, { title, description, url });
+
+      await fs.mkdir(routeDir, { recursive: true });
+      await fs.writeFile(routeIndex, html);
+      created++;
+    }
+
     // Generate unit pages: /zerg/hydralisk, /protoss/zealot, etc.
     for (const entityId of entityIds) {
       const parts = entityId.split('-');

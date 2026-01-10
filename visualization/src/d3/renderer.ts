@@ -11,7 +11,8 @@ import {
   type WrappedChange,
   type LayoutResult,
   type LayoutInput,
-  type HeaderLayout
+  type HeaderLayout,
+  type PatchViewEntityLayout
 } from './layout';
 
 // Extend d3-selection to include transition
@@ -29,6 +30,8 @@ interface RenderState {
   sortOrder: 'newest' | 'oldest';
   setSortOrder?: (order: 'newest' | 'oldest') => void;
   setSelectedRace?: (race: Race | null) => void;
+  selectedPatchVersion: string | null;
+  onPatchSelect: (version: string | null) => void;
 }
 
 // Animation timing - phased: exit → move → enter
@@ -78,7 +81,8 @@ export class PatchGridRenderer {
       patches: state.patches,
       unitsMap: state.unitsMap,
       selectedEntityId: state.selectedEntityId,
-      selectedRace: state.selectedRace
+      selectedRace: state.selectedRace,
+      selectedPatchVersion: state.selectedPatchVersion
     };
 
     // Calculate layout (pure function - just target positions)
@@ -87,23 +91,42 @@ export class PatchGridRenderer {
     // Update SVG dimensions
     this.svg.attr('width', this.svgWidth).attr('height', layoutResult.svgHeight);
 
-    // SVG background click to deselect
-    this.svg.on('click', () => {
-      if (state.selectedEntityId) {
-        state.onEntitySelect(null);
-      }
-    });
-
     // Scroll to focus if needed
     if (layoutResult.focusTargetY !== null) {
       this.scrollToTargetPosition(layoutResult.focusTargetY);
     }
 
-    // Render all layers with unified join pattern
-    this.renderHeaders(layoutResult, state);
-    this.renderPatches(layoutResult, state, config.layout);
-    this.renderEntities(layoutResult, state);
-    this.renderChanges(layoutResult);
+    // Render based on mode
+    if (layoutResult.isPatchMode) {
+      // Clear normal view elements
+      this.svg.select('.headers-container').selectAll('*').remove();
+      this.svg.select('.patches-container').selectAll('*').remove();
+      this.svg.selectAll('.unit-links').remove(); // Clear unit links
+
+      // Render simple patch header + external link
+      this.renderPatchViewHeader(layoutResult);
+      this.renderExternalLink(state, layoutResult);
+
+      // Use standard entity and changes rendering for smooth animations
+      this.renderEntities(layoutResult, state);
+      this.renderChanges(layoutResult, true); // isPatchMode = true: sync timing with entity names
+
+      // Render entity names (only in patch mode)
+      this.renderPatchViewEntityNames(layoutResult, state);
+    } else {
+      // Clear patch view containers
+      this.svg.selectAll('.patch-view-header').remove();
+      this.svg.selectAll('.patch-entity-names').remove();
+
+      // Render all layers with unified join pattern
+      this.renderHeaders(layoutResult, state);
+      this.renderPatches(layoutResult, state, config.layout);
+      this.renderEntities(layoutResult, state);
+      this.renderChanges(layoutResult);
+
+      // Render external link (unit view)
+      this.renderExternalLink(state, layoutResult);
+    }
 
     // Clear first render flag
     this.isFirstRender = false;
@@ -240,8 +263,6 @@ export class PatchGridRenderer {
         }
       });
 
-    // Liquipedia link - render directly on svg for correct positioning
-    this.renderUnitLink(this.svg as unknown as Selection<SVGGElement, unknown, null, undefined>, state);
   }
 
   private renderSortControl(container: Selection<SVGGElement, unknown, null, undefined>, state: RenderState, isMobile: boolean): void {
@@ -270,72 +291,97 @@ export class PatchGridRenderer {
       });
   }
 
-  private renderUnitLink(container: Selection<SVGGElement, unknown, null, undefined>, state: RenderState): void {
-    const linksData = state.selectedEntityId ? [state.selectedEntityId] : [];
-    const groups = container.selectAll<SVGGElement, string>('.unit-links')
-      .data(linksData)
+  /**
+   * Unified external link - same position for patch view (Blizzard) and unit view (Liquipedia)
+   */
+  private renderExternalLink(state: RenderState, layoutResult: LayoutResult): void {
+    const isPatchMode = layoutResult.isPatchMode;
+    const patch = layoutResult.selectedPatch;
+    const hasLink = isPatchMode ? !!patch : !!state.selectedEntityId;
+
+    const linkData = hasLink ? ['link'] : [];
+
+    this.svg.selectAll<SVGGElement, string>('.external-link')
+      .data(linkData)
       .join(
         enter => {
           const g = enter.append('g')
-            .attr('class', 'unit-links wiki-link')
-            .style('opacity', 0);
-          g.append('text').attr('class', 'unit-link-name');
-          g.append('text').attr('class', 'unit-link-source').attr('dy', '1.2em');
-          // Fade in after unit icon settles (consistent with change notes)
-          g.transition()
-            .delay(this.t(PHASE.ENTER_DELAY + PHASE.ENTER_DURATION))
+            .attr('class', 'external-link wiki-link')
+            .attr('transform', `translate(${this.svgWidth - 20}, 16)`)
+            .style('opacity', 0)
+            .style('cursor', 'pointer');
+
+          g.append('text')
+            .attr('class', 'external-link-name')
+            .attr('text-anchor', 'end')
+            .attr('y', 0);
+
+          g.append('text')
+            .attr('class', 'external-link-source')
+            .attr('text-anchor', 'end')
+            .attr('y', 14);
+
+          g.transition('enter')
+            .delay(this.t(PHASE.ENTER_DELAY))
             .duration(this.t(PHASE.ENTER_DURATION))
             .style('opacity', 1);
+
           return g;
         },
-        update => update,
-        exit => exit.transition().duration(this.t(PHASE.EXIT_DURATION)).style('opacity', 0).remove()
+        update => update
+          .attr('transform', `translate(${this.svgWidth - 20}, 16)`)
+          .style('opacity', 1),
+        exit => exit.transition()
+          .duration(this.t(PHASE.EXIT_DURATION))
+          .style('opacity', 0)
+          .remove()
       )
-      .attr('transform', `translate(${this.svgWidth - 20}, 16)`)
       .on('click', (event) => {
         event.stopPropagation();
-        if (state.selectedEntityId) {
+        if (isPatchMode && patch) {
+          window.open(patch.url, '_blank');
+        } else if (state.selectedEntityId) {
           const unit = state.unitsMap.get(state.selectedEntityId);
           if (unit) window.open(unit.liquipedia_url, '_blank');
         }
       });
 
-    groups.select<SVGTextElement>('.unit-link-name')
-      .text(() => {
-        if (!state.selectedEntityId) return '';
+    // Update text content
+    const linkGroup = this.svg.select<SVGGElement>('.external-link');
+    if (!linkGroup.empty()) {
+      if (isPatchMode && patch) {
+        linkGroup.select('.external-link-name').text(`more on Patch ${patch.version}`);
+        linkGroup.select('.external-link-source').text('on Blizzard');
+      } else if (state.selectedEntityId) {
         const unit = state.unitsMap.get(state.selectedEntityId);
-        return unit ? `more on ${unit.name}` : '';
-      });
-
-    groups.select<SVGTextElement>('.unit-link-source')
-      .text(state.selectedEntityId ? 'on Liquipedia' : '');
+        linkGroup.select('.external-link-name').text(unit ? `more on ${unit.name}` : '');
+        linkGroup.select('.external-link-source').text('on Liquipedia');
+      }
+    }
   }
 
-  private renderPatches(layoutResult: LayoutResult, _state: RenderState, currentLayout: LayoutConfig): void {
+  private renderPatches(layoutResult: LayoutResult, state: RenderState, currentLayout: LayoutConfig): void {
     let patchesContainer = this.svg.select<SVGGElement>('.patches-container');
     if (patchesContainer.empty()) {
       patchesContainer = this.svg.append('g').attr('class', 'patches-container');
     }
 
-    // Use layout config for positioning (handles mobile/desktop differences)
     const { patchLabelTranslateX, patchLabelTranslateY, patchDateOffsetY, patchVersionOffsetX, patchVersionOffsetY } = currentLayout;
 
     patchesContainer
       .selectAll<SVGGElement, PatchRowLayout>('.patch-group')
       .data(layoutResult.patchRows, d => d.version)
       .join(
-        // ENTER: New patches appear
         enter => {
           const pg = enter.append('g')
             .attr('class', 'patch-group')
             .attr('transform', d => `translate(0, ${d.y})`)
             .style('opacity', 0);
 
-          // On mobile: label above icons (horizontal layout)
-          // On desktop: label on left side (vertical layout)
           const label = pg.append('g')
             .attr('class', 'patch-label')
-            .attr('transform', `translate(${patchLabelTranslateX}, ${patchLabelTranslateY})`);
+            .attr('transform', `translate(${patchLabelTranslateX}, ${patchLabelTranslateY})`)
+            .style('cursor', 'pointer');
 
           label.append('text')
             .attr('class', 'patch-date')
@@ -345,18 +391,14 @@ export class PatchGridRenderer {
               select(this)
                 .style('fill', eraColors[getEraFromVersion(d.version)])
                 .text(d.date.split('-').slice(0, 2).join('-'));
-            })
-            .on('click', (e, d) => { e.stopPropagation(); window.open(d.url, '_blank'); });
+            });
 
           label.append('text')
             .attr('class', 'patch-version')
             .attr('x', patchVersionOffsetX)
             .attr('y', patchVersionOffsetY)
-            .text(d => d.version)
-            .on('click', (e, d) => { e.stopPropagation(); window.open(d.url, '_blank'); });
+            .text(d => d.version);
 
-          // Fade in after move phase
-          // Named transition prevents UPDATE from cancelling this on React re-render
           pg.transition('enter')
             .delay(this.t(PHASE.ENTER_DELAY))
             .duration(this.t(PHASE.ENTER_DURATION))
@@ -365,38 +407,31 @@ export class PatchGridRenderer {
           return pg;
         },
 
-        // UPDATE: Existing patches move to new position and update label layout
-        // If element was mid-exit (low opacity), wait for ENTER phase instead of MOVE
-        update => {
-          // Update label positions for breakpoint crossing
-          update.select('.patch-label')
-            .attr('transform', `translate(${patchLabelTranslateX}, ${patchLabelTranslateY})`);
-          update.select('.patch-date')
-            .attr('x', 0)
-            .attr('y', patchDateOffsetY);
-          update.select('.patch-version')
-            .attr('x', patchVersionOffsetX)
-            .attr('y', patchVersionOffsetY);
+        update => update.call(u => u.transition()
+          .delay((_d, i, nodes) => {
+            const wasExiting = +select(nodes[i]).style('opacity') < 0.5;
+            return this.t(wasExiting ? PHASE.ENTER_DELAY : PHASE.MOVE_DELAY);
+          })
+          .duration(this.t(PHASE.MOVE_DURATION))
+          .ease(easeCubicInOut)
+          .attr('transform', d => `translate(0, ${d.y})`)
+          .style('opacity', 1)
+        ),
 
-          return update.call(u => u.transition()
-            .delay((_d, i, nodes) => {
-              const wasExiting = +select(nodes[i]).style('opacity') < 0.5;
-              return this.t(wasExiting ? PHASE.ENTER_DELAY : PHASE.MOVE_DELAY);
-            })
-            .duration(this.t(PHASE.MOVE_DURATION))
-            .ease(easeCubicInOut)
-            .attr('transform', d => `translate(0, ${d.y})`)
-            .style('opacity', 1)
-          );
-        },
-
-        // EXIT: Patches fade out
         exit => exit.call(e => e.transition()
           .duration(this.t(PHASE.EXIT_DURATION))
           .style('opacity', 0)
           .remove()
         )
       );
+
+    // Click handler
+    patchesContainer
+      .selectAll<SVGGElement, PatchRowLayout>('.patch-label')
+      .on('click', (e, d) => {
+        e.stopPropagation();
+        state.onPatchSelect(d.version);
+      });
   }
 
   private renderEntities(layoutResult: LayoutResult, state: RenderState): void {
@@ -522,7 +557,7 @@ export class PatchGridRenderer {
       });
   }
 
-  private renderChanges(layoutResult: LayoutResult): void {
+  private renderChanges(layoutResult: LayoutResult, isPatchMode: boolean = false): void {
     // Remove container if no changes
     if (layoutResult.changes.length === 0) {
       this.svg.select('.changes-container').remove();
@@ -580,10 +615,11 @@ export class PatchGridRenderer {
             });
           });
 
-          // Fade in after unit icon has finished moving
+          // Fade in: patch mode = same time as names, unit mode = after icon settles
           // Named transition prevents UPDATE from cancelling this on React re-render
+          const enterDelay = isPatchMode ? PHASE.ENTER_DELAY : PHASE.ENTER_DELAY + PHASE.ENTER_DURATION;
           cg.transition('enter')
-            .delay(this.t(PHASE.ENTER_DELAY + PHASE.ENTER_DURATION))
+            .delay(this.t(enterDelay))
             .duration(this.t(PHASE.ENTER_DURATION))
             .style('opacity', 1);
 
@@ -599,6 +635,129 @@ export class PatchGridRenderer {
         ),
 
         // EXIT: Fade out
+        exit => exit.call(e => e.transition()
+          .duration(this.t(PHASE.EXIT_DURATION))
+          .style('opacity', 0)
+          .remove()
+        )
+      );
+  }
+
+  private renderPatchViewHeader(layoutResult: LayoutResult): void {
+    if (!layoutResult.selectedPatch) return;
+
+    let headerContainer = this.svg.select<SVGGElement>('.patch-view-header');
+    if (headerContainer.empty()) {
+      headerContainer = this.svg.append('g').attr('class', 'patch-view-header');
+    }
+
+    const patch = layoutResult.selectedPatch;
+    const headerY = layout.headerY;
+    const eraColor = eraColors[getEraFromVersion(patch.version)];
+
+    // Title: "Patch 5.0.9" (main, bold, era-colored)
+    const titleData = [patch.version];
+    headerContainer
+      .selectAll<SVGTextElement, string>('.patch-view-title')
+      .data(titleData)
+      .join(
+        enter => enter.append('text')
+          .attr('class', 'patch-view-title')
+          .attr('x', this.svgWidth / 2)
+          .attr('y', headerY + 12)
+          .attr('text-anchor', 'middle')
+          .style('fill', eraColor)
+          .style('opacity', 0)
+          .text(`Patch ${patch.version}`)
+          .call(e => e.transition('enter')
+            .delay(this.t(PHASE.ENTER_DELAY))
+            .duration(this.t(PHASE.ENTER_DURATION))
+            .style('opacity', 1)
+          ),
+        update => update
+          .attr('x', this.svgWidth / 2)
+          .text(`Patch ${patch.version}`),
+        exit => exit.remove()
+      );
+
+    // Date below (smaller, muted)
+    const dateData = [patch.date];
+    headerContainer
+      .selectAll<SVGTextElement, string>('.patch-view-date')
+      .data(dateData)
+      .join(
+        enter => enter.append('text')
+          .attr('class', 'patch-view-date')
+          .attr('x', this.svgWidth / 2)
+          .attr('y', headerY + 28)
+          .attr('text-anchor', 'middle')
+          .style('fill', '#888')
+          .style('font-size', '12px')
+          .style('opacity', 0)
+          .text(patch.date)
+          .call(e => e.transition('enter')
+            .delay(this.t(PHASE.ENTER_DELAY))
+            .duration(this.t(PHASE.ENTER_DURATION))
+            .style('opacity', 1)
+          ),
+        update => update
+          .attr('x', this.svgWidth / 2)
+          .text(patch.date),
+        exit => exit.remove()
+      );
+
+  }
+
+  /**
+   * Render entity names for patch view (overlaid on the standard entities)
+   * These names appear next to each entity icon and link to unit view
+   */
+  private renderPatchViewEntityNames(layoutResult: LayoutResult, state: RenderState): void {
+    let namesContainer = this.svg.select<SVGGElement>('.patch-entity-names');
+    if (namesContainer.empty()) {
+      namesContainer = this.svg.append('g').attr('class', 'patch-entity-names');
+    }
+
+    namesContainer
+      .selectAll<SVGTextElement, PatchViewEntityLayout>('.patch-entity-name')
+      .data(layoutResult.patchViewEntities, d => d.entityId)
+      .join(
+        enter => enter.append('text')
+          .attr('class', 'patch-entity-name')
+          .attr('x', d => d.nameX)
+          .attr('y', d => d.y + d.nameY)  // Absolute Y = row Y + relative nameY
+          .style('fill', d => raceColors[(d.entity.race || 'neutral') as Race])
+          .style('cursor', 'pointer')
+          .style('opacity', 0)
+          .text(d => state.unitsMap.get(d.entityId)?.name || d.entity.name || d.entityId)
+          .on('click', (event, d) => {
+            event.stopPropagation();
+
+            // Disable interactions during transition
+            const container = document.querySelector('.patch-grid-container');
+            if (container) {
+              container.classList.add('transitioning');
+              const totalAnimationTime = PHASE.ENTER_DELAY + PHASE.ENTER_DURATION + 50;
+              setTimeout(() => container.classList.remove('transitioning'), totalAnimationTime);
+            }
+
+            state.onEntitySelect(d.entityId);
+          })
+          .call(e => e.transition('enter')
+            .delay(this.t(PHASE.ENTER_DELAY))
+            .duration(this.t(PHASE.ENTER_DURATION))
+            .style('opacity', 1)
+          ),
+
+        update => update.call(u => u.transition()
+          .delay(this.t(PHASE.MOVE_DELAY))
+          .duration(this.t(PHASE.MOVE_DURATION))
+          .ease(easeCubicInOut)
+          .attr('x', d => d.nameX)
+          .attr('y', d => d.y + d.nameY)
+          .style('opacity', 1)
+        ),
+
         exit => exit.call(e => e.transition()
           .duration(this.t(PHASE.EXIT_DURATION))
           .style('opacity', 0)
